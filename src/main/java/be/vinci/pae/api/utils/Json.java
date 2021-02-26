@@ -67,7 +67,7 @@ public class Json {
       // get all collections
       JsonNode allCollections = jsonMapper.readTree(pathToDb.toFile());
 
-      if (allCollections.has(collectionName)) {// remove current collection
+      if (allCollections.has(collectionName)) { // remove current collection
         ((ObjectNode) allCollections).remove(collectionName);
       }
 
@@ -135,7 +135,7 @@ public class Json {
 
       JsonNode allCollections = jsonMapper.readTree(pathToDb.toFile());
 
-      if (allCollections.has(collectionName)) {// remove current collection
+      if (allCollections.has(collectionName)) { // remove current collection
         ((ObjectNode) allCollections).remove(collectionName);
       }
 

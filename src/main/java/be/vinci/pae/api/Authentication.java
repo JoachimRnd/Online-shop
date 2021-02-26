@@ -33,6 +33,12 @@ public class Authentication {
   @Inject
   private UserFactory userFactory;
 
+  /**
+   * Description.
+   * 
+   * @param json
+   * @return
+   */
   @POST
   @Path("login")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -68,6 +74,12 @@ public class Authentication {
 
   }
 
+  /**
+   * Description.
+   * 
+   * @param json
+   * @return
+   */
   @POST
   @Path("register")
   @Consumes(MediaType.APPLICATION_JSON)
