@@ -1,5 +1,10 @@
 package be.vinci.pae.api.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -7,32 +12,30 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import views.Views;
 
 public class Json {
+
   private final static ObjectMapper jsonMapper = new ObjectMapper();
 
   /**
    * returns description test jenkins.
-   * 
-   * @param <T> description
-   * @param dbFilePath chemin db
+   *
+   * @param <T>            description
+   * @param dbFilePath     chemin db
    * @param collectionName description
-   * @param targetClass description
+   * @param targetClass    description
    * @return description
+   * @TODO JavaDoc
    */
   public static <T> List<T> loadDataFromFile(String dbFilePath, String collectionName,
       Class<T> targetClass) {
     try {
       JsonNode node = jsonMapper.readTree(Paths.get(dbFilePath).toFile());
       JsonNode collection = node.get(collectionName);
-      if (collection == null)
+      if (collection == null) {
         return new ArrayList<T>();
+      }
       return jsonMapper.readerForListOf(targetClass).readValue(node.get(collectionName));
 
     } catch (FileNotFoundException e) {
@@ -45,11 +48,12 @@ public class Json {
 
   /**
    * returns description test jenkins.
-   * 
-   * @param <T> description
-   * @param list description
-   * @param dbFilePath description
+   *
+   * @param <T>            description
+   * @param list           description
+   * @param dbFilePath     description
    * @param collectionName description
+   * @TODO JavaDoc
    */
   public static <T> void saveDataToFile(List<T> list, String dbFilePath, String collectionName) {
     try {
@@ -85,13 +89,14 @@ public class Json {
 
   /**
    * returns description test jenkins.
-   * 
-   * @param <T> description
-   * @param dbFilePath description
-   * @param jsonViewClass description
+   *
+   * @param <T>            description
+   * @param dbFilePath     description
+   * @param jsonViewClass  description
    * @param collectionName description
-   * @param targetClass description
+   * @param targetClass    description
    * @return
+   * @TODO JavaDoc
    */
   public static <T> List<T> loadDataFromFileBasedOnView(String dbFilePath, Class<?> jsonViewClass,
       String collectionName, Class<T> targetClass) {
@@ -113,12 +118,13 @@ public class Json {
 
   /**
    * returns description test jenkins.
-   * 
-   * @param <T> description
-   * @param list description
-   * @param jsonViewClass description
-   * @param dbFilePath description
+   *
+   * @param <T>            description
+   * @param list           description
+   * @param jsonViewClass  description
+   * @param dbFilePath     description
    * @param collectionName description
+   * @TODO JavaDoc
    */
   public static <T> void saveDataToFileBasedOnView(List<T> list, Class<?> jsonViewClass,
       String dbFilePath, String collectionName) {
@@ -156,10 +162,11 @@ public class Json {
 
   /**
    * returns description test jenkins.
-   * 
-   * @param <T> description
+   *
+   * @param <T>  description
    * @param item description
    * @return description
+   * @TODO JavaDoc
    */
   public static <T> String serializePublicJsonView(T item) {
     // serialize using JSON Views : Public View
@@ -175,11 +182,12 @@ public class Json {
 
   /**
    * returns description test jenkins.
-   * 
-   * @param <T> description
-   * @param list description
+   *
+   * @param <T>         description
+   * @param list        description
    * @param targetClass description
    * @return description
+   * @TODO JavaDoc
    */
   public static <T> List<T> filterPublicJsonViewAsList(List<T> list, Class<T> targetClass) {
 
@@ -205,11 +213,12 @@ public class Json {
 
   /**
    * returns description test jenkins.
-   * 
-   * @param <T> description
-   * @param item description
+   *
+   * @param <T>         description
+   * @param item        description
    * @param targetClass description
    * @return description
+   * @TODO JavaDoc
    */
   public static <T> T filterPublicJsonView(T item, Class<T> targetClass) {
 

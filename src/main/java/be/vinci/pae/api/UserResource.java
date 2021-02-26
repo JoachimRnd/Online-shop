@@ -1,7 +1,5 @@
 package be.vinci.pae.api;
 
-import java.util.List;
-import org.glassfish.jersey.server.ContainerRequest;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.utils.Json;
 import be.vinci.pae.domain.User;
@@ -15,6 +13,8 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
+import java.util.List;
+import org.glassfish.jersey.server.ContainerRequest;
 
 @Singleton
 @Path("/users")
@@ -28,8 +28,9 @@ public class UserResource {
 
   /**
    * Description.
-   * 
-   * @return
+   *
+   * @return description
+   * @TODO JavaDoc
    */
   @POST
   @Path("init")
@@ -47,9 +48,10 @@ public class UserResource {
 
   /**
    * Description.
-   * 
-   * @param request
-   * @return
+   *
+   * @param request description
+   * @return description
+   * @TODO JavaDoc
    */
   @GET
   @Path("me")
@@ -62,8 +64,9 @@ public class UserResource {
 
   /**
    * Description.
-   * 
-   * @return
+   *
+   * @return description
+   * @TODO JavaDoc
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)

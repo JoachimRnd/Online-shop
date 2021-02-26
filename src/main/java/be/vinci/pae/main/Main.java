@@ -1,23 +1,22 @@
 package be.vinci.pae.main;
 
+import be.vinci.pae.utils.ApplicationBinder;
+import be.vinci.pae.utils.Config;
 import java.io.IOException;
 import java.net.URI;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
-import be.vinci.pae.utils.ApplicationBinder;
-import be.vinci.pae.utils.Config;
 
 /**
  * Main class.
- *
  */
 public class Main {
 
   /**
    * Starts Grizzly HTTP server exposing JAX-RS resources defined in this application.
-   * 
+   *
    * @return Grizzly HTTP server.
    */
   public static HttpServer startServer() {
@@ -33,9 +32,10 @@ public class Main {
 
   /**
    * Main method.
-   * 
+   *
    * @param args description
    * @throws IOException description
+   * @TODO JavaDoc
    */
   public static void main(String[] args) throws IOException {
     // Load properties file

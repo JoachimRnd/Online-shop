@@ -36,8 +36,9 @@ public class Authentication {
   /**
    * Description.
    *
-   * @param json
-   * @return
+   * @param json description
+   * @return description
+   * @TODO JavaDoc
    */
   @POST
   @Path("login")
@@ -77,8 +78,9 @@ public class Authentication {
   /**
    * Description.
    *
-   * @param json
-   * @return
+   * @param json description
+   * @return description
+   * @TODO JavaDoc
    */
   @POST
   @Path("register")
