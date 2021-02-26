@@ -5,22 +5,22 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @JsonDeserialize(as = UserImpl.class)
 public interface User {
 
-	  int getID();
+  int getID();
 
-	  void setID(int id);
+  void setID(int id);
 
-	  String getLogin();
+  String getLogin();
 
-	  void setLogin(String login);
+  void setLogin(String login);
 
-	  String getPassword();
+  String getPassword();
 
-	  void setPassword(String password);
+  void setPassword(String password);
 
-	  boolean checkPassword(String password);
+  boolean checkPassword(String password);
 
-	  String hashPassword(String password);	  
- 
-	  String toString();
+  String hashPassword(String password);
 
-	}
+  String toString();
+
+}

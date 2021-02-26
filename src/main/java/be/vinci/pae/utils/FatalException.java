@@ -13,7 +13,8 @@ public class FatalException extends WebApplicationException {
   }
 
   public FatalException(String message, Throwable cause) {
-    super(cause, Response.status(Status.INTERNAL_SERVER_ERROR).entity(message).type("text/plain").build());
+    super(cause,
+        Response.status(Status.INTERNAL_SERVER_ERROR).entity(message).type("text/plain").build());
   }
 
   public FatalException(String message) {
