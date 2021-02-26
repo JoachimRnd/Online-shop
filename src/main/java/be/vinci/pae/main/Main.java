@@ -34,8 +34,8 @@ public class Main {
   /**
    * Main method.
    * 
-   * @param args
-   * @throws IOException
+   * @param args description
+   * @throws IOException description
    */
   public static void main(String[] args) throws IOException {
     // Load properties file

@@ -19,11 +19,11 @@ public class Json {
 
   /**
    * 
-   * @param <T>
-   * @param dbFilePath
-   * @param collectionName
-   * @param targetClass
-   * @return
+   * @param <T> description
+   * @param dbFilePath chemin db
+   * @param collectionName description
+   * @param targetClass description
+   * @return description
    */
   public static <T> List<T> loadDataFromFile(String dbFilePath, String collectionName,
       Class<T> targetClass) {
@@ -44,10 +44,10 @@ public class Json {
 
   /**
    * 
-   * @param <T>
-   * @param list
-   * @param dbFilePath
-   * @param collectionName
+   * @param <T> description
+   * @param list description
+   * @param dbFilePath description
+   * @param collectionName description
    */
   public static <T> void saveDataToFile(List<T> list, String dbFilePath, String collectionName) {
     try {
@@ -83,11 +83,11 @@ public class Json {
 
   /**
    * 
-   * @param <T>
-   * @param dbFilePath
-   * @param jsonViewClass
-   * @param collectionName
-   * @param targetClass
+   * @param <T> description
+   * @param dbFilePath description
+   * @param jsonViewClass description
+   * @param collectionName description
+   * @param targetClass description
    * @return
    */
   public static <T> List<T> loadDataFromFileBasedOnView(String dbFilePath, Class<?> jsonViewClass,
@@ -110,11 +110,11 @@ public class Json {
 
   /**
    * 
-   * @param <T>
-   * @param list
-   * @param jsonViewClass
-   * @param dbFilePath
-   * @param collectionName
+   * @param <T> description
+   * @param list description
+   * @param jsonViewClass description
+   * @param dbFilePath description
+   * @param collectionName description
    */
   public static <T> void saveDataToFileBasedOnView(List<T> list, Class<?> jsonViewClass,
       String dbFilePath, String collectionName) {
@@ -152,9 +152,9 @@ public class Json {
 
   /**
    * 
-   * @param <T>
-   * @param item
-   * @return
+   * @param <T> description
+   * @param item description
+   * @return description
    */
   public static <T> String serializePublicJsonView(T item) {
     // serialize using JSON Views : Public View
@@ -170,10 +170,10 @@ public class Json {
 
   /**
    * 
-   * @param <T>
-   * @param list
-   * @param targetClass
-   * @return
+   * @param <T> description
+   * @param list description
+   * @param targetClass description
+   * @return description
    */
   public static <T> List<T> filterPublicJsonViewAsList(List<T> list, Class<T> targetClass) {
 
@@ -199,10 +199,10 @@ public class Json {
 
   /**
    * 
-   * @param <T>
-   * @param item
-   * @param targetClass
-   * @return
+   * @param <T> description
+   * @param item description
+   * @param targetClass description
+   * @return description
    */
   public static <T> T filterPublicJsonView(T item, Class<T> targetClass) {
 

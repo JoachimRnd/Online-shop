@@ -9,6 +9,10 @@ public class Config {
 
   private static Properties props;
 
+  /**
+   * 
+   * @param file description
+   */
   public static void load(String file) {
     props = new Properties();
     try (InputStream input = new FileInputStream(file)) {
