@@ -95,7 +95,7 @@ public class Json {
    * @param jsonViewClass  description
    * @param collectionName description
    * @param targetClass    description
-   * @return
+   * @return description
    * @TODO JavaDoc
    */
   public static <T> List<T> loadDataFromFileBasedOnView(String dbFilePath, Class<?> jsonViewClass,

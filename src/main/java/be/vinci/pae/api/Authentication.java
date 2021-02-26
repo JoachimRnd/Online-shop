@@ -92,7 +92,6 @@ public class Authentication {
           .type(MediaType.TEXT_PLAIN).build();
     }
     String login = json.get("login").asText();
-    String password = json.get("password").asText();
     // Check if user exists
     if (this.dataService.getUser(login) != null) {
       return Response.status(Status.CONFLICT).entity("This login is already in use")
@@ -102,6 +101,7 @@ public class Authentication {
     User user = this.userFactory.getUser();
     user.setID(1);
     user.setLogin(login);
+    String password = json.get("password").asText();
     user.setPassword(user.hashPassword(password));
     this.dataService.addUser(user);
 

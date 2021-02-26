@@ -1,12 +1,12 @@
 package be.vinci.pae.domain;
 
-import org.mindrot.jbcrypt.BCrypt;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.mindrot.jbcrypt.BCrypt;
 import views.Views;
 
-@JsonInclude(JsonInclude.Include.NON_NULL) // ignore all null fields in order to avoid sending props not linked to a
-                                           // JSON view
+// ignore all null fields in order to avoid sending props not linked to a JSON view
+@JsonInclude(JsonInclude.Include.NON_NULL)
 class UserImpl implements User {
 
   @JsonView(Views.Public.class)
