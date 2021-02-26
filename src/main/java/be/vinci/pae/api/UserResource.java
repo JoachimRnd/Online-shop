@@ -26,6 +26,11 @@ public class UserResource {
   @Inject
   private UserFactory userFactory;
 
+  /**
+   * Description.
+   * 
+   * @return
+   */
   @POST
   @Path("init")
   @Produces(MediaType.APPLICATION_JSON)
@@ -40,6 +45,12 @@ public class UserResource {
     return Json.filterPublicJsonView(user, User.class);
   }
 
+  /**
+   * Description.
+   * 
+   * @param request
+   * @return
+   */
   @GET
   @Path("me")
   @Produces(MediaType.APPLICATION_JSON)
@@ -49,6 +60,11 @@ public class UserResource {
     return Json.filterPublicJsonView(currentUser, User.class);
   }
 
+  /**
+   * Description.
+   * 
+   * @return
+   */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   @Authorize
