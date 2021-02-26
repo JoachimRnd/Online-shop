@@ -1,15 +1,15 @@
 package be.vinci.pae.api;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import be.vinci.pae.api.utils.Json;
 import be.vinci.pae.domain.User;
 import be.vinci.pae.domain.UserFactory;
 import be.vinci.pae.services.DataServiceUserCollection;
 import be.vinci.pae.utils.Config;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -35,7 +35,7 @@ public class Authentication {
 
   /**
    * Description.
-   * 
+   *
    * @param json
    * @return
    */
@@ -76,7 +76,7 @@ public class Authentication {
 
   /**
    * Description.
-   * 
+   *
    * @param json
    * @return
    */
@@ -115,7 +115,6 @@ public class Authentication {
 
     // load the user data from a public JSON view to filter out the private info not
     // to be returned by the API (such as password)
-    String publicSerializedUser = Json.serializePublicJsonView(user);
     User publicUser = Json.filterPublicJsonView(user, User.class);
     ObjectNode node = jsonMapper.createObjectNode().put("token", token).putPOJO("user", publicUser);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
