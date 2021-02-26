@@ -16,7 +16,7 @@ import views.Views;
 
 public class Json {
 
-  private final static ObjectMapper jsonMapper = new ObjectMapper();
+  private static final ObjectMapper jsonMapper = new ObjectMapper();
 
   /**
    * returns description test jenkins.
