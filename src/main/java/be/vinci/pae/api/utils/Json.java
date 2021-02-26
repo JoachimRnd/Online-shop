@@ -18,7 +18,13 @@ public class Json {
   private final static ObjectMapper jsonMapper = new ObjectMapper();
 
   /**
-   * {@inheritDoc}
+   * returns description test jenkins
+   * 
+   * @param <T> description
+   * @param dbFilePath chemin db
+   * @param collectionName description
+   * @param targetClass description
+   * @return description
    */
   public static <T> List<T> loadDataFromFile(String dbFilePath, String collectionName,
       Class<T> targetClass) {
@@ -38,7 +44,12 @@ public class Json {
   }
 
   /**
-   * {@inheritDoc}
+   * returns description test jenkins
+   * 
+   * @param <T> description
+   * @param list description
+   * @param dbFilePath description
+   * @param collectionName description
    */
   public static <T> void saveDataToFile(List<T> list, String dbFilePath, String collectionName) {
     try {
@@ -73,7 +84,14 @@ public class Json {
   }
 
   /**
-   * {@inheritDoc}
+   * returns description test jenkins
+   * 
+   * @param <T> description
+   * @param dbFilePath description
+   * @param jsonViewClass description
+   * @param collectionName description
+   * @param targetClass description
+   * @return
    */
   public static <T> List<T> loadDataFromFileBasedOnView(String dbFilePath, Class<?> jsonViewClass,
       String collectionName, Class<T> targetClass) {
@@ -94,7 +112,13 @@ public class Json {
   }
 
   /**
-   * {@inheritDoc}
+   * returns description test jenkins
+   * 
+   * @param <T> description
+   * @param list description
+   * @param jsonViewClass description
+   * @param dbFilePath description
+   * @param collectionName description
    */
   public static <T> void saveDataToFileBasedOnView(List<T> list, Class<?> jsonViewClass,
       String dbFilePath, String collectionName) {
@@ -131,7 +155,11 @@ public class Json {
   }
 
   /**
-   * {@inheritDoc}
+   * returns description test jenkins
+   * 
+   * @param <T> description
+   * @param item description
+   * @return description
    */
   public static <T> String serializePublicJsonView(T item) {
     // serialize using JSON Views : Public View
@@ -146,7 +174,12 @@ public class Json {
   }
 
   /**
-   * {@inheritDoc}
+   * returns description test jenkins
+   * 
+   * @param <T> description
+   * @param list description
+   * @param targetClass description
+   * @return description
    */
   public static <T> List<T> filterPublicJsonViewAsList(List<T> list, Class<T> targetClass) {
 
@@ -171,7 +204,12 @@ public class Json {
   }
 
   /**
-   * {@inheritDoc}
+   * returns description test jenkins
+   * 
+   * @param <T> description
+   * @param item description
+   * @param targetClass description
+   * @return description
    */
   public static <T> T filterPublicJsonView(T item, Class<T> targetClass) {
 
