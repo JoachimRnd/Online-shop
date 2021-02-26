@@ -17,6 +17,14 @@ import views.Views;
 public class Json {
   private final static ObjectMapper jsonMapper = new ObjectMapper();
 
+  /**
+   * 
+   * @param <T>
+   * @param dbFilePath
+   * @param collectionName
+   * @param targetClass
+   * @return
+   */
   public static <T> List<T> loadDataFromFile(String dbFilePath, String collectionName,
       Class<T> targetClass) {
     try {
@@ -34,6 +42,13 @@ public class Json {
     }
   }
 
+  /**
+   * 
+   * @param <T>
+   * @param list
+   * @param dbFilePath
+   * @param collectionName
+   */
   public static <T> void saveDataToFile(List<T> list, String dbFilePath, String collectionName) {
     try {
 
@@ -66,6 +81,15 @@ public class Json {
     }
   }
 
+  /**
+   * 
+   * @param <T>
+   * @param dbFilePath
+   * @param jsonViewClass
+   * @param collectionName
+   * @param targetClass
+   * @return
+   */
   public static <T> List<T> loadDataFromFileBasedOnView(String dbFilePath, Class<?> jsonViewClass,
       String collectionName, Class<T> targetClass) {
     try {
@@ -84,6 +108,14 @@ public class Json {
     }
   }
 
+  /**
+   * 
+   * @param <T>
+   * @param list
+   * @param jsonViewClass
+   * @param dbFilePath
+   * @param collectionName
+   */
   public static <T> void saveDataToFileBasedOnView(List<T> list, Class<?> jsonViewClass,
       String dbFilePath, String collectionName) {
     try {
@@ -118,6 +150,12 @@ public class Json {
     }
   }
 
+  /**
+   * 
+   * @param <T>
+   * @param item
+   * @return
+   */
   public static <T> String serializePublicJsonView(T item) {
     // serialize using JSON Views : Public View
     try {
@@ -130,6 +168,13 @@ public class Json {
 
   }
 
+  /**
+   * 
+   * @param <T>
+   * @param list
+   * @param targetClass
+   * @return
+   */
   public static <T> List<T> filterPublicJsonViewAsList(List<T> list, Class<T> targetClass) {
 
     try {
@@ -152,6 +197,13 @@ public class Json {
 
   }
 
+  /**
+   * 
+   * @param <T>
+   * @param item
+   * @param targetClass
+   * @return
+   */
   public static <T> T filterPublicJsonView(T item, Class<T> targetClass) {
 
     try {
