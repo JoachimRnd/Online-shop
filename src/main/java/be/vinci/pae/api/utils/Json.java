@@ -18,7 +18,7 @@ public class Json {
   private final static ObjectMapper jsonMapper = new ObjectMapper();
 
   /**
-   * returns description test jenkins
+   * returns description test jenkins.
    * 
    * @param <T> description
    * @param dbFilePath chemin db
@@ -44,7 +44,7 @@ public class Json {
   }
 
   /**
-   * returns description test jenkins
+   * returns description test jenkins.
    * 
    * @param <T> description
    * @param list description
@@ -84,7 +84,7 @@ public class Json {
   }
 
   /**
-   * returns description test jenkins
+   * returns description test jenkins.
    * 
    * @param <T> description
    * @param dbFilePath description
@@ -112,7 +112,7 @@ public class Json {
   }
 
   /**
-   * returns description test jenkins
+   * returns description test jenkins.
    * 
    * @param <T> description
    * @param list description
@@ -155,7 +155,7 @@ public class Json {
   }
 
   /**
-   * returns description test jenkins
+   * returns description test jenkins.
    * 
    * @param <T> description
    * @param item description
@@ -174,7 +174,7 @@ public class Json {
   }
 
   /**
-   * returns description test jenkins
+   * returns description test jenkins.
    * 
    * @param <T> description
    * @param list description
@@ -204,7 +204,7 @@ public class Json {
   }
 
   /**
-   * returns description test jenkins
+   * returns description test jenkins.
    * 
    * @param <T> description
    * @param item description
