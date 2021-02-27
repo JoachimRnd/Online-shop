@@ -58,13 +58,8 @@ public class Authentication {
           .type(MediaType.TEXT_PLAIN).build();
     }
     // Create token
-    String token;
-    try {
-      token =
-          JWT.create().withIssuer("auth0").withClaim("user", user.getID()).sign(this.jwtAlgorithm);
-    } catch (Exception e) {
-      throw new WebApplicationException("Unable to create token", e, Status.INTERNAL_SERVER_ERROR);
-    }
+    String token = createToken(user);
+
     // Build response
 
     // load the user data from a public JSON view to filter out the private info not
@@ -106,13 +101,7 @@ public class Authentication {
     this.dataService.addUser(user);
 
     // Create token
-    String token;
-    try {
-      token =
-          JWT.create().withIssuer("auth0").withClaim("user", user.getID()).sign(this.jwtAlgorithm);
-    } catch (Exception e) {
-      throw new WebApplicationException("Unable to create token", e, Status.INTERNAL_SERVER_ERROR);
-    }
+    String token = createToken(user);
     // Build response
 
     // load the user data from a public JSON view to filter out the private info not
@@ -121,6 +110,25 @@ public class Authentication {
     ObjectNode node = jsonMapper.createObjectNode().put("token", token).putPOJO("user", publicUser);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
 
+  }
+
+  /**
+   * Description.
+   *
+   * @param user description
+   * @return description
+   * @throws WebApplicationException description
+   * @TODO Javadoc
+   */
+  private String createToken(User user) {
+    String token;
+    try {
+      token =
+          JWT.create().withIssuer("auth0").withClaim("user", user.getID()).sign(this.jwtAlgorithm);
+    } catch (Exception e) {
+      throw new WebApplicationException("Unable to create token", e, Status.INTERNAL_SERVER_ERROR);
+    }
+    return token;
   }
 
 }
