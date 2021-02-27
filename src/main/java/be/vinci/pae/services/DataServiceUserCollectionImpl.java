@@ -1,11 +1,9 @@
 package be.vinci.pae.services;
 
-import java.util.List;
 import be.vinci.pae.api.utils.Json;
 import be.vinci.pae.domain.User;
-import be.vinci.pae.domain.UserFactory;
 import be.vinci.pae.utils.Config;
-import jakarta.inject.Inject;
+import java.util.List;
 
 public class DataServiceUserCollectionImpl implements DataServiceUserCollection {
 
@@ -13,9 +11,6 @@ public class DataServiceUserCollectionImpl implements DataServiceUserCollection 
   private static final String COLLECTION_NAME = "users";
 
   private List<User> users;
-
-  @Inject
-  private UserFactory factory;
 
   public DataServiceUserCollectionImpl() {
     this.users = Json.loadDataFromFile(DB_FILE_PATH, COLLECTION_NAME, User.class);

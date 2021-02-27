@@ -2,11 +2,14 @@
 # Created by https://www.toptal.com/developers/gitignore/api/java,eclipse,java-web
 # Edit at https://www.toptal.com/developers/gitignore?templates=java,eclipse,java-web
 
-### WebApp ###
-webApp/node_modules/
-
 ### DB ###
-*.json
+db.json
+
+### FrontEnd ###
+webApp/package-lock.json
+webApp/node_modules/
+webApp/.idea/
+webApp/dist/
 
 ### IntelliJ ###
 /.idea/
