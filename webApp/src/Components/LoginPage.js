@@ -11,14 +11,18 @@ const API_BASE_URL = "/api/auths/";
 let loginPage = `<h4 id="pageTitle">Login</h4>
 <form>
 <div class="form-group">
-  <label for="login">Login</label>
-  <input class="form-control" id="login" type="text" nplaceholder="Enter your login" required="" />
+  <label for="login">Pseudonyme</label>
+  <input class="form-control" id="login" type="text" placeholder="Entrez votre pseudonyme" required="" />
 </div>
 <div class="form-group">
-  <label for="password">Password</label>
-  <input class="form-control" id="password" type="password" name="password" placeholder="Enter your password" required=""  />
+  <label for="password">Mot de passe</label>
+  <input class="form-control" id="password" type="password" name="password" placeholder="Entrez votre mot de passe" required=""  />
 </div>
-<button class="btn btn-primary" id="btn" type="submit">Submit</button>
+<div class="form-check">
+  <input type="checkbox" class="form-check-input" id="rememberMe">
+  <label class="form-check-label" for="rememberMe">Se souvenir de moi</label>
+</div>
+<button class="btn btn-primary" id="btn" type="submit">Connexion</button>
 <!-- Create an alert component with bootstrap that is not displayed by default-->
 <div class="alert alert-danger mt-2 d-none" id="messageBoard"></div>
 </form>`;
@@ -39,10 +43,12 @@ const onLogin = async (e) => {
   e.preventDefault();
   let login = document.getElementById("login");
   let password = document.getElementById("password");
-
+  let rememberMe = document.getElementById("rememberMe");
+  
   let user = {
     login: login.value,
     password: password.value,
+    rememberMe: rememberMe.checked,
   };
 
   try {
