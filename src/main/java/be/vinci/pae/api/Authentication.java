@@ -1,15 +1,15 @@
 package be.vinci.pae.api;
 
-import be.vinci.pae.api.utils.Json;
-import be.vinci.pae.domain.User;
-import be.vinci.pae.domain.UserFactory;
-import be.vinci.pae.services.DataServiceUserCollection;
-import be.vinci.pae.utils.Config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import be.vinci.pae.api.utils.Json;
+import be.vinci.pae.domain.User;
+import be.vinci.pae.domain.UserFactory;
+import be.vinci.pae.services.DataServiceUserCollection;
+import be.vinci.pae.utils.Config;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -34,10 +34,10 @@ public class Authentication {
   private UserFactory userFactory;
 
   /**
-   * Description.
+   * Checking the credentials of a user, create a token, get the user object associate.
    *
-   * @param json description
-   * @return description
+   * @param json DOM event user informations
+   * @return a response from the responseBuilder
    * @TODO JavaDoc
    */
   @POST
@@ -46,16 +46,14 @@ public class Authentication {
   public Response login(JsonNode json) {
     // Get and check credentials
     if (!json.hasNonNull("login") || !json.hasNonNull("password")) {
-      return Response.status(Status.UNAUTHORIZED).entity("Login and password needed")
-          .type(MediaType.TEXT_PLAIN).build();
+      return Response.status(Status.UNAUTHORIZED).entity("Login and password needed").type(MediaType.TEXT_PLAIN).build();
     }
     String login = json.get("login").asText();
     String password = json.get("password").asText();
     // Try to login
     User user = this.dataService.getUser(login);
     if (user == null || !user.checkPassword(password)) {
-      return Response.status(Status.UNAUTHORIZED).entity("Login or password incorrect")
-          .type(MediaType.TEXT_PLAIN).build();
+      return Response.status(Status.UNAUTHORIZED).entity("Login or password incorrect").type(MediaType.TEXT_PLAIN).build();
     }
     // Create token
     String token = createToken(user);
@@ -71,10 +69,10 @@ public class Authentication {
   }
 
   /**
-   * Description.
+   * Checking the credentials of a user, create a token, create a user object.
    *
-   * @param json description
-   * @return description
+   * @param json DOM event user informations
+   * @return a response from the responseBuilder
    * @TODO JavaDoc
    */
   @POST
@@ -83,14 +81,12 @@ public class Authentication {
   public Response register(JsonNode json) {
     // Get and check credentials
     if (!json.hasNonNull("login") || !json.hasNonNull("password")) {
-      return Response.status(Status.UNAUTHORIZED).entity("Login and password needed")
-          .type(MediaType.TEXT_PLAIN).build();
+      return Response.status(Status.UNAUTHORIZED).entity("Login and password needed").type(MediaType.TEXT_PLAIN).build();
     }
     String login = json.get("login").asText();
     // Check if user exists
     if (this.dataService.getUser(login) != null) {
-      return Response.status(Status.CONFLICT).entity("This login is already in use")
-          .type(MediaType.TEXT_PLAIN).build();
+      return Response.status(Status.CONFLICT).entity("This login is already in use").type(MediaType.TEXT_PLAIN).build();
     }
     // create user
     User user = this.userFactory.getUser();
@@ -113,7 +109,7 @@ public class Authentication {
   }
 
   /**
-   * Description.
+   * create a json web token with the secret in the properties file.
    *
    * @param user description
    * @return description
@@ -123,8 +119,7 @@ public class Authentication {
   private String createToken(User user) {
     String token;
     try {
-      token =
-          JWT.create().withIssuer("auth0").withClaim("user", user.getID()).sign(this.jwtAlgorithm);
+      token = JWT.create().withIssuer("auth0").withClaim("user", user.getID()).sign(this.jwtAlgorithm);
     } catch (Exception e) {
       throw new WebApplicationException("Unable to create token", e, Status.INTERNAL_SERVER_ERROR);
     }

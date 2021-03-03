@@ -1,5 +1,7 @@
 package be.vinci.pae.api;
 
+import java.util.List;
+import org.glassfish.jersey.server.ContainerRequest;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.utils.Json;
 import be.vinci.pae.domain.User;
@@ -13,8 +15,6 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
-import java.util.List;
-import org.glassfish.jersey.server.ContainerRequest;
 
 @Singleton
 @Path("/users")
@@ -27,9 +27,9 @@ public class UserResource {
   private UserFactory userFactory;
 
   /**
-   * Description.
+   * initialize the user.
    *
-   * @return description
+   * @return a user
    * @TODO JavaDoc
    */
   @POST
@@ -47,10 +47,10 @@ public class UserResource {
   }
 
   /**
-   * Description.
+   * get the user related to the request.
    *
-   * @param request description
-   * @return description
+   * @param request incomming client request
+   * @return a user
    * @TODO JavaDoc
    */
   @GET
@@ -63,17 +63,16 @@ public class UserResource {
   }
 
   /**
-   * Description.
+   * get a list of all the users.
    *
-   * @return description
+   * @return a list of users
    * @TODO JavaDoc
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   @Authorize
   public List<User> getAllUsers() {
-    System.out.println("List after serialization : "
-        + Json.filterPublicJsonViewAsList(this.dataService.getUsers(), User.class).toString());
+    System.out.println("List after serialization : " + Json.filterPublicJsonViewAsList(this.dataService.getUsers(), User.class).toString());
     return Json.filterPublicJsonViewAsList(this.dataService.getUsers(), User.class);
   }
 
