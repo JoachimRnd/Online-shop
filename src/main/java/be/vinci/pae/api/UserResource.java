@@ -72,7 +72,8 @@ public class UserResource {
   @Produces(MediaType.APPLICATION_JSON)
   @Authorize
   public List<User> getAllUsers() {
-    System.out.println("List after serialization : " + Json.filterPublicJsonViewAsList(this.dataService.getUsers(), User.class).toString());
+    System.out.println("List after serialization : "
+        + Json.filterPublicJsonViewAsList(this.dataService.getUsers(), User.class).toString());
     return Json.filterPublicJsonViewAsList(this.dataService.getUsers(), User.class);
   }
 

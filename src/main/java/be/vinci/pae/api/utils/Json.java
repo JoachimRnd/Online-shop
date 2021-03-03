@@ -28,7 +28,8 @@ public class Json {
    * @return a list of objects (with generic type)
    * @TODO JavaDoc
    */
-  public static <T> List<T> loadDataFromFile(String dbFilePath, String collectionName, Class<T> targetClass) {
+  public static <T> List<T> loadDataFromFile(String dbFilePath, String collectionName,
+      Class<T> targetClass) {
     try {
       JsonNode node = jsonMapper.readTree(Paths.get(dbFilePath).toFile());
       JsonNode collection = node.get(collectionName);
@@ -97,13 +98,15 @@ public class Json {
    * @return a list of objects (with generic type)
    * @TODO JavaDoc
    */
-  public static <T> List<T> loadDataFromFileBasedOnView(String dbFilePath, Class<?> jsonViewClass, String collectionName, Class<T> targetClass) {
+  public static <T> List<T> loadDataFromFileBasedOnView(String dbFilePath, Class<?> jsonViewClass,
+      String collectionName, Class<T> targetClass) {
     try {
       JsonNode node = jsonMapper.readTree(Paths.get(dbFilePath).toFile());
       // Get the type at execution because new TypeReference<List<T>>() is not allowed
       JavaType type = jsonMapper.getTypeFactory().constructCollectionType(List.class, targetClass);
       // deserialize using JSON Views : Internal View
-      return jsonMapper.readerWithView(jsonViewClass).forType(type).readValue(node.get(collectionName));
+      return jsonMapper.readerWithView(jsonViewClass).forType(type)
+          .readValue(node.get(collectionName));
 
     } catch (FileNotFoundException e) {
       return new ArrayList<T>();
@@ -123,7 +126,8 @@ public class Json {
    * @param collectionName name of the collection
    * @TODO JavaDoc
    */
-  public static <T> void saveDataToFileBasedOnView(List<T> list, Class<?> jsonViewClass, String dbFilePath, String collectionName) {
+  public static <T> void saveDataToFileBasedOnView(List<T> list, Class<?> jsonViewClass,
+      String dbFilePath, String collectionName) {
     try {
       // get all collections
       Path pathToDb = Paths.get(dbFilePath);
@@ -142,7 +146,8 @@ public class Json {
       }
 
       // create a new JsonNode and add it to allCollections
-      String currentCollectionAsString = jsonMapper.writerWithView(jsonViewClass).writeValueAsString(list);
+      String currentCollectionAsString =
+          jsonMapper.writerWithView(jsonViewClass).writeValueAsString(list);
       // String currentCollectionAsString = jsonMapper.writeValueAsString(list);
       JsonNode updatedCollection = jsonMapper.readTree(currentCollectionAsString);
       ((ObjectNode) allCollections).putPOJO(collectionName, updatedCollection);
@@ -190,10 +195,12 @@ public class Json {
       JavaType type = jsonMapper.getTypeFactory().constructCollectionType(List.class, targetClass);
       // serialize using JSON Views : public view (all fields not required in the
       // views are set to null)
-      String publicItemListAsString = jsonMapper.writerWithView(Views.Public.class).writeValueAsString(list);
+      String publicItemListAsString =
+          jsonMapper.writerWithView(Views.Public.class).writeValueAsString(list);
       System.out.println("serializing public Json view: " + publicItemListAsString);
       // deserialize using JSON Views : Public View
-      return jsonMapper.readerWithView(Views.Public.class).forType(type).readValue(publicItemListAsString);
+      return jsonMapper.readerWithView(Views.Public.class).forType(type)
+          .readValue(publicItemListAsString);
 
     } catch (JsonProcessingException e) {
 
@@ -216,9 +223,11 @@ public class Json {
     try {
       // serialize using JSON Views : public view (all fields not required in the
       // views are set to null)
-      String publicItemAsString = jsonMapper.writerWithView(Views.Public.class).writeValueAsString(item);
+      String publicItemAsString =
+          jsonMapper.writerWithView(Views.Public.class).writeValueAsString(item);
       // deserialize using JSON Views : Public View
-      return jsonMapper.readerWithView(Views.Public.class).forType(targetClass).readValue(publicItemAsString);
+      return jsonMapper.readerWithView(Views.Public.class).forType(targetClass)
+          .readValue(publicItemAsString);
 
     } catch (JsonProcessingException e) {
 

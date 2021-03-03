@@ -46,14 +46,16 @@ public class Authentication {
   public Response login(JsonNode json) {
     // Get and check credentials
     if (!json.hasNonNull("login") || !json.hasNonNull("password")) {
-      return Response.status(Status.UNAUTHORIZED).entity("Login and password needed").type(MediaType.TEXT_PLAIN).build();
+      return Response.status(Status.UNAUTHORIZED).entity("Login and password needed")
+          .type(MediaType.TEXT_PLAIN).build();
     }
     String login = json.get("login").asText();
     String password = json.get("password").asText();
     // Try to login
     User user = this.dataService.getUser(login);
     if (user == null || !user.checkPassword(password)) {
-      return Response.status(Status.UNAUTHORIZED).entity("Login or password incorrect").type(MediaType.TEXT_PLAIN).build();
+      return Response.status(Status.UNAUTHORIZED).entity("Login or password incorrect")
+          .type(MediaType.TEXT_PLAIN).build();
     }
     // Create token
     String token = createToken(user);
@@ -81,12 +83,14 @@ public class Authentication {
   public Response register(JsonNode json) {
     // Get and check credentials
     if (!json.hasNonNull("login") || !json.hasNonNull("password")) {
-      return Response.status(Status.UNAUTHORIZED).entity("Login and password needed").type(MediaType.TEXT_PLAIN).build();
+      return Response.status(Status.UNAUTHORIZED).entity("Login and password needed")
+          .type(MediaType.TEXT_PLAIN).build();
     }
     String login = json.get("login").asText();
     // Check if user exists
     if (this.dataService.getUser(login) != null) {
-      return Response.status(Status.CONFLICT).entity("This login is already in use").type(MediaType.TEXT_PLAIN).build();
+      return Response.status(Status.CONFLICT).entity("This login is already in use")
+          .type(MediaType.TEXT_PLAIN).build();
     }
     // create user
     User user = this.userFactory.getUser();
@@ -119,7 +123,8 @@ public class Authentication {
   private String createToken(User user) {
     String token;
     try {
-      token = JWT.create().withIssuer("auth0").withClaim("user", user.getID()).sign(this.jwtAlgorithm);
+      token =
+          JWT.create().withIssuer("auth0").withClaim("user", user.getID()).sign(this.jwtAlgorithm);
     } catch (Exception e) {
       throw new WebApplicationException("Unable to create token", e, Status.INTERNAL_SERVER_ERROR);
     }
