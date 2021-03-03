@@ -38,7 +38,7 @@ public class UserResource {
     User user = this.userFactory.getUser();
     user.setId(1);
     user.setPseudo("james");
-    user.setMot_de_passe(user.hashPassword("password"));
+    user.setMotDePasse(user.hashPassword("password"));
     this.daoUser.addUser(user);
     // load the user data from a public JSON view to filter out the private info not
     // to be returned by the API (such as password)

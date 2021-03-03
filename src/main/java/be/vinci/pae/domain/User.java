@@ -20,15 +20,15 @@ public interface User {
 
   public String getEmail();
 
-  public int getType_utilisateur();
+  public int getTypeUtilisateur();
 
   public Adresse getAdresse();
 
-  public LocalDateTime getDate_inscription();
+  public LocalDateTime getDateInscription();
 
-  public boolean isInscription_valide();
+  public boolean isInscriptionValide();
 
-  public String getMot_de_passe();
+  public String getMotDePasse();
 
   public void setId(int id);
 
@@ -40,15 +40,15 @@ public interface User {
 
   public void setEmail(String email);
 
-  public void setType_utilisateur(int type_utilisateur);
+  public void setTypeUtilisateur(int type_utilisateur);
 
   public void setAdresse(Adresse adresse);
 
-  public void setDate_inscription(LocalDateTime date_inscription);
+  public void setDateInscription(LocalDateTime date_inscription);
 
-  public void setInscription_valide(boolean inscription_valide);
+  public void setInscriptionValide(boolean inscription_valide);
 
-  public void setMot_de_passe(String mot_de_passe);
+  public void setMotDePasse(String mot_de_passe);
 
   @Override
   public String toString();

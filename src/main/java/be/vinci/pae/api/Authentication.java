@@ -97,7 +97,7 @@ public class Authentication {
     user.setId(1);
     user.setPseudo(login);
     String password = json.get("password").asText();
-    user.setMot_de_passe(user.hashPassword(password));
+    user.setMotDePasse(user.hashPassword(password));
     this.daoUser.addUser(user);
 
     // Create token

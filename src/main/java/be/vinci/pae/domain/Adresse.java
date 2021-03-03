@@ -14,9 +14,9 @@ public interface Adresse {
 
   void setBoite(String boite);
 
-  String getCode_postal();
+  String getCodePostal();
 
-  void setCode_postal(String code_postal);
+  void setCodePostal(String codePostal);
 
   String getCommune();
 

@@ -21,22 +21,22 @@ class UserImpl implements User {
   @JsonView(Views.Public.class)
   private String email;
   @JsonView(Views.Public.class)
-  private int type_utilisateur;
+  private int typeUtilisateur;
 
   //@TODO Bug avec l'adresse (Objet dans objet JSON Vue publique)
   @JsonView(Views.Todo.class)
   private Adresse adresse;
 
   @JsonView(Views.Internal.class)
-  private LocalDateTime date_inscription;
+  private LocalDateTime dateInscription;
   @JsonView(Views.Internal.class)
-  private boolean inscription_valide;
+  private boolean inscriptionValide;
   @JsonView(Views.Internal.class)
-  private String mot_de_passe;
+  private String motDePasse;
 
   @Override
   public boolean checkPassword(String password) {
-    return BCrypt.checkpw(password, this.mot_de_passe);
+    return BCrypt.checkpw(password, this.motDePasse);
   }
 
   @Override
@@ -65,24 +65,24 @@ class UserImpl implements User {
     return email;
   }
 
-  public int getType_utilisateur() {
-    return type_utilisateur;
+  public int getTypeUtilisateur() {
+    return typeUtilisateur;
   }
 
   public Adresse getAdresse() {
     return adresse;
   }
 
-  public LocalDateTime getDate_inscription() {
-    return date_inscription;
+  public LocalDateTime getDateInscription() {
+    return dateInscription;
   }
 
-  public boolean isInscription_valide() {
-    return inscription_valide;
+  public boolean isInscriptionValide() {
+    return inscriptionValide;
   }
 
-  public String getMot_de_passe() {
-    return mot_de_passe;
+  public String getMotDePasse() {
+    return motDePasse;
   }
 
   public void setId(int id) {
@@ -106,39 +106,32 @@ class UserImpl implements User {
     this.email = email;
   }
 
-  public void setType_utilisateur(int type_utilisateur) {
-    this.type_utilisateur = type_utilisateur;
+  public void setTypeUtilisateur(int type_utilisateur) {
+    this.typeUtilisateur = type_utilisateur;
   }
 
   public void setAdresse(Adresse adresse) {
     this.adresse = adresse;
   }
 
-  public void setDate_inscription(LocalDateTime date_inscription) {
-    this.date_inscription = date_inscription;
+  public void setDateInscription(LocalDateTime date_inscription) {
+    this.dateInscription = date_inscription;
   }
 
-  public void setInscription_valide(boolean inscription_valide) {
-    this.inscription_valide = inscription_valide;
+  public void setInscriptionValide(boolean inscription_valide) {
+    this.inscriptionValide = inscription_valide;
   }
 
-  public void setMot_de_passe(String mot_de_passe) {
-    this.mot_de_passe = mot_de_passe;
+  public void setMotDePasse(String mot_de_passe) {
+    this.motDePasse = mot_de_passe;
   }
 
   @Override
   public String toString() {
-    return "UserImpl{" +
-        "id=" + id +
-        ", pseudo='" + pseudo + '\'' +
-        ", nom='" + nom + '\'' +
-        ", prenom='" + prenom + '\'' +
-        ", email='" + email + '\'' +
-        ", type_utilisateur=" + type_utilisateur +
-        ", adresse=" + adresse +
-        ", date_inscription=" + date_inscription +
-        ", inscription_valide=" + inscription_valide +
-        ", mot_de_passe='" + mot_de_passe + '\'' +
-        '}';
+    return "UserImpl{" + "id=" + id + ", pseudo='" + pseudo + '\'' + ", nom='" + nom + '\''
+        + ", prenom='" + prenom + '\'' + ", email='" + email + '\'' + ", type_utilisateur="
+        + typeUtilisateur + ", adresse=" + adresse + ", date_inscription=" + dateInscription
+        + ", inscription_valide=" + inscriptionValide + ", mot_de_passe='" + motDePasse + '\''
+        + '}';
   }
 }

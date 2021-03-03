@@ -5,7 +5,7 @@ public class AdresseImpl implements Adresse {
   private String rue;
   private String numero;
   private String boite;
-  private String code_postal;
+  private String codePostal;
   private String commune;
   private String pays;
 
@@ -40,13 +40,13 @@ public class AdresseImpl implements Adresse {
   }
 
   @Override
-  public String getCode_postal() {
-    return code_postal;
+  public String getCodePostal() {
+    return codePostal;
   }
 
   @Override
-  public void setCode_postal(String code_postal) {
-    this.code_postal = code_postal;
+  public void setCodePostal(String codePostal) {
+    this.codePostal = codePostal;
   }
 
   @Override
@@ -71,13 +71,8 @@ public class AdresseImpl implements Adresse {
 
   @Override
   public String toString() {
-    return "Adresse{" +
-        "rue='" + rue + '\'' +
-        ", numero='" + numero + '\'' +
-        ", boite='" + boite + '\'' +
-        ", code_postal='" + code_postal + '\'' +
-        ", commune='" + commune + '\'' +
-        ", pays='" + pays + '\'' +
-        '}';
+    return "Adresse{" + "rue='" + rue + '\'' + ", numero='" + numero + '\'' + ", boite='" + boite
+        + '\'' + ", code_postal='" + codePostal + '\'' + ", commune='" + commune + '\''
+        + ", pays='" + pays + '\'' + '}';
   }
 }

@@ -16,7 +16,8 @@ public class DAOUserImpl implements DAOUser {
 
   private static final String DB_STRING_CONNECTION = Config.getProperty("DatabaseStringConnection");
   private Connection conn;
-  private PreparedStatement selectUserByPseudo, selectUserById;
+  private PreparedStatement selectUserByPseudo;
+  private PreparedStatement selectUserById;
 
   @Inject
   private UserFactory userFactory;
@@ -24,6 +25,11 @@ public class DAOUserImpl implements DAOUser {
   @Inject
   private AdresseFactory adresseFactory;
 
+  /**
+   * Description.
+   *
+   * @TODO Javadoc
+   */
   public DAOUserImpl() {
     try {
       conn = DriverManager.getConnection(DB_STRING_CONNECTION);
@@ -32,9 +38,17 @@ public class DAOUserImpl implements DAOUser {
     }
     try {
       selectUserByPseudo = conn.prepareStatement(
-          "SELECT u.id_utilisateur, u.pseudo, u.mot_de_passe, u.nom, u.prenom, a.rue, a.numero, a.boite, a.code_postal, a.commune, a.pays, u.email, u.date_inscription, u.inscription_valide, u.type_utilisateur FROM projet.adresses a, projet.utilisateurs u WHERE u.pseudo = ? AND u.adresse = a.id_adresse");
+          "SELECT u.id_utilisateur, u.pseudo, u.mot_de_passe, u.nom, u.prenom, a.rue, a.numero,"
+              + " a.boite, a.code_postal, a.commune, a.pays, u.email, u.date_inscription,"
+              + " u.inscription_valide, u.type_utilisateur "
+              + "FROM projet.adresses a, projet.utilisateurs u "
+              + "WHERE u.pseudo = ? AND u.adresse = a.id_adresse");
       selectUserById = conn.prepareStatement(
-          "SELECT u.id_utilisateur, u.pseudo, u.mot_de_passe, u.nom, u.prenom, a.rue, a.numero, a.boite, a.code_postal, a.commune, a.pays, u.email, u.date_inscription, u.inscription_valide, u.type_utilisateur FROM projet.adresses a, projet.utilisateurs u WHERE u.id_utilisateur = ? AND u.adresse = a.id_adresse");
+          "SELECT u.id_utilisateur, u.pseudo, u.mot_de_passe, u.nom, u.prenom, a.rue, a.numero,"
+              + " a.boite, a.code_postal, a.commune, a.pays, u.email, u.date_inscription,"
+              + " u.inscription_valide, u.type_utilisateur "
+              + "FROM projet.adresses a, projet.utilisateurs u "
+              + "WHERE u.id_utilisateur = ? AND u.adresse = a.id_adresse");
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -51,21 +65,21 @@ public class DAOUserImpl implements DAOUser {
           user = this.userFactory.getUser();
           user.setId(rs.getInt("id_utilisateur"));
           user.setPseudo(rs.getString("pseudo"));
-          user.setMot_de_passe(rs.getString("mot_de_passe"));
+          user.setMotDePasse(rs.getString("mot_de_passe"));
           user.setNom(rs.getString("nom"));
           user.setPrenom(rs.getString("prenom"));
           Adresse adresse = this.adresseFactory.getAdresse();
           adresse.setRue(rs.getString("rue"));
           adresse.setNumero(rs.getString("numero"));
           adresse.setBoite(rs.getString("boite"));
-          adresse.setCode_postal(rs.getString("code_postal"));
+          adresse.setCodePostal(rs.getString("code_postal"));
           adresse.setCommune(rs.getString("commune"));
           adresse.setPays(rs.getString("pays"));
           user.setAdresse(adresse);
           user.setEmail(rs.getString("email"));
-          user.setDate_inscription(rs.getTimestamp("date_inscription").toLocalDateTime());
-          user.setInscription_valide(rs.getBoolean("inscription_valide"));
-          user.setType_utilisateur(rs.getInt("type_utilisateur"));
+          user.setDateInscription(rs.getTimestamp("date_inscription").toLocalDateTime());
+          user.setInscriptionValide(rs.getBoolean("inscription_valide"));
+          user.setTypeUtilisateur(rs.getInt("type_utilisateur"));
         }
         return user;
       }
@@ -85,21 +99,21 @@ public class DAOUserImpl implements DAOUser {
           user = this.userFactory.getUser();
           user.setId(rs.getInt("id_utilisateur"));
           user.setPseudo(rs.getString("pseudo"));
-          user.setMot_de_passe(rs.getString("mot_de_passe"));
+          user.setMotDePasse(rs.getString("mot_de_passe"));
           user.setNom(rs.getString("nom"));
           user.setPrenom(rs.getString("prenom"));
           Adresse adresse = this.adresseFactory.getAdresse();
           adresse.setRue(rs.getString("rue"));
           adresse.setNumero(rs.getString("numero"));
           adresse.setBoite(rs.getString("boite"));
-          adresse.setCode_postal(rs.getString("code_postal"));
+          adresse.setCodePostal(rs.getString("code_postal"));
           adresse.setCommune(rs.getString("commune"));
           adresse.setPays(rs.getString("pays"));
           user.setAdresse(adresse);
           user.setEmail(rs.getString("email"));
-          user.setDate_inscription(rs.getTimestamp("date_inscription").toLocalDateTime());
-          user.setInscription_valide(rs.getBoolean("inscription_valide"));
-          user.setType_utilisateur(rs.getInt("type_utilisateur"));
+          user.setDateInscription(rs.getTimestamp("date_inscription").toLocalDateTime());
+          user.setInscriptionValide(rs.getBoolean("inscription_valide"));
+          user.setTypeUtilisateur(rs.getInt("type_utilisateur"));
         }
         return user;
       }
