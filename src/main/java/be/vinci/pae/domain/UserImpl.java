@@ -106,24 +106,24 @@ class UserImpl implements User {
     this.email = email;
   }
 
-  public void setTypeUtilisateur(int type_utilisateur) {
-    this.typeUtilisateur = type_utilisateur;
+  public void setTypeUtilisateur(int typeUtilisateur) {
+    this.typeUtilisateur = typeUtilisateur;
   }
 
   public void setAdresse(Adresse adresse) {
     this.adresse = adresse;
   }
 
-  public void setDateInscription(LocalDateTime date_inscription) {
-    this.dateInscription = date_inscription;
+  public void setDateInscription(LocalDateTime dateInscription) {
+    this.dateInscription = dateInscription;
   }
 
-  public void setInscriptionValide(boolean inscription_valide) {
-    this.inscriptionValide = inscription_valide;
+  public void setInscriptionValide(boolean inscriptionValide) {
+    this.inscriptionValide = inscriptionValide;
   }
 
-  public void setMotDePasse(String mot_de_passe) {
-    this.motDePasse = mot_de_passe;
+  public void setMotDePasse(String motDePasse) {
+    this.motDePasse = motDePasse;
   }
 
   @Override

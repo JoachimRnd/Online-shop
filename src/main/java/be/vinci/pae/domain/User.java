@@ -6,51 +6,51 @@ import java.time.LocalDateTime;
 @JsonDeserialize(as = UserImpl.class)
 public interface User {
 
-  public boolean checkPassword(String password);
+  boolean checkPassword(String password);
 
-  public String hashPassword(String password);
+  String hashPassword(String password);
 
-  public int getId();
+  int getId();
 
-  public String getPseudo();
+  String getPseudo();
 
-  public String getNom();
+  String getNom();
 
-  public String getPrenom();
+  String getPrenom();
 
-  public String getEmail();
+  String getEmail();
 
-  public int getTypeUtilisateur();
+  int getTypeUtilisateur();
 
-  public Adresse getAdresse();
+  Adresse getAdresse();
 
-  public LocalDateTime getDateInscription();
+  LocalDateTime getDateInscription();
 
-  public boolean isInscriptionValide();
+  boolean isInscriptionValide();
 
-  public String getMotDePasse();
+  String getMotDePasse();
 
-  public void setId(int id);
+  void setId(int id);
 
-  public void setPseudo(String pseudo);
+  void setPseudo(String pseudo);
 
-  public void setNom(String nom);
+  void setNom(String nom);
 
-  public void setPrenom(String prenom);
+  void setPrenom(String prenom);
 
-  public void setEmail(String email);
+  void setEmail(String email);
 
-  public void setTypeUtilisateur(int type_utilisateur);
+  void setTypeUtilisateur(int typeUtilisateur);
 
-  public void setAdresse(Adresse adresse);
+  void setAdresse(Adresse adresse);
 
-  public void setDateInscription(LocalDateTime date_inscription);
+  void setDateInscription(LocalDateTime dateInscription);
 
-  public void setInscriptionValide(boolean inscription_valide);
+  void setInscriptionValide(boolean inscriptionValide);
 
-  public void setMotDePasse(String mot_de_passe);
+  void setMotDePasse(String motDePasse);
 
   @Override
-  public String toString();
+  String toString();
 
 }
