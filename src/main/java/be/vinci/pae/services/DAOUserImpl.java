@@ -60,27 +60,7 @@ public class DAOUserImpl implements DAOUser {
     try {
       selectUserByPseudo.setString(1, login);
       try (ResultSet rs = selectUserByPseudo.executeQuery()) {
-        User user = null;
-        while (rs.next()) {
-          user = this.userFactory.getUser();
-          user.setId(rs.getInt("id_utilisateur"));
-          user.setPseudo(rs.getString("pseudo"));
-          user.setMotDePasse(rs.getString("mot_de_passe"));
-          user.setNom(rs.getString("nom"));
-          user.setPrenom(rs.getString("prenom"));
-          Adresse adresse = this.adresseFactory.getAdresse();
-          adresse.setRue(rs.getString("rue"));
-          adresse.setNumero(rs.getString("numero"));
-          adresse.setBoite(rs.getString("boite"));
-          adresse.setCodePostal(rs.getString("code_postal"));
-          adresse.setCommune(rs.getString("commune"));
-          adresse.setPays(rs.getString("pays"));
-          user.setAdresse(adresse);
-          user.setEmail(rs.getString("email"));
-          user.setDateInscription(rs.getTimestamp("date_inscription").toLocalDateTime());
-          user.setInscriptionValide(rs.getBoolean("inscription_valide"));
-          user.setTypeUtilisateur(rs.getInt("type_utilisateur"));
-        }
+        User user = createUser(rs);
         return user;
       }
     } catch (SQLException e) {
@@ -93,34 +73,39 @@ public class DAOUserImpl implements DAOUser {
   public User getUser(int id) {
     try {
       selectUserById.setInt(1, id);
-      try (ResultSet rs = selectUserByPseudo.executeQuery()) {
-        User user = null;
-        while (rs.next()) {
-          user = this.userFactory.getUser();
-          user.setId(rs.getInt("id_utilisateur"));
-          user.setPseudo(rs.getString("pseudo"));
-          user.setMotDePasse(rs.getString("mot_de_passe"));
-          user.setNom(rs.getString("nom"));
-          user.setPrenom(rs.getString("prenom"));
-          Adresse adresse = this.adresseFactory.getAdresse();
-          adresse.setRue(rs.getString("rue"));
-          adresse.setNumero(rs.getString("numero"));
-          adresse.setBoite(rs.getString("boite"));
-          adresse.setCodePostal(rs.getString("code_postal"));
-          adresse.setCommune(rs.getString("commune"));
-          adresse.setPays(rs.getString("pays"));
-          user.setAdresse(adresse);
-          user.setEmail(rs.getString("email"));
-          user.setDateInscription(rs.getTimestamp("date_inscription").toLocalDateTime());
-          user.setInscriptionValide(rs.getBoolean("inscription_valide"));
-          user.setTypeUtilisateur(rs.getInt("type_utilisateur"));
-        }
+      try (ResultSet rs = selectUserById.executeQuery()) {
+        User user = createUser(rs);
         return user;
       }
     } catch (SQLException e) {
       e.printStackTrace();
     }
     return null;
+  }
+
+  private User createUser(ResultSet rs) throws SQLException {
+    User user = null;
+    while (rs.next()) {
+      user = this.userFactory.getUser();
+      user.setId(rs.getInt("id_utilisateur"));
+      user.setPseudo(rs.getString("pseudo"));
+      user.setMotDePasse(rs.getString("mot_de_passe"));
+      user.setNom(rs.getString("nom"));
+      user.setPrenom(rs.getString("prenom"));
+      Adresse adresse = this.adresseFactory.getAdresse();
+      adresse.setRue(rs.getString("rue"));
+      adresse.setNumero(rs.getString("numero"));
+      adresse.setBoite(rs.getString("boite"));
+      adresse.setCodePostal(rs.getString("code_postal"));
+      adresse.setCommune(rs.getString("commune"));
+      adresse.setPays(rs.getString("pays"));
+      user.setAdresse(adresse);
+      user.setEmail(rs.getString("email"));
+      user.setDateInscription(rs.getTimestamp("date_inscription").toLocalDateTime());
+      user.setInscriptionValide(rs.getBoolean("inscription_valide"));
+      user.setTypeUtilisateur(rs.getInt("type_utilisateur"));
+    }
+    return user;
   }
 
   @Override
