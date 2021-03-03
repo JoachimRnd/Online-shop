@@ -24,6 +24,12 @@ CREATE TABLE projet.utilisateurs (
 	type_utilisateur INTEGER NOT NULL
 );
 
+INSERT INTO projet.adresses VALUES (DEFAULT, 'rue', 'numero', 'boite', 'code_postal', 'commune', 'pays');
+
+INSERT INTO projet.utilisateurs VALUES (DEFAULT, 'test', '$2a$10$qSBZrtuxTN3tM///i5rM8Opd3ioOk2vG.olTPH/UZqP8rjCtg19Zm', 'nom', 'prenom', 1, 'email', NOW(), 'true', '0');
+
+SELECT * FROM projet.adresses;
+
 /*
 CREATE TABLE projet.demandes_de_visite (
 	id_demande_de_visite SERIAL PRIMARY KEY,

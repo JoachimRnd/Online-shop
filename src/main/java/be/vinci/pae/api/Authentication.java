@@ -1,15 +1,15 @@
 package be.vinci.pae.api;
 
+import be.vinci.pae.api.utils.Json;
+import be.vinci.pae.domain.User;
+import be.vinci.pae.domain.UserFactory;
+import be.vinci.pae.services.DAOUser;
+import be.vinci.pae.utils.Config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import be.vinci.pae.api.utils.Json;
-import be.vinci.pae.domain.User;
-import be.vinci.pae.domain.UserFactory;
-import be.vinci.pae.services.DataServiceUserCollection;
-import be.vinci.pae.utils.Config;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -28,7 +28,7 @@ public class Authentication {
   private final ObjectMapper jsonMapper = new ObjectMapper();
 
   @Inject
-  private DataServiceUserCollection dataService;
+  private DAOUser daoUser;
 
   @Inject
   private UserFactory userFactory;
@@ -52,7 +52,7 @@ public class Authentication {
     String login = json.get("login").asText();
     String password = json.get("password").asText();
     // Try to login
-    User user = this.dataService.getUser(login);
+    User user = this.daoUser.getUser(login);
     if (user == null || !user.checkPassword(password)) {
       return Response.status(Status.UNAUTHORIZED).entity("Login or password incorrect")
           .type(MediaType.TEXT_PLAIN).build();
@@ -88,17 +88,17 @@ public class Authentication {
     }
     String login = json.get("login").asText();
     // Check if user exists
-    if (this.dataService.getUser(login) != null) {
+    if (this.daoUser.getUser(login) != null) {
       return Response.status(Status.CONFLICT).entity("This login is already in use")
           .type(MediaType.TEXT_PLAIN).build();
     }
     // create user
     User user = this.userFactory.getUser();
-    user.setID(1);
-    user.setLogin(login);
+    user.setId(1);
+    user.setPseudo(login);
     String password = json.get("password").asText();
-    user.setPassword(user.hashPassword(password));
-    this.dataService.addUser(user);
+    user.setMot_de_passe(user.hashPassword(password));
+    this.daoUser.addUser(user);
 
     // Create token
     String token = createToken(user);
@@ -124,7 +124,7 @@ public class Authentication {
     String token;
     try {
       token =
-          JWT.create().withIssuer("auth0").withClaim("user", user.getID()).sign(this.jwtAlgorithm);
+          JWT.create().withIssuer("auth0").withClaim("user", user.getId()).sign(this.jwtAlgorithm);
     } catch (Exception e) {
       throw new WebApplicationException("Unable to create token", e, Status.INTERNAL_SERVER_ERROR);
     }
