@@ -1,13 +1,13 @@
 package be.vinci.pae.main;
 
-import be.vinci.pae.utils.ApplicationBinder;
-import be.vinci.pae.utils.Config;
 import java.io.IOException;
 import java.net.URI;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
+import be.vinci.pae.utils.ApplicationBinder;
+import be.vinci.pae.utils.Config;
 
 /**
  * Main class.
@@ -22,7 +22,6 @@ public class Main {
   public static HttpServer startServer() {
     // Create a resource config that scans for JAX-RS resources and providers
     final ResourceConfig rc = new ResourceConfig().packages("be.vinci.pae.api")
-        // .packages("org.glassfish.jersey.examples.jackson")
         .register(JacksonFeature.class).register(ApplicationBinder.class)
         .property("jersey.config.server.wadl.disableWadl", true);
 
@@ -31,11 +30,11 @@ public class Main {
   }
 
   /**
-   * Main method.
-   *
-   * @param args description
-   * @throws IOException description
-   * @TODO JavaDoc
+   * Main method : load properties files, start the server and wait for the user to press enter key stop the server.
+   * 
+   * @param args chaine d'arguments
+   * @throws IOException throw input output exceptions
+   * @TODO javadoc
    */
   public static void main(String[] args) throws IOException {
     // Load properties file

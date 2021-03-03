@@ -1,9 +1,9 @@
 package be.vinci.pae.services;
 
+import java.util.List;
 import be.vinci.pae.api.utils.Json;
 import be.vinci.pae.domain.User;
 import be.vinci.pae.utils.Config;
-import java.util.List;
 
 public class DataServiceUserCollectionImpl implements DataServiceUserCollection {
 

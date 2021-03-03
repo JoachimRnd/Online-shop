@@ -1,10 +1,5 @@
 package be.vinci.pae.api.utils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,6 +7,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import views.Views;
 
 public class Json {
@@ -19,13 +19,13 @@ public class Json {
   private static final ObjectMapper jsonMapper = new ObjectMapper();
 
   /**
-   * returns description test jenkins.
+   * load data from file in parameters.
    *
-   * @param <T>            description
-   * @param dbFilePath     chemin db
-   * @param collectionName description
-   * @param targetClass    description
-   * @return description
+   * @param <T> generic return type
+   * @param dbFilePath path of the database file
+   * @param collectionName name of the collection
+   * @param targetClass name of the targeted class
+   * @return a list of objects (with generic type)
    * @TODO JavaDoc
    */
   public static <T> List<T> loadDataFromFile(String dbFilePath, String collectionName,
@@ -47,12 +47,12 @@ public class Json {
   }
 
   /**
-   * returns description test jenkins.
+   * save data into the file int the parameters list.
    *
-   * @param <T>            description
-   * @param list           description
-   * @param dbFilePath     description
-   * @param collectionName description
+   * @param <T> generic return type
+   * @param list list of generic objects
+   * @param dbFilePath path form database file
+   * @param collectionName name of the collection (type of collection)
    * @TODO JavaDoc
    */
   public static <T> void saveDataToFile(List<T> list, String dbFilePath, String collectionName) {
@@ -88,14 +88,14 @@ public class Json {
   }
 
   /**
-   * returns description test jenkins.
+   * load the data from files with a json filter.
    *
-   * @param <T>            description
-   * @param dbFilePath     description
-   * @param jsonViewClass  description
-   * @param collectionName description
-   * @param targetClass    description
-   * @return description
+   * @param <T> generic return type
+   * @param dbFilePath path of the database file
+   * @param jsonViewClass filter class
+   * @param collectionName name of the collection
+   * @param targetClass name of the targeted class
+   * @return a list of objects (with generic type)
    * @TODO JavaDoc
    */
   public static <T> List<T> loadDataFromFileBasedOnView(String dbFilePath, Class<?> jsonViewClass,
@@ -117,13 +117,13 @@ public class Json {
   }
 
   /**
-   * returns description test jenkins.
+   * save the data to a file with a json filter.
    *
-   * @param <T>            description
-   * @param list           description
-   * @param jsonViewClass  description
-   * @param dbFilePath     description
-   * @param collectionName description
+   * @param <T> generic return type
+   * @param list list of generic objects
+   * @param jsonViewClass filter class
+   * @param dbFilePath path of tyhe DB file
+   * @param collectionName name of the collection
    * @TODO JavaDoc
    */
   public static <T> void saveDataToFileBasedOnView(List<T> list, Class<?> jsonViewClass,
@@ -161,11 +161,11 @@ public class Json {
   }
 
   /**
-   * returns description test jenkins.
+   * serialize an object using json filters.
    *
-   * @param <T>  description
-   * @param item description
-   * @return description
+   * @param <T> generic return type
+   * @param item generic object to serialize
+   * @return converted/serialized String
    * @TODO JavaDoc
    */
   public static <T> String serializePublicJsonView(T item) {
@@ -181,13 +181,12 @@ public class Json {
   }
 
   /**
-   * returns description test jenkins.
+   * filter whole custom json object as a list.
    *
-   * @param <T>         description
-   * @param list        description
-   * @param targetClass description
-   * @return description
-   * @TODO JavaDoc
+   * @param <T> generic return type
+   * @param list list of generic objects
+   * @param targetClass name of the targeted class
+   * @return a list of objects (with generic type)
    */
   public static <T> List<T> filterPublicJsonViewAsList(List<T> list, Class<T> targetClass) {
 
@@ -212,13 +211,12 @@ public class Json {
   }
 
   /**
-   * returns description test jenkins.
+   * filter whole custom json object.
    *
-   * @param <T>         description
-   * @param item        description
-   * @param targetClass description
-   * @return description
-   * @TODO JavaDoc
+   * @param <T> generic return type
+   * @param item description
+   * @param targetClass name of the targeted class
+   * @return a generic object
    */
   public static <T> T filterPublicJsonView(T item, Class<T> targetClass) {
 

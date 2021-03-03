@@ -1,15 +1,15 @@
 package be.vinci.pae.api;
 
-import be.vinci.pae.api.utils.Json;
-import be.vinci.pae.domain.User;
-import be.vinci.pae.domain.UserFactory;
-import be.vinci.pae.services.DataServiceUserCollection;
-import be.vinci.pae.utils.Config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import be.vinci.pae.api.utils.Json;
+import be.vinci.pae.domain.User;
+import be.vinci.pae.domain.UserFactory;
+import be.vinci.pae.services.DataServiceUserCollection;
+import be.vinci.pae.utils.Config;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -34,10 +34,10 @@ public class Authentication {
   private UserFactory userFactory;
 
   /**
-   * Description.
+   * Checking the credentials of a user, create a token, get the user object associate.
    *
-   * @param json description
-   * @return description
+   * @param json DOM event user informations
+   * @return a response from the responseBuilder
    * @TODO JavaDoc
    */
   @POST
@@ -71,10 +71,10 @@ public class Authentication {
   }
 
   /**
-   * Description.
+   * Checking the credentials of a user, create a token, create a user object.
    *
-   * @param json description
-   * @return description
+   * @param json DOM event user informations
+   * @return a response from the responseBuilder
    * @TODO JavaDoc
    */
   @POST
@@ -113,7 +113,7 @@ public class Authentication {
   }
 
   /**
-   * Description.
+   * create a json web token with the secret in the properties file.
    *
    * @param user description
    * @return description
