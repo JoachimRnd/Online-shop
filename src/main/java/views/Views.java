@@ -10,8 +10,4 @@ public class Views {
 
   }
 
-  public static class Todo extends Internal {
-
-  }
-
 }
