@@ -1,21 +1,16 @@
 package be.vinci.pae.services;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import be.vinci.pae.domain.Adresse;
 import be.vinci.pae.domain.AdresseFactory;
 import be.vinci.pae.domain.User;
 import be.vinci.pae.domain.UserFactory;
-import be.vinci.pae.utils.Config;
 import jakarta.inject.Inject;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class DAOUserImpl implements DAOUser {
 
-  private static final String DB_STRING_CONNECTION = Config.getProperty("DatabaseStringConnection");
-  private Connection conn;
   private PreparedStatement selectUserByPseudo;
   private PreparedStatement selectUserById;
 
@@ -31,28 +26,19 @@ public class DAOUserImpl implements DAOUser {
    * @TODO Javadoc
    */
   public DAOUserImpl() {
-    try {
-      conn = DriverManager.getConnection(DB_STRING_CONNECTION);
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    try {
-      selectUserByPseudo = conn.prepareStatement(
-          "SELECT u.id_utilisateur, u.pseudo, u.mot_de_passe, u.nom, u.prenom, a.rue, a.numero,"
-              + " a.boite, a.code_postal, a.commune, a.pays, u.email, u.date_inscription,"
-              + " u.inscription_valide, u.type_utilisateur "
-              + "FROM projet.adresses a, projet.utilisateurs u "
-              + "WHERE u.pseudo = ? AND u.adresse = a.id_adresse");
-      selectUserById = conn.prepareStatement(
-          "SELECT u.id_utilisateur, u.pseudo, u.mot_de_passe, u.nom, u.prenom, a.rue, a.numero,"
-              + " a.boite, a.code_postal, a.commune, a.pays, u.email, u.date_inscription,"
-              + " u.inscription_valide, u.type_utilisateur "
-              + "FROM projet.adresses a, projet.utilisateurs u "
-              + "WHERE u.id_utilisateur = ? AND u.adresse = a.id_adresse");
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-
+    DalServices dal = new DalServicesImpl();
+    selectUserByPseudo = dal.getPreparedStatement(
+        "SELECT u.id_utilisateur, u.pseudo, u.mot_de_passe, u.nom, u.prenom, a.rue, a.numero,"
+            + " a.boite, a.code_postal, a.commune, a.pays, u.email, u.date_inscription,"
+            + " u.inscription_valide, u.type_utilisateur "
+            + "FROM projet.adresses a, projet.utilisateurs u "
+            + "WHERE u.pseudo = ? AND u.adresse = a.id_adresse");
+    selectUserById = dal.getPreparedStatement(
+        "SELECT u.id_utilisateur, u.pseudo, u.mot_de_passe, u.nom, u.prenom, a.rue, a.numero,"
+            + " a.boite, a.code_postal, a.commune, a.pays, u.email, u.date_inscription,"
+            + " u.inscription_valide, u.type_utilisateur "
+            + "FROM projet.adresses a, projet.utilisateurs u "
+            + "WHERE u.id_utilisateur = ? AND u.adresse = a.id_adresse");
   }
 
   @Override
@@ -109,6 +95,5 @@ public class DAOUserImpl implements DAOUser {
   }
 
   @Override
-  public void addUser(User user) {
-  }
+  public void addUser(User user) {}
 }
