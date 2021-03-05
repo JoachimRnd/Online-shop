@@ -3,9 +3,6 @@ package be.vinci.pae.api;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.utils.Json;
 import be.vinci.pae.domain.User;
-import be.vinci.pae.domain.UserFactory;
-import be.vinci.pae.services.DAOUser;
-import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -17,12 +14,6 @@ import org.glassfish.jersey.server.ContainerRequest;
 @Singleton
 @Path("/users")
 public class UserResource {
-
-  @Inject
-  private DAOUser daoUser;
-
-  @Inject
-  private UserFactory userFactory;
 
   /**
    * get the user related to the request.
