@@ -22,9 +22,7 @@ class UserImpl implements User {
   private String email;
   @JsonView(Views.Public.class)
   private int typeUtilisateur;
-
-  //@TODO Bug avec l'adresse (Objet dans objet JSON Vue publique)
-  @JsonView(Views.Todo.class)
+  @JsonView(Views.Public.class)
   private Adresse adresse;
 
   @JsonView(Views.Internal.class)
