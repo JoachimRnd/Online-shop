@@ -1,13 +1,13 @@
 package be.vinci.pae.services;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import be.vinci.pae.domain.Adresse;
 import be.vinci.pae.domain.AdresseFactory;
 import be.vinci.pae.domain.User;
 import be.vinci.pae.domain.UserFactory;
 import jakarta.inject.Inject;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class DAOUserImpl implements DAOUser {
 
@@ -31,10 +31,14 @@ public class DAOUserImpl implements DAOUser {
    * @TODO Javadoc
    */
   public DAOUserImpl() {
-    querySelectUserByPseudo =
-        "SELECT u.id_utilisateur, u.pseudo, u.mot_de_passe, u.nom, u.prenom, a.rue, a.numero, a.boite, a.code_postal, a.commune, a.pays, u.email, u.date_inscription, u.inscription_valide, u.type_utilisateur FROM projet.adresses a, projet.utilisateurs u WHERE u.pseudo = ? AND u.adresse = a.id_adresse";
-    querySelectUserById =
-        "SELECT u.id_utilisateur, u.pseudo, u.mot_de_passe, u.nom, u.prenom, a.rue, a.numero, a.boite, a.code_postal, a.commune, a.pays, u.email, u.date_inscription, u.inscription_valide, u.type_utilisateur FROM projet.adresses a, projet.utilisateurs u WHERE u.id_utilisateur = ? AND u.adresse = a.id_adresse";
+    querySelectUserByPseudo = "SELECT u.id_utilisateur, u.pseudo, u.mot_de_passe, u.nom, u.prenom, "
+        + "a.rue, a.numero, a.boite, a.code_postal, a.commune, a.pays, u.email, u.date_inscription,"
+        + " u.inscription_valide, u.type_utilisateur FROM projet.adresses a, projet.utilisateurs u "
+        + "WHERE u.pseudo = ? AND u.adresse = a.id_adresse";
+    querySelectUserById = "SELECT u.id_utilisateur, u.pseudo, u.mot_de_passe, u.nom, u.prenom, "
+        + "a.rue, a.numero, a.boite, a.code_postal, a.commune, a.pays, u.email, u.date_inscription,"
+        + " u.inscription_valide, u.type_utilisateur FROM projet.adresses a, projet.utilisateurs u "
+        + "WHERE u.id_utilisateur = ? AND u.adresse = a.id_adresse";
   }
 
   @Override
@@ -97,5 +101,6 @@ public class DAOUserImpl implements DAOUser {
   }
 
   @Override
-  public void addUser(User user) {}
+  public void addUser(User user) {
+  }
 }
