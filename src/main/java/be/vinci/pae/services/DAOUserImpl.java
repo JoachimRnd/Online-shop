@@ -13,6 +13,8 @@ public class DAOUserImpl implements DAOUser {
 
   private PreparedStatement selectUserByPseudo;
   private PreparedStatement selectUserById;
+  private String querySelectUserByPseudo;
+  private String querySelectUserById;
 
   @Inject
   private UserFactory userFactory;
@@ -20,30 +22,31 @@ public class DAOUserImpl implements DAOUser {
   @Inject
   private AdresseFactory adresseFactory;
 
+  @Inject
+  private DalServices dalServices;
+
   /**
    * Description.
    *
    * @TODO Javadoc
    */
   public DAOUserImpl() {
-    DalServices dal = new DalServicesImpl();
-    selectUserByPseudo = dal.getPreparedStatement(
-        "SELECT u.id_utilisateur, u.pseudo, u.mot_de_passe, u.nom, u.prenom, a.rue, a.numero,"
-            + " a.boite, a.code_postal, a.commune, a.pays, u.email, u.date_inscription,"
-            + " u.inscription_valide, u.type_utilisateur "
-            + "FROM projet.adresses a, projet.utilisateurs u "
-            + "WHERE u.pseudo = ? AND u.adresse = a.id_adresse");
-    selectUserById = dal.getPreparedStatement(
-        "SELECT u.id_utilisateur, u.pseudo, u.mot_de_passe, u.nom, u.prenom, a.rue, a.numero,"
-            + " a.boite, a.code_postal, a.commune, a.pays, u.email, u.date_inscription,"
-            + " u.inscription_valide, u.type_utilisateur "
-            + "FROM projet.adresses a, projet.utilisateurs u "
-            + "WHERE u.id_utilisateur = ? AND u.adresse = a.id_adresse");
+    querySelectUserByPseudo = "SELECT u.id_utilisateur, u.pseudo, u.mot_de_passe, u.nom, u.prenom, "
+        + "a.rue, a.numero, a.boite, a.code_postal, a.commune, a.pays, u.email, u.date_inscription,"
+        + " u.inscription_valide, u.type_utilisateur FROM projet.adresses a, projet.utilisateurs u "
+        + "WHERE u.pseudo = ? AND u.adresse = a.id_adresse";
+    querySelectUserById = "SELECT u.id_utilisateur, u.pseudo, u.mot_de_passe, u.nom, u.prenom, "
+        + "a.rue, a.numero, a.boite, a.code_postal, a.commune, a.pays, u.email, u.date_inscription,"
+        + " u.inscription_valide, u.type_utilisateur FROM projet.adresses a, projet.utilisateurs u "
+        + "WHERE u.id_utilisateur = ? AND u.adresse = a.id_adresse";
   }
 
   @Override
   public User getUser(String login) {
     try {
+      if (selectUserByPseudo == null) {
+        selectUserByPseudo = this.dalServices.getPreparedStatement(querySelectUserByPseudo);
+      }
       selectUserByPseudo.setString(1, login);
       try (ResultSet rs = selectUserByPseudo.executeQuery()) {
         User user = createUser(rs);
@@ -58,6 +61,9 @@ public class DAOUserImpl implements DAOUser {
   @Override
   public User getUser(int id) {
     try {
+      if (selectUserById == null) {
+        selectUserById = this.dalServices.getPreparedStatement(querySelectUserById);
+      }
       selectUserById.setInt(1, id);
       try (ResultSet rs = selectUserById.executeQuery()) {
         User user = createUser(rs);
@@ -97,6 +103,6 @@ public class DAOUserImpl implements DAOUser {
   //@TODO Implémenter l'ajout d'un User
   @Override
   public void addUser(User user) {
-
+    
   }
 }
