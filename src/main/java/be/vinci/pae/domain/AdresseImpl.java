@@ -1,5 +1,8 @@
 package be.vinci.pae.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AdresseImpl implements Adresse {
 
   private String rue;

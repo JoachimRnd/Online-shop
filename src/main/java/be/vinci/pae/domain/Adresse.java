@@ -1,5 +1,8 @@
 package be.vinci.pae.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+@JsonDeserialize(as = AdresseImpl.class)
 public interface Adresse {
 
   String getRue();
