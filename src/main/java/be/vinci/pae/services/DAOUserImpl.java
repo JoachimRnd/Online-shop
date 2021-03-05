@@ -1,13 +1,13 @@
 package be.vinci.pae.services;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import be.vinci.pae.domain.Adresse;
 import be.vinci.pae.domain.AdresseFactory;
 import be.vinci.pae.domain.User;
 import be.vinci.pae.domain.UserFactory;
 import jakarta.inject.Inject;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class DAOUserImpl implements DAOUser {
 
@@ -94,6 +94,9 @@ public class DAOUserImpl implements DAOUser {
     return user;
   }
 
+  //@TODO Implémenter l'ajout d'un User
   @Override
-  public void addUser(User user) {}
+  public void addUser(User user) {
+
+  }
 }
