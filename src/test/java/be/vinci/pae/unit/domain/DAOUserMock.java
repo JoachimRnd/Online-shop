@@ -7,12 +7,13 @@ import be.vinci.pae.services.DAOUser;
 import jakarta.inject.Inject;
 
 public class DAOUserMock implements DAOUser {
+
   @Inject
   UserFactory userFactory;
 
   @Override
   public UserDTO getUser(String login) {
-    if(login.equals("login")) {
+    if (login.equals("login")) {
       User user = (User) userFactory.getUser();
       user.setPseudo("login");
       user.setMotDePasse(user.hashPassword("password"));
