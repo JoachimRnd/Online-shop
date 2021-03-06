@@ -28,7 +28,7 @@ public class UserUCCImpl implements UserUCC {
       throw new IllegalArgumentException("Ce pseudo est déjà utilisé");
     }
 
-    user = userFactory.getUser();
+    user = (User) userFactory.getUser();
 
     user.setPseudo(login);
     user.setMotDePasse(password);
