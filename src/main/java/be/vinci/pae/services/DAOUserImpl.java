@@ -1,13 +1,13 @@
 package be.vinci.pae.services;
 
+import be.vinci.pae.domain.Adresse;
+import be.vinci.pae.domain.AdresseFactory;
+import be.vinci.pae.domain.UserDTO;
+import be.vinci.pae.domain.UserFactory;
+import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import be.vinci.pae.domain.Adresse;
-import be.vinci.pae.domain.AdresseFactory;
-import be.vinci.pae.domain.User;
-import be.vinci.pae.domain.UserFactory;
-import jakarta.inject.Inject;
 
 public class DAOUserImpl implements DAOUser {
 
@@ -42,14 +42,14 @@ public class DAOUserImpl implements DAOUser {
   }
 
   @Override
-  public User getUser(String login) {
+  public UserDTO getUser(String login) {
     try {
       if (selectUserByPseudo == null) {
         selectUserByPseudo = this.dalServices.getPreparedStatement(querySelectUserByPseudo);
       }
       selectUserByPseudo.setString(1, login);
       try (ResultSet rs = selectUserByPseudo.executeQuery()) {
-        User user = createUser(rs);
+        UserDTO user = createUser(rs);
         return user;
       }
     } catch (SQLException e) {
@@ -59,14 +59,14 @@ public class DAOUserImpl implements DAOUser {
   }
 
   @Override
-  public User getUser(int id) {
+  public UserDTO getUser(int id) {
     try {
       if (selectUserById == null) {
         selectUserById = this.dalServices.getPreparedStatement(querySelectUserById);
       }
       selectUserById.setInt(1, id);
       try (ResultSet rs = selectUserById.executeQuery()) {
-        User user = createUser(rs);
+        UserDTO user = createUser(rs);
         return user;
       }
     } catch (SQLException e) {
@@ -75,8 +75,8 @@ public class DAOUserImpl implements DAOUser {
     return null;
   }
 
-  private User createUser(ResultSet rs) throws SQLException {
-    User user = null;
+  private UserDTO createUser(ResultSet rs) throws SQLException {
+    UserDTO user = null;
     while (rs.next()) {
       user = this.userFactory.getUser();
       user.setId(rs.getInt("id_utilisateur"));
@@ -102,7 +102,7 @@ public class DAOUserImpl implements DAOUser {
 
   // @TODO Implémenter l'ajout d'un User
   @Override
-  public void addUser(User user) {
+  public void addUser(UserDTO user) {
 
   }
 }

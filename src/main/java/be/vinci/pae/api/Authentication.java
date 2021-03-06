@@ -1,15 +1,14 @@
 package be.vinci.pae.api;
 
+import be.vinci.pae.api.utils.Json;
+import be.vinci.pae.domain.UserDTO;
+import be.vinci.pae.domain.UserUCC;
+import be.vinci.pae.utils.Config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import be.vinci.pae.api.utils.Json;
-import be.vinci.pae.domain.User;
-import be.vinci.pae.domain.UserFactory;
-import be.vinci.pae.services.DAOUser;
-import be.vinci.pae.utils.Config;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -28,10 +27,7 @@ public class Authentication {
   private final ObjectMapper jsonMapper = new ObjectMapper();
 
   @Inject
-  private DAOUser daoUser;
-
-  @Inject
-  private UserFactory userFactory;
+  private UserUCC userUCC;
 
   /**
    * Checking the credentials of a user, create a token, get the user object associate.
@@ -50,22 +46,25 @@ public class Authentication {
       return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")
           .type(MediaType.TEXT_PLAIN).build();
     }
+
     String login = json.get("login").asText();
     String password = json.get("password").asText();
+
     // Try to login
-    User user = this.daoUser.getUser(login);
-    if (user == null || !user.checkPassword(password)) {
-      return Response.status(Status.UNAUTHORIZED).entity("Pseudo ou mot de passe incorrect")
+    UserDTO user = null;
+    try {
+      user = userUCC.login(login, password);
+    } catch (Exception e) {
+      return Response.status(Status.UNAUTHORIZED).entity(e.getMessage())
           .type(MediaType.TEXT_PLAIN).build();
     }
     // Create token
     String token = createToken(user);
 
     // Build response
-
     // load the user data from a public JSON view to filter out the private info not
     // to be returned by the API (such as password)
-    User publicUser = Json.filterPublicJsonView(user, User.class);
+    UserDTO publicUser = Json.filterPublicJsonView(user, UserDTO.class);
     ObjectNode node = jsonMapper.createObjectNode().put("token", token).putPOJO("user", publicUser);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
 
@@ -87,19 +86,16 @@ public class Authentication {
       return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")
           .type(MediaType.TEXT_PLAIN).build();
     }
+
     String login = json.get("login").asText();
-    // Check if user exists
-    if (this.daoUser.getUser(login) != null) {
-      return Response.status(Status.CONFLICT).entity("Ce pseudo est déjà utilisé")
+    String password = json.get("password").asText();
+    UserDTO user = null;
+    try {
+      user = userUCC.register(login, password);
+    } catch (Exception e) {
+      return Response.status(Status.CONFLICT).entity(e.getMessage())
           .type(MediaType.TEXT_PLAIN).build();
     }
-    // create user
-    User user = this.userFactory.getUser();
-    user.setId(1);
-    user.setPseudo(login);
-    String password = json.get("password").asText();
-    user.setMotDePasse(user.hashPassword(password));
-    this.daoUser.addUser(user);
 
     // Create token
     String token = createToken(user);
@@ -107,10 +103,9 @@ public class Authentication {
 
     // load the user data from a public JSON view to filter out the private info not
     // to be returned by the API (such as password)
-    User publicUser = Json.filterPublicJsonView(user, User.class);
+    UserDTO publicUser = Json.filterPublicJsonView(user, UserDTO.class);
     ObjectNode node = jsonMapper.createObjectNode().put("token", token).putPOJO("user", publicUser);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
-
   }
 
   /**
@@ -121,7 +116,7 @@ public class Authentication {
    * @throws WebApplicationException description
    * @TODO Javadoc
    */
-  private String createToken(User user) {
+  private String createToken(UserDTO user) {
     String token;
     try {
       token =
