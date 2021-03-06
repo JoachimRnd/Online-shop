@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -38,7 +39,7 @@ class AuthenticationTest {
     }
   }
 
-
+  @Disabled
   @Test
   public void authenticateUserGoodPseudoAndGoodPassword() {
     webDriver.get(baseUrl);
@@ -62,6 +63,7 @@ class AuthenticationTest {
     assertAll(() -> assertTrue(solution.equals("test")));
   }
 
+  @Disabled
   @Test
   public void authenticateUserEmptyPseudoAndEmptyPassword() {
     webDriver.get(baseUrl);
@@ -87,7 +89,7 @@ class AuthenticationTest {
     assertAll(() -> assertTrue(solution.equals("Veuillez remplir les champs")));
   }
 
-
+  @Disabled
   @Test
   public void authenticateUserGoodPseudoAndBadPassword() {
     webDriver.get(baseUrl);
