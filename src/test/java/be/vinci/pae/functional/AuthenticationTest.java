@@ -1,7 +1,8 @@
-package functional;
+package be.vinci.pae.functional;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -79,7 +80,6 @@ class AuthenticationTest {
     pseudoField.sendKeys("");
     passwordField.sendKeys("");
     submitButton.click();
-
 
     final WebDriverWait waiter = new WebDriverWait(webDriver, 5);
     final WebElement solutionElement =
