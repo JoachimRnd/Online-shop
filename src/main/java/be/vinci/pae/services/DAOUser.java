@@ -1,13 +1,12 @@
 package be.vinci.pae.services;
 
-import be.vinci.pae.domain.User;
+import be.vinci.pae.domain.UserDTO;
 
 public interface DAOUser {
 
-  User getUser(String login);
+  UserDTO getUser(String login);
+  
+  UserDTO getUser(int id);
 
-
-  User getUser(int id);
-
-  void addUser(User user);
+  void addUser(UserDTO user);
 }
