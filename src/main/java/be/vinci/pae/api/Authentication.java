@@ -1,15 +1,15 @@
 package be.vinci.pae.api;
 
-import be.vinci.pae.api.utils.Json;
-import be.vinci.pae.domain.User;
-import be.vinci.pae.domain.UserFactory;
-import be.vinci.pae.services.DAOUser;
-import be.vinci.pae.utils.Config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import be.vinci.pae.api.utils.Json;
+import be.vinci.pae.domain.User;
+import be.vinci.pae.domain.UserFactory;
+import be.vinci.pae.services.DAOUser;
+import be.vinci.pae.utils.Config;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -45,8 +45,9 @@ public class Authentication {
   @Consumes(MediaType.APPLICATION_JSON)
   public Response login(JsonNode json) {
     // Get and check credentials
-    if (!json.hasNonNull("login") || !json.hasNonNull("password")) {
-      return Response.status(Status.UNAUTHORIZED).entity("Login and password needed")
+    if (!json.hasNonNull("login") || !json.hasNonNull("password")
+        || json.get("login").asText().isEmpty() || json.get("password").asText().isEmpty()) {
+      return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")
           .type(MediaType.TEXT_PLAIN).build();
     }
     String login = json.get("login").asText();
@@ -54,7 +55,7 @@ public class Authentication {
     // Try to login
     User user = this.daoUser.getUser(login);
     if (user == null || !user.checkPassword(password)) {
-      return Response.status(Status.UNAUTHORIZED).entity("Login or password incorrect")
+      return Response.status(Status.UNAUTHORIZED).entity("Pseudo ou mot de passe incorrect")
           .type(MediaType.TEXT_PLAIN).build();
     }
     // Create token
@@ -83,13 +84,13 @@ public class Authentication {
   public Response register(JsonNode json) {
     // Get and check credentials
     if (!json.hasNonNull("login") || !json.hasNonNull("password")) {
-      return Response.status(Status.UNAUTHORIZED).entity("Login and password needed")
+      return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")
           .type(MediaType.TEXT_PLAIN).build();
     }
     String login = json.get("login").asText();
     // Check if user exists
     if (this.daoUser.getUser(login) != null) {
-      return Response.status(Status.CONFLICT).entity("This login is already in use")
+      return Response.status(Status.CONFLICT).entity("Ce pseudo est déjà utilisé")
           .type(MediaType.TEXT_PLAIN).build();
     }
     // create user
