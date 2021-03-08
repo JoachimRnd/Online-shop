@@ -3,21 +3,21 @@ package be.vinci.pae.functional;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import io.github.bonigarcia.wdm.WebDriverManager;
 
-class AuthenticationTest {
+class AuthenticationTestNotJenkins {
 
   private WebDriver webDriver;
   private String baseUrl;
@@ -29,7 +29,11 @@ class AuthenticationTest {
 
   @BeforeEach
   public void setUpWebDriver() {
-    webDriver = new ChromeDriver();
+    ChromeOptions options = new ChromeOptions();
+    options.addArguments("--headless", "--disable-gpu", "--window-size=1920,1200",
+        "--ignore-certificate-errors", "--disable-extensions", "--no-sandbox",
+        "--disable-dev-shm-usage");
+    webDriver = new ChromeDriver(options);
     baseUrl = "http://localhost/login";
   }
 
@@ -40,7 +44,6 @@ class AuthenticationTest {
     }
   }
 
-  @Disabled
   @Test
   public void authenticateUserGoodPseudoAndGoodPassword() {
     webDriver.get(baseUrl);
@@ -64,7 +67,6 @@ class AuthenticationTest {
     assertAll(() -> assertTrue(solution.equals("test")));
   }
 
-  @Disabled
   @Test
   public void authenticateUserEmptyPseudoAndEmptyPassword() {
     webDriver.get(baseUrl);
@@ -88,8 +90,7 @@ class AuthenticationTest {
     final String solution = solutionElement.getText();
     assertAll(() -> assertTrue(solution.equals("Veuillez remplir les champs")));
   }
-
-  @Disabled
+  
   @Test
   public void authenticateUserGoodPseudoAndBadPassword() {
     webDriver.get(baseUrl);
