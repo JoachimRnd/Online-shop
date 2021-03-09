@@ -1,7 +1,7 @@
 package be.vinci.pae.services;
 
-import be.vinci.pae.domain.Adresse;
-import be.vinci.pae.domain.AdresseFactory;
+import be.vinci.pae.domain.Address;
+import be.vinci.pae.domain.AddressFactory;
 import be.vinci.pae.domain.UserDTO;
 import be.vinci.pae.domain.UserFactory;
 import jakarta.inject.Inject;
@@ -11,42 +11,43 @@ import java.sql.SQLException;
 
 public class DAOUserImpl implements DAOUser {
 
-  private PreparedStatement selectUserByPseudo;
+  private PreparedStatement selectUserByUsername;
   private PreparedStatement selectUserById;
-  private String querySelectUserByPseudo;
+  private String querySelectUserByUsername;
   private String querySelectUserById;
 
   @Inject
   private UserFactory userFactory;
 
   @Inject
-  private AdresseFactory adresseFactory;
+  private AddressFactory addressFactory;
 
   @Inject
   private DalServices dalServices;
 
   /**
-   * Implementation of User selected by Id and User selected by pseudo.
+   * Implementation of User selected by Id and User selected by username.
    */
   public DAOUserImpl() {
-    querySelectUserByPseudo = "SELECT u.id_utilisateur, u.pseudo, u.mot_de_passe, u.nom, u.prenom, "
-        + "a.rue, a.numero, a.boite, a.code_postal, a.commune, a.pays, u.email, u.date_inscription,"
-        + " u.inscription_valide, u.type_utilisateur FROM projet.adresses a, projet.utilisateurs u "
-        + "WHERE u.pseudo = ? AND u.adresse = a.id_adresse";
-    querySelectUserById = "SELECT u.id_utilisateur, u.pseudo, u.mot_de_passe, u.nom, u.prenom, "
-        + "a.rue, a.numero, a.boite, a.code_postal, a.commune, a.pays, u.email, u.date_inscription,"
-        + " u.inscription_valide, u.type_utilisateur FROM projet.adresses a, projet.utilisateurs u "
-        + "WHERE u.id_utilisateur = ? AND u.adresse = a.id_adresse";
+    querySelectUserByUsername =
+        "SELECT u.user_id, u.username, u.password, u.last_name, u.first_name, a.street,"
+            + " a.building_number, a.unit_number, a.postcode, a.commune, a.country, u.email,"
+            + " u.registration_date, u.valid_registration, u.user_type FROM project.addresses a,"
+            + "project.users u WHERE u.username = ? AND u.address = a.address_id";
+    querySelectUserById = "SELECT u.user_id, u.username, u.password, u.last_name, u.first_name, "
+        + "a.street, a.building_number, a.unit_number, a.postcode, a.commune, a.country, u.email,"
+        + "u.registration_date, u.valid_registration, u.user_type FROM project.addresses a,"
+        + " project.users u WHERE u.user_id = ? AND u.address = a.address_id";
   }
 
   @Override
   public UserDTO getUser(String login) {
     try {
-      if (selectUserByPseudo == null) {
-        selectUserByPseudo = this.dalServices.getPreparedStatement(querySelectUserByPseudo);
+      if (selectUserByUsername == null) {
+        selectUserByUsername = this.dalServices.getPreparedStatement(querySelectUserByUsername);
       }
-      selectUserByPseudo.setString(1, login);
-      try (ResultSet rs = selectUserByPseudo.executeQuery()) {
+      selectUserByUsername.setString(1, login);
+      try (ResultSet rs = selectUserByUsername.executeQuery()) {
         UserDTO user = createUser(rs);
         return user;
       }
@@ -77,23 +78,23 @@ public class DAOUserImpl implements DAOUser {
     UserDTO user = null;
     while (rs.next()) {
       user = this.userFactory.getUser();
-      user.setId(rs.getInt("id_utilisateur"));
-      user.setPseudo(rs.getString("pseudo"));
-      user.setMotDePasse(rs.getString("mot_de_passe"));
-      user.setNom(rs.getString("nom"));
-      user.setPrenom(rs.getString("prenom"));
-      Adresse adresse = this.adresseFactory.getAdresse();
-      adresse.setRue(rs.getString("rue"));
-      adresse.setNumero(rs.getString("numero"));
-      adresse.setBoite(rs.getString("boite"));
-      adresse.setCodePostal(rs.getString("code_postal"));
-      adresse.setCommune(rs.getString("commune"));
-      adresse.setPays(rs.getString("pays"));
-      user.setAdresse(adresse);
+      user.setId(rs.getInt("user_id"));
+      user.setUsername(rs.getString("username"));
+      user.setPassword(rs.getString("password"));
+      user.setLastName(rs.getString("last_name"));
+      user.setFirstName(rs.getString("first_name"));
+      Address address = this.addressFactory.getAddress();
+      address.setStreet(rs.getString("street"));
+      address.setBuildingNumber(rs.getString("building_number"));
+      address.setUnitNumber(rs.getString("unit_number"));
+      address.setPostcode(rs.getString("postcode"));
+      address.setCommune(rs.getString("commune"));
+      address.setCountry(rs.getString("country"));
+      user.setAddress(address);
       user.setEmail(rs.getString("email"));
-      user.setDateInscription(rs.getTimestamp("date_inscription").toLocalDateTime());
-      user.setInscriptionValide(rs.getBoolean("inscription_valide"));
-      user.setTypeUtilisateur(rs.getInt("type_utilisateur"));
+      user.setRegistrationDate(rs.getTimestamp("registration_date").toLocalDateTime());
+      user.setValidRegistration(rs.getBoolean("valid_registration"));
+      user.setUserType(rs.getInt("user_type"));
     }
     return user;
   }

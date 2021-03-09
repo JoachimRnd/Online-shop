@@ -1,9 +1,9 @@
 package be.vinci.pae.domain;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonView;
 import java.time.LocalDateTime;
 import org.mindrot.jbcrypt.BCrypt;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
 import views.Views;
 
 // ignore all null fields in order to avoid sending props not linked to a JSON view
@@ -13,28 +13,28 @@ class UserImpl implements User {
   @JsonView(Views.Public.class)
   private int id;
   @JsonView(Views.Public.class)
-  private String pseudo;
+  private String username;
   @JsonView(Views.Public.class)
-  private String nom;
+  private String lastName;
   @JsonView(Views.Public.class)
-  private String prenom;
+  private String firstName;
   @JsonView(Views.Public.class)
   private String email;
   @JsonView(Views.Public.class)
-  private int typeUtilisateur;
+  private int userType;
   @JsonView(Views.Public.class)
-  private Adresse adresse;
+  private Address address;
 
   @JsonView(Views.Internal.class)
-  private LocalDateTime dateInscription;
+  private LocalDateTime registrationDate;
   @JsonView(Views.Internal.class)
-  private boolean inscriptionValide;
+  private boolean validRegistration;
   @JsonView(Views.Internal.class)
-  private String motDePasse;
+  private String password;
 
   @Override
   public boolean checkPassword(String password) {
-    return BCrypt.checkpw(password, this.motDePasse);
+    return BCrypt.checkpw(password, this.password);
   }
 
   @Override
@@ -47,40 +47,40 @@ class UserImpl implements User {
   }
 
   @Override
-  public String getPseudo() {
-    return pseudo;
+  public String getUsername() {
+    return username;
   }
 
-  public String getNom() {
-    return nom;
+  public String getLastName() {
+    return lastName;
   }
 
-  public String getPrenom() {
-    return prenom;
+  public String getFirstName() {
+    return firstName;
   }
 
   public String getEmail() {
     return email;
   }
 
-  public int getTypeUtilisateur() {
-    return typeUtilisateur;
+  public int getUserType() {
+    return userType;
   }
 
-  public Adresse getAdresse() {
-    return adresse;
+  public Address getAddress() {
+    return address;
   }
 
-  public LocalDateTime getDateInscription() {
-    return dateInscription;
+  public LocalDateTime getRegistrationDate() {
+    return registrationDate;
   }
 
-  public boolean isInscriptionValide() {
-    return inscriptionValide;
+  public boolean isValidRegistration() {
+    return validRegistration;
   }
 
-  public String getMotDePasse() {
-    return motDePasse;
+  public String getPassword() {
+    return password;
   }
 
   public void setId(int id) {
@@ -88,48 +88,50 @@ class UserImpl implements User {
   }
 
   @Override
-  public void setPseudo(String pseudo) {
-    this.pseudo = pseudo;
+  public void setUsername(String username) {
+    this.username = username;
   }
 
-  public void setNom(String nom) {
-    this.nom = nom;
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
   }
 
-  public void setPrenom(String prenom) {
-    this.prenom = prenom;
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
   }
 
   public void setEmail(String email) {
     this.email = email;
   }
 
-  public void setTypeUtilisateur(int typeUtilisateur) {
-    this.typeUtilisateur = typeUtilisateur;
+  public void setUserType(int userType) {
+    this.userType = userType;
   }
 
-  public void setAdresse(Adresse adresse) {
-    this.adresse = adresse;
+  public void setAddress(Address address) {
+    this.address = address;
   }
 
-  public void setDateInscription(LocalDateTime dateInscription) {
-    this.dateInscription = dateInscription;
+  public void setRegistrationDate(LocalDateTime registrationDate) {
+    this.registrationDate = registrationDate;
   }
 
-  public void setInscriptionValide(boolean inscriptionValide) {
-    this.inscriptionValide = inscriptionValide;
+  public void setValidRegistration(boolean validRegistration) {
+    this.validRegistration = validRegistration;
   }
 
-  public void setMotDePasse(String motDePasse) {
-    this.motDePasse = motDePasse;
+  public void setPassword(String password) {
+    this.password = password;
   }
 
   @Override
   public String toString() {
-    return "UserImpl{" + "id=" + id + ", pseudo='" + pseudo + '\'' + ", nom='" + nom + '\''
-        + ", prenom='" + prenom + '\'' + ", email='" + email + '\'' + ", type_utilisateur="
-        + typeUtilisateur + ", adresse=" + adresse + ", date_inscription=" + dateInscription
-        + ", inscription_valide=" + inscriptionValide + ", mot_de_passe='" + motDePasse + '\''
-        + '}';
+    return "UserImpl [id=" + id + ", username=" + username + ", lastName=" + lastName
+        + ", firstName=" + firstName + ", email=" + email + ", userType=" + userType + ", address="
+        + address + ", registrationDate=" + registrationDate + ", validRegistration="
+        + validRegistration + ", password=" + password + "]";
   }
+
+
+
 }

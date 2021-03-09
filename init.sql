@@ -1,86 +1,86 @@
-DROP SCHEMA IF EXISTS projet CASCADE;
-CREATE SCHEMA projet;
+DROP SCHEMA IF EXISTS project CASCADE;
+CREATE SCHEMA project;
 
-CREATE TABLE projet.adresses (
-	id_adresse SERIAL PRIMARY KEY,
-	rue VARCHAR(100) NOT NULL,
-	numero VARCHAR(100) NOT NULL,
-	boite VARCHAR(100) NULL,
-	code_postal VARCHAR(100) NOT NULL,
+CREATE TABLE project.addresses (
+	address_id SERIAL PRIMARY KEY,
+	street VARCHAR(100) NOT NULL,
+	building_number VARCHAR(100) NOT NULL,
+	unit_number VARCHAR(100) NULL,
+	postcode VARCHAR(100) NOT NULL,
 	commune VARCHAR(100) NOT NULL,
-	pays VARCHAR(100) NOT NULL
+	country VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE projet.utilisateurs (
-	id_utilisateur SERIAL PRIMARY KEY,
-	pseudo VARCHAR(100) NOT NULL,
-	mot_de_passe CHARACTER(60) NOT NULL,
-	nom VARCHAR(100) NOT NULL,
-	prenom VARCHAR(100) NOT NULL,
-	adresse INTEGER REFERENCES projet.adresses (id_adresse) NOT NULL,
+CREATE TABLE project.users (
+	user_id SERIAL PRIMARY KEY,
+	username VARCHAR(100) NOT NULL,
+	password CHARACTER(60) NOT NULL,
+	last_name VARCHAR(100) NOT NULL,
+	first_name VARCHAR(100) NOT NULL,
+	address INTEGER REFERENCES project.addresses (address_id) NOT NULL,
 	email VARCHAR(100) NOT NULL,
-	date_inscription TIMESTAMP NOT NULL,
-	inscription_valide BOOLEAN NOT NULL,
-	type_utilisateur INTEGER NOT NULL
+	registration_date TIMESTAMP NOT NULL,
+	valid_registration BOOLEAN NOT NULL,
+	user_type INTEGER NOT NULL
 );
 
-INSERT INTO projet.adresses VALUES (DEFAULT, 'rue', 'numero', 'boite', 'code_postal', 'commune', 'pays');
+INSERT INTO project.addresses VALUES (DEFAULT, 'street', 'building_number', 'unit_number', 'postcode', 'commune', 'country');
 
-INSERT INTO projet.utilisateurs VALUES (DEFAULT, 'test', '$2a$10$qSBZrtuxTN3tM///i5rM8Opd3ioOk2vG.olTPH/UZqP8rjCtg19Zm', 'nom', 'prenom', 1, 'email', NOW(), 'true', '0');
-
-SELECT * FROM projet.adresses;
-
+INSERT INTO project.users VALUES (DEFAULT, 'test', '$2a$10$qSBZrtuxTN3tM///i5rM8Opd3ioOk2vG.olTPH/UZqP8rjCtg19Zm', 'last_name', 'first_name', 1, 'email', NOW(), 'true', '0');
 /*
-CREATE TABLE projet.demandes_de_visite (
-	id_demande_de_visite SERIAL PRIMARY KEY,
-	date_demande TIMESTAMP NOT NULL,
-	plage_horaire TEXT NOT NULL,
-	adresse INTEGER REFERENCES projet.adresses (id_adresse) NULL,
-	etat INTEGER NOT NULL,
-	date_et_heure_choisie TIMESTAMP NULL,
-	raison_annulation TEXT NULL,
-	client INTEGER REFERENCES projet.utilisateurs (id_utilisateur) NOT NULL
+SELECT * FROM project.addresses;
+
+CREATE TABLE project.visit_requests (
+	visit_request_id SERIAL PRIMARY KEY,
+	request_date TIMESTAMP NOT NULL,
+	time_slot TEXT NOT NULL,
+	adress INTEGER REFERENCES project.addresses (address_id) NULL,
+	status INTEGER NOT NULL,
+	chosen_date_time TIMESTAMP NULL,
+	cancellation_reason TEXT NULL,
+	customer INTEGER REFERENCES project.users (user_id) NOT NULL
 );
 
-CREATE TABLE projet.type_de_meubles (
-	id_type SERIAL PRIMARY KEY,
-	nom VARCHAR(100) NOT NULL
+CREATE TABLE project.furniture_types (
+	type_id SERIAL PRIMARY KEY,
+	name VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE projet.meubles (
-	id_meuble SERIAL PRIMARY KEY,
+CREATE TABLE project.furniture (
+	furniture_id SERIAL PRIMARY KEY,
 	description TEXT NOT NULL,
-	type INTEGER REFERENCES projet.type_de_meubles (id_type) NOT NULL,
-	demande_de_visite INTEGER REFERENCES projet.demandes_de_visite (id_demande_de_visite) NOT NULL,
-	prix_achat DECIMAL NULL,
-	date_emportee TIMESTAMP NULL,
-	prix_vente DECIMAL NULL,
-	prix_special DECIMAL NULL,
-	date_depot_en_magasin TIMESTAMP NULL,
-	date_vente TIMESTAMP NULL,
-	date_livraison TIMESTAMP NULL,
-	date_retrait TIMESTAMP NULL,
-	acheteur INTEGER REFERENCES projet.utilisateurs (id_utilisateur) NOT NULL,
-	etat INTEGER NULL,
-	email_acheteur_non_inscrit VARCHAR(100) NULL
-	--photo_preferee INTEGER REFERENCES projet.photos (id_photo) NULL
+	type INTEGER REFERENCES project.furniture_types (type_id) NOT NULL,
+	visit_request INTEGER REFERENCES project.visit_requests (visit_request_id) NOT NULL,
+	purchase_price DECIMAL NULL,
+	withdrawal_date TIMESTAMP NULL,
+	selling_price DECIMAL NULL,
+	special_sale_price DECIMAL NULL,
+	deposit_date TIMESTAMP NULL,
+	selling_date TIMESTAMP NULL,
+	delivery_date TIMESTAMP NULL,
+	withdrawal_date TIMESTAMP NULL,
+	buyer INTEGER REFERENCES project.users (user_id) NOT NULL,
+	condition INTEGER NULL,
+	unregistered_buyer_email VARCHAR(100) NULL,
+	--favourite_picture INTEGER REFERENCES project.pictures (picture_id) NULL
 );
 
-CREATE TABLE projet.photos (
-	id_photo SERIAL PRIMARY KEY,
-	nom VARCHAR(100) NOT NULL,
-	est_visible_pour_tous BOOLEAN NOT NULL,
-	meuble INTEGER REFERENCES projet.meubles (id_meuble) NOT NULL,
-	photo_defilante BOOLEAN NOT NULL
+CREATE TABLE project.pictures (
+	picture_id SERIAL PRIMARY KEY,
+	name VARCHAR(100) NOT NULL,
+	visible_for_everyone BOOLEAN NOT NULL,
+	furniture INTEGER REFERENCES project.furniture (furniture_id) NOT NULL,
+	scrolling_picture BOOLEAN NOT NULL
+);
+
+--ALTER TABLE furniture ADD favorite_picture INTEGER FOREIGN KEY REFERENCES project.pictures(picture_id) NULL;
+
+CREATE TABLE project.options (
+	option_id SERIAL PRIMARY KEY,
+	buyer INTEGER REFERENCES project.users (user_id) NOT NULL,
+	furniture INTEGER REFERENCES project.furniture (furniture_id) NOT NULL,
+	duration INTEGER NOT NULL,
+	date TIMESTAMP NOT NULL,
+	status INTEGER NOT NULL
 );
 */
---ALTER TABLE meubles ADD photo_preferee INTEGER FOREIGN KEY REFERENCES projet.photos(id_photo) NULL;
-/*
-CREATE TABLE projet.options (
-	id_option SERIAL PRIMARY KEY,
-	acheteur INTEGER REFERENCES projet.utilisateurs (id_utilisateur) NOT NULL,
-	meuble INTEGER REFERENCES projet.meubles (id_meuble) NOT NULL,
-	duree INTEGER NOT NULL,
-	date TIMESTAMP NOT NULL,
-	etat INTEGER NOT NULL
-);*/
