@@ -2,8 +2,6 @@ package be.vinci.pae.functional;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +14,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import io.github.bonigarcia.wdm.WebDriverManager;
 
 class AuthenticationTestNotJenkins {
 
@@ -45,15 +44,15 @@ class AuthenticationTestNotJenkins {
   }
 
   @Test
-  public void authenticateUserGoodPseudoAndGoodPassword() {
+  public void authenticateUserGoodUsernameAndGoodPassword() {
     webDriver.get(baseUrl);
     // On récupère les champs du formulaire de connexion
-    final WebElement pseudoField = webDriver.findElement(By.id("login"));
+    final WebElement usernameField = webDriver.findElement(By.id("login"));
     final WebElement passwordField = webDriver.findElement(By.id("password"));
     final WebElement submitButton = webDriver.findElement(By.id("btn"));
 
     // On remplit le formulaire avec les éléments souhaités
-    pseudoField.sendKeys("test");
+    usernameField.sendKeys("test");
     passwordField.sendKeys("test");
     submitButton.click();
 
@@ -61,16 +60,16 @@ class AuthenticationTestNotJenkins {
     final WebDriverWait waiter = new WebDriverWait(webDriver, 5);
     // On récupère la réponse attendue
     final WebElement solutionElement =
-        waiter.until(ExpectedConditions.presenceOfElementLocated(By.id("pseudo")));
+        waiter.until(ExpectedConditions.presenceOfElementLocated(By.id("username")));
     final String solution = solutionElement.getText();
     // On vérifie que c'est correct
     assertAll(() -> assertTrue(solution.equals("test")));
   }
 
   @Test
-  public void authenticateUserEmptyPseudoAndEmptyPassword() {
+  public void authenticateUserEmptyUsernameAndEmptyPassword() {
     webDriver.get(baseUrl);
-    final WebElement pseudoField = webDriver.findElement(By.id("login"));
+    final WebElement usernameField = webDriver.findElement(By.id("login"));
     final WebElement passwordField = webDriver.findElement(By.id("password"));
     final WebElement submitButton = webDriver.findElement(By.id("btn"));
 
@@ -79,7 +78,7 @@ class AuthenticationTestNotJenkins {
     executor.executeScript("window.document.getElementById(\"login\").required = false;");
     executor.executeScript("window.document.getElementById(\"password\").required = false;");
 
-    pseudoField.sendKeys("");
+    usernameField.sendKeys("");
     passwordField.sendKeys("");
     submitButton.click();
 
@@ -90,15 +89,15 @@ class AuthenticationTestNotJenkins {
     final String solution = solutionElement.getText();
     assertAll(() -> assertTrue(solution.equals("Veuillez remplir les champs")));
   }
-  
+
   @Test
   public void authenticateUserGoodPseudoAndBadPassword() {
     webDriver.get(baseUrl);
-    final WebElement pseudoField = webDriver.findElement(By.id("login"));
+    final WebElement usernameField = webDriver.findElement(By.id("login"));
     final WebElement passwordField = webDriver.findElement(By.id("password"));
     final WebElement submitButton = webDriver.findElement(By.id("btn"));
 
-    pseudoField.sendKeys("test");
+    usernameField.sendKeys("test");
     passwordField.sendKeys("badPassword");
     submitButton.click();
 

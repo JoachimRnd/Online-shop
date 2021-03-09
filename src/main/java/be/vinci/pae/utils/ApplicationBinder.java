@@ -1,7 +1,7 @@
 package be.vinci.pae.utils;
 
-import be.vinci.pae.domain.AdresseFactory;
-import be.vinci.pae.domain.AdresseFactoryImpl;
+import be.vinci.pae.domain.AddressFactory;
+import be.vinci.pae.domain.AddressFactoryImpl;
 import be.vinci.pae.domain.UserFactory;
 import be.vinci.pae.domain.UserFactoryImpl;
 import be.vinci.pae.domain.UserUCC;
@@ -20,7 +20,7 @@ public class ApplicationBinder extends AbstractBinder {
   @Override
   protected void configure() {
     bind(UserFactoryImpl.class).to(UserFactory.class).in(Singleton.class);
-    bind(AdresseFactoryImpl.class).to(AdresseFactory.class).in(Singleton.class);
+    bind(AddressFactoryImpl.class).to(AddressFactory.class).in(Singleton.class);
     bind(DAOUserImpl.class).to(DAOUser.class).in(Singleton.class);
     bind(DalServicesImpl.class).to(DalServices.class).in(Singleton.class);
     bind(UserUCCImpl.class).to(UserUCC.class).in(Singleton.class);

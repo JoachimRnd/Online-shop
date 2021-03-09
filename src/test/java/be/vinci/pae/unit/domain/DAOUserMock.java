@@ -15,8 +15,8 @@ public class DAOUserMock implements DAOUser {
   public UserDTO getUser(String login) {
     if (login.equals("login")) {
       User user = (User) userFactory.getUser();
-      user.setPseudo("login");
-      user.setMotDePasse(user.hashPassword("password"));
+      user.setUsername("login");
+      user.setPassword(user.hashPassword("password"));
       return user;
     }
     return null;

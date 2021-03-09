@@ -30,8 +30,8 @@ public class UserUCCImpl implements UserUCC {
 
     user = (User) userFactory.getUser();
 
-    user.setPseudo(login);
-    user.setMotDePasse(password);
+    user.setUsername(login);
+    user.setPassword(password);
 
     daoUser.addUser(user);
 
