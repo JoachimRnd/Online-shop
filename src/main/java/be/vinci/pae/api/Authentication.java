@@ -87,13 +87,7 @@ public class Authentication {
 
     String login = json.get("login").asText();
     String password = json.get("password").asText();
-    UserDTO user = null;
-    try {
-      user = userUCC.register(login, password);
-    } catch (Exception e) {
-      return Response.status(Status.CONFLICT).entity(e.getMessage())
-          .type(MediaType.TEXT_PLAIN).build();
-    }
+    UserDTO user = userUCC.register(login, password);
 
     // Create token
     String token = createToken(user);
