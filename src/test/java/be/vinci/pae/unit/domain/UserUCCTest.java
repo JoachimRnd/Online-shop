@@ -2,7 +2,9 @@ package be.vinci.pae.unit.domain;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import be.vinci.pae.domain.UserUCC;
+import be.vinci.pae.utils.BusinessException;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,11 +32,11 @@ public class UserUCCTest {
 
   @Test
   public void loginBadLoginGoodPasswordTest() {
-    assertThrows(IllegalArgumentException.class, () -> userUCC.login("bad", "password"));
+    assertThrows(BusinessException.class, () -> userUCC.login("bad", "password"));
   }
 
   @Test
   public void loginGoodLoginBadPasswordTest() {
-    assertThrows(IllegalArgumentException.class, () -> userUCC.login("login", "bad"));
+    assertThrows(BusinessException.class, () -> userUCC.login("login", "bad"));
   }
 }

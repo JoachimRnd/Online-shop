@@ -1,12 +1,13 @@
 package be.vinci.pae.api.utils;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import be.vinci.pae.utils.BusinessException;
 import be.vinci.pae.utils.Config;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 @Provider
 public class LoggingExceptionMapper implements ExceptionMapper<Throwable> {
@@ -22,11 +23,14 @@ public class LoggingExceptionMapper implements ExceptionMapper<Throwable> {
 
   /**
    * Get appropriate HTTP status code for an exception.
-   * 
+   *
    * @param exception throwable object
    * @return Status code from internal server error as integer
    */
   private int getStatusCode(Throwable exception) {
+    if (exception instanceof BusinessException) {
+      return Response.Status.UNAUTHORIZED.getStatusCode();
+    }
     if (exception instanceof WebApplicationException) {
       return ((WebApplicationException) exception).getResponse().getStatus();
     }
@@ -35,7 +39,7 @@ public class LoggingExceptionMapper implements ExceptionMapper<Throwable> {
 
   /**
    * Get response body for an exception.
-   * 
+   *
    * @param exception throwable object
    * @return Object error message
    */

@@ -1,6 +1,7 @@
 package be.vinci.pae.domain;
 
 import be.vinci.pae.services.DAOUser;
+import be.vinci.pae.utils.BusinessException;
 import jakarta.inject.Inject;
 
 public class UserUCCImpl implements UserUCC {
@@ -12,20 +13,20 @@ public class UserUCCImpl implements UserUCC {
   private UserFactory userFactory;
 
   @Override
-  public UserDTO login(String login, String password) throws IllegalArgumentException {
+  public UserDTO login(String login, String password) {
 
     User user = (User) this.daoUser.getUser(login);
     if (user == null || !user.checkPassword(password)) {
-      throw new IllegalArgumentException("Pseudo ou mot de passe incorrect");
+      throw new BusinessException("Pseudo ou mot de passe incorrect");
     }
     return user;
   }
 
   @Override
-  public UserDTO register(String login, String password) throws IllegalArgumentException {
+  public UserDTO register(String login, String password) {
     User user = (User) this.daoUser.getUser(login);
     if (user != null) {
-      throw new IllegalArgumentException("Ce pseudo est déjà utilisé");
+      throw new BusinessException("Ce pseudo est déjà utilisé");
     }
 
     user = (User) userFactory.getUser();
