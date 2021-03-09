@@ -1,13 +1,13 @@
 package be.vinci.pae.main;
 
-import be.vinci.pae.utils.ApplicationBinder;
-import be.vinci.pae.utils.Config;
 import java.io.IOException;
 import java.net.URI;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
+import be.vinci.pae.utils.ApplicationBinder;
+import be.vinci.pae.utils.Config;
 
 /**
  * Main class.
@@ -30,10 +30,9 @@ public class Main {
   }
 
   /**
-   * Main method : load properties files, start the server and wait for the user to press enter key
-   * stop the server.
+   * Main method : load properties files, start the server. Wait for the user to press enter key stop the server.
    *
-   * @param args chaine d'arguments
+   * @param args chain of arguments
    * @throws IOException throw input output exceptions
    * @TODO javadoc
    */

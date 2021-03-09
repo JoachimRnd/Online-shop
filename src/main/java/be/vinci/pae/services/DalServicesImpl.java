@@ -12,7 +12,7 @@ public class DalServicesImpl implements DalServices {
   private Connection conn;
 
   /**
-   * Description.
+   * Connection to Database.
    *
    * @TODO Javadoc
    */

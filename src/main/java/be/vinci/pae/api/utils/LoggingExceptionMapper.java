@@ -20,8 +20,11 @@ public class LoggingExceptionMapper implements ExceptionMapper<Throwable> {
     return Response.status(getStatusCode(exception)).entity(exception.getMessage()).build();
   }
 
-  /*
+  /**
    * Get appropriate HTTP status code for an exception.
+   * 
+   * @param exception throwable object
+   * @return Status code from internal server error as integer
    */
   private int getStatusCode(Throwable exception) {
     if (exception instanceof WebApplicationException) {
@@ -30,8 +33,11 @@ public class LoggingExceptionMapper implements ExceptionMapper<Throwable> {
     return Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
   }
 
-  /*
+  /**
    * Get response body for an exception.
+   * 
+   * @param exception throwable object
+   * @return Object error message
    */
   private Object getEntity(Throwable exception) {
     StringWriter errorMsg = new StringWriter();
