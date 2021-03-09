@@ -13,7 +13,6 @@ public class Config {
    * Load the properties file and load the content.
    *
    * @param file file to load
-   * @TODO JavaDoc
    */
   public static void load(String file) {
     props = new Properties();

@@ -1,10 +1,10 @@
 package be.vinci.pae.services;
 
+import be.vinci.pae.utils.Config;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import be.vinci.pae.utils.Config;
 
 public class DalServicesImpl implements DalServices {
 
@@ -13,8 +13,6 @@ public class DalServicesImpl implements DalServices {
 
   /**
    * Connection to Database.
-   *
-   * @TODO Javadoc
    */
   public DalServicesImpl() {
     try {

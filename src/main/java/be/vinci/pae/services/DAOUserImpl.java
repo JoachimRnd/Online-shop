@@ -1,13 +1,13 @@
 package be.vinci.pae.services;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import be.vinci.pae.domain.Adresse;
 import be.vinci.pae.domain.AdresseFactory;
 import be.vinci.pae.domain.UserDTO;
 import be.vinci.pae.domain.UserFactory;
 import jakarta.inject.Inject;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class DAOUserImpl implements DAOUser {
 
@@ -27,8 +27,6 @@ public class DAOUserImpl implements DAOUser {
 
   /**
    * Implementation of User selected by Id and User selected by pseudo.
-   *
-   * @TODO Javadoc
    */
   public DAOUserImpl() {
     querySelectUserByPseudo = "SELECT u.id_utilisateur, u.pseudo, u.mot_de_passe, u.nom, u.prenom, "
