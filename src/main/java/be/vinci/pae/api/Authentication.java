@@ -34,7 +34,6 @@ public class Authentication {
    *
    * @param json DOM event user informations
    * @return a response from the responseBuilder
-   * @TODO JavaDoc
    */
   @POST
   @Path("login")
@@ -75,7 +74,6 @@ public class Authentication {
    *
    * @param json DOM event user informations
    * @return a response from the responseBuilder
-   * @TODO JavaDoc
    */
   @POST
   @Path("register")
@@ -114,7 +112,6 @@ public class Authentication {
    * @param user description
    * @return description
    * @throws WebApplicationException description
-   * @TODO Javadoc
    */
   private String createToken(UserDTO user) {
     String token;

@@ -26,9 +26,7 @@ public class DAOUserImpl implements DAOUser {
   private DalServices dalServices;
 
   /**
-   * Description.
-   *
-   * @TODO Javadoc
+   * Implementation of User selected by Id and User selected by pseudo.
    */
   public DAOUserImpl() {
     querySelectUserByPseudo = "SELECT u.id_utilisateur, u.pseudo, u.mot_de_passe, u.nom, u.prenom, "

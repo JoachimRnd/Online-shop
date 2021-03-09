@@ -30,12 +30,11 @@ public class Main {
   }
 
   /**
-   * Main method : load properties files, start the server and wait for the user to press enter key
+   * Main method : load properties files, start the server. Wait for the user to press enter key
    * stop the server.
    *
-   * @param args chaine d'arguments
+   * @param args chain of arguments
    * @throws IOException throw input output exceptions
-   * @TODO javadoc
    */
   public static void main(String[] args) throws IOException {
     // Load properties file

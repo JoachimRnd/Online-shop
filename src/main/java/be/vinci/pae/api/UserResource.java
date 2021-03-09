@@ -18,9 +18,8 @@ public class UserResource {
   /**
    * get the user related to the request.
    *
-   * @param request incomming client request
+   * @param request incoming client request
    * @return a user
-   * @TODO JavaDoc
    */
   @GET
   @Path("me")

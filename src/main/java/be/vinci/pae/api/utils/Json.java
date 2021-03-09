@@ -11,12 +11,11 @@ public class Json {
   private static final ObjectMapper jsonMapper = new ObjectMapper();
 
   /**
-   * serialize an object using json filters.
+   * Serialize an object using JSON filters.
    *
    * @param <T>  generic return type
    * @param item generic object to serialize
    * @return converted/serialized String
-   * @TODO JavaDoc
    */
   public static <T> String serializePublicJsonView(T item) {
     // serialize using JSON Views : Public View
@@ -31,7 +30,7 @@ public class Json {
   }
 
   /**
-   * filter whole custom json object as a list.
+   * Filter whole custom JSON object as a list.
    *
    * @param <T>         generic return type
    * @param list        list of generic objects
@@ -61,7 +60,7 @@ public class Json {
   }
 
   /**
-   * filter whole custom json object.
+   * Filter whole custom JSON object.
    *
    * @param <T>         generic return type
    * @param item        description

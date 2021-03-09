@@ -10,10 +10,9 @@ public class Config {
   private static Properties props;
 
   /**
-   * load the properties file and load the content.
+   * Load the properties file and load the content.
    *
    * @param file file to load
-   * @TODO JavaDoc
    */
   public static void load(String file) {
     props = new Properties();
