@@ -7,7 +7,7 @@ public class AddressImpl implements Address {
 
   private String street;
   private String buildingNumber;
-  private String UnitNumber;
+  private String unitNumber;
   private String postcode;
   private String commune;
   private String country;
@@ -34,12 +34,12 @@ public class AddressImpl implements Address {
 
   @Override
   public String getUnitNumber() {
-    return UnitNumber;
+    return unitNumber;
   }
 
   @Override
   public void setUnitNumber(String unitNumber) {
-    this.UnitNumber = unitNumber;
+    this.unitNumber = unitNumber;
   }
 
   @Override
@@ -74,11 +74,10 @@ public class AddressImpl implements Address {
 
   @Override
   public String toString() {
-    return "AddressImpl [street=" + street + ", buildingNumber=" + buildingNumber + ", UnitNumber="
-        + UnitNumber + ", postcode=" + postcode + ", commune=" + commune + ", country=" + country
+    return "AddressImpl [street=" + street + ", buildingNumber=" + buildingNumber + ", unitNumber="
+        + unitNumber + ", postcode=" + postcode + ", commune=" + commune + ", country=" + country
         + "]";
   }
-
 
 
 }
