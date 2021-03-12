@@ -8,11 +8,11 @@ import callAPI from "../utils/api.js";
 import PrintError from "./PrintError.js";
 const API_BASE_URL = "/api/auths/";
 
-let loginPage = `<h4 id="pageTitle">Login</h4>
+let loginPage = `<h4 id="pageTitle">Se connecter</h4>
 <form>
 <div class="form-group">
-  <label for="login">Pseudonyme</label>
-  <input class="form-control" id="login" type="text" placeholder="Entrez votre pseudonyme" required="" />
+  <label for="username">Pseudonyme</label>
+  <input class="form-control" id="username" type="text" placeholder="Entrez votre pseudonyme" required="" />
 </div>
 <div class="form-group">
   <label for="password">Mot de passe</label>
@@ -41,12 +41,12 @@ const LoginPage = () => {
 
 const onLogin = async (e) => {
   e.preventDefault();
-  let login = document.getElementById("login");
+  let username = document.getElementById("username");
   let password = document.getElementById("password");
   let rememberMe = document.getElementById("rememberMe");
   
   let user = {
-    login: login.value,
+    username: username.value,
     password: password.value
   };
 
