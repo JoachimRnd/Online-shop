@@ -124,8 +124,8 @@ public class Authentication {
     address.setPostcode(jsonAddress.get("postcode").asText());
     address.setCommune(jsonAddress.get("commune").asText());
     address.setCountry(jsonAddress.get("country").asText());
-    if (jsonAddress.hasNonNull("unitnumber") &&
-        !jsonAddress.get("unitnumber").asText().isEmpty()) {
+    if (jsonAddress.hasNonNull("unitnumber")
+        && !jsonAddress.get("unitnumber").asText().isEmpty()) {
       address.setUnitNumber(jsonAddress.get("unitnumber").asText());
     }
 
