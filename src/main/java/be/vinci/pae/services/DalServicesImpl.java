@@ -34,6 +34,7 @@ public class DalServicesImpl implements DalServices {
     return null;
   }
 
+  @Override
   public PreparedStatement getPreparedStatementAdd(String query) {
     try {
       return conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);

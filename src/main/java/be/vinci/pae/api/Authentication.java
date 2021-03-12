@@ -86,27 +86,27 @@ public class Authentication {
   public Response register(JsonNode json) {
     JsonNode jsonAddress = json.get("address");
     // Get and check credentials
-    if (!json.hasNonNull("username") ||
-        json.get("username").asText().isEmpty() ||
-        !json.hasNonNull("lastname") ||
-        json.get("lastname").asText().isEmpty() ||
-        !json.hasNonNull("firstname") ||
-        json.get("firstname").asText().isEmpty() ||
-        !json.hasNonNull("email") ||
-        json.get("email").asText().isEmpty() ||
-        !json.hasNonNull("password") ||
-        json.get("password").asText().isEmpty() ||
-        !json.hasNonNull("address") ||
-        !jsonAddress.hasNonNull("street") ||
-        jsonAddress.get("street").asText().isEmpty() ||
-        !jsonAddress.hasNonNull("buildingnumber") ||
-        jsonAddress.get("buildingnumber").asText().isEmpty() ||
-        !jsonAddress.hasNonNull("postcode") ||
-        jsonAddress.get("postcode").asText().isEmpty() ||
-        !jsonAddress.hasNonNull("commune") ||
-        jsonAddress.get("commune").asText().isEmpty() ||
-        !jsonAddress.hasNonNull("country") ||
-        jsonAddress.get("country").asText().isEmpty()) {
+    if (!json.hasNonNull("username")
+        || json.get("username").asText().isEmpty()
+        || !json.hasNonNull("lastname")
+        || json.get("lastname").asText().isEmpty()
+        || !json.hasNonNull("firstname")
+        || json.get("firstname").asText().isEmpty()
+        || !json.hasNonNull("email")
+        || json.get("email").asText().isEmpty()
+        || !json.hasNonNull("password")
+        || json.get("password").asText().isEmpty()
+        || !json.hasNonNull("address")
+        || !jsonAddress.hasNonNull("street")
+        || jsonAddress.get("street").asText().isEmpty()
+        || !jsonAddress.hasNonNull("buildingnumber")
+        || jsonAddress.get("buildingnumber").asText().isEmpty()
+        || !jsonAddress.hasNonNull("postcode")
+        || jsonAddress.get("postcode").asText().isEmpty()
+        || !jsonAddress.hasNonNull("commune")
+        || jsonAddress.get("commune").asText().isEmpty()
+        || !jsonAddress.hasNonNull("country")
+        || jsonAddress.get("country").asText().isEmpty()) {
       return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")
           .type(MediaType.TEXT_PLAIN).build();
     }
