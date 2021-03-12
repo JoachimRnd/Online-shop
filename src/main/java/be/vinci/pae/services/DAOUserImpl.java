@@ -56,19 +56,19 @@ public class DAOUserImpl implements DAOUser {
         + "u.registration_date, u.valid_registration, u.user_type FROM project.addresses a,"
         + " project.users u WHERE u.email = ? AND u.address = a.address_id";
     querySelectAddressIdWithUnitNumber =
-        "SELECT a.id FROM project.address a WHERE a.street = ? AND "
+        "SELECT a.address_id FROM project.addresses a WHERE a.street = ? AND "
             + "a.building_number = ? AND a.postcode = ? AND "
             + "a.commune = ? AND a.country = ? AND a.unit_number = ?";
     querySelectAddressIdWithoutUnitNumber =
-        "SELECT a.id FROM project.address a WHERE a.street = ? AND "
+        "SELECT a.address_id FROM project.addresses a WHERE a.street = ? AND "
             + "a.building_number = ? AND a.postcode = ? AND a.commune = ? AND a.country = ?";
-    queryAddAddressWithUnitNumber = "INSERT INTO project.address a (a.address_id, a.street, "
-        + "a.building_number, a.postcode, a.commune, a.country, a.unit_number) "
+    queryAddAddressWithUnitNumber = "INSERT INTO project.addresses (address_id, street, "
+        + "building_number, postcode, commune, country, unit_number) "
         + "VALUES (DEFAULT, ?, ?, ?, ?, ?, ?)";
-    queryAddAddressWithoutUnitNumber = "INSERT INTO project.address a (a.address_id, a.street, "
-        + "a.building_number, a.postcode, a.commune, a.country) VALUES (DEFAULT, ?, ?, ?, ?, ?)";
-    queryAddUser = "INSERT INTO projet.users u (u.user_id, u.username, u.last_name, u.first_name, "
-        + "u.email, u.password, u.address, u.registration_date, u.valid_registration) "
+    queryAddAddressWithoutUnitNumber = "INSERT INTO project.addresses (address_id, street, "
+        + "building_number, postcode, commune, country) VALUES (DEFAULT, ?, ?, ?, ?, ?)";
+    queryAddUser = "INSERT INTO project.users (user_id, username, last_name, first_name, "
+        + "email, password, address, registration_date, valid_registration) "
         + "VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?)";
   }
 
@@ -152,7 +152,7 @@ public class DAOUserImpl implements DAOUser {
   @Override
   public int addUser(UserDTO user) {
     //get address if exist (récup id et mettre dans user sinon add address)
-    int addressId = -1;
+    long addressId = -1;
     try {
       PreparedStatement selectAddressId;
       if (user.getAddress().getUnitNumber() != null) {
@@ -176,7 +176,7 @@ public class DAOUserImpl implements DAOUser {
       selectAddressId.setString(5, user.getAddress().getCountry());
       try (ResultSet rs = selectAddressId.executeQuery()) {
         if (rs.next()) {
-          addressId = rs.getInt("id");
+          addressId = rs.getLong("address_id");
         }
       }
     } catch (SQLException e) {
@@ -189,14 +189,14 @@ public class DAOUserImpl implements DAOUser {
         if (user.getAddress().getUnitNumber() != null) {
           if (addAddressWithUnitNumber == null) {
             addAddressWithUnitNumber = this.dalServices
-                .getPreparedStatement(queryAddAddressWithUnitNumber);
+                .getPreparedStatementAdd(queryAddAddressWithUnitNumber);
           }
           addAddress = addAddressWithUnitNumber;
           addAddress.setString(6, user.getAddress().getUnitNumber());
         } else {
           if (addAddressWithoutUnitNumber == null) {
             addAddressWithoutUnitNumber = this.dalServices
-                .getPreparedStatement(queryAddAddressWithoutUnitNumber);
+                .getPreparedStatementAdd(queryAddAddressWithoutUnitNumber);
           }
           addAddress = addAddressWithoutUnitNumber;
         }
@@ -206,11 +206,11 @@ public class DAOUserImpl implements DAOUser {
         addAddress.setString(4, user.getAddress().getCommune());
         addAddress.setString(5, user.getAddress().getCountry());
 
-        addAddress.execute();
+        addAddress.executeUpdate();
 
         try (ResultSet rs = addAddress.getGeneratedKeys()) {
           if (rs.next()) {
-            addressId = rs.getInt(1);
+            addressId = rs.getLong(1);
           }
         }
       } catch (SQLException e) {
@@ -223,20 +223,22 @@ public class DAOUserImpl implements DAOUser {
     try {
       if (addUser == null) {
         addUser = this.dalServices
-            .getPreparedStatement(queryAddUser);
+            .getPreparedStatementAdd(queryAddUser);
       }
       addUser.setString(1, user.getUsername());
       addUser.setString(2, user.getLastName());
       addUser.setString(3, user.getFirstName());
       addUser.setString(4, user.getEmail());
       addUser.setString(5, user.getPassword());
-      addUser.setInt(6, addressId);
+      addUser.setLong(6, addressId);
       addUser.setTimestamp(7, Timestamp.valueOf(user.getRegistrationDate()));
       addUser.setBoolean(8, user.isValidRegistration());
 
+      addUser.execute();
+
       try (ResultSet rs = addUser.getGeneratedKeys()) {
         if (rs.next()) {
-          addressId = rs.getInt(1);
+          userId = rs.getInt(1);
         }
       }
     } catch (SQLException e) {

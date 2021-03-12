@@ -84,6 +84,7 @@ public class Authentication {
   @Path("register")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response register(JsonNode json) {
+    JsonNode jsonAddress = json.get("address");
     // Get and check credentials
     if (!json.hasNonNull("username") ||
         json.get("username").asText().isEmpty() ||
@@ -96,17 +97,16 @@ public class Authentication {
         !json.hasNonNull("password") ||
         json.get("password").asText().isEmpty() ||
         !json.hasNonNull("address") ||
-        json.get("address").asText().isEmpty() ||
-        !json.hasNonNull("address.street") ||
-        json.get("address.street").asText().isEmpty() ||
-        !json.hasNonNull("address.buildingnumber") ||
-        json.get("address.buildingnumber").asText().isEmpty() ||
-        !json.hasNonNull("address.postcode") ||
-        json.get("address.postcode").asText().isEmpty() ||
-        !json.hasNonNull("address.commune") ||
-        json.get("address.commune").asText().isEmpty() ||
-        !json.hasNonNull("address.country") ||
-        json.get("address.country").asText().isEmpty()) {
+        !jsonAddress.hasNonNull("street") ||
+        jsonAddress.get("street").asText().isEmpty() ||
+        !jsonAddress.hasNonNull("buildingnumber") ||
+        jsonAddress.get("buildingnumber").asText().isEmpty() ||
+        !jsonAddress.hasNonNull("postcode") ||
+        jsonAddress.get("postcode").asText().isEmpty() ||
+        !jsonAddress.hasNonNull("commune") ||
+        jsonAddress.get("commune").asText().isEmpty() ||
+        !jsonAddress.hasNonNull("country") ||
+        jsonAddress.get("country").asText().isEmpty()) {
       return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")
           .type(MediaType.TEXT_PLAIN).build();
     }
@@ -119,14 +119,14 @@ public class Authentication {
     user.setEmail(json.get("email").asText());
     user.setPassword(json.get("password").asText());
     Address address = addressFactory.getAddress();
-    address.setStreet(json.get("address.street").asText());
-    address.setBuildingNumber(json.get("address.buildingnumber").asText());
-    address.setPostcode(json.get("address.postcode").asText());
-    address.setCommune(json.get("address.commune").asText());
-    address.setCountry(json.get("address.country").asText());
-    if (json.hasNonNull("address.unitnumber") &&
-        !json.get("address.unitnumber").asText().isEmpty()) {
-      address.setUnitNumber(json.get("address.unitnumber").asText());
+    address.setStreet(jsonAddress.get("street").asText());
+    address.setBuildingNumber(jsonAddress.get("buildingnumber").asText());
+    address.setPostcode(jsonAddress.get("postcode").asText());
+    address.setCommune(jsonAddress.get("commune").asText());
+    address.setCountry(jsonAddress.get("country").asText());
+    if (jsonAddress.hasNonNull("unitnumber") &&
+        !jsonAddress.get("unitnumber").asText().isEmpty()) {
+      address.setUnitNumber(jsonAddress.get("unitnumber").asText());
     }
 
     user.setAddress(address);

@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class DalServicesImpl implements DalServices {
 
@@ -27,6 +28,15 @@ public class DalServicesImpl implements DalServices {
   public PreparedStatement getPreparedStatement(String query) {
     try {
       return conn.prepareStatement(query);
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  public PreparedStatement getPreparedStatementAdd(String query) {
+    try {
+      return conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
     } catch (SQLException e) {
       e.printStackTrace();
     }
