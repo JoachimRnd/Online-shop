@@ -12,8 +12,8 @@ public class DAOUserMock implements DAOUser {
   UserFactory userFactory;
 
   @Override
-  public UserDTO getUser(String login) {
-    if (login.equals("login")) {
+  public UserDTO getUserByUsername(String username) {
+    if (username.equals("login")) {
       User user = (User) userFactory.getUser();
       user.setUsername("login");
       user.setPassword(user.hashPassword("password"));
@@ -23,11 +23,17 @@ public class DAOUserMock implements DAOUser {
   }
 
   @Override
-  public UserDTO getUser(int id) {
+  public UserDTO getUserByEmail(String email) {
     return null;
   }
 
   @Override
-  public void addUser(UserDTO user) {
+  public UserDTO getUserById(int id) {
+    return null;
+  }
+
+  @Override
+  public int addUser(UserDTO user) {
+    return 0;
   }
 }

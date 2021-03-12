@@ -1,7 +1,10 @@
 package be.vinci.pae.api;
 
 import be.vinci.pae.api.utils.Json;
+import be.vinci.pae.domain.Address;
+import be.vinci.pae.domain.AddressFactory;
 import be.vinci.pae.domain.UserDTO;
+import be.vinci.pae.domain.UserFactory;
 import be.vinci.pae.domain.UserUCC;
 import be.vinci.pae.utils.Config;
 import com.auth0.jwt.JWT;
@@ -18,6 +21,7 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import java.time.LocalDateTime;
 
 @Singleton
 @Path("/auths")
@@ -28,6 +32,12 @@ public class Authentication {
 
   @Inject
   private UserUCC userUCC;
+
+  @Inject
+  private UserFactory userFactory;
+
+  @Inject
+  private AddressFactory addressFactory;
 
   /**
    * Checking the credentials of a user, create a token, get the user object associate.
@@ -40,17 +50,17 @@ public class Authentication {
   @Consumes(MediaType.APPLICATION_JSON)
   public Response login(JsonNode json) {
     // Get and check credentials
-    if (!json.hasNonNull("login") || !json.hasNonNull("password")
-        || json.get("login").asText().isEmpty() || json.get("password").asText().isEmpty()) {
+    if (!json.hasNonNull("username") || !json.hasNonNull("password")
+        || json.get("username").asText().isEmpty() || json.get("password").asText().isEmpty()) {
       return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")
           .type(MediaType.TEXT_PLAIN).build();
     }
 
-    String login = json.get("login").asText();
+    String username = json.get("username").asText();
     String password = json.get("password").asText();
 
     // Try to login
-    UserDTO user = userUCC.login(login, password);
+    UserDTO user = userUCC.login(username, password);
 
     // Create token
     String token = createToken(user);
@@ -74,17 +84,57 @@ public class Authentication {
   @Path("register")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response register(JsonNode json) {
+    JsonNode jsonAddress = json.get("address");
     // Get and check credentials
-    if (!json.hasNonNull("login") || !json.hasNonNull("password")) {
+    if (!json.hasNonNull("username")
+        || json.get("username").asText().isEmpty()
+        || !json.hasNonNull("lastname")
+        || json.get("lastname").asText().isEmpty()
+        || !json.hasNonNull("firstname")
+        || json.get("firstname").asText().isEmpty()
+        || !json.hasNonNull("email")
+        || json.get("email").asText().isEmpty()
+        || !json.hasNonNull("password")
+        || json.get("password").asText().isEmpty()
+        || !json.hasNonNull("address")
+        || !jsonAddress.hasNonNull("street")
+        || jsonAddress.get("street").asText().isEmpty()
+        || !jsonAddress.hasNonNull("buildingnumber")
+        || jsonAddress.get("buildingnumber").asText().isEmpty()
+        || !jsonAddress.hasNonNull("postcode")
+        || jsonAddress.get("postcode").asText().isEmpty()
+        || !jsonAddress.hasNonNull("commune")
+        || jsonAddress.get("commune").asText().isEmpty()
+        || !jsonAddress.hasNonNull("country")
+        || jsonAddress.get("country").asText().isEmpty()) {
       return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")
           .type(MediaType.TEXT_PLAIN).build();
     }
 
-    String login = json.get("login").asText();
-    String password = json.get("password").asText();
+    UserDTO user = userFactory.getUser();
+
+    user.setUsername(json.get("username").asText());
+    user.setFirstName(json.get("firstname").asText());
+    user.setLastName(json.get("lastname").asText());
+    user.setEmail(json.get("email").asText());
+    user.setPassword(json.get("password").asText());
+    Address address = addressFactory.getAddress();
+    address.setStreet(jsonAddress.get("street").asText());
+    address.setBuildingNumber(jsonAddress.get("buildingnumber").asText());
+    address.setPostcode(jsonAddress.get("postcode").asText());
+    address.setCommune(jsonAddress.get("commune").asText());
+    address.setCountry(jsonAddress.get("country").asText());
+    if (jsonAddress.hasNonNull("unitnumber")
+        && !jsonAddress.get("unitnumber").asText().isEmpty()) {
+      address.setUnitNumber(jsonAddress.get("unitnumber").asText());
+    }
+
+    user.setAddress(address);
+    user.setRegistrationDate(LocalDateTime.now());
+    user.setValidRegistration(false);
 
     //Try to register
-    UserDTO user = userUCC.register(login, password);
+    user = userUCC.register(user);
 
     // Create token
     String token = createToken(user);

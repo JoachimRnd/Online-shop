@@ -8,13 +8,26 @@ import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 public class DAOUserImpl implements DAOUser {
 
   private PreparedStatement selectUserByUsername;
   private PreparedStatement selectUserById;
+  private PreparedStatement selectUserByEmail;
+  private PreparedStatement selectAddressIdWithUnitNumber;
+  private PreparedStatement selectAddressIdWithoutUnitNumber;
+  private PreparedStatement addAddressWithUnitNumber;
+  private PreparedStatement addAddressWithoutUnitNumber;
+  private PreparedStatement addUser;
   private String querySelectUserByUsername;
   private String querySelectUserById;
+  private String querySelectUserByEmail;
+  private String querySelectAddressIdWithUnitNumber;
+  private String querySelectAddressIdWithoutUnitNumber;
+  private String queryAddAddressWithUnitNumber;
+  private String queryAddAddressWithoutUnitNumber;
+  private String queryAddUser;
 
   @Inject
   private UserFactory userFactory;
@@ -38,15 +51,34 @@ public class DAOUserImpl implements DAOUser {
         + "a.street, a.building_number, a.unit_number, a.postcode, a.commune, a.country, u.email,"
         + "u.registration_date, u.valid_registration, u.user_type FROM project.addresses a,"
         + " project.users u WHERE u.user_id = ? AND u.address = a.address_id";
+    querySelectUserByEmail = "SELECT u.user_id, u.username, u.password, u.last_name, u.first_name, "
+        + "a.street, a.building_number, a.unit_number, a.postcode, a.commune, a.country, u.email,"
+        + "u.registration_date, u.valid_registration, u.user_type FROM project.addresses a,"
+        + " project.users u WHERE u.email = ? AND u.address = a.address_id";
+    querySelectAddressIdWithUnitNumber =
+        "SELECT a.address_id FROM project.addresses a WHERE a.street = ? AND "
+            + "a.building_number = ? AND a.postcode = ? AND "
+            + "a.commune = ? AND a.country = ? AND a.unit_number = ?";
+    querySelectAddressIdWithoutUnitNumber =
+        "SELECT a.address_id FROM project.addresses a WHERE a.street = ? AND "
+            + "a.building_number = ? AND a.postcode = ? AND a.commune = ? AND a.country = ?";
+    queryAddAddressWithUnitNumber = "INSERT INTO project.addresses (address_id, street, "
+        + "building_number, postcode, commune, country, unit_number) "
+        + "VALUES (DEFAULT, ?, ?, ?, ?, ?, ?)";
+    queryAddAddressWithoutUnitNumber = "INSERT INTO project.addresses (address_id, street, "
+        + "building_number, postcode, commune, country) VALUES (DEFAULT, ?, ?, ?, ?, ?)";
+    queryAddUser = "INSERT INTO project.users (user_id, username, last_name, first_name, "
+        + "email, password, address, registration_date, valid_registration) "
+        + "VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?)";
   }
 
   @Override
-  public UserDTO getUser(String login) {
+  public UserDTO getUserByUsername(String username) {
     try {
       if (selectUserByUsername == null) {
         selectUserByUsername = this.dalServices.getPreparedStatement(querySelectUserByUsername);
       }
-      selectUserByUsername.setString(1, login);
+      selectUserByUsername.setString(1, username);
       try (ResultSet rs = selectUserByUsername.executeQuery()) {
         UserDTO user = createUser(rs);
         return user;
@@ -58,7 +90,24 @@ public class DAOUserImpl implements DAOUser {
   }
 
   @Override
-  public UserDTO getUser(int id) {
+  public UserDTO getUserByEmail(String email) {
+    try {
+      if (selectUserByEmail == null) {
+        selectUserByEmail = this.dalServices.getPreparedStatement(querySelectUserByEmail);
+      }
+      selectUserByEmail.setString(1, email);
+      try (ResultSet rs = selectUserByEmail.executeQuery()) {
+        UserDTO user = createUser(rs);
+        return user;
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  @Override
+  public UserDTO getUserById(int id) {
     try {
       if (selectUserById == null) {
         selectUserById = this.dalServices.getPreparedStatement(querySelectUserById);
@@ -101,7 +150,102 @@ public class DAOUserImpl implements DAOUser {
 
   // @TODO Implémenter l'ajout d'un User
   @Override
-  public void addUser(UserDTO user) {
+  public int addUser(UserDTO user) {
+    //get address if exist (récup id et mettre dans user sinon add address)
+    long addressId = -1;
+    try {
+      PreparedStatement selectAddressId;
+      if (user.getAddress().getUnitNumber() != null) {
+        if (selectAddressIdWithUnitNumber == null) {
+          selectAddressIdWithUnitNumber = this.dalServices
+              .getPreparedStatement(querySelectAddressIdWithUnitNumber);
+        }
+        selectAddressId = selectAddressIdWithUnitNumber;
+        selectAddressId.setString(6, user.getAddress().getUnitNumber());
+      } else {
+        if (selectAddressIdWithoutUnitNumber == null) {
+          selectAddressIdWithoutUnitNumber = this.dalServices
+              .getPreparedStatement(querySelectAddressIdWithoutUnitNumber);
+        }
+        selectAddressId = selectAddressIdWithoutUnitNumber;
+      }
+      selectAddressId.setString(1, user.getAddress().getStreet());
+      selectAddressId.setString(2, user.getAddress().getBuildingNumber());
+      selectAddressId.setString(3, user.getAddress().getPostcode());
+      selectAddressId.setString(4, user.getAddress().getCommune());
+      selectAddressId.setString(5, user.getAddress().getCountry());
+      try (ResultSet rs = selectAddressId.executeQuery()) {
+        if (rs.next()) {
+          addressId = rs.getLong("address_id");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
 
+    if (addressId == -1) {
+      try {
+        PreparedStatement addAddress;
+        if (user.getAddress().getUnitNumber() != null) {
+          if (addAddressWithUnitNumber == null) {
+            addAddressWithUnitNumber = this.dalServices
+                .getPreparedStatementAdd(queryAddAddressWithUnitNumber);
+          }
+          addAddress = addAddressWithUnitNumber;
+          addAddress.setString(6, user.getAddress().getUnitNumber());
+        } else {
+          if (addAddressWithoutUnitNumber == null) {
+            addAddressWithoutUnitNumber = this.dalServices
+                .getPreparedStatementAdd(queryAddAddressWithoutUnitNumber);
+          }
+          addAddress = addAddressWithoutUnitNumber;
+        }
+        addAddress.setString(1, user.getAddress().getStreet());
+        addAddress.setString(2, user.getAddress().getBuildingNumber());
+        addAddress.setString(3, user.getAddress().getPostcode());
+        addAddress.setString(4, user.getAddress().getCommune());
+        addAddress.setString(5, user.getAddress().getCountry());
+
+        addAddress.executeUpdate();
+
+        try (ResultSet rs = addAddress.getGeneratedKeys()) {
+          if (rs.next()) {
+            addressId = rs.getLong(1);
+          }
+        }
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
+
+    //add user et recup id
+    int userId = -1;
+    try {
+      if (addUser == null) {
+        addUser = this.dalServices
+            .getPreparedStatementAdd(queryAddUser);
+      }
+      addUser.setString(1, user.getUsername());
+      addUser.setString(2, user.getLastName());
+      addUser.setString(3, user.getFirstName());
+      addUser.setString(4, user.getEmail());
+      addUser.setString(5, user.getPassword());
+      addUser.setLong(6, addressId);
+      addUser.setTimestamp(7, Timestamp.valueOf(user.getRegistrationDate()));
+      addUser.setBoolean(8, user.isValidRegistration());
+
+      addUser.execute();
+
+      try (ResultSet rs = addUser.getGeneratedKeys()) {
+        if (rs.next()) {
+          userId = rs.getInt(1);
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+    //return id
+    return userId;
   }
 }

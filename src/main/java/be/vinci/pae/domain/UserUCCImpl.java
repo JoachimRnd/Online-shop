@@ -9,13 +9,10 @@ public class UserUCCImpl implements UserUCC {
   @Inject
   private DAOUser daoUser;
 
-  @Inject
-  private UserFactory userFactory;
-
   @Override
-  public UserDTO login(String login, String password) {
+  public UserDTO login(String username, String password) {
 
-    User user = (User) this.daoUser.getUser(login);
+    User user = (User) this.daoUser.getUserByUsername(username);
     if (user == null || !user.checkPassword(password)) {
       throw new BusinessException("Pseudo ou mot de passe incorrect");
     }
@@ -23,18 +20,23 @@ public class UserUCCImpl implements UserUCC {
   }
 
   @Override
-  public UserDTO register(String login, String password) {
-    User user = (User) this.daoUser.getUser(login);
+  public UserDTO register(UserDTO newUser) {
+    User user = (User) this.daoUser.getUserByUsername(newUser.getUsername());
     if (user != null) {
       throw new BusinessException("Ce pseudo est déjà utilisé");
     }
+    user = (User) this.daoUser.getUserByEmail(newUser.getEmail());
+    if (user != null) {
+      throw new BusinessException("Cet Email est déjà utilisé");
+    }
 
-    user = (User) userFactory.getUser();
+    user = (User) newUser;
 
-    user.setUsername(login);
-    user.setPassword(password);
+    user.setPassword(user.hashPassword(user.getPassword()));
 
-    daoUser.addUser(user);
+    int id = daoUser.addUser(newUser);
+
+    user.setId(id);
 
     return user;
   }
