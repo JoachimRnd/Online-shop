@@ -1,24 +1,53 @@
+import { RedirectUrl } from "./Router.js";
+import Navbar from "./Navbar.js";
+import callAPI from "../utils/api.js";
+import PrintError from "./PrintError.js";
+const API_BASE_URL = "/api/upload/";
+
 let homePage = `<h4 id="pageTitle">Home</h4>
-<p>This frontend runs on Webpack and uses the Customizable Analog Clock npm package. 
-Furthermore, the frontend has a proxy that allows to redirect 
-the API requests.</p>
+<form>
+  <input id="file" type="file" />
+  <input type="submit" value="Upload"/>
+  <div id="outputDiv"></div>
+</form>
 `;
 
-import { AnalogClock } from 'customizable-analog-clock';
 
-const HomePage = async () => {  
+const HomePage = () => {  
   let page = document.querySelector("#page");
-  page.innerHTML  = homePage + `<div class="d-flex justify-content-center">
-                      <div 
-                          id="my-clock"                          
-                          style="width: 200px; height: 200px;"                         
-                      </div>
-                        </div>`; 
-  const clock = new AnalogClock({
-    htmlElement : 'my-clock',
-    showIndicators: true,
-});
- 
+  page.innerHTML  = homePage;
+
+  let uploadForm = document.querySelector("form");
+  uploadForm.addEventListener("submit", onUpload);
+};
+
+const onUpload = async (e) => {
+  e.preventDefault();  
+  let uploadForm = document.querySelector("form");
+
+  let file = document.getElementById("file");
+  let oData = new FormData(uploadForm);
+
+
+  try {
+    const upload = await callAPI(
+      API_BASE_URL + "image",
+      "POST",
+      undefined,
+      oData
+    );
+    onFileUploaded(upload);
+  } catch (err) {
+    console.error("HomePage::onUpload", err);
+    PrintError(err);
+  }
+};
+
+const onFileUploaded = (fileData) => {
+  // re-render the navbar for the authenticated user
+  console.log(fileData);
+  Navbar();
+  RedirectUrl("/");
 };
 
 export default HomePage;

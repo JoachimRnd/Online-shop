@@ -1,13 +1,14 @@
 package be.vinci.pae.main;
 
-import be.vinci.pae.utils.ApplicationBinder;
-import be.vinci.pae.utils.Config;
 import java.io.IOException;
 import java.net.URI;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.jackson.JacksonFeature;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
+import be.vinci.pae.utils.ApplicationBinder;
+import be.vinci.pae.utils.Config;
 
 /**
  * Main class.
@@ -23,6 +24,7 @@ public class Main {
     // Create a resource config that scans for JAX-RS resources and providers
     final ResourceConfig rc = new ResourceConfig().packages("be.vinci.pae.api")
         .register(JacksonFeature.class).register(ApplicationBinder.class)
+        .packages("org.glassfish.jersey.examples.multipart").register(MultiPartFeature.class)
         .property("jersey.config.server.wadl.disableWadl", true);
 
     // Create and start a new instance of grizzly http server
@@ -30,8 +32,7 @@ public class Main {
   }
 
   /**
-   * Main method : load properties files, start the server. Wait for the user to press enter key
-   * stop the server.
+   * Main method : load properties files, start the server. Wait for the user to press enter key stop the server.
    *
    * @param args chain of arguments
    * @throws IOException throw input output exceptions

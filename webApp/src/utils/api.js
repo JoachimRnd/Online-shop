@@ -24,7 +24,7 @@ async function callAPI(endpoint, method = "get", token, data) {
     method.toLowerCase() === "patch" ||
     method.toLowerCase() === "put"
   )
-    headers.append("Content-Type", "application/json");
+    headers.append("Content-Type", "multipart/form-data");
   options.headers = headers;
   try {
     const response = await fetch(endpoint, options);
