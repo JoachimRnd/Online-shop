@@ -9,9 +9,6 @@ public class UserUCCImpl implements UserUCC {
   @Inject
   private DAOUser daoUser;
 
-  @Inject
-  private UserFactory userFactory;
-
   @Override
   public UserDTO login(String username, String password) {
 
