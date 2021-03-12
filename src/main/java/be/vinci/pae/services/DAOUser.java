@@ -4,9 +4,11 @@ import be.vinci.pae.domain.UserDTO;
 
 public interface DAOUser {
 
-  UserDTO getUser(String login);
-  
-  UserDTO getUser(int id);
+  UserDTO getUserByUsername(String username);
 
-  void addUser(UserDTO user);
+  UserDTO getUserByEmail(String email);
+
+  UserDTO getUserById(int id);
+
+  int addUser(UserDTO user);
 }

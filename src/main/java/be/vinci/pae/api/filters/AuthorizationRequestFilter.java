@@ -42,7 +42,7 @@ public class AuthorizationRequestFilter implements ContainerRequestFilter {
         throw new WebApplicationException("Malformed token", e, Status.UNAUTHORIZED);
       }
       requestContext.setProperty("user",
-          this.dataService.getUser(decodedToken.getClaim("user").asInt()));
+          this.dataService.getUserById(decodedToken.getClaim("user").asInt()));
     }
   }
 
