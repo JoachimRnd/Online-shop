@@ -1,12 +1,5 @@
 package be.vinci.pae.api;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DefaultValue;
@@ -14,6 +7,13 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 @Singleton
 @Path("/upload")
@@ -27,7 +27,8 @@ public class Upload {
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
     System.out.println("filedetail :" + fileDetail);
     // Your local disk path where you want to store the file
-    String uploadedFileLocation = "D://uploadedFiles/" + fileDetail.getFileName();
+    String uploadedFileLocation =
+        ".\\images\\" + fileDetail.getFileName();
     System.out.println(uploadedFileLocation);
     // save it
     File objFile = new File(uploadedFileLocation);
