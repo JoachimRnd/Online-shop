@@ -1,32 +1,37 @@
 DROP SCHEMA IF EXISTS project CASCADE;
 CREATE SCHEMA project;
 
-CREATE TABLE project.addresses (
-	address_id SERIAL PRIMARY KEY,
-	street VARCHAR(100) NOT NULL,
-	building_number VARCHAR(100) NOT NULL,
-	unit_number VARCHAR(100) NULL,
-	postcode VARCHAR(100) NOT NULL,
-	commune VARCHAR(100) NOT NULL,
-	country VARCHAR(100) NOT NULL
+CREATE TABLE project.addresses
+(
+    address_id      SERIAL PRIMARY KEY,
+    street          VARCHAR(100) NOT NULL,
+    building_number VARCHAR(100) NOT NULL,
+    unit_number     VARCHAR(100) NULL,
+    postcode        VARCHAR(100) NOT NULL,
+    commune         VARCHAR(100) NOT NULL,
+    country         VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE project.users (
-	user_id SERIAL PRIMARY KEY,
-	username VARCHAR(100) NOT NULL,
-	password CHARACTER(60) NOT NULL,
-	last_name VARCHAR(100) NOT NULL,
-	first_name VARCHAR(100) NOT NULL,
-	address INTEGER REFERENCES project.addresses (address_id) NOT NULL,
-	email VARCHAR(100) NOT NULL,
-	registration_date TIMESTAMP NOT NULL,
-	valid_registration BOOLEAN NOT NULL,
-	user_type INTEGER NOT NULL
+CREATE TABLE project.users
+(
+    user_id            SERIAL PRIMARY KEY,
+    username           VARCHAR(100)                                      NOT NULL,
+    password           CHARACTER(60)                                     NOT NULL,
+    last_name          VARCHAR(100)                                      NOT NULL,
+    first_name         VARCHAR(100)                                      NOT NULL,
+    address            INTEGER REFERENCES project.addresses (address_id) NOT NULL,
+    email              VARCHAR(100)                                      NOT NULL,
+    registration_date  TIMESTAMP                                         NOT NULL,
+    valid_registration BOOLEAN                                           NOT NULL,
+    user_type          INTEGER
 );
 
-INSERT INTO project.addresses VALUES (DEFAULT, 'street', 'building_number', 'unit_number', 'postcode', 'commune', 'country');
+INSERT INTO project.addresses
+VALUES (DEFAULT, 'street', 'building_number', 'unit_number', 'postcode', 'commune', 'country');
 
-INSERT INTO project.users VALUES (DEFAULT, 'test', '$2a$10$qSBZrtuxTN3tM///i5rM8Opd3ioOk2vG.olTPH/UZqP8rjCtg19Zm', 'last_name', 'first_name', 1, 'email', NOW(), 'true', '0');
+INSERT INTO project.users
+VALUES (DEFAULT, 'test', '$2a$10$qSBZrtuxTN3tM///i5rM8Opd3ioOk2vG.olTPH/UZqP8rjCtg19Zm',
+        'last_name', 'first_name', 1, 'email', NOW(), 'true', '0');
 /*
 SELECT * FROM project.addresses;
 
