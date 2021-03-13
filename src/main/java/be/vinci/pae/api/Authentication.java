@@ -1,14 +1,14 @@
 package be.vinci.pae.api;
 
-import be.vinci.pae.api.utils.Json;
-import be.vinci.pae.domain.UserDTO;
-import be.vinci.pae.domain.UserUCC;
-import be.vinci.pae.utils.Config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import be.vinci.pae.api.utils.Json;
+import be.vinci.pae.domain.UserDTO;
+import be.vinci.pae.domain.UserUCC;
+import be.vinci.pae.utils.Config;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -46,7 +46,7 @@ public class Authentication {
           .type(MediaType.TEXT_PLAIN).build();
     }
 
-    String login = json.get("login").asText();
+    String login = json.get("username").asText();
     String password = json.get("password").asText();
 
     // Try to login
@@ -83,7 +83,7 @@ public class Authentication {
     String login = json.get("login").asText();
     String password = json.get("password").asText();
 
-    //Try to register
+    // Try to register
     UserDTO user = userUCC.register(login, password);
 
     // Create token

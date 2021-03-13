@@ -16,7 +16,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 @Singleton
-@Path("/upload")
+@Path("/uploads")
 public class Upload {
 
   @POST
@@ -25,9 +25,8 @@ public class Upload {
   public Response uploadFile(@DefaultValue("true") @FormDataParam("enabled") boolean enabled,
       @FormDataParam("file") InputStream uploadedInputStream,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
-    System.out.println("filedetail :" + fileDetail);
     // Your local disk path where you want to store the file
-    String uploadedFileLocation = "D://uploadedFiles/" + fileDetail.getFileName();
+    String uploadedFileLocation = ".\\images\\" + fileDetail.getFileName();
     System.out.println(uploadedFileLocation);
     // save it
     File objFile = new File(uploadedFileLocation);

@@ -1,11 +1,11 @@
 import { RedirectUrl } from "./Router.js";
 import Navbar from "./Navbar.js";
-import callAPI from "../utils/api.js";
+import { callAPIFormData } from "../utils/api.js";
 import PrintError from "./PrintError.js";
-const API_BASE_URL = "/api/upload/";
+const API_BASE_URL = "/api/uploads/";
 
 let homePage = `<h4 id="pageTitle">Home</h4>
-<form>
+<form id="uploadForm">
   <input id="file" type="file" />
   <input type="submit" value="Upload"/>
   <div id="outputDiv"></div>
@@ -23,20 +23,17 @@ const HomePage = () => {
 
 const onUpload = async (e) => {
   e.preventDefault();  
-  let uploadForm = document.querySelector("form");
 
-  let file = document.getElementById("file");
-  let oData = new FormData(uploadForm);
-
+  let file = document.getElementById("file").files[0];
 
   try {
-    const upload = await callAPI(
+    const fileUploaded = await callAPIFormData(
       API_BASE_URL + "image",
       "POST",
       undefined,
-      oData
+      file
     );
-    onFileUploaded(upload);
+    onFileUploaded(fileUploaded);
   } catch (err) {
     console.error("HomePage::onUpload", err);
     PrintError(err);
@@ -44,8 +41,7 @@ const onUpload = async (e) => {
 };
 
 const onFileUploaded = (fileData) => {
-  // re-render the navbar for the authenticated user
-  console.log(fileData);
+  //console.log(fileData);
   Navbar();
   RedirectUrl("/");
 };
