@@ -1,7 +1,7 @@
 import { RedirectUrl } from "./Router.js";
 import Navbar from "./Navbar.js";
 import { setUserSessionData } from "../utils/session.js";
-import callAPI from "../utils/api.js";
+import { callAPI } from "../utils/api.js";
 import PrintError from "./PrintError.js";
 const API_BASE_URL = "/api/auths/";
 

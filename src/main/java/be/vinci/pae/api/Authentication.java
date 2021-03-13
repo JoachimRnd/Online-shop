@@ -1,5 +1,12 @@
 package be.vinci.pae.api;
 
+
+import java.time.LocalDateTime;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import be.vinci.pae.api.utils.Json;
 import be.vinci.pae.domain.Address;
 import be.vinci.pae.domain.AddressFactory;
@@ -7,11 +14,6 @@ import be.vinci.pae.domain.UserDTO;
 import be.vinci.pae.domain.UserFactory;
 import be.vinci.pae.domain.UserUCC;
 import be.vinci.pae.utils.Config;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -21,7 +23,6 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-import java.time.LocalDateTime;
 
 @Singleton
 @Path("/auths")
@@ -56,6 +57,7 @@ public class Authentication {
           .type(MediaType.TEXT_PLAIN).build();
     }
 
+
     String username = json.get("username").asText();
     String password = json.get("password").asText();
 
@@ -86,27 +88,17 @@ public class Authentication {
   public Response register(JsonNode json) {
     JsonNode jsonAddress = json.get("address");
     // Get and check credentials
-    if (!json.hasNonNull("username")
-        || json.get("username").asText().isEmpty()
-        || !json.hasNonNull("lastname")
-        || json.get("lastname").asText().isEmpty()
-        || !json.hasNonNull("firstname")
-        || json.get("firstname").asText().isEmpty()
-        || !json.hasNonNull("email")
-        || json.get("email").asText().isEmpty()
-        || !json.hasNonNull("password")
-        || json.get("password").asText().isEmpty()
-        || !json.hasNonNull("address")
-        || !jsonAddress.hasNonNull("street")
-        || jsonAddress.get("street").asText().isEmpty()
-        || !jsonAddress.hasNonNull("buildingnumber")
+    if (!json.hasNonNull("username") || json.get("username").asText().isEmpty()
+        || !json.hasNonNull("lastname") || json.get("lastname").asText().isEmpty()
+        || !json.hasNonNull("firstname") || json.get("firstname").asText().isEmpty()
+        || !json.hasNonNull("email") || json.get("email").asText().isEmpty()
+        || !json.hasNonNull("password") || json.get("password").asText().isEmpty()
+        || !json.hasNonNull("address") || !jsonAddress.hasNonNull("street")
+        || jsonAddress.get("street").asText().isEmpty() || !jsonAddress.hasNonNull("buildingnumber")
         || jsonAddress.get("buildingnumber").asText().isEmpty()
-        || !jsonAddress.hasNonNull("postcode")
-        || jsonAddress.get("postcode").asText().isEmpty()
-        || !jsonAddress.hasNonNull("commune")
-        || jsonAddress.get("commune").asText().isEmpty()
-        || !jsonAddress.hasNonNull("country")
-        || jsonAddress.get("country").asText().isEmpty()) {
+        || !jsonAddress.hasNonNull("postcode") || jsonAddress.get("postcode").asText().isEmpty()
+        || !jsonAddress.hasNonNull("commune") || jsonAddress.get("commune").asText().isEmpty()
+        || !jsonAddress.hasNonNull("country") || jsonAddress.get("country").asText().isEmpty()) {
       return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")
           .type(MediaType.TEXT_PLAIN).build();
     }
@@ -124,8 +116,7 @@ public class Authentication {
     address.setPostcode(jsonAddress.get("postcode").asText());
     address.setCommune(jsonAddress.get("commune").asText());
     address.setCountry(jsonAddress.get("country").asText());
-    if (jsonAddress.hasNonNull("unitnumber")
-        && !jsonAddress.get("unitnumber").asText().isEmpty()) {
+    if (jsonAddress.hasNonNull("unitnumber") && !jsonAddress.get("unitnumber").asText().isEmpty()) {
       address.setUnitNumber(jsonAddress.get("unitnumber").asText());
     }
 
@@ -133,7 +124,8 @@ public class Authentication {
     user.setRegistrationDate(LocalDateTime.now());
     user.setValidRegistration(false);
 
-    //Try to register
+
+    // Try to register
     user = userUCC.register(user);
 
     // Create token
