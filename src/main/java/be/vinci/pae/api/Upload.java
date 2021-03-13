@@ -19,6 +19,14 @@ import jakarta.ws.rs.core.Response;
 @Path("/uploads")
 public class Upload {
 
+  /**
+   * Receive file from the frontend.
+   * 
+   * @param enabled FormData
+   * @param uploadedInputStream FormDataFile
+   * @param fileDetail Details of the FormDataFile
+   * @return Status code
+   */
   @POST
   @Path("image") // Your Path or URL to call this service
   @Consumes(MediaType.MULTIPART_FORM_DATA)
