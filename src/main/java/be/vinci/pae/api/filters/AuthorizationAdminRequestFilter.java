@@ -3,6 +3,7 @@ package be.vinci.pae.api.filters;
 import be.vinci.pae.domain.UserDTO;
 import be.vinci.pae.services.DAOUser;
 import be.vinci.pae.utils.Config;
+import be.vinci.pae.utils.ValueLiaison;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -46,7 +47,7 @@ public class AuthorizationAdminRequestFilter implements ContainerRequestFilter {
       if (user == null) {
         throw new WebApplicationException("Unknow user", Status.UNAUTHORIZED);
       }
-      if (user.getUserType() != 0) {
+      if (user.getUserType().equalsIgnoreCase(ValueLiaison.ADMIN_STRING)) {
         throw new WebApplicationException("Not admin", Status.UNAUTHORIZED);
       }
       requestContext.setProperty("user", user);

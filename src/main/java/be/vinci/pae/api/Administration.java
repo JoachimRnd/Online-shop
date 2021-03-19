@@ -31,11 +31,9 @@ public class Administration {
   public Response validateUser(JsonNode json) {
     if (!json.hasNonNull("id") || !json.hasNonNull("type") || json.get("id").asText().isEmpty()
         || json.get("type").asText().isEmpty()) {
-      //@TODO message d'erreur
-      return Response.status(Status.UNAUTHORIZED).entity("Message erreur json vide")
+      return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")
           .type(MediaType.TEXT_PLAIN).build();
     }
-    //Valider user avec l'id json.get("id") et lui mettre le type json.get("type")
     if (userUCC
         .validateUser(json.get("id").asInt(), json.get("type").asText())) {
       return Response.ok().build();

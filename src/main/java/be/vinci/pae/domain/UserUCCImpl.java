@@ -2,6 +2,7 @@ package be.vinci.pae.domain;
 
 import be.vinci.pae.services.DAOUser;
 import be.vinci.pae.utils.BusinessException;
+import be.vinci.pae.utils.ValueLiaison;
 import jakarta.inject.Inject;
 import java.util.List;
 
@@ -46,14 +47,12 @@ public class UserUCCImpl implements UserUCC {
   public boolean validateUser(int id, String type) {
     User user = (User) daoUser.getUserById(id);
     if (user == null) {
-      //erreur user inexistant
+      throw new BusinessException("L'utilisateur n'existe pas");
     }
     if (user.isValidRegistration()) {
-      //erreur user déjà validé
+      throw new BusinessException("L'utilisateur est déjà validé");
     }
-    //@TODO Trouver un moyen de lier une string a un int pour la DB
-    int typeInt = -1;
-    return daoUser.validateUser(id, typeInt);
+    return daoUser.validateUser(id, ValueLiaison.StringToIntUserType(type));
   }
 
   @Override
