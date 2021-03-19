@@ -10,6 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DAOUserImpl implements DAOUser {
 
@@ -21,6 +23,8 @@ public class DAOUserImpl implements DAOUser {
   private PreparedStatement addAddressWithUnitNumber;
   private PreparedStatement addAddressWithoutUnitNumber;
   private PreparedStatement addUser;
+  private PreparedStatement validateUser;
+  private PreparedStatement selectUnvalidatedUsers;
   private String querySelectUserByUsername;
   private String querySelectUserById;
   private String querySelectUserByEmail;
@@ -29,6 +33,8 @@ public class DAOUserImpl implements DAOUser {
   private String queryAddAddressWithUnitNumber;
   private String queryAddAddressWithoutUnitNumber;
   private String queryAddUser;
+  private String queryValidateUser;
+  private String querySelectUnvalidatedUsers;
 
   @Inject
   private UserFactory userFactory;
@@ -71,6 +77,14 @@ public class DAOUserImpl implements DAOUser {
     queryAddUser = "INSERT INTO project.users (user_id, username, last_name, first_name, "
         + "email, password, address, registration_date, valid_registration) "
         + "VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?)";
+    queryValidateUser = "UPDATE project.users "
+        + "SET user_type = ?, valid_registration = ? "
+        + "WHERE user_id = ?";
+    querySelectUnvalidatedUsers = "SELECT u.user_id, u.username, u.password, u.last_name, "
+        + "u.first_name, a.street, a.building_number, a.unit_number, a.postcode, a.commune, "
+        + "a.country, u.email, u.registration_date, u.valid_registration, u.user_type "
+        + "FROM project.addresses a, project.users u "
+        + "WHERE u.valid_registration = false AND u.address = a.address_id";
   }
 
   @Override
@@ -148,8 +162,7 @@ public class DAOUserImpl implements DAOUser {
     }
     return user;
   }
-
-  // @TODO Implémenter l'ajout d'un User
+  
   @Override
   public int addUser(UserDTO user) {
     //get address if exist (récup id et mettre dans user sinon add address)
@@ -251,5 +264,38 @@ public class DAOUserImpl implements DAOUser {
 
     //return id
     return userId;
+  }
+
+  @Override
+  public boolean validateUser(int id, int type) {
+    try {
+      if (validateUser == null) {
+        validateUser = this.dalServices.getPreparedStatement(queryValidateUser);
+      }
+      validateUser.setInt(1, type);
+      validateUser.setBoolean(2, true);
+      validateUser.setInt(3, id);
+      return validateUser.executeUpdate() == 1;
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+
+  @Override
+  public List<UserDTO> getUnvalidatedUsers() {
+    try {
+      if (selectUnvalidatedUsers == null) {
+        selectUnvalidatedUsers = this.dalServices.getPreparedStatement(querySelectUnvalidatedUsers);
+      }
+      List<UserDTO> unvalidatedUsers = new ArrayList<>();
+      try (ResultSet rs = selectUserByEmail.executeQuery()) {
+        unvalidatedUsers.add(createUser(rs));
+      }
+      return unvalidatedUsers;
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 }

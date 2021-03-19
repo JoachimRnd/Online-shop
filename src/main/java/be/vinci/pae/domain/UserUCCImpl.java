@@ -2,7 +2,9 @@ package be.vinci.pae.domain;
 
 import be.vinci.pae.services.DAOUser;
 import be.vinci.pae.utils.BusinessException;
+import be.vinci.pae.utils.ValueLiaison;
 import jakarta.inject.Inject;
+import java.util.List;
 
 public class UserUCCImpl implements UserUCC {
 
@@ -39,5 +41,22 @@ public class UserUCCImpl implements UserUCC {
     user.setId(id);
 
     return user;
+  }
+
+  @Override
+  public boolean validateUser(int id, String type) {
+    User user = (User) daoUser.getUserById(id);
+    if (user == null) {
+      throw new BusinessException("L'utilisateur n'existe pas");
+    }
+    if (user.isValidRegistration()) {
+      throw new BusinessException("L'utilisateur est déjà validé");
+    }
+    return daoUser.validateUser(id, ValueLiaison.StringToIntUserType(type));
+  }
+
+  @Override
+  public List<UserDTO> getUnvalidatedUsers() {
+    return daoUser.getUnvalidatedUsers();
   }
 }

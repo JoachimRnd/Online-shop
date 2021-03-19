@@ -1,9 +1,11 @@
 package be.vinci.pae.domain;
 
-import java.time.LocalDateTime;
-import org.mindrot.jbcrypt.BCrypt;
+import be.vinci.pae.utils.BusinessException;
+import be.vinci.pae.utils.ValueLiaison;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
+import java.time.LocalDateTime;
+import org.mindrot.jbcrypt.BCrypt;
 import views.Views;
 
 // ignore all null fields in order to avoid sending props not linked to a JSON view
@@ -21,7 +23,7 @@ class UserImpl implements User {
   @JsonView(Views.Public.class)
   private String email;
   @JsonView(Views.Public.class)
-  private int userType;
+  private String userType;
   @JsonView(Views.Public.class)
   private Address address;
 
@@ -46,45 +48,13 @@ class UserImpl implements User {
     return id;
   }
 
+  public void setId(int id) {
+    this.id = id;
+  }
+
   @Override
   public String getUsername() {
     return username;
-  }
-
-  public String getLastName() {
-    return lastName;
-  }
-
-  public String getFirstName() {
-    return firstName;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public int getUserType() {
-    return userType;
-  }
-
-  public Address getAddress() {
-    return address;
-  }
-
-  public LocalDateTime getRegistrationDate() {
-    return registrationDate;
-  }
-
-  public boolean isValidRegistration() {
-    return validRegistration;
-  }
-
-  public String getPassword() {
-    return password;
-  }
-
-  public void setId(int id) {
-    this.id = id;
   }
 
   @Override
@@ -92,32 +62,72 @@ class UserImpl implements User {
     this.username = username;
   }
 
+  public String getLastName() {
+    return lastName;
+  }
+
   public void setLastName(String lastName) {
     this.lastName = lastName;
+  }
+
+  public String getFirstName() {
+    return firstName;
   }
 
   public void setFirstName(String firstName) {
     this.firstName = firstName;
   }
 
+  public String getEmail() {
+    return email;
+  }
+
   public void setEmail(String email) {
     this.email = email;
   }
 
+  public String getUserType() {
+    return userType;
+  }
+
   public void setUserType(int userType) {
-    this.userType = userType;
+    this.userType = ValueLiaison.IntToStringUserType(userType);
+  }
+
+  public void setUserType(String userType) {
+    if (ValueLiaison.isValidUserType(userType)) {
+      this.userType = userType;
+    } else {
+      throw new BusinessException("Wrong user type");
+    }
+  }
+
+  public Address getAddress() {
+    return address;
   }
 
   public void setAddress(Address address) {
     this.address = address;
   }
 
+  public LocalDateTime getRegistrationDate() {
+    return registrationDate;
+  }
+
   public void setRegistrationDate(LocalDateTime registrationDate) {
     this.registrationDate = registrationDate;
   }
 
+  public boolean isValidRegistration() {
+    return validRegistration;
+  }
+
   public void setValidRegistration(boolean validRegistration) {
     this.validRegistration = validRegistration;
+  }
+
+  public String getPassword() {
+    return password;
   }
 
   public void setPassword(String password) {
