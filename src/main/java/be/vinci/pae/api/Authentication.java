@@ -152,7 +152,7 @@ public class Authentication {
       token = JWT.create().withIssuer("auth0").withClaim("user", user.getId())
           .withClaim("username", user.getUsername())
           .withExpiresAt(Date
-              .from(LocalDate.now().plusMonths(1).atStartOfDay(ZoneId.systemDefault()).toInstant()))
+              .from(LocalDate.now().plusMonths(1).atStartOfDay(ZoneId.systemDefault()).toInstant())) 
           .sign(this.jwtAlgorithm);
     } catch (Exception e) {
       throw new WebApplicationException("Unable to create token", e, Status.INTERNAL_SERVER_ERROR);
