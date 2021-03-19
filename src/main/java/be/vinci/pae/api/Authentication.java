@@ -1,7 +1,9 @@
 package be.vinci.pae.api;
 
-
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -140,8 +142,8 @@ public class Authentication {
   }
 
   /**
-   * create a json web token with the secret in the properties file.
-   *
+   * create a json web token with the secret in the properties file has an expire in 5 days.
+   * 
    * @param user description
    * @return description
    * @throws WebApplicationException description
@@ -149,8 +151,11 @@ public class Authentication {
   private String createToken(UserDTO user) {
     String token;
     try {
-      token =
-          JWT.create().withIssuer("auth0").withClaim("user", user.getId()).sign(this.jwtAlgorithm);
+      token = JWT.create().withIssuer("auth0").withClaim("user", user.getId())
+          .withClaim("username", user.getUsername())
+          .withExpiresAt(Date
+              .from(LocalDate.now().plusMonths(1).atStartOfDay(ZoneId.systemDefault()).toInstant())) 
+          .sign(this.jwtAlgorithm);
     } catch (Exception e) {
       throw new WebApplicationException("Unable to create token", e, Status.INTERNAL_SERVER_ERROR);
     }
