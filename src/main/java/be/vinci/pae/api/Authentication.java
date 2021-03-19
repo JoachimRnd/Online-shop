@@ -1,14 +1,5 @@
 package be.vinci.pae.api;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import be.vinci.pae.api.utils.Json;
 import be.vinci.pae.domain.Address;
 import be.vinci.pae.domain.AddressFactory;
@@ -16,6 +7,12 @@ import be.vinci.pae.domain.UserDTO;
 import be.vinci.pae.domain.UserFactory;
 import be.vinci.pae.domain.UserUCC;
 import be.vinci.pae.utils.Config;
+import be.vinci.pae.utils.FatalException;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -25,6 +22,10 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 @Singleton
 @Path("/auths")
@@ -58,7 +59,6 @@ public class Authentication {
       return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")
           .type(MediaType.TEXT_PLAIN).build();
     }
-
 
     String username = json.get("username").asText();
     String password = json.get("password").asText();
@@ -126,7 +126,6 @@ public class Authentication {
     user.setRegistrationDate(LocalDateTime.now());
     user.setValidRegistration(false);
 
-
     // Try to register
     user = userUCC.register(user);
 
@@ -143,7 +142,7 @@ public class Authentication {
 
   /**
    * create a json web token with the secret in the properties file has an expire in 5 days.
-   * 
+   *
    * @param user description
    * @return description
    * @throws WebApplicationException description
@@ -154,10 +153,10 @@ public class Authentication {
       token = JWT.create().withIssuer("auth0").withClaim("user", user.getId())
           .withClaim("username", user.getUsername())
           .withExpiresAt(Date
-              .from(LocalDate.now().plusMonths(1).atStartOfDay(ZoneId.systemDefault()).toInstant())) 
+              .from(LocalDate.now().plusMonths(1).atStartOfDay(ZoneId.systemDefault()).toInstant()))
           .sign(this.jwtAlgorithm);
     } catch (Exception e) {
-      throw new WebApplicationException("Unable to create token", e, Status.INTERNAL_SERVER_ERROR);
+      throw new FatalException("Unable to create token", e);
     }
     return token;
   }
