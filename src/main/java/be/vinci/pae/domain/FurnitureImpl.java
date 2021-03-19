@@ -7,7 +7,7 @@ class FurnitureImpl implements Furniture {
   private int id;
   private String description;
   private String type;
-  private VisiteRequestDTO visiteRequest;
+  private VisitRequestDTO visitRequest;
   private double purchasePrice;
   private LocalDateTime withdrawalDateFromCustomer;
   private double sellingPrice;
@@ -29,8 +29,12 @@ class FurnitureImpl implements Furniture {
     return description;
   }
 
-  public VisiteRequestDTO getVisiteRequest() {
-    return visiteRequest;
+  public String getType() {
+    return type;
+  }
+
+  public VisitRequestDTO getVisiteRequest() {
+    return visitRequest;
   }
 
   public double getPurchasePrice() {
@@ -81,8 +85,6 @@ class FurnitureImpl implements Furniture {
     return favouritePicture;
   }
 
-
-  @Override
   public void setId(int id) {
     this.id = id;
   }
@@ -91,8 +93,12 @@ class FurnitureImpl implements Furniture {
     this.description = description;
   }
 
-  public void setVisiteRequest(VisiteRequestDTO visiteRequest) {
-    this.visiteRequest = visiteRequest;
+  public void setType(String type) {
+    this.type = type;
+  }
+
+  public void setVisiteRequest(VisitRequestDTO visiteRequest) {
+    this.visitRequest = visiteRequest;
   }
 
   public void setPurchasePrice(double purchasePrice) {

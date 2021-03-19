@@ -10,9 +10,9 @@ public interface FurnitureDTO {
 
   String getDescription();
 
-  VisiteRequestDTO getVisiteRequest();
+  VisitRequestDTO getVisiteRequest();
 
-  double getPuchasePrice();
+  double getPurchasePrice();
 
   LocalDateTime getWithdrawalDateFromCustomer();
 
@@ -41,7 +41,7 @@ public interface FurnitureDTO {
 
   void setDescription(String description);
 
-  void setVisiteRequest(VisiteRequestDTO visiteRequest);
+  void setVisiteRequest(VisitRequestDTO visiteRequest);
 
   void setPurchasePrice(double purchasePrice);
 
