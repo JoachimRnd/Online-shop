@@ -72,12 +72,4 @@ public class AddressImpl implements Address {
     this.country = country;
   }
 
-  @Override
-  public String toString() {
-    return "AddressImpl [street=" + street + ", buildingNumber=" + buildingNumber + ", unitNumber="
-        + unitNumber + ", postcode=" + postcode + ", commune=" + commune + ", country=" + country
-        + "]";
-  }
-
-
 }

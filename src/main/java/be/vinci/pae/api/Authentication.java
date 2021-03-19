@@ -59,6 +59,7 @@ public class Authentication {
           .type(MediaType.TEXT_PLAIN).build();
     }
 
+
     String username = json.get("username").asText();
     String password = json.get("password").asText();
 
@@ -124,6 +125,7 @@ public class Authentication {
     user.setAddress(address);
     user.setRegistrationDate(LocalDateTime.now());
     user.setValidRegistration(false);
+
 
     // Try to register
     user = userUCC.register(user);
