@@ -5,6 +5,9 @@
 ### DB ###
 db.json
 
+## IMAGES ##
+/images/
+
 ### FrontEnd ###
 webApp/package-lock.json
 webApp/node_modules/

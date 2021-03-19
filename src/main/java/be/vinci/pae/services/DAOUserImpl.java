@@ -4,6 +4,7 @@ import be.vinci.pae.domain.Address;
 import be.vinci.pae.domain.AddressFactory;
 import be.vinci.pae.domain.UserDTO;
 import be.vinci.pae.domain.UserFactory;
+import be.vinci.pae.utils.FatalException;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -99,8 +100,8 @@ public class DAOUserImpl implements DAOUser {
       }
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new FatalException("Database error : getUserByUsername");
     }
-    return null;
   }
 
   @Override
@@ -116,8 +117,8 @@ public class DAOUserImpl implements DAOUser {
       }
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new FatalException("Database error : getUserByEmail");
     }
-    return null;
   }
 
   @Override
@@ -133,8 +134,8 @@ public class DAOUserImpl implements DAOUser {
       }
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new FatalException("Database error : getUserById");
     }
-    return null;
   }
 
   private UserDTO createUser(ResultSet rs) throws SQLException {
@@ -194,6 +195,7 @@ public class DAOUserImpl implements DAOUser {
       }
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new FatalException("Database error : addUser get Address");
     }
 
     if (addressId == -1) {
@@ -228,6 +230,7 @@ public class DAOUserImpl implements DAOUser {
         }
       } catch (SQLException e) {
         e.printStackTrace();
+        throw new FatalException("Database error : addUser Add Address");
       }
     }
 
@@ -256,6 +259,7 @@ public class DAOUserImpl implements DAOUser {
       }
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new FatalException("Database error : addUser");
     }
 
     //return id

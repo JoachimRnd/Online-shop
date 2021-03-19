@@ -24,7 +24,11 @@ public class Config {
   }
 
   public static String getProperty(String key) {
-    return props.getProperty(key);
+    String property = props.getProperty(key);
+    if (property == null) {
+      throw new FatalException("Missing property");
+    }
+    return property;
   }
 
   public static Integer getIntProperty(String key) {

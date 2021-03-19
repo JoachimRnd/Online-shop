@@ -29,6 +29,4 @@ public interface Address {
 
   void setCountry(String country);
 
-  @Override
-  String toString();
 }

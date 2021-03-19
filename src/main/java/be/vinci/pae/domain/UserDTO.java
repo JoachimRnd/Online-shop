@@ -48,7 +48,4 @@ public interface UserDTO {
 
   void setPassword(String password);
 
-  @Override
-  String toString();
-
 }

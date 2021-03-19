@@ -134,13 +134,4 @@ class UserImpl implements User {
     this.password = password;
   }
 
-  @Override
-  public String toString() {
-    return "UserImpl [id=" + id + ", username=" + username + ", lastName=" + lastName
-        + ", firstName=" + firstName + ", email=" + email + ", userType=" + userType + ", address="
-        + address + ", registrationDate=" + registrationDate + ", validRegistration="
-        + validRegistration + ", password=" + password + "]";
-  }
-
-
 }
