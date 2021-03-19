@@ -1,6 +1,7 @@
 package be.vinci.pae.services;
 
 import be.vinci.pae.utils.Config;
+import be.vinci.pae.utils.FatalException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -20,6 +21,7 @@ public class DalServicesImpl implements DalServices {
       conn = DriverManager.getConnection(DB_STRING_CONNECTION);
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new FatalException("DalServicesImpl error");
     }
   }
 
@@ -30,8 +32,8 @@ public class DalServicesImpl implements DalServices {
       return conn.prepareStatement(query);
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new FatalException("DalServicesImpl error : getPreparedStatement");
     }
-    return null;
   }
 
   @Override
@@ -40,8 +42,8 @@ public class DalServicesImpl implements DalServices {
       return conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new FatalException("DalServicesImpl error : getPreparedStatementAdd");
     }
-    return null;
   }
 
 }
