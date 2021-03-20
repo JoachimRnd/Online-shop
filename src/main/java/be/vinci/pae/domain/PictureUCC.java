@@ -11,4 +11,5 @@ public interface PictureUCC {
 	
 	PictureDTO addPicture(int id, String name, boolean isVisible, FurnitureDTO furniture, boolean isScrolling);
 
+	PictureDTO addPicture(PictureDTO picture);
 }
