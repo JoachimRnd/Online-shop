@@ -33,6 +33,8 @@ public class Upload {
   public Response uploadFile(@DefaultValue("true") @FormDataParam("enabled") boolean enabled,
       @FormDataParam("file") InputStream uploadedInputStream,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
+    System.out.println("Uploaded Input Stream : " + uploadedInputStream);
+    System.out.println("File detail : " + fileDetail);
     // Your local disk path where you want to store the file
     String uploadedFileLocation = ".\\images\\" + fileDetail.getFileName();
     System.out.println(uploadedFileLocation);

@@ -52,13 +52,26 @@ async function callAPI(endpoint, method = "get", token, data) {
   let headers = new Headers();
   let options = {};
   options.method = method;
+  
   if (token) {    
     headers.append("Authorization", token);   
   }
 
   if (data) {
+    console.log("CALLAPIFORMDATA : ",data);
+
+    let furnitureList = data.furnitureList;
+    console.log("FURNITURELIST : ",furnitureList);
+
+    let picturesList = furnitureList[0].picturesList;
+    console.log("PICTURESLIST : ",picturesList);
+
+    furnitureList.picturesList = [];
+    data = JSON.stringify(data);
+    
     let fd = new FormData();
-    fd.append("file",data);
+    fd.append("data",data);
+    fd.append("file",picturesList[0]);
     options.body = fd;
   }
 
