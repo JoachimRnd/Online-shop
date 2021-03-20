@@ -57,7 +57,7 @@ CREATE TABLE project.furniture (
 	type INTEGER REFERENCES project.furniture_types (type_id) NOT NULL,
 	visit_request INTEGER REFERENCES project.visit_requests (visit_request_id) NOT NULL,
 	purchase_price DECIMAL NULL,
-	withdrawal_date_from_costumer TIMESTAMP NULL,
+	withdrawal_date_from_customer TIMESTAMP NULL,
 	selling_price DECIMAL NULL,
 	special_sale_price DECIMAL NULL,
 	deposit_date TIMESTAMP NULL,
