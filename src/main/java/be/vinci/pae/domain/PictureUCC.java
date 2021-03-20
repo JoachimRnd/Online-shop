@@ -8,8 +8,7 @@ public interface PictureUCC {
 	
 	List<PictureDTO> getCarouselPictures();
 	
-	//TODO change String to Furniture
-	PictureDTO addPicture(int id, String name, boolean isVisible, String furniture, boolean isScrolling);
+	PictureDTO addPicture(int id, String name, boolean isVisible, FurnitureDTO furniture, boolean isScrolling);
 	
 	
 

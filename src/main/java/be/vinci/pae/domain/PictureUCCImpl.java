@@ -17,7 +17,7 @@ public class PictureUCCImpl implements PictureUCC{
 	}
 
 	@Override
-	public PictureDTO addPicture(int id, String name, boolean isVisible, String furniture, boolean isScrolling) {
+	public PictureDTO addPicture(int id, String name, boolean isVisible, FurnitureDTO furniture, boolean isScrolling) {
 		// TODO Auto-generated method stub
 		return null;
 	}

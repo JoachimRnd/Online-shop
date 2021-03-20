@@ -1,5 +1,5 @@
 package be.vinci.pae.domain;
 
-public interface Picture {
+public interface Picture extends PictureDTO{
 
 }
