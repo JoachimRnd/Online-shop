@@ -90,16 +90,16 @@ class UserImpl implements User {
     return userType;
   }
 
-  public void setUserType(int userType) {
-    this.userType = ValueLiaison.IntToStringUserType(userType);
-  }
-
   public void setUserType(String userType) {
     if (ValueLiaison.isValidUserType(userType)) {
       this.userType = userType;
     } else {
       throw new BusinessException("Wrong user type");
     }
+  }
+
+  public void setUserTypeFromInt(int userType) {
+    this.userType = ValueLiaison.IntToStringUserType(userType);
   }
 
   public Address getAddress() {

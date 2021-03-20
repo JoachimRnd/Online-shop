@@ -158,11 +158,11 @@ public class DAOUserImpl implements DAOUser {
       user.setEmail(rs.getString("email"));
       user.setRegistrationDate(rs.getTimestamp("registration_date").toLocalDateTime());
       user.setValidRegistration(rs.getBoolean("valid_registration"));
-      user.setUserType(rs.getInt("user_type"));
+      user.setUserTypeFromInt(rs.getInt("user_type"));
     }
     return user;
   }
-  
+
   @Override
   public int addUser(UserDTO user) {
     //get address if exist (récup id et mettre dans user sinon add address)
