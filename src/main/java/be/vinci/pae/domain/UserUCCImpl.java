@@ -23,11 +23,11 @@ public class UserUCCImpl implements UserUCC {
   public UserDTO register(UserDTO newUser) {
     User user = (User) this.daoUser.getUserByUsername(newUser.getUsername());
     if (user != null) {
-      throw new BusinessException("Ce pseudo est déjà utilisé");
+      throw new BusinessException("Ce pseudo est deja� utilise");
     }
     user = (User) this.daoUser.getUserByEmail(newUser.getEmail());
     if (user != null) {
-      throw new BusinessException("Cet Email est déjà utilisé");
+      throw new BusinessException("Cet Email est deja utilise");
     }
 
     user = (User) newUser;

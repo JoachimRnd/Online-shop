@@ -1,57 +1,70 @@
 package be.vinci.pae.services;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
-
 import be.vinci.pae.domain.PictureDTO;
 import be.vinci.pae.domain.PictureFactory;
 import be.vinci.pae.domain.UserFactory;
+import be.vinci.pae.utils.FatalException;
 import jakarta.inject.Inject;
 
-public class DAOPictureImpl implements DAOPicture{
-	
-	private PreparedStatement selectAllPictures;
-	private String querySelectAllPictures;
-	
-	 @Inject
-	  private PictureFactory pictureFactory;
-	 @Inject
-	  private DalServices dalServices;
-	 
-	 
-	 public DAOPictureImpl() {
-		 querySelectAllPictures = 
-				 "SELECT p.picture_id, p.name, p.";
-	 }
+public class DAOPictureImpl implements DAOPicture {
 
-	@Override
-	public List<PictureDTO>selectAllPictures() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  private PreparedStatement selectAllPictures;
+  private String querySelectAllPictures;
 
-	@Override
-	public List<PictureDTO> selectPicturesByType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  @Inject
+  private PictureFactory pictureFactory;
+  @Inject
+  private DalServices dalServices;
 
-	@Override
-	public int addPicture(PictureDTO picture) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
-	@Override
-	public PictureDTO selectPictureByID(int id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  public DAOPictureImpl() {
+    querySelectAllPictures = "SELECT p.picture_id, p.name, p.visible_for_everyone, p.furniture, "
+        + "p.scrolling_picture FROM project.pictures";
+  }
 
-	@Override
-	public PictureDTO selectPictureByID(String extention) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  @Override
+  public List<PictureDTO> selectAllPictures() {
+    List<PictureDTO> listPictures = new ArrayList<PictureDTO>();
+    try {
+      selectAllPictures = dalServices.getPreparedStatement(querySelectAllPictures);
+      ResultSet rs = selectAllPictures.executeQuery();
+      while (rs.next()) {
+        PictureDTO picture = pictureFactory.getPicture();
+        listPictures.add(picture);
+      }
+      return listPictures;
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Database error : selectAllPictures");
+    }
+  }
+
+  @Override
+  public List<PictureDTO> selectPicturesByType() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public int addPicture(PictureDTO picture) {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
+  @Override
+  public PictureDTO selectPictureByID(int id) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public PictureDTO selectPictureByID(String extention) {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
 }
