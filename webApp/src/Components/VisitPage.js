@@ -3,7 +3,7 @@ import Navbar from "./Navbar.js";
 import { getUserSessionData } from "../utils/session.js";
 import { callAPIFormData } from "../utils/api.js";
 import PrintError from "./PrintError.js"
-const API_BASE_URL = "/api/uploads/";
+const API_BASE_URL = "/api/visit/";
 
 
 let furnitureList = [];
@@ -147,7 +147,7 @@ const onVisitRequest = async (e) => {
 
     try {
         const visitRequested = await callAPIFormData(
-          API_BASE_URL + "image",
+          API_BASE_URL + "add",
           "POST",
           user,
           visitRequest
