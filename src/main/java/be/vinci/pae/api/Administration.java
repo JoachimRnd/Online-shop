@@ -27,7 +27,7 @@ public class Administration {
   /**
    * Valid a user.
    * 
-   * @param user's json
+   * @param json json of the user
    * @return http response
    */
   @POST

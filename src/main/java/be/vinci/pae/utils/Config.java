@@ -26,7 +26,7 @@ public class Config {
   /**
    * Get the property by his key
    * 
-   * @param key
+   * @param key key of property
    * @return property
    */
   public static String getProperty(String key) {

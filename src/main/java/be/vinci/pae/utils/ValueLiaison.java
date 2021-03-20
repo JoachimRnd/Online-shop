@@ -13,7 +13,7 @@ public class ValueLiaison {
   /**
    * Change the user type form string into a integer.
    * 
-   * @param user type
+   * @param type type of user as string
    * @return integer of the user type
    */
   public static int stringToIntUserType(String type) {
@@ -32,7 +32,7 @@ public class ValueLiaison {
   /**
    * Change the user type form integer into a string.
    * 
-   * @param user type
+   * @param type type of user as integer
    * @return string of the user type
    */
   public static String intToStringUserType(int type) {
@@ -51,7 +51,7 @@ public class ValueLiaison {
   /**
    * Valid the string of the user type.
    * 
-   * @param user type
+   * @param type type of user as string
    * @return boolean of valid type
    */
   public static boolean isValidUserType(String type) {
@@ -68,7 +68,7 @@ public class ValueLiaison {
   /**
    * Valid the integer of the user type.
    * 
-   * @param user type
+   * @param type type of user as integer
    * @return boolean of valid type
    */
   public static boolean isValidUserType(int type) {
