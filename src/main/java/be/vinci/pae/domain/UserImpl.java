@@ -99,7 +99,7 @@ class UserImpl implements User {
   }
 
   public void setUserTypeFromInt(int userType) {
-    this.userType = ValueLiaison.IntToStringUserType(userType);
+    this.userType = ValueLiaison.intToStringUserType(userType);
   }
 
   public Address getAddress() {
