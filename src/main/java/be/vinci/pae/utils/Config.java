@@ -24,7 +24,7 @@ public class Config {
   }
 
   /**
-   * Get the property by his key
+   * Get the property by his key.
    * 
    * @param key key of property
    * @return property
