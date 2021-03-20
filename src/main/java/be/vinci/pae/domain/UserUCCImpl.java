@@ -52,7 +52,7 @@ public class UserUCCImpl implements UserUCC {
     if (user.isValidRegistration()) {
       throw new BusinessException("L'utilisateur est déjà validé");
     }
-    return daoUser.validateUser(id, ValueLiaison.StringToIntUserType(type));
+    return daoUser.validateUser(id, ValueLiaison.stringToIntUserType(type));
   }
 
   @Override
