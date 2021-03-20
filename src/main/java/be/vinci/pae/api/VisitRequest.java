@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import jakarta.inject.Singleton;
@@ -16,8 +17,9 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 @Singleton
-@Path("/uploads")
-public class Upload {
+@Path("/visit")
+public class VisitRequest {
+
 
   /**
    * Receive file from the frontend.
@@ -28,11 +30,17 @@ public class Upload {
    * @return Status code
    */
   @POST
-  @Path("image") // Your Path or URL to call this service
+  @Path("add") // Your Path or URL to call this service
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   public Response uploadFile(@DefaultValue("true") @FormDataParam("enabled") boolean enabled,
       @FormDataParam("file") InputStream uploadedInputStream,
-      @FormDataParam("file") FormDataContentDisposition fileDetail) {
+      @FormDataParam("file") FormDataContentDisposition fileDetail,
+      @FormDataParam("data") FormDataBodyPart jsonPart) {
+    System.out.println("Uploaded Input Stream : " + uploadedInputStream);
+    System.out.println("File detail : " + fileDetail);
+
+    jsonPart.setMediaType(MediaType.APPLICATION_JSON_TYPE);
+    System.out.println("DATA : " + jsonPart);
     // Your local disk path where you want to store the file
     String uploadedFileLocation = ".\\images\\" + fileDetail.getFileName();
     System.out.println(uploadedFileLocation);
