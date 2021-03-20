@@ -1,5 +1,6 @@
 package be.vinci.pae.utils;
 
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import be.vinci.pae.domain.AddressFactory;
 import be.vinci.pae.domain.AddressFactoryImpl;
 import be.vinci.pae.domain.PictureFactory;
@@ -10,6 +11,8 @@ import be.vinci.pae.domain.UserFactory;
 import be.vinci.pae.domain.UserFactoryImpl;
 import be.vinci.pae.domain.UserUCC;
 import be.vinci.pae.domain.UserUCCImpl;
+import be.vinci.pae.domain.VisitRequestUCC;
+import be.vinci.pae.domain.VisitRequestUCCImpl;
 import be.vinci.pae.services.DAOPicture;
 import be.vinci.pae.services.DAOPictureImpl;
 import be.vinci.pae.services.DAOUser;
@@ -18,7 +21,6 @@ import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.DalServicesImpl;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.ext.Provider;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 @Provider
 public class ApplicationBinder extends AbstractBinder {
@@ -33,5 +35,6 @@ public class ApplicationBinder extends AbstractBinder {
     bind(DalServicesImpl.class).to(DalServices.class).in(Singleton.class);
     bind(UserUCCImpl.class).to(UserUCC.class).in(Singleton.class);
     bind(PictureUCCImpl.class).to(PictureUCC.class).in(Singleton.class);
+    bind(VisitRequestUCCImpl.class).to(VisitRequestUCC.class).in(Singleton.class);
   }
 }

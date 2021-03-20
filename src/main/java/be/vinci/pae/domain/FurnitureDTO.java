@@ -36,7 +36,6 @@ public interface FurnitureDTO {
 
   Picture getFavouritePicture();
 
-
   void setId(int id);
 
   void setDescription(String description);
@@ -66,6 +65,5 @@ public interface FurnitureDTO {
   void setUnregisteredBuyerEmail(String unregisteredBuyerEmail);
 
   void setFavouritePicture(Picture favouritePicture);
-
 
 }
