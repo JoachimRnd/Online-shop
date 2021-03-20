@@ -3,13 +3,16 @@ import LoginPage from "./LoginPage.js";
 import RegisterPage from "./RegisterPage.js";
 import LogoutComponent from "./LogoutComponent.js";
 import ErrorPage from "./ErrorPage.js";
+import VisitPage from "./VisitPage.js";
+
 
 const routes = {
   "/": HomePage,
   "/login": LoginPage,
   "/register": RegisterPage,
   "/logout": LogoutComponent,
-  "/error": ErrorPage
+  "/error": ErrorPage,
+  "/visit": VisitPage
 };
 
 let navBar = document.querySelector("#navBar");
