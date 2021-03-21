@@ -35,12 +35,23 @@ public class VisitRequest {
   public Response uploadFile(@DefaultValue("true") @FormDataParam("enabled") boolean enabled,
       @FormDataParam("file") InputStream uploadedInputStream,
       @FormDataParam("file") FormDataContentDisposition fileDetail,
+      // @FormDataParam("data") InputStream uploadBody,
       @FormDataParam("data") FormDataBodyPart jsonPart) {
-    System.out.println("Uploaded Input Stream : " + uploadedInputStream);
-    System.out.println("File detail : " + fileDetail);
+    // System.out.println("Uploaded Input Stream : " + uploadedInputStream);
+    // System.out.println("File detail : " + fileDetail);
 
+
+    // Read text
+
+    // Map<String, String> mapa = jsonPart.getParameters();
     jsonPart.setMediaType(MediaType.APPLICATION_JSON_TYPE);
-    System.out.println("DATA : " + jsonPart);
+    System.out.println("DATA : " + jsonPart.getFormDataContentDisposition());
+
+
+
+    // Save picture
+    File file = new File(".\\images\\");
+    file.mkdir();
     // Your local disk path where you want to store the file
     String uploadedFileLocation = ".\\images\\" + fileDetail.getFileName();
     System.out.println(uploadedFileLocation);
