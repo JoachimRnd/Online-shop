@@ -6,11 +6,6 @@ public class DalServicesMock implements DalServices {
 
   @Override
   public void startTransaction() {
-    
-  }
-
-  @Override
-  public void startTransactionSetAutoCommitToFalse() {
 
   }
 
@@ -21,6 +16,11 @@ public class DalServicesMock implements DalServices {
 
   @Override
   public void rollbackTransaction() {
+
+  }
+
+  @Override
+  public void closeConnection() {
 
   }
 }
