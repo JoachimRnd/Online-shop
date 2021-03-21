@@ -1,11 +1,11 @@
 package be.vinci.pae.services;
 
+import be.vinci.pae.utils.Config;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import org.apache.commons.dbcp2.BasicDataSource;
-import be.vinci.pae.utils.Config;
 
 public class DalServicesImpl implements DalServices, DalBackendServices {
 
@@ -14,7 +14,6 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
   private static final String DB_PASSWORD = Config.getProperty("DatabasePassword");
   private static BasicDataSource bds;
   private static final ThreadLocal<Connection> tl = new ThreadLocal<Connection>();
-
 
   /**
    * Create pool of Connection.
@@ -29,10 +28,12 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
     bds.setMaxOpenPreparedStatements(10);
   }
 
-
   @Override
   public PreparedStatement getPreparedStatement(String query) {
     Connection conn = tl.get();
+    if (conn == null) {
+      conn = getConnection();
+    }
     PreparedStatement preparedStatement = null;
     try {
       preparedStatement = conn.prepareStatement(query);
@@ -45,6 +46,9 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
   @Override
   public PreparedStatement getPreparedStatementAdd(String query) {
     Connection conn = tl.get();
+    if (conn == null) {
+      conn = getConnection();
+    }
     try {
       return conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
     } catch (SQLException e) {
@@ -54,9 +58,7 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
     return null;
   }
 
-
-  @Override
-  public void startTransaction() {
+  private Connection getConnection() {
     Connection conn = null;
     try {
       conn = bds.getConnection();
@@ -64,47 +66,55 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
       e.printStackTrace();
     }
     tl.set(conn);
+    return conn;
   }
 
-  // TODO pour les query get, pas utile d'auto commit -> faire une methode diff?
   @Override
-  public void startTransactionSetAutoCommitToFalse() {
-    startTransaction();
+  public void startTransaction() {
+    Connection conn = tl.get();
+    if (conn == null) {
+      conn = getConnection();
+    }
     try {
-      tl.get().setAutoCommit(false);
+      conn.setAutoCommit(false);
     } catch (SQLException e) {
       e.printStackTrace();
     }
   }
-
-
 
   @Override
   public void commitTransaction() {
     Connection conn = tl.get();
-    tl.remove();
     try {
       conn.commit();
-      conn.close();
     } catch (SQLException e) {
       e.printStackTrace();
     }
   }
-
 
   @Override
   public void rollbackTransaction() {
     Connection conn = tl.get();
-    tl.remove();
     try {
       conn.rollback();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Override
+  public void closeConnection() {
+    Connection conn = tl.get();
+    tl.remove();
+    if (conn == null) {
+      return;
+    }
+    try {
       conn.close();
     } catch (SQLException e) {
       e.printStackTrace();
     }
-
   }
-
 
 
 }

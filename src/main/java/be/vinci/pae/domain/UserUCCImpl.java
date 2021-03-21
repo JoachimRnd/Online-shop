@@ -1,13 +1,14 @@
 package be.vinci.pae.domain;
 
-import java.util.List;
 import be.vinci.pae.services.DAOUser;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.utils.BusinessException;
 import be.vinci.pae.utils.ValueLiaison;
 import jakarta.inject.Inject;
+import java.util.List;
 
 public class UserUCCImpl implements UserUCC {
+  //@TODO dalServices.closeConnection() appel automatique ? Si possible
 
   @Inject
   private DAOUser daoUser;
@@ -17,17 +18,17 @@ public class UserUCCImpl implements UserUCC {
 
   @Override
   public UserDTO login(String username, String password) {
-    this.dalServices.startTransaction();
     User user = (User) this.daoUser.getUserByUsername(username);
     if (user == null || !user.checkPassword(password)) {
       throw new BusinessException("Pseudo ou mot de passe incorrect");
     }
+    dalServices.closeConnection();
     return user;
   }
 
   @Override
   public UserDTO register(UserDTO newUser) {
-    this.dalServices.startTransactionSetAutoCommitToFalse();
+    this.dalServices.startTransaction();
     User user = (User) this.daoUser.getUserByUsername(newUser.getUsername());
     if (user != null) {
       throw new BusinessException("Ce pseudo est déjà utilisé");
@@ -49,11 +50,13 @@ public class UserUCCImpl implements UserUCC {
     }
     user.setId(id);
 
+    dalServices.closeConnection();
     return user;
   }
 
   @Override
   public boolean validateUser(int id, String type) {
+    this.dalServices.startTransaction();
     User user = (User) daoUser.getUserById(id);
     if (user == null) {
       throw new BusinessException("L'utilisateur n'existe pas");
@@ -61,11 +64,21 @@ public class UserUCCImpl implements UserUCC {
     if (user.isValidRegistration()) {
       throw new BusinessException("L'utilisateur est déjà validé");
     }
-    return daoUser.validateUser(id, ValueLiaison.stringToIntUserType(type));
+    if (daoUser.validateUser(id, ValueLiaison.stringToIntUserType(type))) {
+      this.dalServices.commitTransaction();
+      dalServices.closeConnection();
+      return true;
+    } else {
+      this.dalServices.rollbackTransaction();
+      dalServices.closeConnection();
+      return false;
+    }
   }
 
   @Override
   public List<UserDTO> getUnvalidatedUsers() {
-    return daoUser.getUnvalidatedUsers();
+    List<UserDTO> list = daoUser.getUnvalidatedUsers();
+    dalServices.closeConnection();
+    return list;
   }
 }

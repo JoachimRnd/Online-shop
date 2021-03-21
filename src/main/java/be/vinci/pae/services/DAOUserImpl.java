@@ -1,17 +1,17 @@
 package be.vinci.pae.services;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 import be.vinci.pae.domain.Address;
 import be.vinci.pae.domain.AddressFactory;
 import be.vinci.pae.domain.UserDTO;
 import be.vinci.pae.domain.UserFactory;
 import be.vinci.pae.utils.FatalException;
 import jakarta.inject.Inject;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DAOUserImpl implements DAOUser {
 
@@ -129,7 +129,7 @@ public class DAOUserImpl implements DAOUser {
 
   private UserDTO createUser(ResultSet rs) throws SQLException {
     UserDTO user = null;
-    while (rs.next()) {
+    if (rs.next()) {
       user = this.userFactory.getUser();
       user.setId(rs.getInt("user_id"));
       user.setUsername(rs.getString("username"));
@@ -259,8 +259,8 @@ public class DAOUserImpl implements DAOUser {
       return validateUser.executeUpdate() == 1;
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new FatalException("Database error : validateUser");
     }
-    return false;
   }
 
   @Override
@@ -275,7 +275,7 @@ public class DAOUserImpl implements DAOUser {
       return unvalidatedUsers;
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new FatalException("Database error : getUnvalidatedUsers");
     }
-    return null;
   }
 }
