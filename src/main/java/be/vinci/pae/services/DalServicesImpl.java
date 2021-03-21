@@ -102,6 +102,7 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
     }
   }
 
+  @Override
   public void closeConnection() {
     Connection conn = tl.get();
     tl.remove();
