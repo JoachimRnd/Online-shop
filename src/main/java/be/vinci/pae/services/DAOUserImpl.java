@@ -1,30 +1,20 @@
 package be.vinci.pae.services;
 
-import be.vinci.pae.domain.Address;
-import be.vinci.pae.domain.AddressFactory;
-import be.vinci.pae.domain.UserDTO;
-import be.vinci.pae.domain.UserFactory;
-import be.vinci.pae.utils.FatalException;
-import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import be.vinci.pae.domain.Address;
+import be.vinci.pae.domain.AddressFactory;
+import be.vinci.pae.domain.UserDTO;
+import be.vinci.pae.domain.UserFactory;
+import be.vinci.pae.utils.FatalException;
+import jakarta.inject.Inject;
 
 public class DAOUserImpl implements DAOUser {
 
-  private PreparedStatement selectUserByUsername;
-  private PreparedStatement selectUserById;
-  private PreparedStatement selectUserByEmail;
-  private PreparedStatement selectAddressIdWithUnitNumber;
-  private PreparedStatement selectAddressIdWithoutUnitNumber;
-  private PreparedStatement addAddressWithUnitNumber;
-  private PreparedStatement addAddressWithoutUnitNumber;
-  private PreparedStatement addUser;
-  private PreparedStatement validateUser;
-  private PreparedStatement selectUnvalidatedUsers;
   private String querySelectUserByUsername;
   private String querySelectUserById;
   private String querySelectUserByEmail;
@@ -43,7 +33,7 @@ public class DAOUserImpl implements DAOUser {
   private AddressFactory addressFactory;
 
   @Inject
-  private DalServices dalServices;
+  private DalBackendServices dalBackendServices;
 
   /**
    * Implementation of User selected by Id and User selected by username.
@@ -77,8 +67,7 @@ public class DAOUserImpl implements DAOUser {
     queryAddUser = "INSERT INTO project.users (user_id, username, last_name, first_name, "
         + "email, password, address, registration_date, valid_registration) "
         + "VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?)";
-    queryValidateUser = "UPDATE project.users "
-        + "SET user_type = ?, valid_registration = ? "
+    queryValidateUser = "UPDATE project.users " + "SET user_type = ?, valid_registration = ? "
         + "WHERE user_id = ?";
     querySelectUnvalidatedUsers = "SELECT u.user_id, u.username, u.password, u.last_name, "
         + "u.first_name, a.street, a.building_number, a.unit_number, a.postcode, a.commune, "
@@ -90,9 +79,10 @@ public class DAOUserImpl implements DAOUser {
   @Override
   public UserDTO getUserByUsername(String username) {
     try {
-      if (selectUserByUsername == null) {
-        selectUserByUsername = this.dalServices.getPreparedStatement(querySelectUserByUsername);
-      }
+
+      PreparedStatement selectUserByUsername =
+          this.dalBackendServices.getPreparedStatement(querySelectUserByUsername);
+
       selectUserByUsername.setString(1, username);
       try (ResultSet rs = selectUserByUsername.executeQuery()) {
         UserDTO user = createUser(rs);
@@ -107,9 +97,9 @@ public class DAOUserImpl implements DAOUser {
   @Override
   public UserDTO getUserByEmail(String email) {
     try {
-      if (selectUserByEmail == null) {
-        selectUserByEmail = this.dalServices.getPreparedStatement(querySelectUserByEmail);
-      }
+
+      PreparedStatement selectUserByEmail =
+          this.dalBackendServices.getPreparedStatement(querySelectUserByEmail);
       selectUserByEmail.setString(1, email);
       try (ResultSet rs = selectUserByEmail.executeQuery()) {
         UserDTO user = createUser(rs);
@@ -124,9 +114,8 @@ public class DAOUserImpl implements DAOUser {
   @Override
   public UserDTO getUserById(int id) {
     try {
-      if (selectUserById == null) {
-        selectUserById = this.dalServices.getPreparedStatement(querySelectUserById);
-      }
+      PreparedStatement selectUserById =
+          this.dalBackendServices.getPreparedStatement(querySelectUserById);
       selectUserById.setInt(1, id);
       try (ResultSet rs = selectUserById.executeQuery()) {
         UserDTO user = createUser(rs);
@@ -165,22 +154,18 @@ public class DAOUserImpl implements DAOUser {
 
   @Override
   public int addUser(UserDTO user) {
-    //get address if exist (récup id et mettre dans user sinon add address)
+    // get address if exist (récup id et mettre dans user sinon add address)
     long addressId = -1;
     try {
       PreparedStatement selectAddressId;
       if (user.getAddress().getUnitNumber() != null) {
-        if (selectAddressIdWithUnitNumber == null) {
-          selectAddressIdWithUnitNumber = this.dalServices
-              .getPreparedStatement(querySelectAddressIdWithUnitNumber);
-        }
+        PreparedStatement selectAddressIdWithUnitNumber =
+            this.dalBackendServices.getPreparedStatement(querySelectAddressIdWithUnitNumber);
         selectAddressId = selectAddressIdWithUnitNumber;
         selectAddressId.setString(6, user.getAddress().getUnitNumber());
       } else {
-        if (selectAddressIdWithoutUnitNumber == null) {
-          selectAddressIdWithoutUnitNumber = this.dalServices
-              .getPreparedStatement(querySelectAddressIdWithoutUnitNumber);
-        }
+        PreparedStatement selectAddressIdWithoutUnitNumber =
+            this.dalBackendServices.getPreparedStatement(querySelectAddressIdWithoutUnitNumber);
         selectAddressId = selectAddressIdWithoutUnitNumber;
       }
       selectAddressId.setString(1, user.getAddress().getStreet());
@@ -198,21 +183,19 @@ public class DAOUserImpl implements DAOUser {
       throw new FatalException("Database error : addUser get Address");
     }
 
+    boolean noErrors = true;
+
     if (addressId == -1) {
       try {
         PreparedStatement addAddress;
         if (user.getAddress().getUnitNumber() != null) {
-          if (addAddressWithUnitNumber == null) {
-            addAddressWithUnitNumber = this.dalServices
-                .getPreparedStatementAdd(queryAddAddressWithUnitNumber);
-          }
+          PreparedStatement addAddressWithUnitNumber =
+              this.dalBackendServices.getPreparedStatementAdd(queryAddAddressWithUnitNumber);
           addAddress = addAddressWithUnitNumber;
           addAddress.setString(6, user.getAddress().getUnitNumber());
         } else {
-          if (addAddressWithoutUnitNumber == null) {
-            addAddressWithoutUnitNumber = this.dalServices
-                .getPreparedStatementAdd(queryAddAddressWithoutUnitNumber);
-          }
+          PreparedStatement addAddressWithoutUnitNumber =
+              this.dalBackendServices.getPreparedStatementAdd(queryAddAddressWithoutUnitNumber);
           addAddress = addAddressWithoutUnitNumber;
         }
         addAddress.setString(1, user.getAddress().getStreet());
@@ -230,48 +213,46 @@ public class DAOUserImpl implements DAOUser {
         }
       } catch (SQLException e) {
         e.printStackTrace();
+        noErrors = false;
         throw new FatalException("Database error : addUser Add Address");
       }
     }
 
-    //add user et recup id
+    // add user et recup id
     int userId = -1;
-    try {
-      if (addUser == null) {
-        addUser = this.dalServices
-            .getPreparedStatementAdd(queryAddUser);
-      }
-      addUser.setString(1, user.getUsername());
-      addUser.setString(2, user.getLastName());
-      addUser.setString(3, user.getFirstName());
-      addUser.setString(4, user.getEmail());
-      addUser.setString(5, user.getPassword());
-      addUser.setLong(6, addressId);
-      addUser.setTimestamp(7, Timestamp.valueOf(user.getRegistrationDate()));
-      addUser.setBoolean(8, user.isValidRegistration());
+    if (noErrors) {
+      try {
+        PreparedStatement addUser = this.dalBackendServices.getPreparedStatementAdd(queryAddUser);
+        addUser.setString(1, user.getUsername());
+        addUser.setString(2, user.getLastName());
+        addUser.setString(3, user.getFirstName());
+        addUser.setString(4, user.getEmail());
+        addUser.setString(5, user.getPassword());
+        addUser.setLong(6, addressId);
+        addUser.setTimestamp(7, Timestamp.valueOf(user.getRegistrationDate()));
+        addUser.setBoolean(8, user.isValidRegistration());
 
-      addUser.execute();
+        addUser.execute();
 
-      try (ResultSet rs = addUser.getGeneratedKeys()) {
-        if (rs.next()) {
-          userId = rs.getInt(1);
+        try (ResultSet rs = addUser.getGeneratedKeys()) {
+          if (rs.next()) {
+            userId = rs.getInt(1);
+          }
         }
+      } catch (SQLException e) {
+        e.printStackTrace();
+        throw new FatalException("Database error : addUser");
       }
-    } catch (SQLException e) {
-      e.printStackTrace();
-      throw new FatalException("Database error : addUser");
     }
-
-    //return id
+    // return id
     return userId;
   }
 
   @Override
   public boolean validateUser(int id, int type) {
     try {
-      if (validateUser == null) {
-        validateUser = this.dalServices.getPreparedStatement(queryValidateUser);
-      }
+      PreparedStatement validateUser =
+          this.dalBackendServices.getPreparedStatement(queryValidateUser);
       validateUser.setInt(1, type);
       validateUser.setBoolean(2, true);
       validateUser.setInt(3, id);
@@ -285,11 +266,10 @@ public class DAOUserImpl implements DAOUser {
   @Override
   public List<UserDTO> getUnvalidatedUsers() {
     try {
-      if (selectUnvalidatedUsers == null) {
-        selectUnvalidatedUsers = this.dalServices.getPreparedStatement(querySelectUnvalidatedUsers);
-      }
+      PreparedStatement selectUnvalidatedUsers =
+          this.dalBackendServices.getPreparedStatement(querySelectUnvalidatedUsers);
       List<UserDTO> unvalidatedUsers = new ArrayList<>();
-      try (ResultSet rs = selectUserByEmail.executeQuery()) {
+      try (ResultSet rs = selectUnvalidatedUsers.executeQuery()) {
         unvalidatedUsers.add(createUser(rs));
       }
       return unvalidatedUsers;

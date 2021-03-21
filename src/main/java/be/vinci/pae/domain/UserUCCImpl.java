@@ -1,19 +1,23 @@
 package be.vinci.pae.domain;
 
+import java.util.List;
 import be.vinci.pae.services.DAOUser;
+import be.vinci.pae.services.DalServices;
 import be.vinci.pae.utils.BusinessException;
 import be.vinci.pae.utils.ValueLiaison;
 import jakarta.inject.Inject;
-import java.util.List;
 
 public class UserUCCImpl implements UserUCC {
 
   @Inject
   private DAOUser daoUser;
 
+  @Inject
+  private DalServices dalServices;
+
   @Override
   public UserDTO login(String username, String password) {
-
+    this.dalServices.startTransaction();
     User user = (User) this.daoUser.getUserByUsername(username);
     if (user == null || !user.checkPassword(password)) {
       throw new BusinessException("Pseudo ou mot de passe incorrect");
@@ -23,6 +27,7 @@ public class UserUCCImpl implements UserUCC {
 
   @Override
   public UserDTO register(UserDTO newUser) {
+    this.dalServices.startTransactionSetAutoCommitToFalse();
     User user = (User) this.daoUser.getUserByUsername(newUser.getUsername());
     if (user != null) {
       throw new BusinessException("Ce pseudo est déjà utilisé");
@@ -37,7 +42,11 @@ public class UserUCCImpl implements UserUCC {
     user.setPassword(user.hashPassword(user.getPassword()));
 
     int id = daoUser.addUser(newUser);
-
+    if (id == -1) {
+      this.dalServices.rollbackTransaction();
+    } else {
+      this.dalServices.commitTransaction();
+    }
     user.setId(id);
 
     return user;

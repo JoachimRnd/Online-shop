@@ -1,11 +1,13 @@
 package be.vinci.pae.services;
 
-import java.sql.PreparedStatement;
-
 public interface DalServices {
 
-  PreparedStatement getPreparedStatement(String query);
+  void startTransaction();
 
-  PreparedStatement getPreparedStatementAdd(String query);
+  void startTransactionSetAutoCommitToFalse();
+
+  void commitTransaction();
+
+  void rollbackTransaction();
 
 }
