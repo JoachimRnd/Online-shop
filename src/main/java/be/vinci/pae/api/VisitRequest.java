@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import be.vinci.pae.domain.VisitRequestDTO;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DefaultValue;
@@ -38,9 +39,11 @@ public class VisitRequest {
       @FormDataParam("data") FormDataBodyPart jsonPart) {
     System.out.println("Uploaded Input Stream : " + uploadedInputStream);
     System.out.println("File detail : " + fileDetail);
+    System.out.println("JSON" + jsonPart);
 
     jsonPart.setMediaType(MediaType.APPLICATION_JSON_TYPE);
-    System.out.println("DATA : " + jsonPart);
+    VisitRequestDTO visitRequest = jsonPart.getValueAs(VisitRequestDTO.class);
+    System.out.println("VISITREQUEST : " + visitRequest);
     // Your local disk path where you want to store the file
     String uploadedFileLocation = ".\\images\\" + fileDetail.getFileName();
     System.out.println(uploadedFileLocation);
