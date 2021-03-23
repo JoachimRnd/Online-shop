@@ -9,7 +9,14 @@ public class ValueLiaison {
   public static final int CLIENT_INT = 0;
   public static final int ANTIQUAIRE_INT = 1;
 
-  public static int StringToIntUserType(String type) {
+
+  /**
+   * Change the user type form string into a integer.
+   * 
+   * @param type type of user as string
+   * @return integer of the user type
+   */
+  public static int stringToIntUserType(String type) {
     switch (type.toLowerCase()) {
       case "client":
         return 0;
@@ -22,7 +29,13 @@ public class ValueLiaison {
     }
   }
 
-  public static String IntToStringUserType(int type) {
+  /**
+   * Change the user type form integer into a string.
+   * 
+   * @param type type of user as integer
+   * @return string of the user type
+   */
+  public static String intToStringUserType(int type) {
     switch (type) {
       case 0:
         return "client";
@@ -35,6 +48,12 @@ public class ValueLiaison {
     }
   }
 
+  /**
+   * Valid the string of the user type.
+   * 
+   * @param type type of user as string
+   * @return boolean of valid type
+   */
   public static boolean isValidUserType(String type) {
     switch (type.toLowerCase()) {
       case "client":
@@ -46,6 +65,12 @@ public class ValueLiaison {
     }
   }
 
+  /**
+   * Valid the integer of the user type.
+   * 
+   * @param type type of user as integer
+   * @return boolean of valid type
+   */
   public static boolean isValidUserType(int type) {
     switch (type) {
       case 0:

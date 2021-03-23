@@ -28,7 +28,7 @@ public interface UserDTO {
 
   String getUserType();
 
-  void setUserType(int userType);
+  void setUserTypeFromInt(int userType);
 
   void setUserType(String userType);
 
