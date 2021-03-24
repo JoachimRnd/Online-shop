@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import be.vinci.pae.domain.PictureDTO;
 import be.vinci.pae.domain.PictureFactory;
-import be.vinci.pae.domain.UserFactory;
 import be.vinci.pae.utils.FatalException;
 import jakarta.inject.Inject;
 
@@ -23,7 +22,7 @@ public class DAOPictureImpl implements DAOPicture {
 
   public DAOPictureImpl() {
     querySelectAllPictures = "SELECT p.picture_id, p.name, p.visible_for_everyone, p.furniture, "
-        + "p.scrolling_picture FROM project.pictures";
+        + "p.scrolling_picture FROM project.pictures p";
   }
 
   @Override
