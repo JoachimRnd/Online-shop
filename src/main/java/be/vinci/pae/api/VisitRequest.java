@@ -36,11 +36,18 @@ public class VisitRequest {
   public Response uploadFile(@DefaultValue("true") @FormDataParam("enabled") boolean enabled,
       @FormDataParam("file") InputStream uploadedInputStream,
       @FormDataParam("file") FormDataContentDisposition fileDetail,
+      // @FormDataParam("data") InputStream uploadBody,
       @FormDataParam("data") FormDataBodyPart jsonPart) {
     System.out.println("Uploaded Input Stream : " + uploadedInputStream);
     System.out.println("File detail : " + fileDetail);
     System.out.println("JSON" + jsonPart);
+    // System.out.println("Uploaded Input Stream : " + uploadedInputStream);
+    // System.out.println("File detail : " + fileDetail);
 
+
+    // Read text
+
+    // Map<String, String> mapa = jsonPart.getParameters();
     jsonPart.setMediaType(MediaType.APPLICATION_JSON_TYPE);
     VisitRequestDTO visitRequest = jsonPart.getValueAs(VisitRequestDTO.class);
     System.out.println("VISITREQUEST : " + visitRequest);
