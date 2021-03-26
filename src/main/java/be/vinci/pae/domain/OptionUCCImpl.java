@@ -1,9 +1,8 @@
 package be.vinci.pae.domain;
 
-import java.util.List;
 import be.vinci.pae.services.DAOOption;
-import be.vinci.pae.utils.BusinessException;
 import jakarta.inject.Inject;
+import java.util.List;
 
 public class OptionUCCImpl implements OptionUCC {
 
@@ -31,21 +30,8 @@ public class OptionUCCImpl implements OptionUCC {
 
   @Override
   public OptionDTO addOption(OptionDTO newOption) {
-    Option option = (Option) daoOption.selectOptionByID(newOption.getId());
-    if (option == null) {
-      throw new BusinessException("il n'y a pas d'option ayant cet ID");
-    }
-    option = (Option) newOption;
-    option.setBuyerId(option.getBuyerId());
-    option.setFurnitureId(option.getFurnitureId());
-    option.setDuration(option.getDuration());
-    option.setDate(option.getDate());
-    option.setStatus(option.getStatus());
-
-    int id = daoOption.addOption(newOption);
-    option.setId(id); // TODO verifier si ok
-
-    return option;
+    //@TODO
+    return null;
   }
 
 
