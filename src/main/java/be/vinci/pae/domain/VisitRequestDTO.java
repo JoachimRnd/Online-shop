@@ -1,39 +1,40 @@
 package be.vinci.pae.domain;
 
-import java.time.LocalDateTime;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import java.util.Date;
 
 @JsonDeserialize(as = VisitRequestImpl.class)
 public interface VisitRequestDTO {
+
   int getId();
-
-  LocalDateTime getRequestDate();
-
-  String getTimeSlot();
-
-  Address getAddress();
-
-  String getStatus();
-
-  LocalDateTime getChosenDateTime();
-
-  String getCancellationReason();
-
-  UserDTO getCustomer();
 
   void setId(int id);
 
-  void setRequestDate(LocalDateTime requestDate);
+  Date getRequestDate();
+
+  void setRequestDate(Date requestDate);
+
+  String getTimeSlot();
 
   void setTimeSlot(String timeSlot);
 
-  void setAddress(Address address);
+  AddressDTO getAddress();
+
+  void setAddress(AddressDTO address);
+
+  String getStatus();
 
   void setStatus(String status);
 
-  void setChosenDateTime(LocalDateTime chosenDateTime);
+  Date getChosenDateTime();
+
+  void setChosenDateTime(Date chosenDateTime);
+
+  String getCancellationReason();
 
   void setCancellationReason(String cancellationReason);
+
+  UserDTO getCustomer();
 
   void setCustomer(UserDTO customer);
 }

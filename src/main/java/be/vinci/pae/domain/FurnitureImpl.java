@@ -1,7 +1,7 @@
 package be.vinci.pae.domain;
 
-import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import java.util.Date;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class FurnitureImpl implements Furniture {
@@ -11,143 +11,143 @@ class FurnitureImpl implements Furniture {
   private String type;
   private VisitRequestDTO visitRequest;
   private double purchasePrice;
-  private LocalDateTime withdrawalDateFromCustomer;
+  private Date withdrawalDateFromCustomer;
   private double sellingPrice;
   private double specialSalePrice;
-  private LocalDateTime depositDate;
-  private LocalDateTime sellingDate;
-  private LocalDateTime deliveryDate;
-  private LocalDateTime withdrawalDateToCustomer;
-  private String buyer;
+  private Date depositDate;
+  private Date sellingDate;
+  private Date deliveryDate;
+  private Date withdrawalDateToCustomer;
+  private UserDTO buyer;
   private String condition;
   private String unregisteredBuyerEmail;
-  private Picture favouritePicture;
+  private PictureDTO favouritePicture;
 
   public int getId() {
     return id;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public String getType() {
-    return type;
-  }
-
-  public VisitRequestDTO getVisiteRequest() {
-    return visitRequest;
-  }
-
-  public double getPurchasePrice() {
-    return purchasePrice;
-  }
-
-  public LocalDateTime getWithdrawalDateFromCustomer() {
-    return withdrawalDateFromCustomer;
-  }
-
-  public double getSellingPrice() {
-    return sellingPrice;
-  }
-
-  public double getSpecialSalePrice() {
-    return specialSalePrice;
-  }
-
-  public LocalDateTime getDepositDate() {
-    return depositDate;
-  }
-
-  public LocalDateTime getSellingDate() {
-    return sellingDate;
-  }
-
-  public LocalDateTime getDeliveryDate() {
-    return deliveryDate;
-  }
-
-  public LocalDateTime getWithdrawalDateToCustomer() {
-    return withdrawalDateToCustomer;
-  }
-
-  public String getBuyer() {
-    return buyer;
-  }
-
-  public String getCondition() {
-    return condition;
-  }
-
-  public String getUnregisteredBuyerEmail() {
-    return unregisteredBuyerEmail;
-  }
-
-  public Picture getFavouritePicture() {
-    return favouritePicture;
   }
 
   public void setId(int id) {
     this.id = id;
   }
 
+  public String getDescription() {
+    return description;
+  }
+
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  public String getType() {
+    return type;
   }
 
   public void setType(String type) {
     this.type = type;
   }
 
+  public VisitRequestDTO getVisiteRequest() {
+    return visitRequest;
+  }
+
   public void setVisiteRequest(VisitRequestDTO visiteRequest) {
     this.visitRequest = visiteRequest;
+  }
+
+  public double getPurchasePrice() {
+    return purchasePrice;
   }
 
   public void setPurchasePrice(double purchasePrice) {
     this.purchasePrice = purchasePrice;
   }
 
-  public void setWithdrawalDateFromCustomer(LocalDateTime withdrawalDateFromCustomer) {
+  public Date getWithdrawalDateFromCustomer() {
+    return withdrawalDateFromCustomer;
+  }
+
+  public void setWithdrawalDateFromCustomer(Date withdrawalDateFromCustomer) {
     this.withdrawalDateFromCustomer = withdrawalDateFromCustomer;
+  }
+
+  public double getSellingPrice() {
+    return sellingPrice;
   }
 
   public void setSellingPrice(double sellingPrice) {
     this.sellingPrice = sellingPrice;
   }
 
+  public double getSpecialSalePrice() {
+    return specialSalePrice;
+  }
+
   public void setSpecialSalePrice(double specialSalePrice) {
     this.specialSalePrice = specialSalePrice;
   }
 
-  public void setDepositDate(LocalDateTime depositDate) {
+  public Date getDepositDate() {
+    return depositDate;
+  }
+
+  public void setDepositDate(Date depositDate) {
     this.depositDate = depositDate;
   }
 
-  public void setSellingDate(LocalDateTime sellingDate) {
+  public Date getSellingDate() {
+    return sellingDate;
+  }
+
+  public void setSellingDate(Date sellingDate) {
     this.sellingDate = sellingDate;
   }
 
-  public void setDeliveryDate(LocalDateTime deliveryDate) {
+  public Date getDeliveryDate() {
+    return deliveryDate;
+  }
+
+  public void setDeliveryDate(Date deliveryDate) {
     this.deliveryDate = deliveryDate;
   }
 
-  public void setWithdrawalDateToCustomer(LocalDateTime withdrawalDateToCustomer) {
+  public Date getWithdrawalDateToCustomer() {
+    return withdrawalDateToCustomer;
+  }
+
+  public void setWithdrawalDateToCustomer(Date withdrawalDateToCustomer) {
     this.withdrawalDateToCustomer = withdrawalDateToCustomer;
   }
 
-  public void setBuyer(String buyer) {
+  public UserDTO getBuyer() {
+    return buyer;
+  }
+
+  public void setBuyer(UserDTO buyer) {
     this.buyer = buyer;
+  }
+
+  public String getCondition() {
+    return condition;
   }
 
   public void setCondition(String condition) {
     this.condition = condition;
   }
 
+  public String getUnregisteredBuyerEmail() {
+    return unregisteredBuyerEmail;
+  }
+
   public void setUnregisteredBuyerEmail(String unregisteredBuyerEmail) {
     this.unregisteredBuyerEmail = unregisteredBuyerEmail;
   }
 
-  public void setFavouritePicture(Picture favouritePicture) {
+  public PictureDTO getFavouritePicture() {
+    return favouritePicture;
+  }
+
+  public void setFavouritePicture(PictureDTO favouritePicture) {
     this.favouritePicture = favouritePicture;
   }
 

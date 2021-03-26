@@ -3,6 +3,7 @@ package be.vinci.pae.services;
 import be.vinci.pae.domain.OptionDTO;
 import be.vinci.pae.domain.OptionFactory;
 import be.vinci.pae.utils.FatalException;
+import be.vinci.pae.utils.ValueLiaison;
 import jakarta.inject.Inject;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -69,17 +70,17 @@ public class DAOOptionImpl implements DAOOption {
         selectFurnitureId = this.dalBackendServices.getPreparedStatement(querySelectFurnitureId);
         selectUserId = this.dalBackendServices.getPreparedStatement(querySelectUserId);
       }
-      selectFurnitureId.setInt(1, option.getFurnitureId());
-      selectUserId.setInt(1, option.getBuyerId());
+      selectFurnitureId.setInt(1, option.getFurniture().getId());
+      selectUserId.setInt(1, option.getBuyer().getId());
       ResultSet rsFurniture = selectFurnitureId.executeQuery();
       ResultSet rsUser = selectUserId.executeQuery();
       if (rsFurniture != null && rsUser != null) {
-        addOption.setInt(2, option.getBuyerId());
-        addOption.setInt(3, option.getFurnitureId());
+        addOption.setInt(2, option.getBuyer().getId());
+        addOption.setInt(3, option.getFurniture().getId());
         addOption.setInt(4, option.getDuration());
         // TODO setDate to LocalDate --> is that correct ?
-        addOption.setDate(5, Date.valueOf(option.getDate()));
-        addOption.setInt(6, option.getStatus());
+        addOption.setDate(5, (Date) option.getDate());
+        addOption.setInt(6, ValueLiaison.stringToIntOption(option.getStatus()));
       } else {
         throw new FatalException("there is no furnitureId or userId as mentionned");
       }

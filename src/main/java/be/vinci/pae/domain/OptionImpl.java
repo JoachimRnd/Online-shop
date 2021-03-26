@@ -1,65 +1,75 @@
 package be.vinci.pae.domain;
 
-import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import java.util.Date;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class OptionImpl implements Option {
 
   private int id;
-  private int buyerId;
-  private int furnitureId;
+  private UserDTO buyer;
+  private FurnitureDTO furniture;
   private int duration;
+  private Date date;
+  private String status;
 
+  @Override
   public int getId() {
     return id;
   }
 
+  @Override
   public void setId(int id) {
     this.id = id;
   }
 
-  public int getBuyerId() {
-    return buyerId;
+  @Override
+  public UserDTO getBuyer() {
+    return buyer;
   }
 
-  public void setBuyerId(int buyerId) {
-    this.buyerId = buyerId;
+  @Override
+  public void setBuyer(UserDTO buyer) {
+    this.buyer = buyer;
   }
 
-  public int getFurnitureId() {
-    return furnitureId;
+  @Override
+  public FurnitureDTO getFurniture() {
+    return furniture;
   }
 
-  public void setFurnitureId(int furnitureId) {
-    this.furnitureId = furnitureId;
+  @Override
+  public void setFurniture(FurnitureDTO furniture) {
+    this.furniture = furniture;
   }
 
+  @Override
   public int getDuration() {
     return duration;
   }
 
+  @Override
   public void setDuration(int duration) {
     this.duration = duration;
   }
 
-  public LocalDate getDate() {
+  @Override
+  public Date getDate() {
     return date;
   }
 
-  public void setDate(LocalDate date) {
+  @Override
+  public void setDate(Date date) {
     this.date = date;
   }
 
-  public int getStatus() {
+  @Override
+  public String getStatus() {
     return status;
   }
 
-  public void setStatus(int status) {
+  @Override
+  public void setStatus(String status) {
     this.status = status;
   }
-
-  private LocalDate date;
-  private int status;
-
 }
