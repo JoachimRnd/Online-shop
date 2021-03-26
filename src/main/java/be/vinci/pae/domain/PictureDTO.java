@@ -17,9 +17,9 @@ public interface PictureDTO {
 
   void setVisibleForEveryone(boolean isVisibleForEveryone);
 
-  Furniture getFurniture();
+  FurnitureDTO getFurniture();
 
-  void setFurniture(Furniture furniture);
+  void setFurniture(FurnitureDTO furniture);
 
   boolean isAScrollingPicture();
 

@@ -1,6 +1,6 @@
 package be.vinci.pae.services;
 
-import be.vinci.pae.domain.Address;
+import be.vinci.pae.domain.AddressDTO;
 import be.vinci.pae.domain.FurnitureDTO;
 import be.vinci.pae.domain.VisitRequestDTO;
 
@@ -8,10 +8,9 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
 
   //private String querySelectAdressUser;
   //private String querySelectTypesFurniture;
-  
+
   /**
-   * constructor of DAOVisitRequestImpl.
-   * contains queries.
+   * constructor of DAOVisitRequestImpl. contains queries.
    */
   public DAOVisitRequestImpl() {
     /*String querySelectAdressUser =
@@ -22,7 +21,7 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
   }
 
   @Override
-  public Address getAddressByUserId(int id) {
+  public AddressDTO getAddressByUserId(int id) {
     // TODO Auto-generated method stub
     return null;
   }

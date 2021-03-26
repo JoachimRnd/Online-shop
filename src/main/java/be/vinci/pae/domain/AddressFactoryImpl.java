@@ -3,7 +3,7 @@ package be.vinci.pae.domain;
 public class AddressFactoryImpl implements AddressFactory {
 
   @Override
-  public Address getAddress() {
+  public AddressDTO getAddress() {
     return new AddressImpl();
   }
 
