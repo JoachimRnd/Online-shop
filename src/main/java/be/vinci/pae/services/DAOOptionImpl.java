@@ -38,8 +38,12 @@ public class DAOOptionImpl implements DAOOption {
         + "o.status FROM project.options o;";
     queryAddOption = "INSERT INTO project.options (option_id, buyer, furniture, duration, date"
         + "status VALUES (DEFAULT, ?, ?, ?, ?, ?);";
-    querySelectUserId = "TODO";
-    querySelectFurnitureId = "TODO";
+    querySelectUserId = "SELECT u.user_id, u.username, u.password, u.last_name, u.first_name,"
+        + "a.street, a.building_number, a.unit_number, a.postcode, a.commune, a.country, u.email,"
+        + "u.registration_date, u.valid_registration, u.user_type FROM project.addresses a,"
+        + "project.users u WHERE u.user_id = ?";
+    // TODO faire un select complet...
+    querySelectFurnitureId = "SELECT f.* FROM project.furnitures f WHERE f.furniture_id = ?";
   }
 
   @Override
@@ -79,6 +83,8 @@ public class DAOOptionImpl implements DAOOption {
         // TODO setDate to LocalDate --> is that correct ?
         addOption.setDate(5, Date.valueOf(option.getDate()));
         addOption.setInt(6, option.getStatus());
+      } else {
+        throw new FatalException("there is no furnitureId or userId as mentionned");
       }
       try (ResultSet rs = addOption.getGeneratedKeys()) {
         if (rs.next()) {
@@ -87,7 +93,7 @@ public class DAOOptionImpl implements DAOOption {
       }
     } catch (SQLException e) {
       e.printStackTrace();
-      System.out.println("Database error : addOption");
+      throw new FatalException("Database error : addOption");
     }
     return optionId;
   }
