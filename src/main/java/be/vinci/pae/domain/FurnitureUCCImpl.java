@@ -9,15 +9,6 @@ import jakarta.inject.Inject;
 
 public class FurnitureUCCImpl implements FurnitureUCC {
   
-  @Inject
-  private DAOPicture daoPicture;
-  @Inject
-  private DAOFurniture daoFurniture;
-  @Inject
-  private DAOOption daoOption;
-  @Inject
-  private DAOUser daoUser;
-
   @Override
   public List<FurnitureDTO> getAllFurniture() {
     // TODO Auto-generated method stub

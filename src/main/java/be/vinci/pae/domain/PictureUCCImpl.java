@@ -10,8 +10,6 @@ public class PictureUCCImpl implements PictureUCC {
 
   @Inject
   private DAOPicture daoPicture;
-  @Inject
-  private DAOFurniture daoFurniture;
 
   @Override
   public List<PictureDTO> getAllPictures() {
@@ -22,7 +20,8 @@ public class PictureUCCImpl implements PictureUCC {
   @Override
   public List<PictureDTO> getAllPicturesByFurnitureType(String type) {
     //TODO get all listFurniture via type String then foreach furniture get listPicture
-    daoFurniture = null;//just to use that later (not a statement)
+    //daoFurniture = null;
+    //just to use that later (not a statement)
     List<PictureDTO> liste = daoPicture.selectAllPictures();
     return liste;
   }
