@@ -24,10 +24,6 @@ public class DAOOptionImpl implements DAOOption {
   private String querySelectFurnitureId;
 
   @Inject
-  private FurnitureFactory furnitureFactory;
-  @Inject
-  private UserFactory userFactory;
-  @Inject
   private OptionFactory optionFactory;
   @Inject
   private DalServices dalServices;

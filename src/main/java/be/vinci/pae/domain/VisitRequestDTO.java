@@ -7,23 +7,23 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 public interface VisitRequestDTO {
   public int getId();
 
-  public LocalDateTime getRequestDate();
+  LocalDateTime getRequestDate();
 
-  public String getTimeSlot();
+  String getTimeSlot();
 
-  public Address getAddress();
+  Address getAddress();
 
-  public String getStatus();
+  String getStatus();
 
-  public LocalDateTime getChosenDateTime();
+  LocalDateTime getChosenDateTime();
 
-  public String getCancellationReason();
+  String getCancellationReason();
 
-  public UserDTO getCustomer();
+  UserDTO getCustomer();
 
-  public void setId(int id);
+  void setId(int id);
 
-  public void setRequestDate(LocalDateTime requestDate);
+  void setRequestDate(LocalDateTime requestDate);
 
   public void setTimeSlot(String timeSlot);
 

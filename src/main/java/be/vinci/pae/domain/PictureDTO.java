@@ -5,24 +5,24 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @JsonDeserialize(as = PictureImpl.class)
 public interface PictureDTO {
 
-  public int getId();
+  int getId();
 
-  public void setId(int id);
+  void setId(int id);
 
-  public String getName();
+  String getName();
 
-  public void setName(String name);
+  void setName(String name);
 
-  public boolean isVisibleForEveryone();
+  boolean isVisibleForEveryone();
 
-  public void setVisibleForEveryone(boolean isVisibleForEveryone);
+  void setVisibleForEveryone(boolean isVisibleForEveryone);
 
-  public Furniture getFurniture();
+  Furniture getFurniture();
 
-  public void setFurniture(Furniture furniture);
+  void setFurniture(Furniture furniture);
 
-  public boolean isAScrollingPicture();
+  boolean isAScrollingPicture();
 
-  public void setAScrollingPicture(boolean isAScrollingPicture);
+  void setAScrollingPicture(boolean isAScrollingPicture);
 
 }

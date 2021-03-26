@@ -6,19 +6,19 @@ import be.vinci.pae.domain.VisitRequestDTO;
 
 public class DAOVisitRequestImpl implements DAOVisitRequest {
 
-  private String querySelectAdressUser;
-  private String querySelectTypesFurniture;
+  //private String querySelectAdressUser;
+  //private String querySelectTypesFurniture;
   
   /**
    * constructor of DAOVisitRequestImpl.
    * contains queries.
    */
   public DAOVisitRequestImpl() {
-    querySelectAdressUser =
+    String querySelectAdressUser =
         "SELECT a.address_id, a.street, a.building_number, a.unit_number, a.postcode, a.commune,"
             + "a.country FROM project.addresses a, project.users u WHERE u.user_id = ? "
             + "AND u.address = a.address_id;";
-    querySelectTypesFurniture = "SELECT ft.name FROM furniture_types ft;";
+    String querySelectTypesFurniture = "SELECT ft.name FROM furniture_types ft;";
 
   }
 

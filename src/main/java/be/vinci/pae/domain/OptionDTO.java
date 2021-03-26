@@ -6,28 +6,28 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @JsonDeserialize(as = OptionImpl.class)
 public interface OptionDTO {
 
-  public int getId();
+  int getId();
 
-  public void setId(int id);
+  void setId(int id);
 
-  public int getBuyerId();
+  int getBuyerId();
 
-  public void setBuyerId(int id);
+  void setBuyerId(int id);
 
-  public int getFurnitureId();
+  int getFurnitureId();
 
-  public void setFurnitureId(int id);
+  void setFurnitureId(int id);
 
-  public int getDuration();
+  int getDuration();
 
-  public void setDuration(int duration);
+  void setDuration(int duration);
 
-  public LocalDate getDate();
+  LocalDate getDate();
 
-  public void setDate(LocalDate date);
+  void setDate(LocalDate date);
 
-  public int getStatus();
+  int getStatus();
 
-  public void setStatus(int status);
+  void setStatus(int status);
 
 }

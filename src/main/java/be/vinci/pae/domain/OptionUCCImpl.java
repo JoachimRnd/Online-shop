@@ -11,13 +11,8 @@ import jakarta.inject.Inject;
 public class OptionUCCImpl implements OptionUCC {
 
   @Inject
-  private DAOPicture daoPicture;
-  @Inject
-  private DAOFurniture daoFurniture;
-  @Inject
   private DAOOption daoOption;
-  @Inject
-  private DAOUser daoUser;
+
 
   @Override
   public List<OptionDTO> getAllOptions() {
