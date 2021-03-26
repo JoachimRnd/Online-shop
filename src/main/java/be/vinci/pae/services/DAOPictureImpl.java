@@ -1,13 +1,13 @@
 package be.vinci.pae.services;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
 import be.vinci.pae.domain.PictureDTO;
 import be.vinci.pae.domain.PictureFactory;
 import be.vinci.pae.utils.FatalException;
 import jakarta.inject.Inject;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DAOPictureImpl implements DAOPicture {
 
@@ -17,7 +17,7 @@ public class DAOPictureImpl implements DAOPicture {
   @Inject
   private PictureFactory pictureFactory;
   @Inject
-  private DalServices dalServices;
+  private DalBackendServices dalBackendServices;
 
 
   public DAOPictureImpl() {
@@ -29,7 +29,7 @@ public class DAOPictureImpl implements DAOPicture {
   public List<PictureDTO> selectAllPictures() {
     List<PictureDTO> listPictures = new ArrayList<PictureDTO>();
     try {
-      selectAllPictures = dalServices.getPreparedStatement(querySelectAllPictures);
+      selectAllPictures = dalBackendServices.getPreparedStatement(querySelectAllPictures);
       ResultSet rs = selectAllPictures.executeQuery();
       while (rs.next()) {
         PictureDTO picture = pictureFactory.getPicture();

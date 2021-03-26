@@ -1,15 +1,15 @@
 package be.vinci.pae.services;
 
+import be.vinci.pae.domain.OptionDTO;
+import be.vinci.pae.domain.OptionFactory;
+import be.vinci.pae.utils.FatalException;
+import jakarta.inject.Inject;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import be.vinci.pae.domain.OptionDTO;
-import be.vinci.pae.domain.OptionFactory;
-import be.vinci.pae.utils.FatalException;
-import jakarta.inject.Inject;
 
 public class DAOOptionImpl implements DAOOption {
 
@@ -24,11 +24,10 @@ public class DAOOptionImpl implements DAOOption {
   @Inject
   private OptionFactory optionFactory;
   @Inject
-  private DalServices dalServices;
+  private DalBackendServices dalBackendServices;
 
   /**
-   * constructor of DAOOptionImpl.
-   * contains queries.
+   * constructor of DAOOptionImpl. contains queries.
    */
   public DAOOptionImpl() {
     querySelectAllOptions = "SELECT o.option_id, o.buyer, o.furniture, o.duration, o.date"
@@ -47,7 +46,7 @@ public class DAOOptionImpl implements DAOOption {
   public List<OptionDTO> selectAllOptions() {
     List<OptionDTO> listOptions = new ArrayList<OptionDTO>();
     try {
-      selectAllOptions = dalServices.getPreparedStatement(querySelectAllOptions);
+      selectAllOptions = dalBackendServices.getPreparedStatement(querySelectAllOptions);
       ResultSet rs = selectAllOptions.executeQuery();
       while (rs.next()) {
         OptionDTO option = optionFactory.getOption();
@@ -65,10 +64,10 @@ public class DAOOptionImpl implements DAOOption {
     // TODO
     int optionId = -1;
     try {
-      PreparedStatement addOption = this.dalServices.getPreparedStatement(queryAddOption);
+      PreparedStatement addOption = this.dalBackendServices.getPreparedStatement(queryAddOption);
       if (selectUserId == null && selectFurnitureId == null) {
-        selectFurnitureId = this.dalServices.getPreparedStatement(querySelectFurnitureId);
-        selectUserId = this.dalServices.getPreparedStatement(querySelectUserId);
+        selectFurnitureId = this.dalBackendServices.getPreparedStatement(querySelectFurnitureId);
+        selectUserId = this.dalBackendServices.getPreparedStatement(querySelectUserId);
       }
       selectFurnitureId.setInt(1, option.getFurnitureId());
       selectUserId.setInt(1, option.getBuyerId());
@@ -101,7 +100,7 @@ public class DAOOptionImpl implements DAOOption {
     // TODO
     OptionDTO option = null;
     try {
-      selectAllOptions = dalServices.getPreparedStatement(querySelectAllOptions);
+      selectAllOptions = dalBackendServices.getPreparedStatement(querySelectAllOptions);
       ResultSet rs = selectAllOptions.executeQuery();
       if (rs == null) {
         option = optionFactory.getOption();
