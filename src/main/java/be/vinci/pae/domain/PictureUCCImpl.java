@@ -18,6 +18,7 @@ public class PictureUCCImpl implements PictureUCC {
     List<PictureDTO> liste = daoPicture.selectAllPictures();
     return liste;
   }
+  
   @Override
   public List<PictureDTO> getAllPicturesByFurnitureType(String type) {
     //TODO get all listFurniture via type String then foreach furniture get listPicture

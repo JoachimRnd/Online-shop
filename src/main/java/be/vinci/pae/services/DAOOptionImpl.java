@@ -32,7 +32,10 @@ public class DAOOptionImpl implements DAOOption {
   @Inject
   private DalServices dalServices;
 
-
+  /**
+   * constructor of DAOOptionImpl.
+   * contains queries.
+   */
   public DAOOptionImpl() {
     querySelectAllOptions = "SELECT o.option_id, o.buyer, o.furniture, o.duration, o.date"
         + "o.status FROM project.options o;";
@@ -63,6 +66,7 @@ public class DAOOptionImpl implements DAOOption {
     }
   }
 
+  @Override
   public int addOption(OptionDTO option) {
     // TODO
     int optionId = -1;
@@ -98,13 +102,14 @@ public class DAOOptionImpl implements DAOOption {
     return optionId;
   }
 
+  @Override
   public OptionDTO selectOptionByID(int id) {
     // TODO
     OptionDTO option = null;
     try {
       selectAllOptions = dalServices.getPreparedStatement(querySelectAllOptions);
       ResultSet rs = selectAllOptions.executeQuery();
-      if(rs == null) {
+      if (rs == null) {
         option = optionFactory.getOption();
       }
       return option;

@@ -23,6 +23,11 @@ public class Config {
     }
   }
 
+  /**
+   * get the value of the key passed in parameters.
+   * @param key the key of the property to get.
+   * @return the value of the property at certain key.
+   */
   public static String getProperty(String key) {
     String property = props.getProperty(key);
     if (property == null) {

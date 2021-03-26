@@ -19,21 +19,25 @@ public class OptionUCCImpl implements OptionUCC {
   @Inject
   private DAOUser daoUser;
 
+  @Override
   public List<OptionDTO> getAllOptions() {
     List<OptionDTO> liste = daoOption.selectAllOptions();
     return liste;
   }
 
+  @Override
   public List<OptionDTO> getAllOptionsByFurniture(int idFurniture) {
     // TODO
     return null;
   }
 
+  @Override
   public List<OptionDTO> getAllOptionsByBuyer(int idBuyer) {
     // TODO
     return null;
   }
 
+  @Override
   public OptionDTO addOption(OptionDTO newOption) {
     Option option = (Option) daoOption.selectOptionByID(newOption.getId());
     if (option == null) {
@@ -47,7 +51,7 @@ public class OptionUCCImpl implements OptionUCC {
     option.setStatus(option.getStatus());
 
     int id = daoOption.addOption(newOption);
-    option.setId(id); // TODO vérifier si ok
+    option.setId(id); // TODO verifier si ok
 
     return option;
   }

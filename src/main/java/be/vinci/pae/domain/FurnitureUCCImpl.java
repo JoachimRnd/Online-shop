@@ -7,7 +7,7 @@ import be.vinci.pae.services.DAOPicture;
 import be.vinci.pae.services.DAOUser;
 import jakarta.inject.Inject;
 
-public class FurnitureUCCImpl implements FurnitureUCC{
+public class FurnitureUCCImpl implements FurnitureUCC {
   
   @Inject
   private DAOPicture daoPicture;
