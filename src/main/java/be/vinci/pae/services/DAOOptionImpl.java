@@ -100,7 +100,18 @@ public class DAOOptionImpl implements DAOOption {
 
   public OptionDTO selectOptionByID(int id) {
     // TODO
-    return null;
+    OptionDTO option = null;
+    try {
+      selectAllOptions = dalServices.getPreparedStatement(querySelectAllOptions);
+      ResultSet rs = selectAllOptions.executeQuery();
+      if(rs == null) {
+        option = optionFactory.getOption();
+      }
+      return option;
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Database error : selectAllOptions");
+    }
   }
 
 }
