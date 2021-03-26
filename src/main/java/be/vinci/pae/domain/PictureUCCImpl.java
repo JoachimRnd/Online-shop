@@ -1,7 +1,6 @@
 package be.vinci.pae.domain;
 
 import java.util.List;
-import be.vinci.pae.services.DAOFurniture;
 import be.vinci.pae.services.DAOPicture;
 import be.vinci.pae.utils.BusinessException;
 import jakarta.inject.Inject;

@@ -6,10 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import be.vinci.pae.domain.FurnitureFactory;
 import be.vinci.pae.domain.OptionDTO;
 import be.vinci.pae.domain.OptionFactory;
-import be.vinci.pae.domain.UserFactory;
 import be.vinci.pae.utils.FatalException;
 import jakarta.inject.Inject;
 

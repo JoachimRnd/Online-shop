@@ -14,12 +14,11 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
    * contains queries.
    */
   public DAOVisitRequestImpl() {
-    String querySelectAdressUser =
+    /*String querySelectAdressUser =
         "SELECT a.address_id, a.street, a.building_number, a.unit_number, a.postcode, a.commune,"
             + "a.country FROM project.addresses a, project.users u WHERE u.user_id = ? "
             + "AND u.address = a.address_id;";
-    String querySelectTypesFurniture = "SELECT ft.name FROM furniture_types ft;";
-
+    String querySelectTypesFurniture = "SELECT ft.name FROM furniture_types ft;";*/
   }
 
   @Override
