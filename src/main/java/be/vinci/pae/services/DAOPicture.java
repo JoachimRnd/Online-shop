@@ -14,7 +14,7 @@ public interface DAOPicture {
 	
 	PictureDTO selectPictureByID(int id);
 	
-	//demander à Olivier
+	//demander a Olivier
 	PictureDTO selectPictureByID(String extention);
 	
 	

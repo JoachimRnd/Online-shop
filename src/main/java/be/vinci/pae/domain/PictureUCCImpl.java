@@ -36,7 +36,7 @@ public class PictureUCCImpl implements PictureUCC {
   public PictureDTO addPicture(int id, String name, boolean isVisible, FurnitureDTO furniture,
       boolean isScrolling) {
     // TODO 
-    //peut-être totalement inutile car pas de setters dans DAO... IDK...
+    //peut-etre totalement inutile car pas de setters dans DAO... IDK...
     return null;
   }
 
@@ -54,7 +54,7 @@ public class PictureUCCImpl implements PictureUCC {
     picture.setVisibleForEveryone(picture.isVisibleForEveryone());
 
     int id = daoPicture.addPicture(newPicture);
-    picture.setId(id); // ou alors à la place de id : picture.getId() ?
+    picture.setId(id); // ou alors a la place de id : picture.getId() ?
     
     return picture;
   }

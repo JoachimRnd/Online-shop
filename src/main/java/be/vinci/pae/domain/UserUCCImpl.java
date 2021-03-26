@@ -27,7 +27,7 @@ public class UserUCCImpl implements UserUCC {
     }
     user = (User) this.daoUser.getUserByEmail(newUser.getEmail());
     if (user != null) {
-      throw new BusinessException("Cet Email est deja utilise");
+      throw new BusinessException("Cet email est deja utilise");
     }
 
     user = (User) newUser;
