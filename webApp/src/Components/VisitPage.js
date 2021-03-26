@@ -120,8 +120,8 @@ const VisitPage = () => {
     visitRequestForm.addEventListener("submit", onVisitRequest);
     let furnitureForm = document.getElementById("furnitureForm");
     furnitureForm.addEventListener("submit", onFurniture);
-    let pictureForm = document.getElementById("pictureForm");
-    pictureForm.addEventListener("submit", onPicture);
+    //let pictureForm = document.getElementById("pictureForm");
+    //pictureForm.addEventListener("submit", onPicture);
 }
 
 const onVisitRequest = async (e) => {
@@ -142,14 +142,13 @@ const onVisitRequest = async (e) => {
     };
     console.log(visitRequest);
 
-    //const user = getUserSessionData();
-    const user = undefined;
+    const user = getUserSessionData();
 
     try {
         const visitRequested = await callAPIFormData(
           API_BASE_URL + "add",
           "POST",
-          user,
+          user.token,
           visitRequest
         );
         onVisitRequestAdded(visitRequested);
@@ -180,8 +179,8 @@ const onPicture = (e) => {
 
 const onVisitRequestAdded = (data) => {
     console.log(data);
-    Navbar();
-    RedirectUrl("/");
+    //Navbar();
+    //RedirectUrl("/");
 }
 
 export default VisitPage;

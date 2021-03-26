@@ -58,7 +58,7 @@ async function callAPI(endpoint, method = "get", token, data) {
   }
 
   if (data) {
-    console.log("CALLAPIFORMDATA : ",data);
+    /*console.log("CALLAPIFORMDATA : ",data);
 
     let furnitureList = data.furnitureList;
     console.log("FURNITURELIST : ",furnitureList);
@@ -66,12 +66,13 @@ async function callAPI(endpoint, method = "get", token, data) {
     let picturesList = furnitureList[0].picturesList;
     console.log("PICTURESLIST : ",picturesList);
 
-    furnitureList.picturesList = [];
+    furnitureList.picturesList = [];*/
     data = JSON.stringify(data);
     
     let fd = new FormData();
     fd.append("data",data);
-    fd.append("file",picturesList[0]);
+    console.log(data);
+    //fd.append("file",picturesList[0]);
     options.body = fd;
   }
 
