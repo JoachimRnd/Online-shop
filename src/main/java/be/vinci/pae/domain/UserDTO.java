@@ -1,44 +1,46 @@
 package be.vinci.pae.domain;
 
-import java.time.LocalDateTime;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import java.time.LocalDateTime;
 
 @JsonDeserialize(as = UserImpl.class)
 public interface UserDTO {
 
   int getId();
 
-  String getUsername();
-
-  String getLastName();
-
-  String getFirstName();
-
-  String getEmail();
-
-  int getUserType();
-
-  Address getAddress();
-
-  LocalDateTime getRegistrationDate();
-
-  boolean isValidRegistration();
-
   void setId(int id);
+
+  String getUsername();
 
   void setUsername(String username);
 
+  String getLastName();
+
   void setLastName(String lastName);
+
+  String getFirstName();
 
   void setFirstName(String firstName);
 
+  String getEmail();
+
   void setEmail(String email);
 
-  void setUserType(int userType);
+  String getUserType();
+
+  void setUserTypeFromInt(int userType);
+
+  void setUserType(String userType);
+
+  Address getAddress();
 
   void setAddress(Address address);
 
+  LocalDateTime getRegistrationDate();
+
   void setRegistrationDate(LocalDateTime registrationDate);
+
+  boolean isValidRegistration();
 
   void setValidRegistration(boolean validRegistration);
 

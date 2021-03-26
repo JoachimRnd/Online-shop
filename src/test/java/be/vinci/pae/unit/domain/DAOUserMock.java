@@ -5,6 +5,7 @@ import be.vinci.pae.domain.UserDTO;
 import be.vinci.pae.domain.UserFactory;
 import be.vinci.pae.services.DAOUser;
 import jakarta.inject.Inject;
+import java.util.List;
 
 public class DAOUserMock implements DAOUser {
 
@@ -35,5 +36,15 @@ public class DAOUserMock implements DAOUser {
   @Override
   public int addUser(UserDTO user) {
     return 0;
+  }
+
+  @Override
+  public boolean validateUser(int id, int type) {
+    return false;
+  }
+
+  @Override
+  public List<UserDTO> getUnvalidatedUsers() {
+    return null;
   }
 }

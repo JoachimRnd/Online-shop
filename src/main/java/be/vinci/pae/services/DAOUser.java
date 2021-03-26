@@ -1,6 +1,7 @@
 package be.vinci.pae.services;
 
 import be.vinci.pae.domain.UserDTO;
+import java.util.List;
 
 public interface DAOUser {
 
@@ -11,4 +12,8 @@ public interface DAOUser {
   UserDTO getUserById(int id);
 
   int addUser(UserDTO user);
+
+  boolean validateUser(int id, int type);
+
+  List<UserDTO> getUnvalidatedUsers();
 }

@@ -17,6 +17,7 @@ import be.vinci.pae.services.DAOPicture;
 import be.vinci.pae.services.DAOPictureImpl;
 import be.vinci.pae.services.DAOUser;
 import be.vinci.pae.services.DAOUserImpl;
+import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.DalServicesImpl;
 import jakarta.inject.Singleton;
@@ -33,6 +34,7 @@ public class ApplicationBinder extends AbstractBinder {
     bind(DAOUserImpl.class).to(DAOUser.class).in(Singleton.class);
     bind(DAOPictureImpl.class).to(DAOPicture.class).in(Singleton.class);
     bind(DalServicesImpl.class).to(DalServices.class).in(Singleton.class);
+    bind(DalServicesImpl.class).to(DalBackendServices.class).in(Singleton.class);
     bind(UserUCCImpl.class).to(UserUCC.class).in(Singleton.class);
     bind(PictureUCCImpl.class).to(PictureUCC.class).in(Singleton.class);
     bind(VisitRequestUCCImpl.class).to(VisitRequestUCC.class).in(Singleton.class);
