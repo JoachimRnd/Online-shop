@@ -3,13 +3,15 @@ import LoginPage from "./LoginPage.js";
 import RegisterPage from "./RegisterPage.js";
 import LogoutComponent from "./LogoutComponent.js";
 import ErrorPage from "./ErrorPage.js";
+import FurnitureUser from "./Furniture/FurnitureUser.js";
 
 const routes = {
   "/": HomePage,
   "/login": LoginPage,
   "/register": RegisterPage,
   "/logout": LogoutComponent,
-  "/error": ErrorPage
+  "/error": ErrorPage,
+  "/furniture": FurnitureUser,
 };
 
 let navBar = document.querySelector("#navBar");
