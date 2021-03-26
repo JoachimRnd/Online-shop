@@ -52,7 +52,7 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     this.dalServices.startTransaction();
     List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>();
     listFurniture = this.daoFurniture.selectFurnitureByPrice(sellingPrice);
-    if(listFurniture == null){
+    if (listFurniture == null){
       this.dalServices.rollbackTransaction();
     } else {
       this.dalServices.commitTransaction();
