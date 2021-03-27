@@ -1,7 +1,7 @@
 package be.vinci.pae.domain;
 
-import java.time.LocalDate;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import java.util.Date;
 
 @JsonDeserialize(as = OptionImpl.class)
 public interface OptionDTO {
@@ -10,24 +10,24 @@ public interface OptionDTO {
 
   void setId(int id);
 
-  int getBuyerId();
+  UserDTO getBuyer();
 
-  void setBuyerId(int id);
+  void setBuyer(UserDTO buyer);
 
-  int getFurnitureId();
+  FurnitureDTO getFurniture();
 
-  void setFurnitureId(int id);
+  void setFurniture(FurnitureDTO furniture);
 
   int getDuration();
 
   void setDuration(int duration);
 
-  LocalDate getDate();
+  Date getDate();
 
-  void setDate(LocalDate date);
+  void setDate(Date date);
 
-  int getStatus();
+  String getStatus();
 
-  void setStatus(int status);
+  void setStatus(String status);
 
 }

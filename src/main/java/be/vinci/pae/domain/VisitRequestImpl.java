@@ -1,17 +1,17 @@
 package be.vinci.pae.domain;
 
-import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import java.util.Date;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class VisitRequestImpl implements VisitRequest {
 
   private int id;
-  private LocalDateTime requestDate;
+  private Date requestDate;
   private String timeSlot;
-  private Address address;
+  private AddressDTO address;
   private String status;
-  private LocalDateTime chosenDateTime;
+  private Date chosenDateTime;
   private String cancellationReason;
   private UserDTO customer;
 
@@ -21,8 +21,18 @@ public class VisitRequestImpl implements VisitRequest {
   }
 
   @Override
-  public LocalDateTime getRequestDate() {
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  @Override
+  public Date getRequestDate() {
     return requestDate;
+  }
+
+  @Override
+  public void setRequestDate(Date requestDate) {
+    this.requestDate = requestDate;
   }
 
   @Override
@@ -31,8 +41,18 @@ public class VisitRequestImpl implements VisitRequest {
   }
 
   @Override
-  public Address getAddress() {
+  public void setTimeSlot(String timeSlot) {
+    this.timeSlot = timeSlot;
+  }
+
+  @Override
+  public AddressDTO getAddress() {
     return address;
+  }
+
+  @Override
+  public void setAddress(AddressDTO address) {
+    this.address = address;
   }
 
   @Override
@@ -41,8 +61,18 @@ public class VisitRequestImpl implements VisitRequest {
   }
 
   @Override
-  public LocalDateTime getChosenDateTime() {
+  public void setStatus(String status) {
+    this.status = status;
+  }
+
+  @Override
+  public Date getChosenDateTime() {
     return chosenDateTime;
+  }
+
+  @Override
+  public void setChosenDateTime(Date chosenDateTime) {
+    this.chosenDateTime = chosenDateTime;
   }
 
   @Override
@@ -51,50 +81,19 @@ public class VisitRequestImpl implements VisitRequest {
   }
 
   @Override
-  public UserDTO getCustomer() {
-    return customer;
-  }
-
-  @Override
-  public void setId(int id) {
-    this.id = id;
-  }
-
-  @Override
-  public void setRequestDate(LocalDateTime requestDate) {
-    this.requestDate = requestDate;
-  }
-
-  @Override
-  public void setTimeSlot(String timeSlot) {
-    this.timeSlot = timeSlot;
-  }
-
-  @Override
-  public void setAddress(Address address) {
-    this.address = address;
-  }
-
-  @Override
-  public void setStatus(String status) {
-    this.status = status;
-  }
-
-  @Override
-  public void setChosenDateTime(LocalDateTime chosenDateTime) {
-    this.chosenDateTime = chosenDateTime;
-  }
-
-  @Override
   public void setCancellationReason(String cancellationReason) {
     this.cancellationReason = cancellationReason;
+  }
+
+  @Override
+  public UserDTO getCustomer() {
+    return customer;
   }
 
   @Override
   public void setCustomer(UserDTO customer) {
     this.customer = customer;
   }
-
 
 
 }

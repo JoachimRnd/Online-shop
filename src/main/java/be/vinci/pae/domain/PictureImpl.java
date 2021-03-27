@@ -8,7 +8,7 @@ public class PictureImpl implements Picture {
   private int id;
   private String name;
   private boolean visibleForEveryone;
-  private Furniture furniture;
+  private FurnitureDTO furniture;
   private boolean scrollingPicture;
 
   public int getId() {
@@ -35,11 +35,11 @@ public class PictureImpl implements Picture {
     this.visibleForEveryone = isVisibleForEveryone;
   }
 
-  public Furniture getFurniture() {
+  public FurnitureDTO getFurniture() {
     return furniture;
   }
 
-  public void setFurniture(Furniture furniture) {
+  public void setFurniture(FurnitureDTO furniture) {
     this.furniture = furniture;
   }
 
@@ -50,7 +50,6 @@ public class PictureImpl implements Picture {
   public void setAScrollingPicture(boolean scrollingPicture) {
     this.scrollingPicture = scrollingPicture;
   }
-
 
 
 }

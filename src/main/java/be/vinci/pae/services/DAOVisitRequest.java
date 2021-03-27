@@ -1,12 +1,12 @@
 package be.vinci.pae.services;
 
-import be.vinci.pae.domain.Address;
+import be.vinci.pae.domain.AddressDTO;
 import be.vinci.pae.domain.FurnitureDTO;
 import be.vinci.pae.domain.VisitRequestDTO;
 
 public interface DAOVisitRequest {
 
-  Address getAddressByUserId(int id);
+  AddressDTO getAddressByUserId(int id);
 
   String[] getTypesOfFurniture();
 
