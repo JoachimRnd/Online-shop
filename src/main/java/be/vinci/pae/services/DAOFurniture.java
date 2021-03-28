@@ -6,7 +6,7 @@ import be.vinci.pae.domain.FurnitureDTO;
 
 public interface DAOFurniture {
 
-  List<FurnitureDTO> selectAllFurnitures();
+  List<FurnitureDTO> selectAllFurniture();
 
   List<FurnitureDTO> selectFurnituresByType(String type);
 

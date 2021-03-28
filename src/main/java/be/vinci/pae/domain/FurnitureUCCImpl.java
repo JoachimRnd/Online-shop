@@ -53,12 +53,12 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     // TODO DAO
     // il me semble que condition est un int --> not sure
     this.dalServices.startTransaction();
-    int id = this.daoFurniture.selectFurnitureById(furniture.getId());
-    if (id == -1) {
+    FurnitureDTO furnitureDto = this.daoFurniture.selectFurnitureById(furniture.getId());
+    if (furnitureDto == null) {
       this.dalServices.rollbackTransaction();
     } else {
-      this.daoFurniture.updateSellingDate(id, LocalDate.now());
-      this.daoFurniture.updateCondition(id, status);
+      this.daoFurniture.updateSellingDate(furnitureDto.getId(), LocalDate.now());
+      this.daoFurniture.updateCondition(furnitureDto.getId(), status);
       this.dalServices.commitTransaction();
     }
     this.dalServices.closeConnection();
@@ -70,12 +70,12 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     // TODO DAO
     // il me semble que condition est un int --> not sure
     this.dalServices.startTransaction();
-    int id = this.daoFurniture.selectFurnitureById(furniture.getId());
-    if (id == -1) {
+    FurnitureDTO furnitureDto = this.daoFurniture.selectFurnitureById(furniture.getId());
+    if (furnitureDto == null) {
       this.dalServices.rollbackTransaction();
     } else {
-      this.daoFurniture.updateDepositDate(id, LocalDate.now());
-      this.daoFurniture.updateCondition(id, status);
+      this.daoFurniture.updateDepositDate(furnitureDto.getId(), LocalDate.now());
+      this.daoFurniture.updateCondition(furnitureDto.getId(), status);
       this.dalServices.commitTransaction();
     }
     this.dalServices.closeConnection();
@@ -87,11 +87,11 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     // TODO DAO
     // il me semble que condition est un int --> not sure
     this.dalServices.startTransaction();
-    int id = this.daoFurniture.selectFurnitureById(furniture.getId());
-    if (id == -1) {
+    FurnitureDTO furnitureDto = this.daoFurniture.selectFurnitureById(furniture.getId());
+    if (furnitureDto == null) {
       this.dalServices.rollbackTransaction();
     } else {
-      this.daoFurniture.updateCondition(id, status);
+      this.daoFurniture.updateCondition(furnitureDto.getId(), status);
       this.dalServices.commitTransaction();
     }
     this.dalServices.closeConnection();
@@ -108,8 +108,9 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     if (type == null) {
       this.dalServices.rollbackTransaction();
     } else {
-      int idType = type.getId();
-      listFurniture = this.daoFurniture.selectFurnitureByTypeName(idType);
+      // TODO
+      String idType = type.toString();
+      listFurniture = this.daoFurniture.selectFurnituresByType(idType);
       this.dalServices.commitTransaction();
     }
     dalServices.closeConnection();
@@ -135,8 +136,9 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     if (user == null) {
       this.dalServices.rollbackTransaction();
     } else {
-      int idUser = user.getId();
-      listFurniture = this.daoFurniture.selectFurnitureByBuyerId(idUser);
+      // TODO
+      String idUser = String.valueOf(user.getId());
+      listFurniture = this.daoFurniture.selectFurnitureByUser(idUser);
       this.dalServices.commitTransaction();
     }
     dalServices.closeConnection();
