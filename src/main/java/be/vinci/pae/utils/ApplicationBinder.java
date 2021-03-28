@@ -3,10 +3,14 @@ package be.vinci.pae.utils;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import be.vinci.pae.domain.AddressFactory;
 import be.vinci.pae.domain.AddressFactoryImpl;
+import be.vinci.pae.domain.FurnitureUCC;
+import be.vinci.pae.domain.FurnitureUCCImpl;
 import be.vinci.pae.domain.PictureFactory;
 import be.vinci.pae.domain.PictureFactoryImpl;
 import be.vinci.pae.domain.PictureUCC;
 import be.vinci.pae.domain.PictureUCCImpl;
+import be.vinci.pae.domain.TypeUCC;
+import be.vinci.pae.domain.TypeUCCImpl;
 import be.vinci.pae.domain.UserFactory;
 import be.vinci.pae.domain.UserFactoryImpl;
 import be.vinci.pae.domain.UserUCC;
@@ -38,5 +42,7 @@ public class ApplicationBinder extends AbstractBinder {
     bind(UserUCCImpl.class).to(UserUCC.class).in(Singleton.class);
     bind(PictureUCCImpl.class).to(PictureUCC.class).in(Singleton.class);
     bind(VisitRequestUCCImpl.class).to(VisitRequestUCC.class).in(Singleton.class);
+    bind(FurnitureUCCImpl.class).to(FurnitureUCC.class).in(Singleton.class);
+    bind(TypeUCCImpl.class).to(TypeUCC.class).in(Singleton.class);
   }
 }
