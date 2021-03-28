@@ -5,13 +5,13 @@ import java.util.List;
 import be.vinci.pae.services.DAOFurniture;
 import be.vinci.pae.services.DAOUser;
 import be.vinci.pae.services.DalServices;
-import be.vinci.pae.utils.BusinessException;
 import jakarta.inject.Inject;
 
 public class FurnitureUCCImpl implements FurnitureUCC {
 
   @Inject
   private DAOFurniture daoFurniture;
+  // TODO create classes for Type
 
   @Inject
   private DAOUser daoUser;
@@ -21,8 +21,17 @@ public class FurnitureUCCImpl implements FurnitureUCC {
 
   @Override
   public List<FurnitureDTO> getAllFurniture() {
-    // TODO Auto-generated method stub
-    return null;
+    // TODO this.dalServices.startTransaction();
+    this.dalServices.startTransaction();
+    List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>();
+    listFurniture = this.daoFurniture.selectAllFurniture();
+    if (listFurniture == null) {
+      this.dalServices.rollbackTransaction();
+    } else {
+      this.dalServices.commitTransaction();
+    }
+    dalServices.closeConnection();
+    return listFurniture;
   }
 
   @Override
@@ -42,19 +51,18 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   @Override
   public List<FurnitureDTO> getFurnitureByTypeName(String typeName) {
     // TODO
-
-    return null;
-  }
-
-  @Override
-  public List<FurnitureDTO> getFurnitureBySellingPrice(double sellingPrice) {
-    // TODO 
     this.dalServices.startTransaction();
     List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>();
-    listFurniture = this.daoFurniture.selectFurnitureByPrice(sellingPrice);
-    if (listFurniture == null){
+    // change daoUser by daoType --> create new classes ! TODO
+    // TODO
+    // TODO
+    // TODO
+    User type = (User) this.daoUser.selectTypeByName(typeName);
+    if (type == null) {
       this.dalServices.rollbackTransaction();
     } else {
+      int idType = type.getId();
+      listFurniture = this.daoFurniture.selectFurnitureByTypeName(idType);
       this.dalServices.commitTransaction();
     }
     dalServices.closeConnection();
@@ -62,11 +70,21 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   }
 
   @Override
-  public List<FurnitureDTO> getFurnitureByUserName(String typeName) {
+  public List<FurnitureDTO> getFurnitureBySellingPrice(double sellingPrice) {
     // TODO
     this.dalServices.startTransaction();
     List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>();
-    User user = (User) this.daoUser.getUserByUsername(typeName);
+    listFurniture = this.daoFurniture.selectFurnitureByPrice(sellingPrice);
+    dalServices.closeConnection();
+    return listFurniture;
+  }
+
+  @Override
+  public List<FurnitureDTO> getFurnitureByUserName(String userName) {
+    // TODO
+    this.dalServices.startTransaction();
+    List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>();
+    User user = (User) this.daoUser.getUserByUsername(userName);
     if (user == null) {
       this.dalServices.rollbackTransaction();
     } else {
