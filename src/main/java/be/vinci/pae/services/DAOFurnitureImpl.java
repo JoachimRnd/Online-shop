@@ -180,14 +180,14 @@ public class DAOFurnitureImpl implements DAOFurniture {
       PreparedStatement insertFurniture =
           this.dalServices.getPreparedStatement(queryInsertFurniture);
       PreparedStatement selectTypeId = this.dalServices.getPreparedStatement(querySelectTypeId);
+      selectTypeId.setInt(1, newFurniture.getType().getId());
       PreparedStatement selectVisitRequestId =
           this.dalServices.getPreparedStatement(querySelectVisitRequestId);
+      selectVisitRequestId.setInt(1, newFurniture.getVisiteRequest().getId());
       PreparedStatement selectUserId = this.dalServices.getPreparedStatement(querySelectUserId);
+      selectUserId.setInt(1, newFurniture.getBuyer().getId());
       PreparedStatement selectFavouritePictureId =
           this.dalServices.getPreparedStatement(querySelectFavouritePictureId);
-      selectTypeId.setInt(1, newFurniture.getType().getId());
-      selectVisitRequestId.setInt(1, newFurniture.getVisiteRequest().getId());
-      selectUserId.setInt(1, newFurniture.getBuyer().getId());
       selectFavouritePictureId.setInt(1, newFurniture.getFavouritePicture().getId());
       ResultSet rsType = selectTypeId.executeQuery();
       ResultSet rsVisitRequest = selectVisitRequestId.executeQuery();
