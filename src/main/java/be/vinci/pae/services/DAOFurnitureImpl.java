@@ -94,8 +94,9 @@ public class DAOFurnitureImpl implements DAOFurniture {
 
   }
 
+  // furniture ne prends pas de S...
   @Override
-  public List<FurnitureDTO> selectAllFurnitures() {
+  public List<FurnitureDTO> selectAllFurniture() {
     List<FurnitureDTO> listFurnitures = new ArrayList<FurnitureDTO>();
     try {
       selectAllFurnitures = dalServices.getPreparedStatement(querySelectAllFurnitures);

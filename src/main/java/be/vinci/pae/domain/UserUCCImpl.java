@@ -29,6 +29,7 @@ public class UserUCCImpl implements UserUCC {
   @Override
   public UserDTO register(UserDTO newUser) {
     this.dalServices.startTransaction();
+    //si champs unique alors recherche dans DB si pas deja utilise
     User user = (User) this.daoUser.getUserByUsername(newUser.getUsername());
     if (user != null) {
       throw new BusinessException("Ce pseudo est deja utilise");
