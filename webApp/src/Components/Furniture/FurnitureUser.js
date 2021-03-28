@@ -10,9 +10,7 @@ const IMAGES = "../../../../images";
 
 let optionTaken = false;
 
-
-
-let FurniturePage = `
+let furniturePage = `
 <h4 id="pageTitle">Furniture User</h4>
 <div class="row">
   <div class="col-6">
@@ -71,74 +69,92 @@ let FurniturePage = `
     </div>
   </div>
   
-
-  TODO
-
-  <div id=option> </div>
-  <p>Mettre une option sur ce meuble</p>
-  
-  <div class="row">
-    <div class="col-12">
-      <div class="row">
-        Délai de l'option (max. 5 jours cumulés) :
-        <div class="col-2">
-            <select class="custom-select custom-select-sm>
-              <option value="0">0</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-            </select> 
-        </div>    
-        <button class="btn btn-success" id="validateOption" type="submit">Valider</button>
-      </div>
-    </div>
-  </div>
-  
-  
-
-
-  <p>Option sur ce meuble</p>
-  
-  <div class="row">
-    <div class="col-12">
-      <div class="row">
-        Délai de l'option :
-        <div class="col-2">
-            <select class="custom-select custom-select-sm>
-              <option value="0">0</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-            </select> 
-        </div>    
-        <button class="btn btn-success" id="validateOption" type="submit">Valider</button>
-      </div>
-    </div>
-  </div>
-  
+  <div id=option></div>
 
 </div>
-
-
-
-
 `;
+
+let validateOption = `<p>Mettre une option sur ce meuble</p>
+<div class="row">
+  <div class="col-12">
+    <div class="row">
+      Délai de l'option (max. 5 jours cumulés) :
+      <div class="col-2">
+          <select class="custom-select custom-select-sm>
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select> 
+      </div>    
+      <button class="btn btn-success" id="btnOption" type="submit">Valider</button>
+    </div>
+  </div>
+</div>`;
+
+let cancelOption = `<p>Option sur ce meuble</p>
+<div class="row">
+  <div class="col-12">
+    <div class="row">
+      Délai de l'option :
+      <div class="col-2">
+          <select class="custom-select custom-select-sm>
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select> 
+      </div>
+      Délai cumulé (max 5. jours) : 2   
+      <button class="btn btn-danger" id="btnOption" type="submit">Annuler</button>
+    </div>
+  </div>
+</div>`;
 
 
 const FurnitureUser = () => {
+  let page = document.querySelector("#page");
+  page.innerHTML = furniturePage;
+
+  let option = document.querySelector("#option");
+  // if option is not taken
   if(!optionTaken){
-    //FurniturePage += ''
+    option.innerHTML = validateOption;
+  }else{
+    option.innerHTML = cancelOption;
   }
 
+  //Recuperer id du meuble dans l'url
 
-  let page = document.querySelector("#page");
-  page.innerHTML = FurniturePage;
+  //CallApi pour avoir un meuble et ses infos
+  
+
+
+  //Valider / Cancel meuble
+  let btnOption = document.querySelector("#btnOption");
+  btnOption.addEventListener("click",onClickOption);
+
+
 
 }
+
+const onClickOption = (e) => {
+  e.preventDefault();
+  if(optionTaken){
+    console.log("cancel Option");
+    //Il faut cancel l'option
+    optionTaken = !optionTaken;
+  }else{
+    console.log("take option");
+    //Il faut prendre l'option
+    optionTaken = !optionTaken;
+  }
+}
+
 
 export default FurnitureUser;
 
