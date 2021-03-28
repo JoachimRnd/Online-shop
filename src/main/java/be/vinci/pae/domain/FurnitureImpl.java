@@ -1,14 +1,14 @@
 package be.vinci.pae.domain;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class FurnitureImpl implements Furniture {
 
   private int id;
   private String description;
-  private String type;
+  private Type type;
   private VisitRequestDTO visitRequest;
   private double purchasePrice;
   private Date withdrawalDateFromCustomer;
@@ -39,11 +39,11 @@ class FurnitureImpl implements Furniture {
     this.description = description;
   }
 
-  public String getType() {
+  public Type getType() {
     return type;
   }
 
-  public void setType(String type) {
+  public void setType(Type type) {
     this.type = type;
   }
 
