@@ -1,18 +1,13 @@
 package be.vinci.pae.domain;
 
-import java.util.List;
 import be.vinci.pae.services.DAOOption;
-import be.vinci.pae.services.DalServices;
-import be.vinci.pae.utils.BusinessException;
 import jakarta.inject.Inject;
+import java.util.List;
 
 public class OptionUCCImpl implements OptionUCC {
 
   @Inject
   private DAOOption daoOption;
-  
-  @Inject
-  private DalServices dalServices;
 
 
   @Override
@@ -35,17 +30,8 @@ public class OptionUCCImpl implements OptionUCC {
 
   @Override
   public OptionDTO addOption(OptionDTO newOption) {
-    this.dalServices.startTransaction();
-    int id = daoOption.addOption(newOption);
-    if (id == -1) {
-      this.dalServices.rollbackTransaction();
-    }
-    else {
-      this.dalServices.commitTransaction();
-    }
-    newOption.setId(id); 
-    this.dalServices.closeConnection();
-    return newOption;
+    //@TODO
+    return null;
   }
 
 
