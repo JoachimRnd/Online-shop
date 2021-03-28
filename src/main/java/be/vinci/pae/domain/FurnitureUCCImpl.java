@@ -49,14 +49,16 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   }
 
   @Override
-  public FurnitureDTO modifySellingDate(FurnitureDTO furniture, LocalDate sellingDate) {
+  public FurnitureDTO modifySellingDate(FurnitureDTO furniture, String status) {
     // TODO DAO
+    // il me semble que condition est un int --> not sure
     this.dalServices.startTransaction();
     int id = this.daoFurniture.selectFurnitureById(furniture.getId());
     if (id == -1) {
       this.dalServices.rollbackTransaction();
     } else {
-      this.daoFurniture.updateSellingDate(id, sellingDate);
+      this.daoFurniture.updateSellingDate(id, LocalDate.now());
+      this.daoFurniture.updateCondition(id, status);
       this.dalServices.commitTransaction();
     }
     this.dalServices.closeConnection();
@@ -64,14 +66,16 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   }
 
   @Override
-  public FurnitureDTO modifyDepositDate(FurnitureDTO furniture, LocalDate depositDate) {
+  public FurnitureDTO modifyDepositDate(FurnitureDTO furniture, String status) {
     // TODO DAO
+    // il me semble que condition est un int --> not sure
     this.dalServices.startTransaction();
     int id = this.daoFurniture.selectFurnitureById(furniture.getId());
     if (id == -1) {
       this.dalServices.rollbackTransaction();
     } else {
-      this.daoFurniture.updateDepositDate(id, depositDate);
+      this.daoFurniture.updateDepositDate(id, LocalDate.now());
+      this.daoFurniture.updateCondition(id, status);
       this.dalServices.commitTransaction();
     }
     this.dalServices.closeConnection();
@@ -79,14 +83,15 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   }
 
   @Override
-  public FurnitureDTO modifyWorkshopDate(FurnitureDTO furniture, LocalDate workshopDate) {
+  public FurnitureDTO modifyWorkshopDate(FurnitureDTO furniture, String status) {
     // TODO DAO
+    // il me semble que condition est un int --> not sure
     this.dalServices.startTransaction();
     int id = this.daoFurniture.selectFurnitureById(furniture.getId());
     if (id == -1) {
       this.dalServices.rollbackTransaction();
     } else {
-      this.daoFurniture.updateWorkshopDate(id, workshopDate);
+      this.daoFurniture.updateCondition(id, status);
       this.dalServices.commitTransaction();
     }
     this.dalServices.closeConnection();
