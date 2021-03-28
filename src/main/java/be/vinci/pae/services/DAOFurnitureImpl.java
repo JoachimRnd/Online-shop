@@ -2,7 +2,6 @@ package be.vinci.pae.services;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,16 +18,16 @@ public class DAOFurnitureImpl implements DAOFurniture {
   private PreparedStatement selectFurnitureByPrice;
   private PreparedStatement selectFurnitureByUser;
 
-  private PreparedStatement selectTypeId;
-  private PreparedStatement selectVisitRequestId;
-  private PreparedStatement selectUserId;
-  private PreparedStatement selectFavouritePictureId;
+  // private PreparedStatement selectTypeId;
+  // private PreparedStatement selectVisitRequestId;
+  // private PreparedStatement selectUserId;
+  // private PreparedStatement selectFavouritePictureId;
 
-  private PreparedStatement insertFurniture;
+  // private PreparedStatement insertFurniture;
 
-  private PreparedStatement updateSellingDate;
-  private PreparedStatement updateCondition;
-  private PreparedStatement updateDepositDate;
+  // private PreparedStatement updateSellingDate;
+  // private PreparedStatement updateCondition;
+  // private PreparedStatement updateDepositDate;
 
   private String querySelectAllFurnitures;
   private String querySelectFurnitureById;
@@ -36,16 +35,16 @@ public class DAOFurnitureImpl implements DAOFurniture {
   private String querySelectFurnitureByPrice;
   private String querySelectFurnitureByUser;
 
-  private String querySelectTypeId;
-  private String querySelectVisitRequestId;
-  private String querySelectUserId;
-  private String querySelectFavouritePictureId;
+  // private String querySelectTypeId;
+  // private String querySelectVisitRequestId;
+  // private String querySelectUserId;
+  // private String querySelectFavouritePictureId;
 
-  private String queryInsertFurniture;
+  // private String queryInsertFurniture;
 
-  private String queryUpdateSellingDate;
-  private String queryUpdateCondition;
-  private String queryUpdateDepositDate;
+  // private String queryUpdateSellingDate;
+  // private String queryUpdateCondition;
+  // private String queryUpdateDepositDate;
 
   @Inject
   private FurnitureFactory furnitureFactory;
@@ -87,10 +86,12 @@ public class DAOFurnitureImpl implements DAOFurniture {
         + " project.users u WHERE f.visit_request = vr.visit_request_id AND"
         + " vr.customer = u.user_id AND u.last_name = ?";
     // TODO
-    queryInsertFurniture = "";
-    queryUpdateSellingDate = "";
-    queryUpdateCondition = "";
-    queryUpdateDepositDate = "";
+
+    // queryInsertFurniture = "";
+    // queryUpdateSellingDate = "";
+    // queryUpdateCondition = "";
+    // queryUpdateDepositDate = "";
+
   }
 
   @Override
@@ -117,8 +118,9 @@ public class DAOFurnitureImpl implements DAOFurniture {
     try {
       selectFurnitureById = dalServices.getPreparedStatement(querySelectFurnitureById);
       ResultSet rs = selectFurnitureById.executeQuery();
-      if (rs == null)
+      if (rs == null) {
         furniture = furnitureFactory.getFurniture();
+      }
       return furniture;
     } catch (Exception e) {
       e.printStackTrace();
@@ -180,24 +182,24 @@ public class DAOFurnitureImpl implements DAOFurniture {
   @Override
   public int insertFurniture(FurnitureDTO newFurniture) {
     int furnitureId = -1;
-    try {
-      // TODO
-      PreparedStatement insertFurniture =
-          this.dalServices.getPreparedStatement(queryInsertFurniture);
-      if (selectTypeId == null && selectVisitRequestId == null && selectUserId == null
-          && selectFavouritePictureId == null) {
-        selectTypeId = this.dalServices.getPreparedStatement(querySelectTypeId);
-        selectVisitRequestId = this.dalServices.getPreparedStatement(querySelectVisitRequestId);
-        selectUserId = this.dalServices.getPreparedStatement(querySelectUserId);
-        selectFavouritePictureId =
-            this.dalServices.getPreparedStatement(querySelectFavouritePictureId);
-      }
-      selectTypeId.setInt(1, newFurniture.getId());// TODO changer pour typeId
+    // try {
+    // PreparedStatement insertFurniture =
+    // this.dalServices.getPreparedStatement(queryInsertFurniture);
+    // if (selectTypeId == null && selectVisitRequestId == null && selectUserId == null
+    // && selectFavouritePictureId == null) {
+    // selectTypeId = this.dalServices.getPreparedStatement(querySelectTypeId);
+    // selectVisitRequestId = this.dalServices.getPreparedStatement(querySelectVisitRequestId);
+    // selectUserId = this.dalServices.getPreparedStatement(querySelectUserId);
+    // selectFavouritePictureId =
+    // this.dalServices.getPreparedStatement(querySelectFavouritePictureId);
+    // }
+    // selectTypeId.setInt(1, newFurniture.getId());// TODO changer pour typeId
 
-    } catch (SQLException e) {
-      e.printStackTrace();
-      throw new FatalException("Data error : insertFurniture");
-    }
+    // } catch (SQLException e) {
+    // e.printStackTrace();
+    // throw new FatalException("Data error : insertFurniture");
+    // }
+
     return furnitureId;
   }
 
