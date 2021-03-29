@@ -6,7 +6,7 @@
  * @param {*} data : data to be sent in the body of the request (for POST, PUT... requests)
  */
 
-async function callAPI(endpoint, method = "get", token, data) {
+ async function callAPI(endpoint, method = "get", token, data) {
   let headers = new Headers();
   let options = {};
   options.method = method;

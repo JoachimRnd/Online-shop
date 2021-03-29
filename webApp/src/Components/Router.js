@@ -4,6 +4,7 @@ import RegisterPage from "./RegisterPage.js";
 import LogoutComponent from "./LogoutComponent.js";
 import ErrorPage from "./ErrorPage.js";
 import FurnitureUser from "./Furniture/FurnitureUser.js";
+import FurnitureListPage from "./Furniture/FurnitureListPage";
 
 const routes = {
   "/": HomePage,
@@ -12,6 +13,7 @@ const routes = {
   "/logout": LogoutComponent,
   "/error": ErrorPage,
   "/furniture": FurnitureUser,
+  "/search": FurnitureListPage,
 };
 
 let navBar = document.querySelector("#navBar");
