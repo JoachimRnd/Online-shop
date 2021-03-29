@@ -1,17 +1,17 @@
 package be.vinci.pae.services;
 
-import be.vinci.pae.domain.Address;
-import be.vinci.pae.domain.AddressFactory;
-import be.vinci.pae.domain.UserDTO;
-import be.vinci.pae.domain.UserFactory;
-import be.vinci.pae.utils.FatalException;
-import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import be.vinci.pae.domain.Address;
+import be.vinci.pae.domain.AddressFactory;
+import be.vinci.pae.domain.UserDTO;
+import be.vinci.pae.domain.UserFactory;
+import be.vinci.pae.utils.FatalException;
+import jakarta.inject.Inject;
 
 public class DAOUserImpl implements DAOUser {
 
@@ -270,7 +270,12 @@ public class DAOUserImpl implements DAOUser {
           this.dalBackendServices.getPreparedStatement(querySelectUnvalidatedUsers);
       List<UserDTO> unvalidatedUsers = new ArrayList<>();
       try (ResultSet rs = selectUnvalidatedUsers.executeQuery()) {
-        unvalidatedUsers.add(createUser(rs));
+        UserDTO user;
+        do {
+          user = createUser(rs);
+          unvalidatedUsers.add(user);
+        } while (user != null);
+        unvalidatedUsers.remove(unvalidatedUsers.size() - 1);
       }
       return unvalidatedUsers;
     } catch (SQLException e) {
