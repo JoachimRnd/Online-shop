@@ -25,7 +25,7 @@ class UserImpl implements User {
   @JsonView(Views.Public.class)
   private String userType;
   @JsonView(Views.Public.class)
-  private Address address;
+  private AddressDTO address;
 
   @JsonView(Views.Internal.class)
   private LocalDateTime registrationDate;
@@ -102,11 +102,11 @@ class UserImpl implements User {
     this.userType = ValueLiaison.intToStringUserType(userType);
   }
 
-  public Address getAddress() {
+  public AddressDTO getAddress() {
     return address;
   }
 
-  public void setAddress(Address address) {
+  public void setAddress(AddressDTO address) {
     this.address = address;
   }
 
