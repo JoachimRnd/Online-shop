@@ -1,7 +1,7 @@
 package be.vinci.pae.api;
 
 import be.vinci.pae.api.utils.Json;
-import be.vinci.pae.domain.Address;
+import be.vinci.pae.domain.AddressDTO;
 import be.vinci.pae.domain.AddressFactory;
 import be.vinci.pae.domain.UserDTO;
 import be.vinci.pae.domain.UserFactory;
@@ -112,7 +112,7 @@ public class Authentication {
     user.setLastName(json.get("lastname").asText());
     user.setEmail(json.get("email").asText());
     user.setPassword(json.get("password").asText());
-    Address address = addressFactory.getAddress();
+    AddressDTO address = addressFactory.getAddress();
     address.setStreet(jsonAddress.get("street").asText());
     address.setBuildingNumber(jsonAddress.get("buildingnumber").asText());
     address.setPostcode(jsonAddress.get("postcode").asText());

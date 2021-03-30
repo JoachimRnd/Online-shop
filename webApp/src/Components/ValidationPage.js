@@ -28,22 +28,37 @@ const ValidationPage = async () => {
 const onUnvalidatedUsers = (users) => {
 
     users.forEach((user) => {
+        console.log(user);
+        let address = user.address
         validationPage += `
         <div id="user${user.id}">
-            <p>Pseudo : ${user.username}</p>
-            <p>Nom : ${user.lastName}</p>
-            <p>Prénom : ${user.firstName}</p>
-            <p>Email : ${user.email}</p>
-            <p>Date d'inscription : </p>
-            <select id="selectUserType${user.id}" class="form-select" aria-label="Default select example">
-                <option selected>Chosir type utilisateur</option>
-                <option value="client">Client</option>
-                <option value="antiquaire">Antiquaire</option>
-                <option value="administrateur">Administrateur</option>
-            </select>
-            <button class="btn btn-primary" id="buttonValidation${user.id}">Valider</button>
-            <div class="alert alert-danger mt-2 d-none" id="messageBoard${user.id}"></div>
+            <div class="row">
+                <div class="col-6">
+                    <p>Pseudo : ${user.username}</p>
+                    <p>Nom : ${user.lastName}</p>
+                    <p>Prénom : ${user.firstName}</p>
+                    <p>Email : ${user.email}</p>
+                    <p>Date d'inscription : </p>
+                    <select id="selectUserType${user.id}" class="form-select" aria-label="Default select example">
+                        <option selected>Chosir type utilisateur</option>
+                        <option value="client">Client</option>
+                        <option value="antiquaire">Antiquaire</option>
+                        <option value="administrateur">Administrateur</option>
+                    </select>
+                    <button class="btn btn-primary" id="buttonValidation${user.id}">Valider</button>
+                    <div class="alert alert-danger mt-2 d-none" id="messageBoard${user.id}"></div>
+                </div>
+                <div class="col-6">
+                    <p>Rue : ${address.street}</p>
+                    <p>Numéro : ${address.buildingNumber}</p>
+                    <p>Boite : ${address.unitNumber}</p>
+                    <p>Code postal : ${address.postcode}</p>
+                    <p>Commune : ${address.commune}</p>
+                    <p>Pays : ${address.country}</p>
+                </div>
+            </div>
         </div>
+        <hr/>
         `;
     });
 
@@ -52,7 +67,6 @@ const onUnvalidatedUsers = (users) => {
     users.forEach((user) => {
 
         let buttonValidation = document.getElementById("buttonValidation"+user.id);
-
         buttonValidation.addEventListener("click", async () => {
 
             let selectUserType = document.getElementById("selectUserType"+user.id);
@@ -62,8 +76,9 @@ const onUnvalidatedUsers = (users) => {
                 type: selectUserType.value
             };
             user = getUserSessionData();
-            
-            try {
+
+            onValidate(unvalidatedUser.id);
+            /*try {
                 await callAPIWithoutJSONResponse(
                   API_BASE_URL + "validate",
                   "PUT",
@@ -74,15 +89,14 @@ const onUnvalidatedUsers = (users) => {
               } catch (err) {
                 console.error("ValidationPage::onValidate", err);
                 PrintError(err);
-              }
+              }*/
         });
     });
 
 }
 
 const onValidate = (userId) => {
-    console.log(userId);
-    console.log(document.getElementById("user"+userId));
+    document.getElementById("user"+userId).innerHTML = `<h1 style="color:green">L'utilisateur a bien été supprimé</h1>`;
 }
 
 export default ValidationPage;

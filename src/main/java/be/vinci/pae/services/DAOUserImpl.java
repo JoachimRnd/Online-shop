@@ -1,12 +1,13 @@
 package be.vinci.pae.services;
 
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import be.vinci.pae.domain.Address;
+import be.vinci.pae.domain.AddressDTO;
 import be.vinci.pae.domain.AddressFactory;
 import be.vinci.pae.domain.UserDTO;
 import be.vinci.pae.domain.UserFactory;
@@ -136,7 +137,7 @@ public class DAOUserImpl implements DAOUser {
       user.setPassword(rs.getString("password"));
       user.setLastName(rs.getString("last_name"));
       user.setFirstName(rs.getString("first_name"));
-      Address address = this.addressFactory.getAddress();
+      AddressDTO address = this.addressFactory.getAddress();
       address.setStreet(rs.getString("street"));
       address.setBuildingNumber(rs.getString("building_number"));
       address.setUnitNumber(rs.getString("unit_number"));

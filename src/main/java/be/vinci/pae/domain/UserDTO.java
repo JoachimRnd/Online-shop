@@ -28,13 +28,13 @@ public interface UserDTO {
 
   String getUserType();
 
-  void setUserTypeFromInt(int userType);
-
   void setUserType(String userType);
 
-  Address getAddress();
+  void setUserTypeFromInt(int userType);
 
-  void setAddress(Address address);
+  AddressDTO getAddress();
+
+  void setAddress(AddressDTO address);
 
   LocalDateTime getRegistrationDate();
 
