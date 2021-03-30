@@ -26,7 +26,7 @@ const FurnitureListPage = async () => {
 };
 
 const onFurnitureList = (data) => {
-
+  console.log(data);
   //@TODO Elements de la liste
   if (!data) return;
   let table = `
