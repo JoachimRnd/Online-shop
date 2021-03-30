@@ -7,13 +7,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 /* load bootstrap module (JS) */
 import 'bootstrap';
 
-const HEADER_TITLE = "JS meets JAX-RS";
-const FOOTER_TEXT = "Happy learning : )";
-
 Navbar();
 
 Router();
 
-// deal with header and footer
-document.querySelector("#headerTitle").innerText = HEADER_TITLE;
-document.querySelector("#footerText").innerText = FOOTER_TEXT;

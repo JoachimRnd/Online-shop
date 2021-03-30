@@ -35,21 +35,54 @@ VALUES (DEFAULT, 'test', '$2a$10$qSBZrtuxTN3tM///i5rM8Opd3ioOk2vG.olTPH/UZqP8rjC
 
 SELECT * FROM project.addresses;
 
+--DROP TABLE project.visit_requests;
+--DROP TABLE project.furniture;
+--DROP TABLE project.options;
+
+
 CREATE TABLE project.visit_requests (
 	visit_request_id SERIAL PRIMARY KEY,
 	request_date TIMESTAMP NOT NULL,
 	time_slot TEXT NOT NULL,
-	adress INTEGER REFERENCES project.addresses (address_id) NULL,
+	address INTEGER REFERENCES project.addresses (address_id) NULL,
 	status INTEGER NOT NULL,
 	chosen_date_time TIMESTAMP NULL,
 	cancellation_reason TEXT NULL,
 	customer INTEGER REFERENCES project.users (user_id) NOT NULL
 );
 
+--INSERT INTO project.visit_requests VALUES (DEFAULT,'2020-03-30 14:07:22','time_slot ex',NULL,0,NULL, NULL,1);
+
 CREATE TABLE project.furniture_types (
 	type_id SERIAL PRIMARY KEY,
 	name VARCHAR(100) NOT NULL
 );
+
+/*INSERT INTO project.furniture_types VALUES (DEFAULT,'Armoire');
+INSERT INTO project.furniture_types VALUES (DEFAULT,'Bahut');
+INSERT INTO project.furniture_types VALUES (DEFAULT,'Bibliothèque');
+INSERT INTO project.furniture_types VALUES (DEFAULT,'Bonnetière');
+INSERT INTO project.furniture_types VALUES (DEFAULT,'Buffet');
+INSERT INTO project.furniture_types VALUES (DEFAULT,'Bureau');
+INSERT INTO project.furniture_types VALUES (DEFAULT,'Chaise');
+INSERT INTO project.furniture_types VALUES (DEFAULT,'Chiffonier');
+INSERT INTO project.furniture_types VALUES (DEFAULT,'Coffre');
+INSERT INTO project.furniture_types VALUES (DEFAULT,'Coiffeuse');
+INSERT INTO project.furniture_types VALUES (DEFAULT,'Commode');
+INSERT INTO project.furniture_types VALUES (DEFAULT,'Confident/Indiscret');
+INSERT INTO project.furniture_types VALUES (DEFAULT,'Console');
+INSERT INTO project.furniture_types VALUES (DEFAULT,'Dresse');
+INSERT INTO project.furniture_types VALUES (DEFAULT,'Fauteuil');
+INSERT INTO project.furniture_types VALUES (DEFAULT,'Guéridon');
+INSERT INTO project.furniture_types VALUES (DEFAULT,'Lingère');
+INSERT INTO project.furniture_types VALUES (DEFAULT,'Lit');
+INSERT INTO project.furniture_types VALUES (DEFAULT,'Penderie');
+INSERT INTO project.furniture_types VALUES (DEFAULT,'Secrétaire');
+INSERT INTO project.furniture_types VALUES (DEFAULT,'Table');
+INSERT INTO project.furniture_types VALUES (DEFAULT,'Tabouret');
+INSERT INTO project.furniture_types VALUES (DEFAULT,'Vaisselier');
+INSERT INTO project.furniture_types VALUES (DEFAULT,'Valet muet');*/
+
 
 CREATE TABLE project.furniture (
 	furniture_id SERIAL PRIMARY KEY,
@@ -70,6 +103,9 @@ CREATE TABLE project.furniture (
 	--favourite_picture INTEGER REFERENCES project.pictures (picture_id) NULL
 );
 
+
+--INSERT INTO project.furniture VALUES(DEFAULT,'description test',24,1,20.5,NULL,45.5,40.9,NULL,NULL,NULL,NULL,1,NULL,NULL);
+
 CREATE TABLE project.pictures (
 	picture_id SERIAL PRIMARY KEY,
 	name VARCHAR(100) NOT NULL,
@@ -78,7 +114,8 @@ CREATE TABLE project.pictures (
 	scrolling_picture BOOLEAN NOT NULL
 );
 
---ALTER TABLE furniture ADD favorite_picture INTEGER FOREIGN KEY REFERENCES project.pictures(picture_id) NULL;
+--ALTER TABLE project.furniture ADD favourite_picture INTEGER NULL;
+--ALTER TABLE project.furniture ADD FOREIGN KEY (favourite_picture) REFERENCES project.pictures(picture_id);
 
 CREATE TABLE project.options (
 	option_id SERIAL PRIMARY KEY,

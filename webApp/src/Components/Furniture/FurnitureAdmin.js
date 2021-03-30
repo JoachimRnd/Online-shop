@@ -117,7 +117,7 @@ let cancelOption = `<p>Option sur ce meuble</p>
 </div>`;
 
 
-const FurnitureUser = async() => {
+const FurnitureAdmin = async() => {
   let page = document.querySelector("#page");
   page.innerHTML = furniturePage;
 
@@ -193,7 +193,7 @@ const onClickOption = (e) => {
 }
 
 
-export default FurnitureUser;
+export default FurnitureAdmin;
 
 
 

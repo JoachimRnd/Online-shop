@@ -14,9 +14,9 @@ public interface FurnitureDTO {
 
   void setDescription(String description);
 
-  Type getType();
+  TypeDTO getType();
 
-  void setType(Type type);
+  void setType(TypeDTO type);
 
   VisitRequestDTO getVisiteRequest();
 

@@ -37,6 +37,15 @@ public class DAOFurnitureImpl implements DAOFurniture {
   @Inject
   private DalBackendServices dalServices;
 
+  @Inject
+  private DAOType daoType;
+
+  @Inject
+  private DAOVisitRequest daoVisitRequest;
+
+  @Inject
+  private DAOUser daoUser;
+
 
   // TODO verifier les sql queries
   /**
@@ -90,8 +99,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
           dalServices.getPreparedStatement(querySelectAllFurniture);
       ResultSet rs = selectAllFurniture.executeQuery();
       while (rs.next()) {
-        FurnitureDTO furniture = furnitureFactory.getFurniture();
-        listFurniture.add(furniture);
+        listFurniture.add(createFurniture(rs));
       }
       return listFurniture;
     } catch (Exception e) {
@@ -107,11 +115,10 @@ public class DAOFurnitureImpl implements DAOFurniture {
       PreparedStatement selectFurnitureById =
           dalServices.getPreparedStatement(querySelectFurnitureById);
       selectFurnitureById.setInt(1, id);
-      ResultSet rs = selectFurnitureById.executeQuery();
-      if (rs == null) {
+      try (ResultSet rs = selectFurnitureById.executeQuery()) {
         furniture = createFurniture(rs);
+        return furniture;
       }
-      return furniture;
     } catch (Exception e) {
       e.printStackTrace();
       throw new FatalException("Data error : selectFurnitureById");
@@ -120,13 +127,13 @@ public class DAOFurnitureImpl implements DAOFurniture {
 
   private FurnitureDTO createFurniture(ResultSet rs) throws SQLException {
     FurnitureDTO furniture = null;
-
     if (rs.next()) {
       furniture = this.furnitureFactory.getFurniture();
       furniture.setId(rs.getInt("furniture_id"));
       furniture.setDescription(rs.getString("description"));
-      // furniture.setType(String.valueOf(rs.getInt("type"))); TODO CHANGER TYPE
-      // VISIT REQUEST ENCORE A FAIRE
+      furniture.setType(this.daoType.selectTypeById(rs.getInt("type")));
+      furniture.setVisiteRequest(
+          this.daoVisitRequest.selectVisitRequestById(rs.getInt("visit_request")));
       furniture.setPurchasePrice(rs.getDouble("purchase_price"));
       furniture.setWithdrawalDateFromCustomer(rs.getDate("withdrawal_date_from_customer"));
       furniture.setSellingPrice(rs.getDouble("selling_price"));
@@ -135,12 +142,14 @@ public class DAOFurnitureImpl implements DAOFurniture {
       furniture.setSellingDate(rs.getDate("selling_date"));
       furniture.setDeliveryDate(rs.getDate("delivery_date"));
       furniture.setWithdrawalDateToCustomer(rs.getDate("withdrawal_date_to_customer"));
-      // furniture.setBuyer(null); ENCORE A FAIRE
+      furniture.setBuyer(this.daoUser.getUserById(rs.getInt("buyer")));
       furniture.setCondition(String.valueOf(rs.getInt("condition")));
       furniture.setUnregisteredBuyerEmail(rs.getString("unregistered_buyer_email"));
     }
     return furniture;
   }
+
+
 
   @Override
   public List<FurnitureDTO> selectFurnitureByType(String type) {
