@@ -2,7 +2,6 @@ package be.vinci.pae.api;
 
 import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
-import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.api.utils.Json;
 import be.vinci.pae.domain.FurnitureDTO;
@@ -80,7 +79,6 @@ public class Furniture {
   @GET
   @Path("allFurniture")
   @Produces(MediaType.APPLICATION_JSON)
-  @Authorize
   public List<FurnitureDTO> listAllFurniture() {
     return Json.filterPublicJsonViewAsList(furnitureUCC.getAllFurniture(), FurnitureDTO.class);
   }
