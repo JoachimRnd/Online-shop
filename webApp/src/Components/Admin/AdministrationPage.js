@@ -1,8 +1,11 @@
-import { RedirectUrl } from "./Router.js";
-import Navbar from "./Navbar.js";
+import { RedirectUrl } from "../Router.js";
+import Navbar from "../Navbar.js";
 
 let adminPage = `<h4 id="pageTitle">Admin</h4>
-    <button id="validation">Demande d'inscriptions</button>
+    <button class="btn btn-primary" id="validation">Demandes d'inscriptions</button>
+    <button class="btn btn-success" id="">Demandes de visites</button>
+    <button class="btn btn-dark" id="">Ajouter type meuble</button>
+
 `;
 
 

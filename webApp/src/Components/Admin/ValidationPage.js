@@ -1,8 +1,6 @@
-import { RedirectUrl } from "./Router.js";
-import Navbar from "./Navbar.js";
-import { getUserSessionData } from "../utils/session.js";
-import { callAPI,callAPIWithoutJSONResponse } from "../utils/api.js";
-import PrintError from "./PrintError.js";
+import { getUserSessionData } from "../../utils/session.js";
+import { callAPI,callAPIWithoutJSONResponse } from "../../utils/api.js";
+import PrintError from "../PrintError.js";
 const API_BASE_URL = "/api/admin/";
 
 
@@ -43,10 +41,10 @@ const onUnvalidatedUsers = (users) => {
                         <option selected>Chosir type utilisateur</option>
                         <option value="client">Client</option>
                         <option value="antiquaire">Antiquaire</option>
-                        <option value="administrateur">Administrateur</option>
+                        <option value="admin">Administrateur</option>
                     </select>
                     <button class="btn btn-primary" id="buttonValidation${user.id}">Valider</button>
-                    <div class="alert alert-danger mt-2 d-none" id="messageBoard${user.id}"></div>
+                    <div id="messageBoard${user.id}"></div>
                 </div>
                 <div class="col-6">
                     <p>Rue : ${address.street}</p>
@@ -69,34 +67,38 @@ const onUnvalidatedUsers = (users) => {
         let buttonValidation = document.getElementById("buttonValidation"+user.id);
         buttonValidation.addEventListener("click", async () => {
 
-            let selectUserType = document.getElementById("selectUserType"+user.id);
+            let selectUserType = document.getElementById("selectUserType"+user.id).value;
+            console.log(selectUserType);
+            if(selectUserType == "Chosir type utilisateur"){
+                document.getElementById("messageBoard"+user.id).innerHTML = `
+                <h6 style="color:red">Vous devez choisir sélectionner un type utilisateur</h6>`;
+            } else {
+                let unvalidatedUser = {
+                    id: user.id,
+                    type: selectUserType
+                };
+                user = getUserSessionData();
 
-            let unvalidatedUser = {
-                id: user.id,
-                type: selectUserType.value
-            };
-            user = getUserSessionData();
-
-            onValidate(unvalidatedUser.id);
-            /*try {
-                await callAPIWithoutJSONResponse(
-                  API_BASE_URL + "validate",
-                  "PUT",
-                  user.token,
-                  unvalidatedUser
-                );
-                onValidate(unvalidatedUser.id);
-              } catch (err) {
-                console.error("ValidationPage::onValidate", err);
-                PrintError(err);
-              }*/
+                try {
+                    await callAPIWithoutJSONResponse(
+                      API_BASE_URL + "validate",
+                      "PUT",
+                      user.token,
+                      unvalidatedUser
+                    );
+                    onValidate(unvalidatedUser.id);
+                  } catch (err) {
+                    console.error("ValidationPage::onValidate", err);
+                    PrintError(err);
+                  }
+            }
         });
     });
 
 }
 
 const onValidate = (userId) => {
-    document.getElementById("user"+userId).innerHTML = `<h1 style="color:green">L'utilisateur a bien été supprimé</h1>`;
+    document.getElementById("user"+userId).innerHTML = `<h3 style="color:green">L'utilisateur a bien été validé</h3>`;
 }
 
 export default ValidationPage;

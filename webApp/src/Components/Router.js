@@ -3,8 +3,8 @@ import LoginPage from "./LoginPage.js";
 import RegisterPage from "./RegisterPage.js";
 import LogoutComponent from "./LogoutComponent.js";
 import ErrorPage from "./ErrorPage.js";
-import AdministrationPage from "./AdministrationPage.js";
-import ValidationPage from "./ValidationPage.js";
+import AdministrationPage from "./Admin/AdministrationPage.js";
+import ValidationPage from "./Admin/ValidationPage.js";
 
 
 

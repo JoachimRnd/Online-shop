@@ -26,7 +26,7 @@ const Navbar = () => {
     </div>
   </div>
   </nav>`;
-  } else if(user && user.user.userType == "administrateur") {
+  } else if(user && user.user.userType == "admin") {
     navbar = `<nav class="navbar navbar-expand-lg navbar-light bg-light mb-2" id="navBar">
     <a class="navbar-brand" href="/" data-uri="/">MyCMS</a
     ><button
