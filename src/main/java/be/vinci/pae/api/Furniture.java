@@ -82,7 +82,6 @@ public class Furniture {
   @Produces(MediaType.APPLICATION_JSON)
   @Authorize
   public List<FurnitureDTO> listAllFurniture() {
-    System.out.println("test");
     return Json.filterPublicJsonViewAsList(furnitureUCC.getAllFurniture(), FurnitureDTO.class);
   }
 
