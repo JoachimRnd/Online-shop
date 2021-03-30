@@ -10,7 +10,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
@@ -30,7 +30,7 @@ public class Administration {
    * @param json json of the user
    * @return http response
    */
-  @POST
+  @PUT
   @Path("validate")
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
@@ -40,11 +40,16 @@ public class Administration {
       return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")
           .type(MediaType.TEXT_PLAIN).build();
     }
+
+    System.out.println("Id : " + json.get("id").asInt());
+    System.out.println("Type : " + json.get("type").asText());
+
     if (userUCC.validateUser(json.get("id").asInt(), json.get("type").asText())) {
       return Response.ok().build();
     } else {
       return Response.serverError().build();
     }
+
   }
 
   /**
