@@ -20,7 +20,8 @@ const Navbar = () => {
   </button>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
-      <a class="nav-item nav-link" href="#" data-uri="/">Home</a>    
+      <a class="nav-item nav-link" href="#" data-uri="/">Home</a>
+      <a class="nav-item nav-link" href="#" data-uri="/search">Meubles en magasin</a>     
       <a class="nav-item nav-link" href="#" data-uri="/logout">Logout</a>
       <a class="nav-item nav-link disabled" id="username" href="#">${user.user.username}</a>
     </div>
@@ -42,7 +43,8 @@ const Navbar = () => {
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
-        <a class="nav-item nav-link" href="#" data-uri="/">Home</a>    
+        <a class="nav-item nav-link" href="#" data-uri="/">Home</a>
+        <a class="nav-item nav-link" href="#" data-uri="/search">Meubles en magasin</a>     
         <a class="nav-item nav-link" href="#" data-uri="/admin">Administration</a>    
         <a class="nav-item nav-link" href="#" data-uri="/logout">Logout</a>
         <a class="nav-item nav-link disabled" id="username" href="#">${user.user.username}</a>
@@ -66,6 +68,7 @@ const Navbar = () => {
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
       <a class="nav-item nav-link" href="#" data-uri="/">Home</a>
+      <a class="nav-item nav-link" href="#" data-uri="/search">Meubles en magasin</a>     
       <a class="nav-item nav-link" href="#" data-uri="/register">Register</a>
       <a class="nav-item nav-link" href="#" data-uri="/login">Login</a> 
     </div>
