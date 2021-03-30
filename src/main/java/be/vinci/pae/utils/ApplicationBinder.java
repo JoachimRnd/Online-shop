@@ -17,6 +17,8 @@ import be.vinci.pae.domain.UserUCC;
 import be.vinci.pae.domain.UserUCCImpl;
 import be.vinci.pae.domain.VisitRequestUCC;
 import be.vinci.pae.domain.VisitRequestUCCImpl;
+import be.vinci.pae.services.DAOFurniture;
+import be.vinci.pae.services.DAOFurnitureImpl;
 import be.vinci.pae.services.DAOPicture;
 import be.vinci.pae.services.DAOPictureImpl;
 import be.vinci.pae.services.DAOUser;
@@ -44,5 +46,6 @@ public class ApplicationBinder extends AbstractBinder {
     bind(VisitRequestUCCImpl.class).to(VisitRequestUCC.class).in(Singleton.class);
     bind(FurnitureUCCImpl.class).to(FurnitureUCC.class).in(Singleton.class);
     bind(TypeUCCImpl.class).to(TypeUCC.class).in(Singleton.class);
+    bind(DAOFurnitureImpl.class).to(DAOFurniture.class).in(Singleton.class);
   }
 }

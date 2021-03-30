@@ -1,7 +1,7 @@
 package be.vinci.pae.domain;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.util.Date;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(as = FurnitureImpl.class)
 public interface FurnitureDTO {
@@ -13,6 +13,10 @@ public interface FurnitureDTO {
   String getDescription();
 
   void setDescription(String description);
+
+  String getType();
+
+  void setType(String type);
 
   VisitRequestDTO getVisiteRequest();
 

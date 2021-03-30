@@ -99,6 +99,14 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   }
 
   @Override
+  public FurnitureDTO getFurnitureById(int id) {
+    System.out.println("GetFurnitureById" + id);
+    FurnitureDTO furniture = this.daoFurniture.selectFurnitureById(id);
+    dalServices.closeConnection();
+    return furniture;
+  }
+
+  @Override
   public List<FurnitureDTO> getFurnitureByTypeName(String typeName) {
     // TODO
     this.dalServices.startTransaction();

@@ -12,6 +12,7 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -80,6 +81,20 @@ public class Furniture {
   @AuthorizeAdmin
   public List<FurnitureDTO> listAllFurniture() {
     return Json.filterPublicJsonViewAsList(furnitureUCC.getAllFurniture(), FurnitureDTO.class);
+  }
+
+
+  /**
+   * List furniture with id.
+   * 
+   * @return FurnitureDTO
+   */
+  @GET
+  @Path("/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public FurnitureDTO getFurniture(@PathParam("id") int id) {
+    System.out.println("GetFurniture" + id);
+    return Json.filterPublicJsonView(furnitureUCC.getFurnitureById(id), FurnitureDTO.class);
   }
 
 }

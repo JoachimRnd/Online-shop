@@ -2,6 +2,7 @@ package be.vinci.pae.services;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +49,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
 
   @Inject
   private FurnitureFactory furnitureFactory;
+
   @Inject
   private DalBackendServices dalServices;
 
@@ -115,18 +117,43 @@ public class DAOFurnitureImpl implements DAOFurniture {
   // TODO verifier le bon fonctionnement de l'id
   @Override
   public FurnitureDTO selectFurnitureById(int id) {
+    System.out.println("SelectFurnitureById" + id);
     FurnitureDTO furniture = null;
     try {
       selectFurnitureById = dalServices.getPreparedStatement(querySelectFurnitureById);
       ResultSet rs = selectFurnitureById.executeQuery();
       if (rs == null) {
-        furniture = furnitureFactory.getFurniture();
+        furniture = createFurniture(rs);
       }
       return furniture;
     } catch (Exception e) {
       e.printStackTrace();
       throw new FatalException("Data error : selectFurnitureById");
     }
+  }
+
+  private FurnitureDTO createFurniture(ResultSet rs) throws SQLException {
+    FurnitureDTO furniture = null;
+
+    if (rs.next()) {
+      furniture = this.furnitureFactory.getFurniture();
+      furniture.setId(rs.getInt("furniture_id"));
+      furniture.setDescription(rs.getString("description"));
+      furniture.setType(String.valueOf(rs.getInt("type")));
+      // VISIT REQUEST ENCORE A FAIRE
+      furniture.setPurchasePrice(rs.getDouble("purchase_price"));
+      furniture.setWithdrawalDateFromCustomer(rs.getDate("withdrawal_date_from_customer"));
+      furniture.setSellingPrice(rs.getDouble("selling_price"));
+      furniture.setSpecialSalePrice(rs.getDouble("special_sale_price"));
+      furniture.setDepositDate(rs.getDate("deposit_date"));
+      furniture.setSellingDate(rs.getDate("selling_date"));
+      furniture.setDeliveryDate(rs.getDate("delivery_date"));
+      furniture.setWithdrawalDateToCustomer(rs.getDate("withdrawal_date_to_customer"));
+      // furniture.setBuyer(null); ENCORE A FAIRE
+      furniture.setCondition(String.valueOf(rs.getInt("condition")));
+      furniture.setUnregisteredBuyerEmail(rs.getString("unregistered_buyer_email"));
+    }
+    return furniture;
   }
 
   @Override

@@ -1,12 +1,13 @@
 import { RedirectUrl } from "../Router.js";
 import Navbar from "../Navbar.js";
 import { getUserSessionData } from "../../utils/session.js";
-import { callAPIFormData } from "../../utils/api.js";
+import { callAPI } from "../../utils/api.js";
 import PrintError from "../PrintError.js"
 import img1 from "./1.jpg";
 import img2 from "./2.jpg";
 const API_BASE_URL = "/api/furniture/";
 const IMAGES = "../../../../images";
+let option;
 
 let optionTaken = false;
 
@@ -48,13 +49,13 @@ let furniturePage = `
       <div class="col-6">
           <div class="form-group">
             <label for="type">Type de meuble</label>
-            <input class="form-control" id="type" type="text" placeholder="Select Type" readonly />
+            <div id="type"></div>
           </div>
       </div>
       <div class="col-6">
         <div class="form-group">
             <label for="prix">Prix de vente</label>
-            <input class="form-control" id="prix" type="text" placeholder="Select prix" readonly />
+            <div id="prix"></div>
         </div>
       </div>
     </div>
@@ -64,7 +65,7 @@ let furniturePage = `
     <div class="col-12">
       <div class="form-group">
         <label for="furnituredescription">Description du meuble</label>
-        <textarea class="form-control" id="furnituredescription" rows="6" readonly>Select description</textarea>
+        <div id="furnitureDescription"></div>
       </div>
     </div>
   </div>
@@ -116,11 +117,11 @@ let cancelOption = `<p>Option sur ce meuble</p>
 </div>`;
 
 
-const FurnitureUser = () => {
+const FurnitureUser = async() => {
   let page = document.querySelector("#page");
   page.innerHTML = furniturePage;
 
-  let option = document.querySelector("#option");
+  option = document.querySelector("#option");
   // if option is not taken
   if(!optionTaken){
     option.innerHTML = validateOption;
@@ -128,7 +129,26 @@ const FurnitureUser = () => {
     option.innerHTML = cancelOption;
   }
 
+
+
   //Recuperer id du meuble dans l'url
+  let id = 0;
+
+  try {
+    const furniture = await callAPI(API_BASE_URL + id , "GET",undefined);
+    onFurniture(furniture);
+  } catch (err) {
+    console.error("FurnitureUser::onFurniture", err);
+    PrintError(err);
+  }
+
+  /*var data = {
+    type : "test Type",
+    prix : "50",
+    description : "Descriptionqsd fqsdf qsdfqsdf"
+  }
+  onFurniture(data);*/
+
 
   //CallApi pour avoir un meuble et ses infos
   
@@ -139,17 +159,31 @@ const FurnitureUser = () => {
   btnOption.addEventListener("click",onClickOption);
 
 
+}
+
+const onFurniture = (data) => {
+
+  if (!data) return;
+  let type = document.querySelector("#type");
+  type.innerHTML = `<input class="form-control" id="type" type="text" placeholder=${data.type} readonly />`;
+  let prix = document.querySelector("#prix");
+  prix.innerHTML = `<input class="form-control" id="prix" type="text" placeholder=${data.prix} readonly />`;
+  let furnitureDescription = document.querySelector("#furnitureDescription");
+  furnitureDescription.innerHTML = `<textarea class="form-control" id="furnituredescription" rows="6" readonly>${data.description}</textarea>`;
 
 }
+
 
 const onClickOption = (e) => {
   e.preventDefault();
   if(optionTaken){
     console.log("cancel Option");
+    option.innerHTML = validateOption;
     //Il faut cancel l'option
     optionTaken = !optionTaken;
   }else{
     console.log("take option");
+    option.innerHTML = cancelOption;
     //Il faut prendre l'option
     optionTaken = !optionTaken;
   }
