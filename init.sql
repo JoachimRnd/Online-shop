@@ -32,7 +32,7 @@ VALUES (DEFAULT, 'street', 'building_number', 'unit_number', 'postcode', 'commun
 INSERT INTO project.users
 VALUES (DEFAULT, 'test', '$2a$10$qSBZrtuxTN3tM///i5rM8Opd3ioOk2vG.olTPH/UZqP8rjCtg19Zm',
         'last_name', 'first_name', 1, 'email', NOW(), 'true', '0');
-/*
+
 SELECT * FROM project.addresses;
 
 CREATE TABLE project.visit_requests (
@@ -66,7 +66,7 @@ CREATE TABLE project.furniture (
 	withdrawal_date_to_customer TIMESTAMP NULL,
 	buyer INTEGER REFERENCES project.users (user_id) NOT NULL,
 	condition INTEGER NULL,
-	unregistered_buyer_email VARCHAR(100) NULL,
+	unregistered_buyer_email VARCHAR(100) NULL
 	--favourite_picture INTEGER REFERENCES project.pictures (picture_id) NULL
 );
 
@@ -88,4 +88,3 @@ CREATE TABLE project.options (
 	date TIMESTAMP NOT NULL,
 	status INTEGER NOT NULL
 );
-*/

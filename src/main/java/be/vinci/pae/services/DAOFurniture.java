@@ -8,7 +8,7 @@ public interface DAOFurniture {
 
   List<FurnitureDTO> selectAllFurniture();
 
-  List<FurnitureDTO> selectFurnituresByType(String type);
+  List<FurnitureDTO> selectFurnitureByType(String type);
 
   List<FurnitureDTO> selectFurnitureByPrice(double price);
 

@@ -20,4 +20,6 @@ public interface FurnitureUCC {
 
   FurnitureDTO modifyWorkshopDate(FurnitureDTO furniture, String status);
 
+  FurnitureDTO getFurnitureById(int id);
+
 }

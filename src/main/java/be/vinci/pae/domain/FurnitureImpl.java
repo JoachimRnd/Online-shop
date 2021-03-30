@@ -13,11 +13,7 @@ class FurnitureImpl implements Furniture {
 
   @JsonView(Views.Public.class)
   private String description;
-
-  @JsonView(Views.Public.class)
-  private String type;
-
-  @JsonView(Views.Public.class)
+  private Type type;
   private VisitRequestDTO visitRequest;
 
   @JsonView(Views.Public.class)
@@ -72,11 +68,11 @@ class FurnitureImpl implements Furniture {
     this.description = description;
   }
 
-  public String getType() {
+  public Type getType() {
     return type;
   }
 
-  public void setType(String type) {
+  public void setType(Type type) {
     this.type = type;
   }
 
