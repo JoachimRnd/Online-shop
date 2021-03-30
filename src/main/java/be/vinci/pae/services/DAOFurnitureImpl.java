@@ -102,7 +102,6 @@ public class DAOFurnitureImpl implements DAOFurniture {
 
   @Override
   public FurnitureDTO selectFurnitureById(int id) {
-    System.out.println("SelectFurnitureById" + id);
     FurnitureDTO furniture = null;
     try {
       PreparedStatement selectFurnitureById =

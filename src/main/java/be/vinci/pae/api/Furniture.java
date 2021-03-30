@@ -93,7 +93,6 @@ public class Furniture {
   @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   public FurnitureDTO getFurniture(@PathParam("id") int id) {
-    System.out.println("GetFurniture" + id);
     return Json.filterPublicJsonView(furnitureUCC.getFurnitureById(id), FurnitureDTO.class);
   }
 
