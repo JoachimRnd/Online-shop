@@ -4,14 +4,13 @@ import PrintError from "../PrintError.js";
 const API_BASE_URL = "/api/admin/";
 
 
-let validationPage = `<h4 id="pageTitle">Validation</h4>
-`;
+let validationPage;
 let page = document.querySelector("#page");
 
 
-const ValidationPage = async () => {  
+const ValidationPage = async () => {
+    validationPage = `<h4 id="pageTitle">Validation</h4>`;  
     page.innerHTML  = validationPage;
-
     const user = getUserSessionData();
 
     try {
@@ -26,7 +25,6 @@ const ValidationPage = async () => {
 const onUnvalidatedUsers = (users) => {
 
     users.forEach((user) => {
-        console.log(user);
         let address = user.address
         validationPage += `
         <div id="user${user.id}">
