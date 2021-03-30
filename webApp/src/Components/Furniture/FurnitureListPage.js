@@ -4,20 +4,15 @@ import { callAPI } from "../../utils/api.js";
 import PrintError from "../PrintError.js";
 const API_BASE_URL = "/api/furniture/";
 
-const FurnitureListPage = async () => {
-  // deal with page title
-  let page = document.querySelector("#page");
-  // clear the page
-  page.innerHTML = "";
-  let title = document.createElement("h4");
-  title.id = "pageTitle";
-  title.innerText = "List of furnitures";
-  page.appendChild(title);
+let page = document.querySelector("#page");
+let furniturePage;
 
-  const user = getUserSessionData();
+const FurnitureListPage = async () => {
+  furniturePage = `<h4 id="pageTitle">Liste de meubles</h4>`;
+  page.innerHTML = furniturePage;
 
   try {
-    const furnitures = await callAPI(API_BASE_URL + "allFurniture", "GET", user.token);
+    const furnitures = await callAPI(API_BASE_URL + "allFurniture", "GET", undefined);
     onFurnitureList(furnitures);
   } catch (err) {
     console.error("FurnitureListPage::onFurnitureList", err);
@@ -27,36 +22,31 @@ const FurnitureListPage = async () => {
 
 const onFurnitureList = (data) => {
   console.log(data);
-  //@TODO Elements de la liste
   if (!data) return;
-  let table = `
+  furniturePage += `
   <div id="tablefurnitures" class="table-responsive mt-3">
   <table class="table">
       <thead>
           <tr>
-              <th class="title">Title</th>
-              <th class="link">Link</th>
-              <th class="duration">Duration (min)</th>
-              <th class="budget">Budget (million)</th>
+              <th>Description</th>
+              <th>Type</th>
           </tr>
       </thead>
       <tbody>`;
 
   data.forEach((element) => {
-    table += `<tr data-id="${element.id}">
-                <td class="title" contenteditable="true">${element.title}</td>
-                <td class="link" contenteditable="true"><a href="${element.link}" target="_blank">${element.link}</a></td>
-                <td class="duration" contenteditable="true">${element.duration}</td>
-                <td class="budget" contenteditable="true">${element.budget}</td>
-
+    furniturePage += `<tr>
+                <td>${element.description}</td>
+                <td><a href="${element.link}" target="_blank">${element.type.name}</a></td>
             </tr>
             `;
   });
 
-  table += `</tbody>
+  furniturePage += `</tbody>
   </table>
   </div>`;
 
+  page.innerHTML = furniturePage;
 };
 
 
