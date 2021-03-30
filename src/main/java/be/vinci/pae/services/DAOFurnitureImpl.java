@@ -1,5 +1,9 @@
 package be.vinci.pae.services;
 
+import be.vinci.pae.domain.FurnitureDTO;
+import be.vinci.pae.domain.FurnitureFactory;
+import be.vinci.pae.utils.FatalException;
+import jakarta.inject.Inject;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,10 +11,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import be.vinci.pae.domain.FurnitureDTO;
-import be.vinci.pae.domain.FurnitureFactory;
-import be.vinci.pae.utils.FatalException;
-import jakarta.inject.Inject;
 
 public class DAOFurnitureImpl implements DAOFurniture {
 
@@ -19,14 +19,11 @@ public class DAOFurnitureImpl implements DAOFurniture {
   private String querySelectFurnitureByType;
   private String querySelectFurnitureByPrice;
   private String querySelectFurnitureByUser;
-
   private String querySelectTypeId;
   private String querySelectVisitRequestId;
   private String querySelectUserId;
   private String querySelectFavouritePictureId;
-
   private String queryInsertFurniture;
-
   private String queryUpdateSellingDate;
   private String queryUpdateCondition;
   private String queryUpdateDepositDate;
@@ -46,8 +43,8 @@ public class DAOFurnitureImpl implements DAOFurniture {
   @Inject
   private DAOUser daoUser;
 
-
   // TODO verifier les sql queries
+
   /**
    * Contructor of DAOFurnitureImpl. Contain queries.
    */
@@ -152,7 +149,6 @@ public class DAOFurnitureImpl implements DAOFurniture {
     }
     return furniture;
   }
-
 
 
   @Override
