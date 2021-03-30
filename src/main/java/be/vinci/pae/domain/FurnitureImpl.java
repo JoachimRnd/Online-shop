@@ -80,12 +80,12 @@ class FurnitureImpl implements Furniture {
     this.type = type;
   }
 
-  public VisitRequestDTO getVisiteRequest() {
+  public VisitRequestDTO getVisitRequest() {
     return visitRequest;
   }
 
-  public void setVisiteRequest(VisitRequestDTO visiteRequest) {
-    this.visitRequest = visiteRequest;
+  public void setVisitRequest(VisitRequestDTO visitRequest) {
+    this.visitRequest = visitRequest;
   }
 
   public double getPurchasePrice() {

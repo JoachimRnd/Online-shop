@@ -90,13 +90,17 @@ public class DAOFurnitureImpl implements DAOFurniture {
 
   @Override
   public List<FurnitureDTO> selectAllFurniture() {
-    List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>();
     try {
       PreparedStatement selectAllFurniture =
           dalServices.getPreparedStatement(querySelectAllFurniture);
-      ResultSet rs = selectAllFurniture.executeQuery();
-      while (rs.next()) {
-        listFurniture.add(createFurniture(rs));
+      List<FurnitureDTO> listFurniture = new ArrayList<>();
+      try (ResultSet rs = selectAllFurniture.executeQuery()) {
+        FurnitureDTO furniture;
+        do {
+          furniture = createFurniture(rs);
+          listFurniture.add(furniture);
+        } while (furniture != null);
+        listFurniture.remove(listFurniture.size() - 1);
       }
       return listFurniture;
     } catch (Exception e) {
@@ -129,8 +133,8 @@ public class DAOFurnitureImpl implements DAOFurniture {
       furniture.setId(rs.getInt("furniture_id"));
       furniture.setDescription(rs.getString("description"));
       furniture.setType(this.daoType.selectTypeById(rs.getInt("type")));
-      furniture.setVisiteRequest(
-          this.daoVisitRequest.selectVisitRequestById(rs.getInt("visit_request")));
+      furniture
+          .setVisitRequest(this.daoVisitRequest.selectVisitRequestById(rs.getInt("visit_request")));
       furniture.setPurchasePrice(rs.getDouble("purchase_price"));
       furniture.setWithdrawalDateFromCustomer(rs.getDate("withdrawal_date_from_customer"));
       furniture.setSellingPrice(rs.getDouble("selling_price"));
@@ -213,7 +217,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
       selectTypeId.setInt(1, newFurniture.getType().getId());
       PreparedStatement selectVisitRequestId =
           this.dalServices.getPreparedStatement(querySelectVisitRequestId);
-      selectVisitRequestId.setInt(1, newFurniture.getVisiteRequest().getId());
+      selectVisitRequestId.setInt(1, newFurniture.getVisitRequest().getId());
       PreparedStatement selectUserId = this.dalServices.getPreparedStatement(querySelectUserId);
       selectUserId.setInt(1, newFurniture.getBuyer().getId());
       PreparedStatement selectFavouritePictureId =
@@ -227,7 +231,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
           && rsFavouritePicture != null) {
         insertFurniture.setString(1, newFurniture.getDescription());
         insertFurniture.setInt(2, newFurniture.getType().getId());
-        insertFurniture.setInt(3, newFurniture.getVisiteRequest().getId());
+        insertFurniture.setInt(3, newFurniture.getVisitRequest().getId());
         insertFurniture.setDouble(4, newFurniture.getPurchasePrice());
         insertFurniture.setDate(5, (Date) newFurniture.getWithdrawalDateFromCustomer());
         insertFurniture.setDouble(6, newFurniture.getSellingPrice());

@@ -18,9 +18,9 @@ public interface FurnitureDTO {
 
   void setType(TypeDTO type);
 
-  VisitRequestDTO getVisiteRequest();
+  VisitRequestDTO getVisitRequest();
 
-  void setVisiteRequest(VisitRequestDTO visiteRequest);
+  void setVisitRequest(VisitRequestDTO visitRequest);
 
   double getPurchasePrice();
 
