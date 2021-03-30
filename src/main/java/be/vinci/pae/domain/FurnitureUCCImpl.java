@@ -110,7 +110,7 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     } else {
       // TODO
       String idType = type.toString();
-      listFurniture = this.daoFurniture.selectFurnituresByType(idType);
+      listFurniture = this.daoFurniture.selectFurnitureByType(idType);
       this.dalServices.commitTransaction();
     }
     dalServices.closeConnection();
