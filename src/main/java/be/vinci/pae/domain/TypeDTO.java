@@ -1,5 +1,8 @@
 package be.vinci.pae.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+@JsonDeserialize(as = TypeImpl.class)
 public interface TypeDTO {
   // TODO for later
 

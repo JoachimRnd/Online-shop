@@ -1,5 +1,9 @@
 package be.vinci.pae.domain;
 
-public class TypeFactoryImpl {
-  // TODO for later
+public class TypeFactoryImpl implements TypeFactory {
+
+  @Override
+  public TypeDTO getType() {
+    return new TypeImpl();
+  }
 }

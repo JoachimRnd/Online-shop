@@ -16,4 +16,6 @@ public interface DAOVisitRequest {
 
   int addVisitRequest(VisitRequestDTO visitRequest);
 
+  VisitRequestDTO selectVisitRequestById(int id);
+
 }

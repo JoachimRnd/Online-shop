@@ -14,6 +14,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
@@ -93,7 +94,12 @@ public class Furniture {
   @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   public FurnitureDTO getFurniture(@PathParam("id") int id) {
-    return Json.filterPublicJsonView(furnitureUCC.getFurnitureById(id), FurnitureDTO.class);
+    FurnitureDTO furnitureDTO = furnitureUCC.getFurnitureById(id);
+    if (furnitureDTO == null) {
+      throw new WebApplicationException("Ressource with id = " + id + " could not be found", null,
+          Status.NOT_FOUND);
+    }
+    return Json.filterPublicJsonView(furnitureDTO, FurnitureDTO.class);
   }
 
 }
