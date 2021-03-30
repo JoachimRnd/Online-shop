@@ -132,7 +132,7 @@ const FurnitureUser = async() => {
 
 
   //Recuperer id du meuble dans l'url
-  let id = 0;
+  let id = 1;
 
   try {
     const furniture = await callAPI(API_BASE_URL + id , "GET",undefined);
@@ -165,9 +165,9 @@ const onFurniture = (data) => {
 
   if (!data) return;
   let type = document.querySelector("#type");
-  type.innerHTML = `<input class="form-control" id="type" type="text" placeholder=${data.type} readonly />`;
+  type.innerHTML = `<input class="form-control" id="type" type="text" placeholder=${data.type.name} readonly />`;
   let prix = document.querySelector("#prix");
-  prix.innerHTML = `<input class="form-control" id="prix" type="text" placeholder=${data.prix} readonly />`;
+  prix.innerHTML = `<input class="form-control" id="prix" type="text" placeholder=${data.sellingPrice} readonly />`;
   let furnitureDescription = document.querySelector("#furnitureDescription");
   furnitureDescription.innerHTML = `<textarea class="form-control" id="furnituredescription" rows="6" readonly>${data.description}</textarea>`;
 

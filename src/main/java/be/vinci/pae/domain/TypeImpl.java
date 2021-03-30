@@ -1,8 +1,16 @@
 package be.vinci.pae.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
+import views.Views;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TypeImpl implements Type {
   // TODO for later
+  @JsonView(Views.Public.class)
   private int id;
+
+  @JsonView(Views.Public.class)
   private String name;
 
   public int getId() {
