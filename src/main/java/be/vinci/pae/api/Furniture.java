@@ -59,8 +59,6 @@ public class Furniture {
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public Response modifyStatus(@PathParam("id") int id, JsonNode json) {
-    System.out.println("ID : " + id);
-    System.out.println(json.get("condition").asText());
     if (!json.hasNonNull("condition") || json.get("condition").asText().isEmpty()) {
       return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")
           .type(MediaType.TEXT_PLAIN).build();

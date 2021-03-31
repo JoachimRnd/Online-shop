@@ -8,6 +8,7 @@ import img2 from "./2.jpg";
 const API_BASE_URL = "/api/furniture/";
 const IMAGES = "../../../../images";
 let option;
+let furniture;
 
 let optionTaken = false;
 
@@ -87,11 +88,10 @@ let furniturePage = `
 </div>
 `;
 
-const FurnitureAdmin = (furniture) => {
+const FurnitureAdmin = (f) => {
+  furniture = f;
   let page = document.querySelector("#page");
   page.innerHTML = furniturePage;
-
-  
 
 
 
@@ -99,27 +99,16 @@ const FurnitureAdmin = (furniture) => {
   optionCondition.setAttribute("selected","");
 
   let btnSave = document.querySelector("#btnSave");
-  btnSave.addEventListener("click", async () => {
-    let conditionChoice = document.querySelector("#conditions");
-    conditionChoice = conditionChoice.value;
-    console.log(conditionChoice);
-    //CALL API
-    let user = getUserSessionData();
+  btnSave.addEventListener("click", onSave);
   
-    // reste à rajouter un url en plus? + voir cmment passer plusieurs params
-
-    let condition = {
-      condition: conditionChoice
-    };
-  
-    await callAPIWithoutJSONResponse(API_BASE_URL + furniture.id, "PUT", user.token, condition);
-  });
 
   let onSaleCondition = document.querySelector("#conditions");
   console.log(onSaleCondition);
   onSaleCondition.addEventListener("change",(e)=>{
+    console.log("change");
     //Pouvoir modifier son prix
     //TODO
+  
     if(onSaleCondition == "en_vente"){
       console.log("click sur en vente");
     }
@@ -155,22 +144,17 @@ const onFurniture = (data) => {
   
 }
 
-const onSave = async(data) => {
-  if(!data)return;  
+const onSave = async() => {
   let conditionChoice = document.querySelector("#conditions");
-  conditionChoice = conditionChoice.value;
-  console.log(conditionChoice);
-  //CALL API
-  let user = getUserSessionData();
+    conditionChoice = conditionChoice.value;
+    let user = getUserSessionData();
 
-  // reste à rajouter un url en plus? + voir cmment passer plusieurs params
-
-  await callAPIWithoutJSONResponse(API_BASE_URL + data.id, "PUT", user.token, conditionChoice);
-
+    let struct = {
+      struct: conditionChoice
+    };
+  
+    await callAPIWithoutJSONResponse(API_BASE_URL + furniture.id, "PUT", user.token, struct);
 }
 
 
 export default FurnitureAdmin;
-
-
-

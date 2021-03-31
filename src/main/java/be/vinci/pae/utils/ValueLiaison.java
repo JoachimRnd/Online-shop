@@ -188,4 +188,25 @@ public class ValueLiaison {
     }
   }
 
+  /**
+   * Change the condition from string into a integer.
+   *
+   * @param condition condition of user as string
+   * @return integer of the condition user
+   */
+  public static int stringToIntCondition(String condition) {
+    switch (condition.toLowerCase()) {
+      case IN_RESTORATION_STRING:
+        return IN_RESTORATION;
+      case IN_STORE_STRING:
+        return IN_STORE;
+      case ON_SALE_STRING:
+        return ON_SALE;
+      case REMOVED_FROM_SALE_STRING:
+        return REMOVED_FROM_SALE;
+      default:
+        throw new BusinessException("L'état n'existe pas");
+    }
+  }
+
 }
