@@ -95,13 +95,17 @@ public class OptionUCCImpl implements OptionUCC {
     List<OptionDTO> listPreviousOption = daoOption
         .selectOptionsOfFurniture(newOption.getFurniture().getId());
     for (OptionDTO option : listPreviousOption) {
-      if (TimeUnit.DAYS.convert(newOption.getDate().getTime() - option.getDate().getTime(),
+      if (option.getStatus().equals(ValueLiaison.RUNNING_OPTION_STRING)
+          && TimeUnit.DAYS.convert(newOption.getDate().getTime() - option.getDate().getTime(),
           TimeUnit.MILLISECONDS) <= option.getDuration()) {
         throw new BusinessException("Il y a deja une option en cours pour ce meuble");
       }
     }
     if (daoOption.selectOptionsOfBuyerFromFurniture(newOption.getBuyer().getId(),
-        newOption.getFurniture().getId()) != null) {
+        newOption.getFurniture().getId()) != null && !daoOption
+        .selectOptionsOfBuyerFromFurniture(newOption.getBuyer().getId(),
+            newOption.getFurniture().getId()).getStatus()
+        .equals(ValueLiaison.CANCELED_OPTION_STRING)) {
       throw new BusinessException("Vous avez deja mis une option sur ce meuble");
     }
     int idOption = daoOption.addOption(newOption);
@@ -118,6 +122,7 @@ public class OptionUCCImpl implements OptionUCC {
 
   @Override
   public void cancelOption(int idFurniture, UserDTO user) {
+    dalServices.startTransaction();
     List<OptionDTO> list = daoOption.selectOptionsOfFurniture(idFurniture);
     if (list.size() == 0) {
       throw new BusinessException("Il n'y a pas d'option sur ce meuble");
@@ -142,6 +147,51 @@ public class OptionUCCImpl implements OptionUCC {
       dalServices.rollbackTransaction();
     }
     dalServices.closeConnection();
+  }
+
+  @Override
+  public void cancelOptionByAdmin(int idFurniture) {
+    List<OptionDTO> list = daoOption.selectOptionsOfFurniture(idFurniture);
+    if (list.size() == 0) {
+      throw new BusinessException("Il n'y a pas d'option sur ce meuble");
+    }
+    OptionDTO optionToCancel = null;
+    for (OptionDTO option : list) {
+      if (option.getStatus().equals(ValueLiaison.RUNNING_OPTION_STRING)) {
+        optionToCancel = option;
+        break;
+      }
+    }
+    if (optionToCancel == null) {
+      throw new BusinessException("Il n'y a pas d'option en cours sur ce meuble");
+    }
+    boolean canceled = daoOption.cancelOption(optionToCancel);
+    if (canceled) {
+      dalServices.commitTransaction();
+    } else {
+      dalServices.rollbackTransaction();
+    }
+    dalServices.closeConnection();
+  }
+
+  @Override
+  public OptionDTO getLastOptionOfFurniture(int idFurniture) {
+    if (daoFurniture.selectFurnitureById(idFurniture) == null) {
+      throw new BusinessException("Ce meuble n'existe pas");
+    }
+    OptionDTO option = daoOption.getLastOptionOfFurniture(idFurniture);
+    if (!verifyOptionStatus(option)) {
+      dalServices.startTransaction();
+      if (daoOption.finishOption(option.getId())) {
+        dalServices.commitTransaction();
+      } else {
+        dalServices.rollbackTransaction();
+      }
+      option = daoOption.getLastOptionOfFurniture(idFurniture);
+    }
+    System.out.println(option);
+    dalServices.closeConnection();
+    return option;
   }
 
   private boolean verifyOptionStatus(OptionDTO option) {

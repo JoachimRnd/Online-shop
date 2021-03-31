@@ -8,6 +8,7 @@ import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class DAOOptionImpl implements DAOOption {
   private String querySelectOptionsOfBuyerFromFurniture;
   private String queryAddOption;
   private String queryChangeStatusOption;
+  private String queryGetLastOptionOfFurniture;
 
   @Inject
   private OptionFactory optionFactory;
@@ -35,7 +37,7 @@ public class DAOOptionImpl implements DAOOption {
    */
   public DAOOptionImpl() {
     querySelectAllOptions = "SELECT option_id, buyer, furniture, duration, date, "
-        + "status FROM project.options ";
+        + "status FROM project.options";
     querySelectOptionById = "SELECT option_id, buyer, furniture, duration, date, "
         + "status FROM project.options WHERE option_id = ?";
     querySelectOptionsOfFurniture = "SELECT option_id, buyer, furniture, duration, date, "
@@ -48,6 +50,9 @@ public class DAOOptionImpl implements DAOOption {
     queryAddOption = "INSERT INTO project.options (option_id, buyer, furniture, duration, date, "
         + "status) VALUES (DEFAULT, ?, ?, ?, ?, ?)";
     queryChangeStatusOption = "UPDATE project.options SET status = ? WHERE option_id = ?";
+    queryGetLastOptionOfFurniture = "SELECT option_id, buyer, furniture, duration, date, status "
+        + "FROM project.options WHERE furniture = ? AND date = "
+        + "(SELECT MAX(date) FROM project.options)";
   }
 
   @Override
@@ -78,7 +83,7 @@ public class DAOOptionImpl implements DAOOption {
       addOption.setInt(1, option.getBuyer().getId());
       addOption.setInt(2, option.getFurniture().getId());
       addOption.setInt(3, option.getDuration());
-      addOption.setDate(4, option.getDate());
+      addOption.setTimestamp(4, Timestamp.from(option.getDate().toInstant()));
       addOption.setInt(5, ValueLiaison.stringToIntOption(option.getStatus()));
       addOption.executeUpdate();
       try (ResultSet rs = addOption.getGeneratedKeys()) {
@@ -202,6 +207,22 @@ public class DAOOptionImpl implements DAOOption {
       throw new FatalException("Database error : cancelOption");
     }
     return false;
+  }
+
+  @Override
+  public OptionDTO getLastOptionOfFurniture(int idFurniture) {
+    try {
+      PreparedStatement getLastOptionOfFurniture = dalBackendServices
+          .getPreparedStatement(queryGetLastOptionOfFurniture);
+      getLastOptionOfFurniture.setInt(1, idFurniture);
+      try (ResultSet rs = getLastOptionOfFurniture.executeQuery()) {
+        OptionDTO option = createOption(rs);
+        return option;
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException("Database error : getLastOptionOfFurniture");
+    }
   }
 
   private OptionDTO createOption(ResultSet rs) throws SQLException {

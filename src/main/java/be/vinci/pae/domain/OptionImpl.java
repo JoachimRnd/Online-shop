@@ -1,7 +1,7 @@
 package be.vinci.pae.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import java.sql.Date;
+import java.util.Date;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class OptionImpl implements Option {

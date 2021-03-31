@@ -17,6 +17,7 @@ import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -25,8 +26,8 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-import java.sql.Date;
-import java.time.LocalDate;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import org.glassfish.jersey.server.ContainerRequest;
 
@@ -111,42 +112,56 @@ public class Furniture {
    * @return FurnitureDTO
    */
   @GET
-  @Path("/{id}")
+  @Path("/{idFurniture}")
   @Produces(MediaType.APPLICATION_JSON)
-  public FurnitureDTO getFurniture(@PathParam("id") int id) {
-    FurnitureDTO furnitureDTO = furnitureUCC.getFurnitureById(id);
+  public FurnitureDTO getFurniture(@PathParam("idFurniture") int idFurniture) {
+    FurnitureDTO furnitureDTO = furnitureUCC.getFurnitureById(idFurniture);
     if (furnitureDTO == null) {
-      throw new WebApplicationException("Ressource with id = " + id + " could not be found", null,
+      throw new WebApplicationException(
+          "Ressource with id = " + idFurniture + " could not be found", null,
           Status.NOT_FOUND);
     }
     return Json.filterPublicJsonView(furnitureDTO, FurnitureDTO.class);
   }
 
-  @POST
-  @Path("/{id}/cancelOption")
+  @PUT
+  @Path("/{idFurniture}/cancelOption")
   @Authorize
-  public Response cancelOption(@PathParam("id") int id, @Context ContainerRequest request) {
+  public Response cancelOption(@PathParam("idFurniture") int idFurniture,
+      @Context ContainerRequest request) {
     UserDTO currentUser = (UserDTO) request.getProperty("user");
-    optionUCC.cancelOption(id, currentUser);
+    optionUCC.cancelOption(idFurniture, currentUser);
     return Response.ok().build();
   }
 
   @POST
-  @Path("/{id}/addOption/{duration}")
+  @Path("/{idFurniture}/addOption/{duration}")
   @Authorize
-  public Response addOption(@PathParam("id") int id, @Context ContainerRequest request,
+  public Response addOption(@PathParam("idFurniture") int idFurniture,
+      @Context ContainerRequest request,
       @PathParam("duration") int duration) {
     System.out.println("Ici");
     OptionDTO option = optionFactory.getOption();
     option.setDuration(duration);
-    option.setDate(Date.valueOf(LocalDate.now()));
+    option.setDate(Date.from(Instant.now()));
     option.setStatus(ValueLiaison.RUNNING_OPTION_STRING);
     option.setFurniture(furnitureFactory.getFurniture());
-    option.getFurniture().setId(id);
+    option.getFurniture().setId(idFurniture);
     UserDTO currentUser = (UserDTO) request.getProperty("user");
     option.setBuyer(currentUser);
     optionUCC.addOption(option);
     return Response.ok().build();
+  }
+
+  @GET
+  @Path("/{idFurniture}/getOption")
+  @Produces(MediaType.APPLICATION_JSON)
+  public OptionDTO getOption(@PathParam("idFurniture") int idFurniture) {
+    OptionDTO option = optionUCC.getLastOptionOfFurniture(idFurniture);
+    if (option == null) {
+      option = optionFactory.getOption();
+    }
+    return Json.filterPublicJsonView(option, OptionDTO.class);
   }
 
 }

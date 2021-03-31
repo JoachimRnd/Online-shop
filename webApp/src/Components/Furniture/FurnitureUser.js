@@ -7,9 +7,8 @@ import img1 from "./1.jpg";
 import img2 from "./2.jpg";
 const API_BASE_URL = "/api/furniture/";
 const IMAGES = "../../../../images";
-let option;
 
-let optionTaken = false;
+let furniture;
 
 let furniturePage = `
 <h4 id="pageTitle">Furniture User</h4>
@@ -82,8 +81,7 @@ let validateOption = `<p>Mettre une option sur ce meuble</p>
       Délai de l'option (max. 5 jours cumulés) :
       <div class="col-2">
           <select class="custom-select custom-select-sm" id="dureeOption">
-            <option value="0">0</option>
-            <option selected value="1">1</option>
+            <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
             <option value="4">4</option>
@@ -98,60 +96,30 @@ let validateOption = `<p>Mettre une option sur ce meuble</p>
 let cancelOption = `<p>Option sur ce meuble</p>
 <div class="row">
   <div class="col-12">
-    <div class="row">
-      Délai de l'option :
-      <div class="col-2">
-          <select class="custom-select custom-select-sm>
-            <option value="0">0</option>
-            <option selected value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-          </select> 
-      </div>
-      Délai cumulé (max 5. jours) : 2   
+    <div class="row" id="#">
       <button class="btn btn-danger" id="btnOption" type="submit">Annuler</button>
     </div>
   </div>
 </div>`;
 
 
-const FurnitureUser = (furniture) => {
+const FurnitureUser = async (data) => {
   let page = document.querySelector("#page");
   page.innerHTML = furniturePage;
 
-  option = document.querySelector("#option");
-
-  // if option is not taken
-  if(getUserSessionData() != null){
-    if(!optionTaken){
-      option.innerHTML = validateOption;
-    }else{
-      option.innerHTML = cancelOption;
-    }
-
-  //Valider / Cancel meuble
-  let btnOption = document.querySelector("#btnOption");
-  btnOption.addEventListener("click",onClickOption);
-  }
-
-
-
   //Question => Mettre l'id dans l'url
   /*try {
-    const furniture = await callAPI(API_BASE_URL + id , "GET",undefined);
+    let id = 1;
+    const furniture = await callAPI(API_BASE_URL + id, "GET", undefined);
     onFurniture(furniture);
   } catch (err) {
     console.error("FurnitureUser::onFurniture", err);
     PrintError(err);
   }*/
 
-  
-  onFurniture(furniture);
+  furniture = data;
 
-
-
+  onFurniture(data);
 }
 
 const onFurniture = (data) => {
@@ -164,36 +132,75 @@ const onFurniture = (data) => {
   let furnitureDescription = document.querySelector("#furnitureDescription");
   furnitureDescription.innerHTML = `<textarea class="form-control" id="furnituredescription" rows="6" readonly>${data.description}</textarea>`;
 
+  onCheckOption(data);
+}
+
+const onCheckOption = async (data) => {
+
+  if (!data) return;
+  console.log(data);
+  let optionDocument = document.querySelector("#option");
+  let option = await callAPI(API_BASE_URL + data.id + "/getOption", "GET");
+  console.log(option)
+  let user = getUserSessionData();
+  console.log(user)
+  if(option.status != undefined && option.status == "en cours") {
+    if(option.buyer.id == user.user.id) {
+      //Afficher bouton annuler
+      optionDocument.innerHTML = cancelOption;
+      let btn = document.querySelector("#btnOption")
+      btn.addEventListener("click", onClickCancelOption);
+    } else {
+      //Afficher qu'il y a une option
+      optionDocument.innerHTML = "Il y a déjà une option sur ce meuble";
+    }
+  } else {
+    if(user != undefined) {
+      //Afficher form prendre option
+      optionDocument.innerHTML = validateOption;
+      let btn = document.querySelector("#btnOption")
+      btn.addEventListener("click", onClickOption);
+    }
+  }
 }
 
 
 const onClickOption = async (e) => {
   e.preventDefault();
-  let id = 1;
   let user = getUserSessionData();
-  if (optionTaken) {
-    try {
-      let apiOption = await callAPIWithoutJSONResponse(API_BASE_URL + id + "/cancelOption", "POST", user.token);
-      console.log("cancel Option");
-      option.innerHTML = validateOption;
-      optionTaken = !optionTaken;
-    } catch (e) {
-      //Erreur
-    }
-  } else {
-    try {
-      let optionChoice = document.getElementById("dureeOption");
-      optionChoice = optionChoice.value;
-      console.log("avant appel API");
-      let apiOption = await callAPIWithoutJSONResponse(API_BASE_URL + id + "/addOption/" + optionChoice, "POST", user.token);
-      console.log("take option");
-      option.innerHTML = cancelOption;
-      optionTaken = !optionTaken;
-    } catch (e) {
-      console.log("erreur");
-      console.log(e);
-      //Erreur
-    }
+  let optionDocument = document.querySelector("#option");
+  try {
+    let optionChoice = document.getElementById("dureeOption");
+    optionChoice = optionChoice.value;
+    console.log("avant appel API");
+    let apiOption = await callAPIWithoutJSONResponse(API_BASE_URL + furniture.id + "/addOption/" + optionChoice, "POST", user.token);
+    console.log("take option");
+    optionDocument.innerHTML = cancelOption;
+    let btn = document.querySelector("#btnOption")
+    btn.addEventListener("click", onClickCancelOption);
+  } catch (e) {
+    console.log("erreur");
+    console.log(e);
+    PrintError(e);
+    //Erreur
+  }
+}
+
+const onClickCancelOption = async (e) => {
+  e.preventDefault();
+  let user = getUserSessionData();
+  let optionDocument = document.querySelector("#option");
+  try {
+    let apiOption = await callAPIWithoutJSONResponse(API_BASE_URL + furniture.id + "/cancelOption", "PUT", user.token);
+    console.log("cancel Option");
+    optionDocument.innerHTML = validateOption;
+    let btn = document.querySelector("#btnOption")
+    btn.addEventListener("click", onClickOption);
+  } catch (e) {
+    console.log("erreur");
+    console.log(e);
+    PrintError(e);
+    //Erreur
   }
 }
 

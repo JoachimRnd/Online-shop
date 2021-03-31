@@ -13,4 +13,8 @@ public interface OptionUCC {
   OptionDTO addOption(OptionDTO option);
 
   void cancelOption(int id, UserDTO user);
+
+  void cancelOptionByAdmin(int idFurniture);
+
+  OptionDTO getLastOptionOfFurniture(int idFurniture);
 }

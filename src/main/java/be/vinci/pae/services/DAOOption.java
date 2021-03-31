@@ -20,4 +20,6 @@ public interface DAOOption {
   boolean finishOption(int id);
 
   boolean cancelOption(OptionDTO optionToCancel);
+
+  OptionDTO getLastOptionOfFurniture(int idFurniture);
 }
