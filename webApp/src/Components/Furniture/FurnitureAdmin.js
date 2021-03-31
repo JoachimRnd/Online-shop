@@ -85,7 +85,6 @@ let furniturePage = `
 
   <button class="btn btn-success" id="btnSave" type="submit">Enregistrer</button>
 
-
 </div>
 `;
 
@@ -105,15 +104,14 @@ const FurnitureAdmin = (furniture) => {
 
   let onSaleCondition = document.querySelector("#conditions");
   console.log(onSaleCondition);
-  onSaleCondition.addEventListener("select",(e)=>{
+  onSaleCondition.addEventListener("change",(e)=>{
     //Pouvoir modifier son prix
     //TODO
-
-    console.log("click sur en vente");
-
-  })
-  
-
+    if(onSaleCondition == "en_vente"){
+      console.log("click sur en vente");
+    }
+    
+  });
 
 
   //Question => Mettre l'id dans l'url
