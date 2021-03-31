@@ -1,8 +1,5 @@
 package be.vinci.pae.domain;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import be.vinci.pae.services.DAOFurniture;
 import be.vinci.pae.services.DAOType;
 import be.vinci.pae.services.DAOUser;
@@ -10,6 +7,9 @@ import be.vinci.pae.services.DalServices;
 import be.vinci.pae.utils.BusinessException;
 import be.vinci.pae.utils.ValueLiaison;
 import jakarta.inject.Inject;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FurnitureUCCImpl implements FurnitureUCC {
 
@@ -59,10 +59,17 @@ public class FurnitureUCCImpl implements FurnitureUCC {
       case ValueLiaison.ON_SALE_STRING:
         noError = this.daoFurniture.updateSellingPrice(furniture.getId(), price);
         noError = this.daoFurniture.updateSellingDate(furniture.getId(), LocalDateTime.now());
+        break;
       case ValueLiaison.IN_STORE_STRING:
         noError = this.daoFurniture.updateDepositDate(furniture.getId(), LocalDateTime.now());
+        break;
+      case ValueLiaison.IN_RESTORATION_STRING:
+      case ValueLiaison.REMOVED_FROM_SALE_STRING:
+        noError = this.daoFurniture.updateCondition(furniture.getId(), condition);
+        break;
+      default:
+        throw new BusinessException("Cet etat n'existe pas");
     }
-    noError = this.daoFurniture.updateCondition(furniture.getId(), condition);
 
     if (!noError) {
       this.dalServices.rollbackTransaction();

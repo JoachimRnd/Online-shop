@@ -1,13 +1,13 @@
 package be.vinci.pae.services;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import be.vinci.pae.domain.AddressDTO;
 import be.vinci.pae.domain.FurnitureDTO;
 import be.vinci.pae.domain.VisitRequestDTO;
 import be.vinci.pae.domain.VisitRequestFactory;
 import be.vinci.pae.utils.FatalException;
 import jakarta.inject.Inject;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class DAOVisitRequestImpl implements DAOVisitRequest {
 
@@ -28,14 +28,9 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
    * constructor of DAOVisitRequestImpl. contains queries.
    */
   public DAOVisitRequestImpl() {
-    /*
-     * String querySelectAdressUser = "SELECT a.address_id, a.street, a.building_number, a.unit_number, a.postcode, a.commune," +
-     * "a.country FROM project.addresses a, project.users u WHERE u.user_id = ? " + "AND u.address = a.address_id;"; String querySelectTypesFurniture =
-     * "SELECT ft.name FROM furniture_types ft;";
-     */
-    querySelectVisitRequestById =
-        "SELECT v.visit_request_id, v.request_date, v.time_slot, v.address, v.status, v.chosen_date_time, v.cancellation_reason, v.customer "
-            + "FROM project.visit_requests v WHERE v.visit_request_id  = ?";
+    querySelectVisitRequestById = "SELECT v.visit_request_id, v.request_date, v.time_slot, "
+        + "v.address, v.status, v.chosen_date_time, v.cancellation_reason, v.customer "
+        + "FROM project.visit_requests v WHERE v.visit_request_id  = ?";
   }
 
   @Override
@@ -82,7 +77,8 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
           visitRequest.setRequestDate(rs.getDate("request_date"));
           visitRequest.setTimeSlot(rs.getString("time_slot"));
           // Address TODO
-          visitRequest.setStatus(String.valueOf(rs.getInt("status"))); // TODO CHANGER Status int en string
+          // TODO CHANGER Status int en string
+          visitRequest.setStatus(String.valueOf(rs.getInt("status")));
           visitRequest.setChosenDateTime(rs.getDate("chosen_date_time"));
           visitRequest.setCancellationReason(rs.getString("cancellation_reason"));
           visitRequest.setCustomer(this.daoUser.getUserById(rs.getInt("customer")));
@@ -92,7 +88,7 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
       }
     } catch (
 
-    Exception e) {
+        Exception e) {
       e.printStackTrace();
       throw new FatalException("Data error : selectTypeById");
     }
