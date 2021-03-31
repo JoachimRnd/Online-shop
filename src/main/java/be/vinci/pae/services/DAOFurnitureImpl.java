@@ -29,6 +29,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
   private String queryUpdateSellingDate;
   private String queryUpdateCondition;
   private String queryUpdateDepositDate;
+  private String queryUpdateSellingPrice;
   private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 
@@ -91,7 +92,8 @@ public class DAOFurnitureImpl implements DAOFurniture {
     queryUpdateCondition = "UPDATE project.furniture SET condition = ? WHERE furniture_id = ?";
     queryUpdateDepositDate =
         "UPDATE project.furniture SET deposit_date = ?::timestamp WHERE furniture_id = ?";
-
+    queryUpdateSellingPrice =
+        "UPDATE project.furniture SET selling_price = ? WHERE furniture_id = ?";
   }
 
   @Override
@@ -284,6 +286,20 @@ public class DAOFurnitureImpl implements DAOFurniture {
     } catch (SQLException e) {
       e.printStackTrace();
       throw new FatalException("Data error : updateSellingDate");
+    }
+  }
+
+  @Override
+  public boolean updateSellingPrice(int id, Double price) {
+    try {
+      PreparedStatement updateSellingPrice =
+          this.dalServices.getPreparedStatement(queryUpdateSellingPrice);
+      updateSellingPrice.setDouble(1, price);
+      updateSellingPrice.setInt(2, id);
+      return updateSellingPrice.executeUpdate() == 1;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : updateSellingPrice");
     }
   }
 
