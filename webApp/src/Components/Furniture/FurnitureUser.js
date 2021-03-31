@@ -117,7 +117,8 @@ let cancelOption = `<p>Option sur ce meuble</p>
 </div>`;
 
 
-const FurnitureUser = async() => {
+const FurnitureUser = async (furnitureId) => {
+  console.log("FurnitureUser" + furnitureId.id);
   let page = document.querySelector("#page");
   page.innerHTML = furniturePage;
 

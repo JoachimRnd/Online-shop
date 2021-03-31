@@ -36,8 +36,8 @@ const onFurnitureList = (data) => {
 
   data.forEach((element) => {
     furniturePage += `<tr>
-                <td>${element.description}</td>
-                <td><a href="${element.link}" target="_blank">${element.type.name}</a></td>
+                <td><a id="furniture${element.id}" href="#" target="_blank">${element.description}</a></td>
+                <td>${element.type.name}</td>
             </tr>
             `;
   });
@@ -47,6 +47,14 @@ const onFurnitureList = (data) => {
   </div>`;
 
   page.innerHTML = furniturePage;
+
+  data.forEach((element) => {
+    let furnitureElement = document.getElementById("furniture"+element.id);
+    furnitureElement.addEventListener("click", (e) => {
+      e.preventDefault();
+      RedirectUrl("/furniture",element);
+    });
+  });
 };
 
 
