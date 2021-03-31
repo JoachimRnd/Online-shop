@@ -117,8 +117,8 @@ let cancelOption = `<p>Option sur ce meuble</p>
 </div>`;
 
 
-const FurnitureUser = async (furnitureId) => {
-  console.log("FurnitureUser" + furnitureId.id);
+
+const FurnitureUser = (furniture) => {
   let page = document.querySelector("#page");
   page.innerHTML = furniturePage;
 
@@ -139,27 +139,17 @@ const FurnitureUser = async (furnitureId) => {
 
 
 
-  //Recuperer id du meuble dans l'url
-  let id = 1;
-
-  try {
+  //Question => Mettre l'id dans l'url
+  /*try {
     const furniture = await callAPI(API_BASE_URL + id , "GET",undefined);
     onFurniture(furniture);
   } catch (err) {
     console.error("FurnitureUser::onFurniture", err);
     PrintError(err);
-  }
+  }*/
 
-  /*var data = {
-    type : "test Type",
-    prix : "50",
-    description : "Descriptionqsd fqsdf qsdfqsdf"
-  }
-  onFurniture(data);*/
-
-
-  //CallApi pour avoir un meuble et ses infos
   
+  onFurniture(furniture);
 
 
 

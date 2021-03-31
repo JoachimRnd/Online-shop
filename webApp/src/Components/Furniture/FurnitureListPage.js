@@ -34,17 +34,18 @@ const onFurnitureList = (data) => {
       </thead>
       <tbody>`;
 
-  data.forEach((element) => {
-    furniturePage += `<tr>
-                <td><a id="furniture${element.id}" href="#" target="_blank">${element.description}</a></td>
-                <td>${element.type.name}</td>
-            </tr>
-            `;
-  });
+    data.forEach((element) => {
+      furniturePage += `<tr>
+                  <td><a id="furniture${element.id}" href="#" target="_blank">${element.description}</a></td>
+                  <td>${element.type.name}</td>
+              </tr>`
+              ;
+    });
 
   furniturePage += `</tbody>
   </table>
   </div>`;
+
 
   page.innerHTML = furniturePage;
 

@@ -26,7 +26,6 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   @Override
   public List<FurnitureDTO> getAllFurniture() {
     // TODO DAO
-    this.dalServices.startTransaction();
     List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>();
     listFurniture = this.daoFurniture.selectAllFurniture();
     this.dalServices.closeConnection();
