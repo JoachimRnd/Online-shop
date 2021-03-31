@@ -17,4 +17,7 @@ public interface DAOOption {
 
   OptionDTO selectOptionsOfBuyerFromFurniture(int idBuyer, int idFurniture);
 
+  boolean finishOption(int id);
+
+  boolean cancelOption(OptionDTO optionToCancel);
 }

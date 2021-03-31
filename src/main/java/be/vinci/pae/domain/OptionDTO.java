@@ -1,7 +1,7 @@
 package be.vinci.pae.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import java.util.Date;
+import java.sql.Date;
 
 @JsonDeserialize(as = OptionImpl.class)
 public interface OptionDTO {
