@@ -14,6 +14,8 @@ public interface FurnitureUCC {
 
   List<FurnitureDTO> getFurnitureByUserName(String typeName);
 
+  boolean modifyCondition(int id, String condition);
+
   FurnitureDTO modifySellingDate(FurnitureDTO furniture, String status);
 
   FurnitureDTO modifyDepositDate(FurnitureDTO furniture, String status);

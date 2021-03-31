@@ -1,14 +1,14 @@
 import { RedirectUrl } from "../Router.js";
 import Navbar from "../Navbar.js";
 import { getUserSessionData } from "../../utils/session.js";
-import { callAPI } from "../../utils/api.js";
+import { callAPIWithoutJSONResponse } from "../../utils/api.js";
 import PrintError from "../PrintError.js"
 import img1 from "./1.jpg";
 import img2 from "./2.jpg";
-import { data } from "jquery";
-const API_BASE_URL = "/api/admin/";
+const API_BASE_URL = "/api/furniture/";
 const IMAGES = "../../../../images";
 let option;
+let furniture;
 
 let optionTaken = false;
 
@@ -75,27 +75,45 @@ let furniturePage = `
     <div class="input-group-prepend">
       <label class="input-group-text" for="inputGroupSelect01">Etat du meuble</label>
     </div>
-    <select class="custom-select" id="inputGroupSelect01">
-      <option id="en_restauration">En restauration</option>
-      <option id="en_magasin">En magasin</option>
-      <option id="en_vente" >En vente</option>
-      <option id="retire_de_vente">Retiré de la vente</option>
+    <select class="custom-select" id="conditions">
+      <option id="en_restauration" value="en_restauration">En restauration</option>
+      <option id="en_magasin" value="en_magasin">En magasin</option>
+      <option id="en_vente" value="en_vente">En vente</option>
+      <option id="retire_de_vente" value="retire_de_vente">Retiré de la vente</option>
     </select>
   </div>
+
+  <button class="btn btn-success" id="btnSave" type="submit">Enregistrer</button>
 
 </div>
 `;
 
-const FurnitureAdmin = (furniture) => {
+const FurnitureAdmin = (f) => {
+  furniture = f;
   let page = document.querySelector("#page");
   page.innerHTML = furniturePage;
 
 
-  //data.condition;
-  console.log(furniture);
-  console.log(furniture.condition);
+
   let optionCondition = document.querySelector("#"+furniture.condition);
   optionCondition.setAttribute("selected","");
+
+  let btnSave = document.querySelector("#btnSave");
+  btnSave.addEventListener("click", onSave);
+  
+
+  let onSaleCondition = document.querySelector("#conditions");
+  console.log(onSaleCondition);
+  onSaleCondition.addEventListener("change",(e)=>{
+    console.log("change");
+    //Pouvoir modifier son prix
+    //TODO
+  
+    if(onSaleCondition == "en_vente"){
+      console.log("click sur en vente");
+    }
+    
+  });
 
 
   //Question => Mettre l'id dans l'url
@@ -126,8 +144,17 @@ const onFurniture = (data) => {
   
 }
 
+const onSave = async() => {
+  let conditionChoice = document.querySelector("#conditions");
+    conditionChoice = conditionChoice.value;
+    let user = getUserSessionData();
+
+    let struct = {
+      struct: conditionChoice
+    };
+  
+    await callAPIWithoutJSONResponse(API_BASE_URL + furniture.id, "PUT", user.token, struct);
+}
+
 
 export default FurnitureAdmin;
-
-
-

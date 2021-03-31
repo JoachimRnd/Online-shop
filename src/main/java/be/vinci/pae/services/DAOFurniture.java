@@ -1,6 +1,6 @@
 package be.vinci.pae.services;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import be.vinci.pae.domain.FurnitureDTO;
 
@@ -18,10 +18,10 @@ public interface DAOFurniture {
 
   int insertFurniture(FurnitureDTO newFurniture);
 
-  boolean updateSellingDate(int id, LocalDate now);
+  boolean updateSellingDate(int id, LocalDateTime now);
 
   boolean updateCondition(int id, String status);
 
-  boolean updateDepositDate(int id, LocalDate now);
+  boolean updateDepositDate(int id, LocalDateTime now);
 
 }

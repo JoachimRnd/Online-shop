@@ -4,7 +4,8 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import be.vinci.pae.domain.FurnitureDTO;
@@ -28,6 +29,8 @@ public class DAOFurnitureImpl implements DAOFurniture {
   private String queryUpdateSellingDate;
   private String queryUpdateCondition;
   private String queryUpdateDepositDate;
+  private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
 
   @Inject
   private FurnitureFactory furnitureFactory;
@@ -83,9 +86,11 @@ public class DAOFurnitureImpl implements DAOFurniture {
         + " special_sale_price, deposit_date, selling_date, delivery_date,"
         + " withdrawal_date_to_customer, buyer, condition, unregistered_buyer_email,"
         + " favourite_picture) VALUES (DEFAULT,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-    queryUpdateSellingDate = "UPDATE project.furniture SET selling_date = ? WHERE buyer = ?";
-    queryUpdateCondition = "UPDATE project.furniture SET condition = ? WHERE buyer = ?";
-    queryUpdateDepositDate = "UPDATE project.furniture SET deposit_date = ? WHERE buyer = ?";
+    queryUpdateSellingDate =
+        "UPDATE project.furniture SET selling_date = ?::timestamp WHERE furniture_id = ?";
+    queryUpdateCondition = "UPDATE project.furniture SET condition = ? WHERE furniture_id = ?";
+    queryUpdateDepositDate =
+        "UPDATE project.furniture SET deposit_date = ?::timestamp WHERE furniture_id = ?";
 
   }
 
@@ -152,6 +157,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
   }
 
 
+  // TODO
   @Override
   public List<FurnitureDTO> selectFurnitureByType(String type) {
     List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>();
@@ -171,6 +177,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
     }
   }
 
+  // TODO
   @Override
   public List<FurnitureDTO> selectFurnitureByPrice(double price) {
     List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>();
@@ -190,6 +197,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
     }
   }
 
+  // TODO
   @Override
   public List<FurnitureDTO> selectFurnitureByUser(String lastNameCustomer) {
     List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>();
@@ -208,6 +216,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
     }
   }
 
+  // TODO
   @Override
   public int insertFurniture(FurnitureDTO newFurniture) {
     int furnitureId = -1;
@@ -262,12 +271,14 @@ public class DAOFurnitureImpl implements DAOFurniture {
     return furnitureId;
   }
 
+
   @Override
-  public boolean updateSellingDate(int id, LocalDate now) {
+  public boolean updateSellingDate(int id, LocalDateTime now) {
     try {
       PreparedStatement updateSellingDate =
           this.dalServices.getPreparedStatement(queryUpdateSellingDate);
-      updateSellingDate.setDate(1, Date.valueOf(now));
+      String date = now.format(formatter);
+      updateSellingDate.setString(1, date);
       updateSellingDate.setInt(2, id);
       return updateSellingDate.executeUpdate() == 1;
     } catch (SQLException e) {
@@ -281,7 +292,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
     try {
       PreparedStatement updateCondition =
           this.dalServices.getPreparedStatement(queryUpdateCondition);
-      updateCondition.setString(1, status);
+      updateCondition.setInt(1, ValueLiaison.stringToIntCondition(status));
       updateCondition.setInt(2, id);
       return updateCondition.executeUpdate() == 1;
     } catch (Exception e) {
@@ -291,11 +302,11 @@ public class DAOFurnitureImpl implements DAOFurniture {
   }
 
   @Override
-  public boolean updateDepositDate(int id, LocalDate now) {
+  public boolean updateDepositDate(int id, LocalDateTime now) {
     try {
       PreparedStatement updateDepositDate =
           this.dalServices.getPreparedStatement(queryUpdateDepositDate);
-      updateDepositDate.setDate(1, Date.valueOf(now));
+      updateDepositDate.setString(1, now.format(formatter));
       updateDepositDate.setInt(2, id);
       return updateDepositDate.executeUpdate() == 1;
     } catch (Exception e) {

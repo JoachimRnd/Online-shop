@@ -107,6 +107,23 @@ const FurnitureUser = async (data) => {
   let page = document.querySelector("#page");
   page.innerHTML = furniturePage;
 
+  option = document.querySelector("#option");
+
+  // if option is not taken
+  if(getUserSessionData() != null){
+    if(!optionTaken){
+      option.innerHTML = validateOption;
+    }else{
+      option.innerHTML = cancelOption;
+    }
+
+  //Valider / Cancel meuble
+  let btnOption = document.querySelector("#btnOption");
+  btnOption.addEventListener("click",onClickOption);
+  }
+
+
+
   //Question => Mettre l'id dans l'url
   /*try {
     let id = 1;
