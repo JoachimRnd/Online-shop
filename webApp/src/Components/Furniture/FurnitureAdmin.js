@@ -102,18 +102,25 @@ const FurnitureAdmin = (f) => {
   btnSave.addEventListener("click", onSave);
   
 
-  let onSaleCondition = document.querySelector("#conditions");
-  console.log(onSaleCondition);
-  onSaleCondition.addEventListener("change",(e)=>{
-    console.log("change");
-    //Pouvoir modifier son prix
-    //TODO
-  
-    if(onSaleCondition == "en_vente"){
-      console.log("click sur en vente");
+  onFurniture();
+
+  let conditions = document.querySelector("#conditions");
+  if(conditions.value == "en_vente"){
+
+    onSale();
+  }
+  conditions.addEventListener("change",(e)=>{
+    if(conditions.value == "en_vente"){
+      onSale();
+    }else{
+      let price = document.querySelector("#prix");
+      //best solution -> removeAttribute but doesnt work (have to investigate)
+      price.innerHTML = `<input class="form-control" id="prix" type="text" placeholder=${furniture.sellingPrice} readonly/>`;
     }
     
   });
+
+
 
 
   //Question => Mettre l'id dans l'url
@@ -126,34 +133,53 @@ const FurnitureAdmin = (f) => {
   }*/
 
   
-  onFurniture(furniture);
 
 
 
 }
 
-const onFurniture = (data) => {
+const onFurniture = () => {
 
-  if (!data) return;
   let type = document.querySelector("#type");
-  type.innerHTML = `<input class="form-control" id="type" type="text" placeholder=${data.type.name} readonly />`;
+  type.innerHTML = `<input class="form-control" id="type" type="text" placeholder=${furniture.type.name} readonly />`;
   let prix = document.querySelector("#prix");
-  prix.innerHTML = `<input class="form-control" id="prix" type="text" placeholder=${data.sellingPrice} readonly />`;
+  prix.innerHTML = `<input class="form-control" id="inputPrix" type="text" placeholder=${furniture.sellingPrice} readonly />`;
   let furnitureDescription = document.querySelector("#furnitureDescription");
-  furnitureDescription.innerHTML = `<textarea class="form-control" id="furnituredescription" rows="6" readonly>${data.description}</textarea>`;
+  furnitureDescription.innerHTML = `<textarea class="form-control" id="furnituredescription" rows="6" readonly>${furniture.description}</textarea>`;
   
 }
+
+const onSale = () => {
+  let price = document.querySelector("#prix");
+  //best solution -> removeAttribute but doesnt work (have to investigate)
+  price.innerHTML = `<input class="form-control" id="inputPrix" type="text" placeholder=${furniture.sellingPrice} />`;
+}
+
 
 const onSave = async() => {
-  let conditionChoice = document.querySelector("#conditions");
+    let conditionChoice = document.querySelector("#conditions");
     conditionChoice = conditionChoice.value;
-    let user = getUserSessionData();
 
-    let struct = {
-      struct: conditionChoice
-    };
-  
-    await callAPIWithoutJSONResponse(API_BASE_URL + furniture.id, "PUT", user.token, struct);
+    let user = getUserSessionData();
+    let struct;
+
+    if(conditionChoice == "en_vente"){
+      let p = document.querySelector("#inputPrix");
+      p = p.value;
+      struct = {
+        condition: conditionChoice,
+        price: p
+      }
+      furniture.sellingPrice = p;
+    }else if(conditionChoice != furniture.condition){
+      struct = {
+        condition: conditionChoice
+      };
+    } 
+
+    if(conditionChoice != furniture.condition || furniture.condition == "en_vente"){
+      await callAPIWithoutJSONResponse(API_BASE_URL + furniture.id, "PUT", user.token, struct);
+    }
 }
 
 

@@ -60,12 +60,21 @@ public class Furniture {
   @AuthorizeAdmin
   public Response modifyStatus(@PathParam("id") int id, JsonNode json) {
     if (!json.hasNonNull("condition") || json.get("condition").asText().isEmpty()) {
-      return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")
+      return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir le champ (Etat)")
           .type(MediaType.TEXT_PLAIN).build();
     }
 
+    double price = -1;
+    if (json.get("condition").asText().equals(ValueLiaison.ON_SALE_STRING)) {
+      if (!json.hasNonNull("price")) {
+        return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir le champ (Prix)")
+            .type(MediaType.TEXT_PLAIN).build();
+      }
+      price = json.get("price").asDouble();
+    }
 
-    if (furnitureUCC.modifyCondition(id, json.get("condition").asText())) {
+
+    if (furnitureUCC.modifyCondition(id, json.get("condition").asText(), price)) {
       return Response.ok().build();
     } else {
       return Response.serverError().build();

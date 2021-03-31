@@ -21,7 +21,6 @@ const FurnitureListPage = async () => {
 };
 
 const onFurnitureList = (data) => {
-  console.log(data);
   if (!data) return;
   furniturePage += `
   <div id="tablefurnitures" class="table-responsive mt-3">

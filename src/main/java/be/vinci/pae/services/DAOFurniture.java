@@ -24,4 +24,6 @@ public interface DAOFurniture {
 
   boolean updateDepositDate(int id, LocalDateTime now);
 
+  boolean updateSellingPrice(int id, Double price);
+
 }
