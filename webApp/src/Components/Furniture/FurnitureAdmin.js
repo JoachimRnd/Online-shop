@@ -1,7 +1,7 @@
 import { RedirectUrl } from "../Router.js";
 import Navbar from "../Navbar.js";
 import { getUserSessionData } from "../../utils/session.js";
-import { callAPI } from "../../utils/api.js";
+import { callAPIWithoutJSONResponse } from "../../utils/api.js";
 import PrintError from "../PrintError.js"
 import img1 from "./1.jpg";
 import img2 from "./2.jpg";
@@ -75,13 +75,16 @@ let furniturePage = `
     <div class="input-group-prepend">
       <label class="input-group-text" for="inputGroupSelect01">Etat du meuble</label>
     </div>
-    <select class="custom-select" id="inputGroupSelect01">
-      <option id="en_restauration">En restauration</option>
-      <option id="en_magasin">En magasin</option>
-      <option id="en_vente" >En vente</option>
-      <option id="retire_de_vente">Retiré de la vente</option>
+    <select class="custom-select" id="conditions">
+      <option id="en_restauration" value="en_restauration">En restauration</option>
+      <option id="en_magasin" value="en_magasin">En magasin</option>
+      <option id="en_vente" value="en_vente">En vente</option>
+      <option id="retire_de_vente" value="retire_de_vente">Retiré de la vente</option>
     </select>
   </div>
+
+  <button class="btn btn-success" id="btnSave" type="submit">Enregistrer</button>
+
 
 </div>
 `;
@@ -90,12 +93,27 @@ const FurnitureAdmin = (furniture) => {
   let page = document.querySelector("#page");
   page.innerHTML = furniturePage;
 
+  
 
-  //data.condition;
-  console.log(furniture);
-  console.log(furniture.condition);
+
+
   let optionCondition = document.querySelector("#"+furniture.condition);
   optionCondition.setAttribute("selected","");
+
+  let btnSave = document.querySelector("#btnSave");
+  btnSave.addEventListener("click",onSave(furniture));
+
+  let onSaleCondition = document.querySelector("#conditions");
+  console.log(onSaleCondition);
+  onSaleCondition.addEventListener("select",(e)=>{
+    //Pouvoir modifier son prix
+    //TODO
+
+    console.log("click sur en vente");
+
+  })
+  
+
 
 
   //Question => Mettre l'id dans l'url
@@ -124,6 +142,20 @@ const onFurniture = (data) => {
   let furnitureDescription = document.querySelector("#furnitureDescription");
   furnitureDescription.innerHTML = `<textarea class="form-control" id="furnituredescription" rows="6" readonly>${data.description}</textarea>`;
   
+}
+
+const onSave = async(data) => {
+  if(!data)return;  
+  let conditionChoice = document.querySelector("#conditions");
+  conditionChoice = conditionChoice.value;
+  console.log(conditionChoice);
+  //CALL API
+  let user = getUserSessionData();
+
+  // reste à rajouter un url en plus? + voir cmment passer plusieurs params
+
+  await callAPIWithoutJSONResponse(API_BASE_URL + data.id + conditionChoice, "PUT", user.token);
+
 }
 
 
