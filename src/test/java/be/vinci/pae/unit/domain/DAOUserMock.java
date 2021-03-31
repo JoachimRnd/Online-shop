@@ -1,11 +1,10 @@
 package be.vinci.pae.unit.domain;
 
-import be.vinci.pae.domain.User;
+import java.util.List;
 import be.vinci.pae.domain.UserDTO;
 import be.vinci.pae.domain.UserFactory;
 import be.vinci.pae.services.DAOUser;
 import jakarta.inject.Inject;
-import java.util.List;
 
 public class DAOUserMock implements DAOUser {
 
@@ -14,12 +13,6 @@ public class DAOUserMock implements DAOUser {
 
   @Override
   public UserDTO getUserByUsername(String username) {
-    if (username.equals("login")) {
-      User user = (User) userFactory.getUser();
-      user.setUsername("login");
-      user.setPassword(user.hashPassword("password"));
-      return user;
-    }
     return null;
   }
 
