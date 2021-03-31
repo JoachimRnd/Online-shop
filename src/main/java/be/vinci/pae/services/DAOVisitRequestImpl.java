@@ -8,6 +8,7 @@ import be.vinci.pae.utils.FatalException;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class DAOVisitRequestImpl implements DAOVisitRequest {
 
@@ -86,9 +87,7 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
         }
         return visitRequest;
       }
-    } catch (
-
-        Exception e) {
+    } catch (SQLException e) {
       e.printStackTrace();
       throw new FatalException("Data error : selectTypeById");
     }
