@@ -7,6 +7,8 @@ import be.vinci.pae.services.DAOFurniture;
 import be.vinci.pae.services.DAOType;
 import be.vinci.pae.services.DAOUser;
 import be.vinci.pae.services.DalServices;
+import be.vinci.pae.utils.BusinessException;
+import be.vinci.pae.utils.ValueLiaison;
 import jakarta.inject.Inject;
 
 public class FurnitureUCCImpl implements FurnitureUCC {
@@ -45,6 +47,32 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     newFurniture.setId(id);
     this.dalServices.closeConnection();
     return newFurniture;
+  }
+
+  public boolean modifyCondition(int id, String condition) {
+
+    this.dalServices.startTransaction();
+    FurnitureDTO furniture = this.daoFurniture.selectFurnitureById(id);
+    if (furniture == null) {
+      throw new BusinessException("Le meuble n'existe pas");
+    }
+    if (ValueLiaison.StringToIntFurniture(condition.toLowerCase()) == -1) {
+      throw new BusinessException("L'état du meuble n'existe pas");
+    }
+
+    switch (condition.toLowerCase()) {
+      case "en_vente":
+        this.daoFurniture.updateSellingDate(furniture.getId(), LocalDate.now());
+        this.daoFurniture.updateCondition(furniture.getId(), condition);
+      case "en_magasin":
+        this.daoFurniture.updateDepositDate(furniture.getId(), LocalDate.now());
+        this.daoFurniture.updateCondition(furniture.getId(), condition);
+      case "en_restauration":
+        this.daoFurniture.updateCondition(furniture.getId(), condition);
+    }
+
+    this.dalServices.closeConnection();
+    return true;
   }
 
   @Override

@@ -14,7 +14,8 @@ public class ValueLiaison {
   public static final int CANCELED_OPTION_INT = 0;
   public static final int FINISHED_OPTION_INT = 2;
   public static final int RUNNING_OPTION_INT = 1;
-
+  public static final String[] CONDITION_FURNITURE = {"propose", "ne_convient_pas", "achete",
+      "emporte_par_patron", "en_restauration", "en_magasin", "en_vente"};
 
   /**
    * Change the user type form string into a integer.
@@ -159,4 +160,17 @@ public class ValueLiaison {
         return false;
     }
   }
+
+  public static String intToStringFurniture(int condition) {
+    return CONDITION_FURNITURE[condition];
+  }
+
+  public static int StringToIntFurniture(String condition) {
+    for (int i = 0; i < CONDITION_FURNITURE.length; i++) {
+      if (CONDITION_FURNITURE[i].equals(condition))
+        return i;
+    }
+    return -1;
+  }
+
 }
