@@ -58,15 +58,16 @@ public class Furniture {
   @Path("/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public Response modifyStatus(JsonNode json) {
-    if (!json.hasNonNull("id") || !json.hasNonNull("condition") || json.get("id").asText().isEmpty()
-        || json.get("condition").asText().isEmpty()) {
+  public Response modifyStatus(@PathParam("id") int id, JsonNode json) {
+    System.out.println("ID : " + id);
+    System.out.println(json.get("condition").asText());
+    if (!json.hasNonNull("condition") || json.get("condition").asText().isEmpty()) {
       return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")
           .type(MediaType.TEXT_PLAIN).build();
     }
 
 
-    if (furnitureUCC.modifyCondition(json.get("id").asInt(), json.get("condition").asText())) {
+    if (furnitureUCC.modifyCondition(id, json.get("condition").asText())) {
       return Response.ok().build();
     } else {
       return Response.serverError().build();
