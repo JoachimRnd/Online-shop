@@ -14,7 +14,6 @@ public class ValueLiaison {
   public static final int CANCELED_OPTION_INT = 0;
   public static final int FINISHED_OPTION_INT = 2;
   public static final int RUNNING_OPTION_INT = 1;
-
   public static final int IN_RESTORATION = 0;
   public static final int IN_STORE = 1;
   public static final int ON_SALE = 2;
@@ -23,8 +22,6 @@ public class ValueLiaison {
   public static final String IN_RESTORATION_STRING = "en_restauration";
   public static final String IN_STORE_STRING = "en_magasin";
   public static final String REMOVED_FROM_SALE_STRING = "retire_de_vente";
-
-
 
   /**
    * Change the user type form string into a integer.

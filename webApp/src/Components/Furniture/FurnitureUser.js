@@ -117,6 +117,7 @@ let cancelOption = `<p>Option sur ce meuble</p>
 </div>`;
 
 
+
 const FurnitureUser = (furniture) => {
   let page = document.querySelector("#page");
   page.innerHTML = furniturePage;

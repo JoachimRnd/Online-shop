@@ -5,8 +5,7 @@ import { callAPIWithoutJSONResponse } from "../../utils/api.js";
 import PrintError from "../PrintError.js"
 import img1 from "./1.jpg";
 import img2 from "./2.jpg";
-import { data } from "jquery";
-const API_BASE_URL = "/api/admin/";
+const API_BASE_URL = "/api/furniture/";
 const IMAGES = "../../../../images";
 let option;
 
@@ -100,7 +99,21 @@ const FurnitureAdmin = (furniture) => {
   optionCondition.setAttribute("selected","");
 
   let btnSave = document.querySelector("#btnSave");
-  btnSave.addEventListener("click",onSave(furniture));
+  btnSave.addEventListener("click", async () => {
+    let conditionChoice = document.querySelector("#conditions");
+    conditionChoice = conditionChoice.value;
+    console.log(conditionChoice);
+    //CALL API
+    let user = getUserSessionData();
+  
+    // reste à rajouter un url en plus? + voir cmment passer plusieurs params
+
+    let condition = {
+      condition: conditionChoice
+    };
+  
+    await callAPIWithoutJSONResponse(API_BASE_URL + furniture.id, "PUT", user.token, condition);
+  });
 
   let onSaleCondition = document.querySelector("#conditions");
   console.log(onSaleCondition);
@@ -152,7 +165,7 @@ const onSave = async(data) => {
 
   // reste à rajouter un url en plus? + voir cmment passer plusieurs params
 
-  await callAPIWithoutJSONResponse(API_BASE_URL + data.id + conditionChoice, "PUT", user.token);
+  await callAPIWithoutJSONResponse(API_BASE_URL + data.id, "PUT", user.token, conditionChoice);
 
 }
 
