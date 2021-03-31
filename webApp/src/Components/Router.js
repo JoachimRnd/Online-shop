@@ -4,6 +4,7 @@ import RegisterPage from "./RegisterPage.js";
 import LogoutComponent from "./LogoutComponent.js";
 import ErrorPage from "./ErrorPage.js";
 import FurnitureUser from "./Furniture/FurnitureUser.js";
+import FurnitureAdmin from "./Furniture/FurnitureAdmin";
 import FurnitureListPage from "./Furniture/FurnitureListPage";
 import AdministrationPage from "./Admin/AdministrationPage.js";
 import ValidationPage from "./Admin/ValidationPage.js";
@@ -19,7 +20,8 @@ const routes = {
   "/furniture": FurnitureUser,
   "/search": FurnitureListPage,
   "/admin": AdministrationPage,
-  "/admin/validation": ValidationPage
+  "/admin/validation": ValidationPage,
+  "/furnitureAdmin": FurnitureAdmin
 };
 
 let navBar = document.querySelector("#navBar");

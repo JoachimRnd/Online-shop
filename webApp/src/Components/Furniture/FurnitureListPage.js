@@ -36,7 +36,7 @@ const onFurnitureList = (data) => {
 
     data.forEach((element) => {
       furniturePage += `<tr>
-                  <td><a id="furniture${element.id}" href="#" target="_blank">${element.description}</a></td>
+                  <td><a id="furniture${element.id}" href="" target="_blank">${element.description}</a></td>
                   <td>${element.type.name}</td>
               </tr>`
               ;
@@ -53,7 +53,11 @@ const onFurnitureList = (data) => {
     let furnitureElement = document.getElementById("furniture"+element.id);
     furnitureElement.addEventListener("click", (e) => {
       e.preventDefault();
-      RedirectUrl("/furniture",element);
+      if(getUserSessionData() == null || getUserSessionData().user.userType != "admin"){
+        RedirectUrl("/furniture",element);
+      }else{
+        RedirectUrl("/furnitureAdmin",element);
+      }
     });
   });
 };
