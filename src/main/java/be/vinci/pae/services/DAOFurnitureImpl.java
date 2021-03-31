@@ -1,9 +1,5 @@
 package be.vinci.pae.services;
 
-import be.vinci.pae.domain.FurnitureDTO;
-import be.vinci.pae.domain.FurnitureFactory;
-import be.vinci.pae.utils.FatalException;
-import jakarta.inject.Inject;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,6 +7,11 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import be.vinci.pae.domain.FurnitureDTO;
+import be.vinci.pae.domain.FurnitureFactory;
+import be.vinci.pae.utils.FatalException;
+import be.vinci.pae.utils.ValueLiaison;
+import jakarta.inject.Inject;
 
 public class DAOFurnitureImpl implements DAOFurniture {
 
@@ -144,7 +145,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
       furniture.setDeliveryDate(rs.getDate("delivery_date"));
       furniture.setWithdrawalDateToCustomer(rs.getDate("withdrawal_date_to_customer"));
       furniture.setBuyer(this.daoUser.getUserById(rs.getInt("buyer")));
-      furniture.setCondition(String.valueOf(rs.getInt("condition")));
+      furniture.setCondition(ValueLiaison.intToStringCondition(rs.getInt("condition")));
       furniture.setUnregisteredBuyerEmail(rs.getString("unregistered_buyer_email"));
     }
     return furniture;

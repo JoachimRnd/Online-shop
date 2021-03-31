@@ -15,6 +15,16 @@ public class ValueLiaison {
   public static final int FINISHED_OPTION_INT = 2;
   public static final int RUNNING_OPTION_INT = 1;
 
+  public static final int IN_RESTORATION = 0;
+  public static final int IN_STORE = 1;
+  public static final int ON_SALE = 2;
+  public static final int REMOVED_FROM_SALE = 3;
+  public static final String ON_SALE_STRING = "en_vente";
+  public static final String IN_RESTORATION_STRING = "en_restauration";
+  public static final String IN_STORE_STRING = "en_magasin";
+  public static final String REMOVED_FROM_SALE_STRING = "retire_de_vente";
+
+
 
   /**
    * Change the user type form string into a integer.
@@ -159,4 +169,26 @@ public class ValueLiaison {
         return false;
     }
   }
+
+  /**
+   * Change the condition form integer into a string.
+   *
+   * @param condition condition of user as integer
+   * @return string of the user condition
+   */
+  public static String intToStringCondition(int condition) {
+    switch (condition) {
+      case IN_RESTORATION:
+        return IN_RESTORATION_STRING;
+      case IN_STORE:
+        return IN_STORE_STRING;
+      case ON_SALE:
+        return ON_SALE_STRING;
+      case REMOVED_FROM_SALE:
+        return REMOVED_FROM_SALE_STRING;
+      default:
+        throw new BusinessException("L'état n'existe pas");
+    }
+  }
+
 }

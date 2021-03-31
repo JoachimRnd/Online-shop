@@ -83,7 +83,7 @@ let validateOption = `<p>Mettre une option sur ce meuble</p>
       <div class="col-2">
           <select class="custom-select custom-select-sm" id="dureeOption">
             <option value="0">0</option>
-            <option value="1">1</option>
+            <option selected value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
             <option value="4">4</option>
@@ -103,7 +103,7 @@ let cancelOption = `<p>Option sur ce meuble</p>
       <div class="col-2">
           <select class="custom-select custom-select-sm>
             <option value="0">0</option>
-            <option value="1">1</option>
+            <option selected value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
             <option value="4">4</option>
@@ -117,7 +117,7 @@ let cancelOption = `<p>Option sur ce meuble</p>
 </div>`;
 
 
-const FurnitureUser = async() => {
+const FurnitureUser = (furniture) => {
   let page = document.querySelector("#page");
   page.innerHTML = furniturePage;
 
@@ -138,27 +138,17 @@ const FurnitureUser = async() => {
 
 
 
-  //Recuperer id du meuble dans l'url
-  let id = 1;
-
-  try {
+  //Question => Mettre l'id dans l'url
+  /*try {
     const furniture = await callAPI(API_BASE_URL + id , "GET",undefined);
     onFurniture(furniture);
   } catch (err) {
     console.error("FurnitureUser::onFurniture", err);
     PrintError(err);
-  }
+  }*/
 
-  /*var data = {
-    type : "test Type",
-    prix : "50",
-    description : "Descriptionqsd fqsdf qsdfqsdf"
-  }
-  onFurniture(data);*/
-
-
-  //CallApi pour avoir un meuble et ses infos
   
+  onFurniture(furniture);
 
 
 

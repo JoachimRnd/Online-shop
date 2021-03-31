@@ -5,7 +5,8 @@ import { callAPI } from "../../utils/api.js";
 import PrintError from "../PrintError.js"
 import img1 from "./1.jpg";
 import img2 from "./2.jpg";
-const API_BASE_URL = "/api/furniture/";
+import { data } from "jquery";
+const API_BASE_URL = "/api/admin/";
 const IMAGES = "../../../../images";
 let option;
 
@@ -70,95 +71,44 @@ let furniturePage = `
     </div>
   </div>
   
-  <div id=option></div>
+  <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <label class="input-group-text" for="inputGroupSelect01">Etat du meuble</label>
+    </div>
+    <select class="custom-select" id="inputGroupSelect01">
+      <option id="en_restauration">En restauration</option>
+      <option id="en_magasin">En magasin</option>
+      <option id="en_vente" >En vente</option>
+      <option id="retire_de_vente">Retiré de la vente</option>
+    </select>
+  </div>
 
 </div>
 `;
 
-let validateOption = `<p>Mettre une option sur ce meuble</p>
-<div class="row">
-  <div class="col-12">
-    <div class="row">
-      Délai de l'option (max. 5 jours cumulés) :
-      <div class="col-2">
-          <select class="custom-select custom-select-sm>
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-          </select> 
-      </div>    
-      <button class="btn btn-success" id="btnOption" type="submit">Valider</button>
-    </div>
-  </div>
-</div>`;
-
-let cancelOption = `<p>Option sur ce meuble</p>
-<div class="row">
-  <div class="col-12">
-    <div class="row">
-      Délai de l'option :
-      <div class="col-2">
-          <select class="custom-select custom-select-sm>
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-          </select> 
-      </div>
-      Délai cumulé (max 5. jours) : 2   
-      <button class="btn btn-danger" id="btnOption" type="submit">Annuler</button>
-    </div>
-  </div>
-</div>`;
-
-
-const FurnitureAdmin = async() => {
+const FurnitureAdmin = (furniture) => {
   let page = document.querySelector("#page");
   page.innerHTML = furniturePage;
 
-  option = document.querySelector("#option");
 
-  // if option is not taken
-  if(getUserSessionData() != null){
-    if(!optionTaken){
-      option.innerHTML = validateOption;
-    }else{
-      option.innerHTML = cancelOption;
-    }
-
-  //Valider / Cancel meuble
-  let btnOption = document.querySelector("#btnOption");
-  btnOption.addEventListener("click",onClickOption);
-  }
+  //data.condition;
+  console.log(furniture);
+  console.log(furniture.condition);
+  let optionCondition = document.querySelector("#"+furniture.condition);
+  optionCondition.setAttribute("selected","");
 
 
-
-  //Recuperer id du meuble dans l'url
-  let id = 1;
-
-  try {
+  //Question => Mettre l'id dans l'url
+  /*try {
     const furniture = await callAPI(API_BASE_URL + id , "GET",undefined);
     onFurniture(furniture);
   } catch (err) {
     console.error("FurnitureUser::onFurniture", err);
     PrintError(err);
-  }
+  }*/
 
-  /*var data = {
-    type : "test Type",
-    prix : "50",
-    description : "Descriptionqsd fqsdf qsdfqsdf"
-  }
-  onFurniture(data);*/
-
-
-  //CallApi pour avoir un meuble et ses infos
   
+  onFurniture(furniture);
 
 
 
@@ -173,23 +123,7 @@ const onFurniture = (data) => {
   prix.innerHTML = `<input class="form-control" id="prix" type="text" placeholder=${data.sellingPrice} readonly />`;
   let furnitureDescription = document.querySelector("#furnitureDescription");
   furnitureDescription.innerHTML = `<textarea class="form-control" id="furnituredescription" rows="6" readonly>${data.description}</textarea>`;
-
-}
-
-
-const onClickOption = (e) => {
-  e.preventDefault();
-  if(optionTaken){
-    console.log("cancel Option");
-    option.innerHTML = validateOption;
-    //Il faut cancel l'option
-    optionTaken = !optionTaken;
-  }else{
-    console.log("take option");
-    option.innerHTML = cancelOption;
-    //Il faut prendre l'option
-    optionTaken = !optionTaken;
-  }
+  
 }
 
 

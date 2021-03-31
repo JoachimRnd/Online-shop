@@ -64,4 +64,6 @@ public class Administration {
   public List<UserDTO> listUnvalidatedUser() {
     return Json.filterPublicJsonViewAsList(userUCC.getUnvalidatedUsers(), UserDTO.class);
   }
+
+
 }

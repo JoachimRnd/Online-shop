@@ -34,19 +34,32 @@ const onFurnitureList = (data) => {
       </thead>
       <tbody>`;
 
-  data.forEach((element) => {
-    furniturePage += `<tr>
-                <td>${element.description}</td>
-                <td><a href="${element.link}" target="_blank">${element.type.name}</a></td>
-            </tr>
-            `;
-  });
+    data.forEach((element) => {
+      furniturePage += `<tr>
+                  <td><a id="furniture${element.id}" href="" target="_blank">${element.description}</a></td>
+                  <td>${element.type.name}</td>
+              </tr>`
+              ;
+    });
 
   furniturePage += `</tbody>
   </table>
   </div>`;
 
+
   page.innerHTML = furniturePage;
+
+  data.forEach((element) => {
+    let furnitureElement = document.getElementById("furniture"+element.id);
+    furnitureElement.addEventListener("click", (e) => {
+      e.preventDefault();
+      if(getUserSessionData() == null || getUserSessionData().user.userType != "admin"){
+        RedirectUrl("/furniture",element);
+      }else{
+        RedirectUrl("/furnitureAdmin",element);
+      }
+    });
+  });
 };
 
 
