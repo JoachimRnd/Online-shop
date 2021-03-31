@@ -8,7 +8,6 @@ import be.vinci.pae.services.DAOType;
 import be.vinci.pae.services.DAOUser;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.utils.BusinessException;
-import be.vinci.pae.utils.ValueLiaison;
 import jakarta.inject.Inject;
 
 public class FurnitureUCCImpl implements FurnitureUCC {
@@ -55,9 +54,6 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     FurnitureDTO furniture = this.daoFurniture.selectFurnitureById(id);
     if (furniture == null) {
       throw new BusinessException("Le meuble n'existe pas");
-    }
-    if (ValueLiaison.StringToIntFurniture(condition.toLowerCase()) == -1) {
-      throw new BusinessException("L'état du meuble n'existe pas");
     }
 
     switch (condition.toLowerCase()) {

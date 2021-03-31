@@ -1,7 +1,7 @@
 import { RedirectUrl } from "../Router.js";
 import Navbar from "../Navbar.js";
 import { getUserSessionData } from "../../utils/session.js";
-import { callAPI } from "../../utils/api.js";
+import {callAPI, callAPIWithoutJSONResponse} from "../../utils/api.js";
 import PrintError from "../PrintError.js"
 import img1 from "./1.jpg";
 import img2 from "./2.jpg";
@@ -81,9 +81,9 @@ let validateOption = `<p>Mettre une option sur ce meuble</p>
     <div class="row">
       Délai de l'option (max. 5 jours cumulés) :
       <div class="col-2">
-          <select class="custom-select custom-select-sm>
+          <select class="custom-select custom-select-sm" id="dureeOption">
             <option value="0">0</option>
-            <option value="1">1</option>
+            <option selected value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
             <option value="4">4</option>
@@ -103,7 +103,7 @@ let cancelOption = `<p>Option sur ce meuble</p>
       <div class="col-2">
           <select class="custom-select custom-select-sm>
             <option value="0">0</option>
-            <option value="1">1</option>
+            <option selected value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
             <option value="4">4</option>
@@ -168,18 +168,33 @@ const onFurniture = (data) => {
 }
 
 
-const onClickOption = (e) => {
+const onClickOption = async (e) => {
   e.preventDefault();
-  if(optionTaken){
-    console.log("cancel Option");
-    option.innerHTML = validateOption;
-    //Il faut cancel l'option
-    optionTaken = !optionTaken;
-  }else{
-    console.log("take option");
-    option.innerHTML = cancelOption;
-    //Il faut prendre l'option
-    optionTaken = !optionTaken;
+  let id = 1;
+  let user = getUserSessionData();
+  if (optionTaken) {
+    try {
+      let apiOption = await callAPIWithoutJSONResponse(API_BASE_URL + id + "/cancelOption", "POST", user.token);
+      console.log("cancel Option");
+      option.innerHTML = validateOption;
+      optionTaken = !optionTaken;
+    } catch (e) {
+      //Erreur
+    }
+  } else {
+    try {
+      let optionChoice = document.getElementById("dureeOption");
+      optionChoice = optionChoice.value;
+      console.log("avant appel API");
+      let apiOption = await callAPIWithoutJSONResponse(API_BASE_URL + id + "/addOption/" + optionChoice, "POST", user.token);
+      console.log("take option");
+      option.innerHTML = cancelOption;
+      optionTaken = !optionTaken;
+    } catch (e) {
+      console.log("erreur");
+      console.log(e);
+      //Erreur
+    }
   }
 }
 

@@ -104,7 +104,7 @@ CREATE TABLE project.furniture (
 );
 
 
---INSERT INTO project.furniture VALUES(DEFAULT,'description test',24,1,20.5,NULL,45.5,40.9,NULL,NULL,NULL,NULL,1,NULL,NULL);
+INSERT INTO project.furniture VALUES(DEFAULT,'description test avec condition les autres n en n ont dpas (normal bug) pour page furniture admin',24,1,20.5,NULL,45.5,40.9,NULL,NULL,NULL,NULL,1,3,NULL);
 
 CREATE TABLE project.pictures (
 	picture_id SERIAL PRIMARY KEY,

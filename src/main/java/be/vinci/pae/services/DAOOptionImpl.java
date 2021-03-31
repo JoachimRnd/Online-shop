@@ -5,7 +5,6 @@ import be.vinci.pae.domain.OptionFactory;
 import be.vinci.pae.utils.FatalException;
 import be.vinci.pae.utils.ValueLiaison;
 import jakarta.inject.Inject;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,6 +19,7 @@ public class DAOOptionImpl implements DAOOption {
   private String querySelectOptionsOfBuyer;
   private String querySelectOptionsOfBuyerFromFurniture;
   private String queryAddOption;
+  private String queryChangeStatusOption;
 
   @Inject
   private OptionFactory optionFactory;
@@ -34,19 +34,20 @@ public class DAOOptionImpl implements DAOOption {
    * constructor of DAOOptionImpl. contains queries.
    */
   public DAOOptionImpl() {
-    querySelectAllOptions = "SELECT o.option_id, o.buyer, o.furniture, o.duration, o.date"
-        + "o.status FROM project.options o;";
-    querySelectOptionById = "SELECT o.option_id, o.buyer, o.furniture, o.duration, o.date"
-        + "o.status FROM project.options o WHERE o.option_id = ?;";
-    querySelectOptionsOfFurniture = "SELECT o.option_id, o.buyer, o.furniture, o.duration, o.date"
-        + "o.status FROM project.options o WHERE o.furniture = ?;";
-    querySelectOptionsOfBuyer = "SELECT o.option_id, o.buyer, o.furniture, o.duration, o.date"
-        + "o.status FROM project.options o WHERE o.buyer = ?;";
+    querySelectAllOptions = "SELECT option_id, buyer, furniture, duration, date, "
+        + "status FROM project.options ";
+    querySelectOptionById = "SELECT option_id, buyer, furniture, duration, date, "
+        + "status FROM project.options WHERE option_id = ?";
+    querySelectOptionsOfFurniture = "SELECT option_id, buyer, furniture, duration, date, "
+        + "status FROM project.options WHERE furniture = ?";
+    querySelectOptionsOfBuyer = "SELECT option_id, buyer, furniture, duration, date, "
+        + "status FROM project.options WHERE buyer = ?";
     querySelectOptionsOfBuyerFromFurniture =
-        "SELECT o.option_id, o.buyer, o.furniture, o.duration, o.date"
-            + "o.status FROM project.options o WHERE o.buyer = ? AND o.furniture = ?;";
+        "SELECT option_id, buyer, furniture, duration, date, "
+            + "status FROM project.options WHERE buyer = ? AND furniture = ?";
     queryAddOption = "INSERT INTO project.options (option_id, buyer, furniture, duration, date, "
-        + "status) VALUES (DEFAULT, ?, ?, ?, ?, ?);";
+        + "status) VALUES (DEFAULT, ?, ?, ?, ?, ?)";
+    queryChangeStatusOption = "UPDATE project.options SET status = ? WHERE option_id = ?";
   }
 
   @Override
@@ -77,7 +78,7 @@ public class DAOOptionImpl implements DAOOption {
       addOption.setInt(1, option.getBuyer().getId());
       addOption.setInt(2, option.getFurniture().getId());
       addOption.setInt(3, option.getDuration());
-      addOption.setDate(4, (Date) option.getDate());
+      addOption.setDate(4, option.getDate());
       addOption.setInt(5, ValueLiaison.stringToIntOption(option.getStatus()));
       addOption.executeUpdate();
       try (ResultSet rs = addOption.getGeneratedKeys()) {
@@ -168,6 +169,39 @@ public class DAOOptionImpl implements DAOOption {
       e.printStackTrace();
       throw new FatalException("Database error : selectOptionsOfBuyerFromFurniture");
     }
+  }
+
+  @Override
+  public boolean finishOption(int id) {
+    try {
+      PreparedStatement finishOption = dalBackendServices
+          .getPreparedStatement(queryChangeStatusOption);
+      finishOption.setInt(1, ValueLiaison.FINISHED_OPTION_INT);
+      finishOption.setInt(2, id);
+      finishOption.executeUpdate();
+      return true;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
+    }
+  }
+
+  @Override
+  public boolean cancelOption(OptionDTO optionToCancel) {
+    try {
+      PreparedStatement finishOption = dalBackendServices
+          .getPreparedStatement(queryChangeStatusOption);
+      finishOption.setInt(1, ValueLiaison.CANCELED_OPTION_INT);
+      finishOption.setInt(2, optionToCancel.getId());
+      int affectedRows = finishOption.executeUpdate();
+      if (affectedRows == 1) {
+        return true;
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException("Database error : cancelOption");
+    }
+    return false;
   }
 
   private OptionDTO createOption(ResultSet rs) throws SQLException {

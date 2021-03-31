@@ -145,7 +145,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
       furniture.setDeliveryDate(rs.getDate("delivery_date"));
       furniture.setWithdrawalDateToCustomer(rs.getDate("withdrawal_date_to_customer"));
       furniture.setBuyer(this.daoUser.getUserById(rs.getInt("buyer")));
-      furniture.setCondition(ValueLiaison.intToStringFurniture(rs.getInt("condition")));
+      furniture.setCondition(ValueLiaison.intToStringCondition(rs.getInt("condition")));
       furniture.setUnregisteredBuyerEmail(rs.getString("unregistered_buyer_email"));
     }
     return furniture;

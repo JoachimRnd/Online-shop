@@ -1,12 +1,17 @@
 package be.vinci.pae.utils;
 
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import be.vinci.pae.domain.AddressDTO;
 import be.vinci.pae.domain.AddressFactory;
 import be.vinci.pae.domain.AddressFactoryImpl;
+import be.vinci.pae.domain.AddressImpl;
 import be.vinci.pae.domain.FurnitureFactory;
 import be.vinci.pae.domain.FurnitureFactoryImpl;
 import be.vinci.pae.domain.FurnitureUCC;
 import be.vinci.pae.domain.FurnitureUCCImpl;
+import be.vinci.pae.domain.OptionFactory;
+import be.vinci.pae.domain.OptionFactoryImpl;
+import be.vinci.pae.domain.OptionUCC;
+import be.vinci.pae.domain.OptionUCCImpl;
 import be.vinci.pae.domain.PictureFactory;
 import be.vinci.pae.domain.PictureFactoryImpl;
 import be.vinci.pae.domain.PictureUCC;
@@ -25,6 +30,8 @@ import be.vinci.pae.domain.VisitRequestUCC;
 import be.vinci.pae.domain.VisitRequestUCCImpl;
 import be.vinci.pae.services.DAOFurniture;
 import be.vinci.pae.services.DAOFurnitureImpl;
+import be.vinci.pae.services.DAOOption;
+import be.vinci.pae.services.DAOOptionImpl;
 import be.vinci.pae.services.DAOPicture;
 import be.vinci.pae.services.DAOPictureImpl;
 import be.vinci.pae.services.DAOType;
@@ -38,6 +45,7 @@ import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.DalServicesImpl;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.ext.Provider;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 @Provider
 public class ApplicationBinder extends AbstractBinder {
@@ -56,6 +64,7 @@ public class ApplicationBinder extends AbstractBinder {
 
     // ADDRESS
     bind(AddressFactoryImpl.class).to(AddressFactory.class).in(Singleton.class);
+    bind(AddressImpl.class).to(AddressDTO.class).in(Singleton.class);
 
     // VISIT REQUEST
     bind(VisitRequestFactoryImpl.class).to(VisitRequestFactory.class).in(Singleton.class);
@@ -75,5 +84,10 @@ public class ApplicationBinder extends AbstractBinder {
     // DALSERVICES
     bind(DalServicesImpl.class).to(DalServices.class).in(Singleton.class);
     bind(DalServicesImpl.class).to(DalBackendServices.class).in(Singleton.class);
+
+    // OPTION
+    bind(OptionFactoryImpl.class).to(OptionFactory.class).in(Singleton.class);
+    bind(OptionUCCImpl.class).to(OptionUCC.class).in(Singleton.class);
+    bind(DAOOptionImpl.class).to(DAOOption.class).in(Singleton.class);
   }
 }
