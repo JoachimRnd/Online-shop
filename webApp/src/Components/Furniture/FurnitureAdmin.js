@@ -11,7 +11,7 @@ let option;
 
 let optionTaken = false;
 
-let furniturePage = `
+let furnitureAdmin = `
 <h4 id="pageTitle">Furniture User</h4>
 <div class="row">
   <div class="col-6">
@@ -117,7 +117,7 @@ let cancelOption = `<p>Option sur ce meuble</p>
 </div>`;
 
 
-const FurnitureAdmin = async() => {
+const FurnitureAdmin = (furniture) => {
   let page = document.querySelector("#page");
   page.innerHTML = furniturePage;
 
@@ -138,27 +138,17 @@ const FurnitureAdmin = async() => {
 
 
 
-  //Recuperer id du meuble dans l'url
-  let id = 1;
-
-  try {
+  //Question => Mettre l'id dans l'url
+  /*try {
     const furniture = await callAPI(API_BASE_URL + id , "GET",undefined);
     onFurniture(furniture);
   } catch (err) {
     console.error("FurnitureUser::onFurniture", err);
     PrintError(err);
-  }
+  }*/
 
-  /*var data = {
-    type : "test Type",
-    prix : "50",
-    description : "Descriptionqsd fqsdf qsdfqsdf"
-  }
-  onFurniture(data);*/
-
-
-  //CallApi pour avoir un meuble et ses infos
   
+  onFurniture(furniture);
 
 
 
@@ -193,7 +183,7 @@ const onClickOption = (e) => {
 }
 
 
-export default FurnitureAdmin;
+export default FurnitureUser;
 
 
 
