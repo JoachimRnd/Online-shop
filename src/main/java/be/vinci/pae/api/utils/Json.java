@@ -1,9 +1,9 @@
 package be.vinci.pae.api.utils;
 
+import java.util.List;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
 import views.Views;
 
 public class Json {
@@ -13,7 +13,7 @@ public class Json {
   /**
    * Serialize an object using JSON filters.
    *
-   * @param <T>  generic return type
+   * @param <T> generic return type
    * @param item generic object to serialize
    * @return converted/serialized String
    */
@@ -32,21 +32,19 @@ public class Json {
   /**
    * Filter whole custom JSON object as a list.
    *
-   * @param <T>         generic return type
-   * @param list        list of generic objects
+   * @param <T> generic return type
+   * @param list list of generic objects
    * @param targetClass name of the targeted class
    * @return a list of objects (with generic type)
    */
   public static <T> List<T> filterPublicJsonViewAsList(List<T> list, Class<T> targetClass) {
 
     try {
-      System.out.println("List prior to serialization : " + list);
       JavaType type = jsonMapper.getTypeFactory().constructCollectionType(List.class, targetClass);
       // serialize using JSON Views : public view (all fields not required in the
       // views are set to null)
       String publicItemListAsString =
           jsonMapper.writerWithView(Views.Public.class).writeValueAsString(list);
-      System.out.println("serializing public Json view: " + publicItemListAsString);
       // deserialize using JSON Views : Public View
       return jsonMapper.readerWithView(Views.Public.class).forType(type)
           .readValue(publicItemListAsString);
@@ -62,8 +60,8 @@ public class Json {
   /**
    * Filter whole custom JSON object.
    *
-   * @param <T>         generic return type
-   * @param item        description
+   * @param <T> generic return type
+   * @param item description
    * @param targetClass name of the targeted class
    * @return a generic object
    */

@@ -1,21 +1,23 @@
 package be.vinci.pae.api;
 
-import java.util.List;
-import com.fasterxml.jackson.databind.JsonNode;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.api.utils.Json;
+import be.vinci.pae.domain.OptionUCC;
 import be.vinci.pae.domain.UserDTO;
 import be.vinci.pae.domain.UserUCC;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import java.util.List;
 
 @Singleton
 @Path("/admin")
@@ -24,9 +26,12 @@ public class Administration {
   @Inject
   private UserUCC userUCC;
 
+  @Inject
+  private OptionUCC optionUCC;
+
   /**
    * Valid a user.
-   * 
+   *
    * @param json json of the user
    * @return http response
    */
@@ -54,7 +59,7 @@ public class Administration {
 
   /**
    * List all unvalidated users.
-   * 
+   *
    * @return List of userDTO
    */
   @GET
@@ -64,4 +69,14 @@ public class Administration {
   public List<UserDTO> listUnvalidatedUser() {
     return Json.filterPublicJsonViewAsList(userUCC.getUnvalidatedUsers(), UserDTO.class);
   }
+
+  @PUT
+  @Path("/{id}/cancelOption")
+  @AuthorizeAdmin
+  public Response cancelOption(@PathParam("id") int id) {
+    optionUCC.cancelOptionByAdmin(id);
+    return Response.ok().build();
+  }
+
+
 }

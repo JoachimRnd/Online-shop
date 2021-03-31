@@ -5,55 +5,71 @@ import be.vinci.pae.domain.OptionFactory;
 import be.vinci.pae.utils.FatalException;
 import be.vinci.pae.utils.ValueLiaison;
 import jakarta.inject.Inject;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DAOOptionImpl implements DAOOption {
 
-  private PreparedStatement selectAllOptions;
-  private PreparedStatement selectUserId;
-  private PreparedStatement selectFurnitureId;
+  private String querySelectOptionsOfFurniture;
   private String querySelectAllOptions;
+  private String querySelectOptionById;
+  private String querySelectOptionsOfBuyer;
+  private String querySelectOptionsOfBuyerFromFurniture;
   private String queryAddOption;
-  private String querySelectUserId;
-  private String querySelectFurnitureId;
+  private String queryChangeStatusOption;
+  private String queryGetLastOptionOfFurniture;
 
   @Inject
   private OptionFactory optionFactory;
   @Inject
   private DalBackendServices dalBackendServices;
+  @Inject
+  private DAOFurniture daoFurniture;
+  @Inject
+  private DAOUser daoUser;
 
   /**
    * constructor of DAOOptionImpl. contains queries.
    */
   public DAOOptionImpl() {
-    querySelectAllOptions = "SELECT o.option_id, o.buyer, o.furniture, o.duration, o.date"
-        + "o.status FROM project.options o;";
-    queryAddOption = "INSERT INTO project.options (option_id, buyer, furniture, duration, date"
-        + "status VALUES (DEFAULT, ?, ?, ?, ?, ?);";
-    querySelectUserId = "SELECT u.user_id, u.username, u.password, u.last_name, u.first_name,"
-        + "a.street, a.building_number, a.unit_number, a.postcode, a.commune, a.country, u.email,"
-        + "u.registration_date, u.valid_registration, u.user_type FROM project.addresses a,"
-        + "project.users u WHERE u.user_id = ?";
-    // TODO faire un select complet...
-    querySelectFurnitureId = "SELECT f.* FROM project.furnitures f WHERE f.furniture_id = ?";
+    querySelectAllOptions = "SELECT option_id, buyer, furniture, duration, date, "
+        + "status FROM project.options";
+    querySelectOptionById = "SELECT option_id, buyer, furniture, duration, date, "
+        + "status FROM project.options WHERE option_id = ?";
+    querySelectOptionsOfFurniture = "SELECT option_id, buyer, furniture, duration, date, "
+        + "status FROM project.options WHERE furniture = ?";
+    querySelectOptionsOfBuyer = "SELECT option_id, buyer, furniture, duration, date, "
+        + "status FROM project.options WHERE buyer = ?";
+    querySelectOptionsOfBuyerFromFurniture =
+        "SELECT option_id, buyer, furniture, duration, date, "
+            + "status FROM project.options WHERE buyer = ? AND furniture = ?";
+    queryAddOption = "INSERT INTO project.options (option_id, buyer, furniture, duration, date, "
+        + "status) VALUES (DEFAULT, ?, ?, ?, ?, ?)";
+    queryChangeStatusOption = "UPDATE project.options SET status = ? WHERE option_id = ?";
+    queryGetLastOptionOfFurniture = "SELECT option_id, buyer, furniture, duration, date, status "
+        + "FROM project.options WHERE furniture = ? AND date = "
+        + "(SELECT MAX(date) FROM project.options)";
   }
 
   @Override
   public List<OptionDTO> selectAllOptions() {
-    List<OptionDTO> listOptions = new ArrayList<OptionDTO>();
     try {
-      selectAllOptions = dalBackendServices.getPreparedStatement(querySelectAllOptions);
-      ResultSet rs = selectAllOptions.executeQuery();
-      while (rs.next()) {
-        OptionDTO option = optionFactory.getOption();
-        listOptions.add(option);
+      PreparedStatement selectAllOptions = dalBackendServices
+          .getPreparedStatement(querySelectAllOptions);
+      try (ResultSet rs = selectAllOptions.executeQuery()) {
+        List<OptionDTO> listOptions = new ArrayList<OptionDTO>();
+        OptionDTO option;
+        do {
+          option = createOption(rs);
+          listOptions.add(option);
+        } while (option != null);
+        listOptions.remove(listOptions.size() - 1);
+        return listOptions;
       }
-      return listOptions;
     } catch (Exception e) {
       e.printStackTrace();
       throw new FatalException("Database error : selectAllOptions");
@@ -62,55 +78,165 @@ public class DAOOptionImpl implements DAOOption {
 
   @Override
   public int addOption(OptionDTO option) {
-    // TODO
-    int optionId = -1;
     try {
-      PreparedStatement addOption = this.dalBackendServices.getPreparedStatement(queryAddOption);
-      if (selectUserId == null && selectFurnitureId == null) {
-        selectFurnitureId = this.dalBackendServices.getPreparedStatement(querySelectFurnitureId);
-        selectUserId = this.dalBackendServices.getPreparedStatement(querySelectUserId);
-      }
-      selectFurnitureId.setInt(1, option.getFurniture().getId());
-      selectUserId.setInt(1, option.getBuyer().getId());
-      ResultSet rsFurniture = selectFurnitureId.executeQuery();
-      ResultSet rsUser = selectUserId.executeQuery();
-      if (rsFurniture != null && rsUser != null) {
-        addOption.setInt(2, option.getBuyer().getId());
-        addOption.setInt(3, option.getFurniture().getId());
-        addOption.setInt(4, option.getDuration());
-        // TODO setDate to LocalDate --> is that correct ?
-        addOption.setDate(5, (Date) option.getDate());
-        addOption.setInt(6, ValueLiaison.stringToIntOption(option.getStatus()));
-      } else {
-        throw new FatalException("there is no furnitureId or userId as mentionned");
-      }
+      PreparedStatement addOption = dalBackendServices.getPreparedStatementAdd(queryAddOption);
+      addOption.setInt(1, option.getBuyer().getId());
+      addOption.setInt(2, option.getFurniture().getId());
+      addOption.setInt(3, option.getDuration());
+      addOption.setTimestamp(4, Timestamp.from(option.getDate().toInstant()));
+      addOption.setInt(5, ValueLiaison.stringToIntOption(option.getStatus()));
+      addOption.executeUpdate();
       try (ResultSet rs = addOption.getGeneratedKeys()) {
+        int optionId = -1;
         if (rs.next()) {
           optionId = rs.getInt(1);
         }
+        return optionId;
       }
-    } catch (SQLException e) {
+    } catch (Exception e) {
       e.printStackTrace();
       throw new FatalException("Database error : addOption");
     }
-    return optionId;
   }
 
   @Override
   public OptionDTO selectOptionByID(int id) {
-    // TODO
-    OptionDTO option = null;
     try {
-      selectAllOptions = dalBackendServices.getPreparedStatement(querySelectAllOptions);
-      ResultSet rs = selectAllOptions.executeQuery();
-      if (rs == null) {
-        option = optionFactory.getOption();
+      PreparedStatement selectOptionById = dalBackendServices
+          .getPreparedStatement(querySelectOptionById);
+      selectOptionById.setInt(1, id);
+      try (ResultSet rs = selectOptionById.executeQuery()) {
+        OptionDTO option = createOption(rs);
+        return option;
       }
-      return option;
     } catch (Exception e) {
       e.printStackTrace();
-      throw new FatalException("Database error : selectAllOptions");
+      throw new FatalException("Database error : selectOptionByID");
     }
+  }
+
+  @Override
+  public List<OptionDTO> selectOptionsOfFurniture(int idFurniture) {
+    try {
+      PreparedStatement selectOptionsOfFurniture = dalBackendServices
+          .getPreparedStatement(querySelectOptionsOfFurniture);
+      selectOptionsOfFurniture.setInt(1, idFurniture);
+      try (ResultSet rs = selectOptionsOfFurniture.executeQuery()) {
+        List<OptionDTO> listOptions = new ArrayList<OptionDTO>();
+        OptionDTO option;
+        do {
+          option = createOption(rs);
+          listOptions.add(option);
+        } while (option != null);
+        listOptions.remove(listOptions.size() - 1);
+        return listOptions;
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Database error : selectOptionsOfFurniture");
+    }
+  }
+
+  @Override
+  public List<OptionDTO> selectOptionsOfBuyer(int idBuyer) {
+    try {
+      PreparedStatement selectOptionsOfBuyer = dalBackendServices
+          .getPreparedStatement(querySelectOptionsOfBuyer);
+      selectOptionsOfBuyer.setInt(1, idBuyer);
+      try (ResultSet rs = selectOptionsOfBuyer.executeQuery()) {
+        List<OptionDTO> listOptions = new ArrayList<OptionDTO>();
+        OptionDTO option;
+        do {
+          option = createOption(rs);
+          listOptions.add(option);
+        } while (option != null);
+        listOptions.remove(listOptions.size() - 1);
+        return listOptions;
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Database error : selectOptionsOfBuyer");
+    }
+  }
+
+  @Override
+  public OptionDTO selectOptionsOfBuyerFromFurniture(int idBuyer, int idFurniture) {
+    try {
+      PreparedStatement selectOptionsOfBuyerFromFurniture = dalBackendServices
+          .getPreparedStatement(querySelectOptionsOfBuyerFromFurniture);
+      selectOptionsOfBuyerFromFurniture.setInt(1, idBuyer);
+      selectOptionsOfBuyerFromFurniture.setInt(2, idFurniture);
+      try (ResultSet rs = selectOptionsOfBuyerFromFurniture.executeQuery()) {
+        OptionDTO option = createOption(rs);
+        return option;
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Database error : selectOptionsOfBuyerFromFurniture");
+    }
+  }
+
+  @Override
+  public boolean finishOption(int id) {
+    try {
+      PreparedStatement finishOption = dalBackendServices
+          .getPreparedStatement(queryChangeStatusOption);
+      finishOption.setInt(1, ValueLiaison.FINISHED_OPTION_INT);
+      finishOption.setInt(2, id);
+      finishOption.executeUpdate();
+      return true;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
+    }
+  }
+
+  @Override
+  public boolean cancelOption(OptionDTO optionToCancel) {
+    try {
+      PreparedStatement finishOption = dalBackendServices
+          .getPreparedStatement(queryChangeStatusOption);
+      finishOption.setInt(1, ValueLiaison.CANCELED_OPTION_INT);
+      finishOption.setInt(2, optionToCancel.getId());
+      int affectedRows = finishOption.executeUpdate();
+      if (affectedRows == 1) {
+        return true;
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException("Database error : cancelOption");
+    }
+    return false;
+  }
+
+  @Override
+  public OptionDTO getLastOptionOfFurniture(int idFurniture) {
+    try {
+      PreparedStatement getLastOptionOfFurniture = dalBackendServices
+          .getPreparedStatement(queryGetLastOptionOfFurniture);
+      getLastOptionOfFurniture.setInt(1, idFurniture);
+      try (ResultSet rs = getLastOptionOfFurniture.executeQuery()) {
+        OptionDTO option = createOption(rs);
+        return option;
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException("Database error : getLastOptionOfFurniture");
+    }
+  }
+
+  private OptionDTO createOption(ResultSet rs) throws SQLException {
+    OptionDTO option = null;
+    if (rs.next()) {
+      option = optionFactory.getOption();
+      option.setId(rs.getInt("option_id"));
+      option.setDate(rs.getDate("date"));
+      option.setDuration(rs.getInt("duration"));
+      option.setStatus(ValueLiaison.intToStringOption(rs.getInt("status")));
+      option.setFurniture(daoFurniture.selectFurnitureById(rs.getInt("furniture")));
+      option.setBuyer(daoUser.getUserById(rs.getInt("buyer")));
+    }
+    return option;
   }
 
 }

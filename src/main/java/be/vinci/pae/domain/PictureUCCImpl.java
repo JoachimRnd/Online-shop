@@ -1,27 +1,33 @@
 package be.vinci.pae.domain;
 
-import java.util.List;
 import be.vinci.pae.services.DAOPicture;
+import be.vinci.pae.services.DalServices;
 import be.vinci.pae.utils.BusinessException;
 import jakarta.inject.Inject;
+import java.util.List;
 
 public class PictureUCCImpl implements PictureUCC {
 
   @Inject
   private DAOPicture daoPicture;
 
+  @Inject
+  private DalServices dalServices;
+
   @Override
   public List<PictureDTO> getAllPictures() {
     List<PictureDTO> liste = daoPicture.selectAllPictures();
+    dalServices.closeConnection();
     return liste;
   }
-  
+
   @Override
   public List<PictureDTO> getAllPicturesByFurnitureType(String type) {
     //TODO get all listFurniture via type String then foreach furniture get listPicture
     //daoFurniture = null;
     //just to use that later (not a statement)
     List<PictureDTO> liste = daoPicture.selectAllPictures();
+    dalServices.closeConnection();
     return liste;
   }
 
@@ -54,7 +60,7 @@ public class PictureUCCImpl implements PictureUCC {
 
     int id = daoPicture.addPicture(newPicture);
     picture.setId(id); // ou alors a la place de id : picture.getId() ?
-    
+    dalServices.closeConnection();
     return picture;
   }
 

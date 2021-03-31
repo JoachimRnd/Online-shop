@@ -11,7 +11,6 @@ import java.util.List;
 
 public class DAOPictureImpl implements DAOPicture {
 
-  private PreparedStatement selectAllPictures;
   private String querySelectAllPictures;
 
   @Inject
@@ -29,7 +28,8 @@ public class DAOPictureImpl implements DAOPicture {
   public List<PictureDTO> selectAllPictures() {
     List<PictureDTO> listPictures = new ArrayList<PictureDTO>();
     try {
-      selectAllPictures = dalBackendServices.getPreparedStatement(querySelectAllPictures);
+      PreparedStatement selectAllPictures = dalBackendServices
+          .getPreparedStatement(querySelectAllPictures);
       ResultSet rs = selectAllPictures.executeQuery();
       while (rs.next()) {
         PictureDTO picture = pictureFactory.getPicture();
