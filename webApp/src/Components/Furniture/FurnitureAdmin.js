@@ -76,6 +76,8 @@ let furniturePage = `
       <label class="input-group-text" for="inputGroupSelect01">Etat du meuble</label>
     </div>
     <select class="custom-select" id="conditions">
+      <option id="achete" value="achete">Achete</option>
+      <option id="ne_convient_pas" value="ne_convient_pas">Ne convient pas</option>
       <option id="en_restauration" value="en_restauration">En restauration</option>
       <option id="en_magasin" value="en_magasin">En magasin</option>
       <option id="en_vente" value="en_vente">En vente</option>

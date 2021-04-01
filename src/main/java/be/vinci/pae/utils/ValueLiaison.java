@@ -18,10 +18,16 @@ public class ValueLiaison {
   public static final int IN_STORE = 1;
   public static final int ON_SALE = 2;
   public static final int REMOVED_FROM_SALE = 3;
+  public static final int BOUGHT = 4;
+  public static final int NOT_SUITABLE = 5;
   public static final String ON_SALE_STRING = "en_vente";
   public static final String IN_RESTORATION_STRING = "en_restauration";
   public static final String IN_STORE_STRING = "en_magasin";
   public static final String REMOVED_FROM_SALE_STRING = "retire_de_vente";
+  public static final String BOUGHT_STRING = "achete";
+  public static final String NOT_SUITABLE_STRING = "ne_convient_pas";
+
+
 
   /**
    * Change the user type form string into a integer.
@@ -183,6 +189,10 @@ public class ValueLiaison {
         return ON_SALE_STRING;
       case REMOVED_FROM_SALE:
         return REMOVED_FROM_SALE_STRING;
+      case BOUGHT:
+        return BOUGHT_STRING;
+      case NOT_SUITABLE:
+        return NOT_SUITABLE_STRING;
       default:
         throw new BusinessException("L'état n'existe pas");
     }
@@ -204,6 +214,10 @@ public class ValueLiaison {
         return ON_SALE;
       case REMOVED_FROM_SALE_STRING:
         return REMOVED_FROM_SALE;
+      case BOUGHT_STRING:
+        return BOUGHT;
+      case NOT_SUITABLE_STRING:
+        return NOT_SUITABLE;
       default:
         throw new BusinessException("L'état n'existe pas");
     }
