@@ -65,7 +65,6 @@ const onLogin = async (e) => {
 };
 
 const onUserLogin = (userData, rememberMe) => {
-  console.log("onUserLogin:", userData);
   const user = { ...userData, isAutenticated: true };
   if(rememberMe) {
     setUserLocalData(user);

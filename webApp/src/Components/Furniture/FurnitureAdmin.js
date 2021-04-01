@@ -1,7 +1,7 @@
 import { RedirectUrl } from "../Router.js";
 import Navbar from "../Navbar.js";
 import { getUserSessionData } from "../../utils/session.js";
-import { callAPIWithoutJSONResponse } from "../../utils/api.js";
+import { callAPI, callAPIWithoutJSONResponse } from "../../utils/api.js";
 import PrintError from "../PrintError.js"
 import img1 from "./1.jpg";
 import img2 from "./2.jpg";
@@ -88,18 +88,35 @@ let furniturePage = `
 </div>
 `;
 
-const FurnitureAdmin = (f) => {
-  furniture = f;
+const FurnitureAdmin = async(f) => {
   let page = document.querySelector("#page");
   page.innerHTML = furniturePage;
 
 
 
-  let optionCondition = document.querySelector("#"+furniture.condition);
-  optionCondition.setAttribute("selected","");
-
   let btnSave = document.querySelector("#btnSave");
   btnSave.addEventListener("click", onSave);
+  
+
+  if(f == null){
+    let queryString = window.location.search;
+    let urlParams = new URLSearchParams(queryString);
+    let id = urlParams.get("id");
+    try {
+      furniture = await callAPI(API_BASE_URL + id , "GET",undefined);
+    } catch (err) {
+      console.error("FurnitureUser::GetFurnitureByID", err);
+      PrintError(err);
+    }
+
+  }else{
+    furniture = f;
+  }
+
+
+
+  let optionCondition = document.querySelector("#"+furniture.condition);
+  optionCondition.setAttribute("selected","");
   
 
   onFurniture();
@@ -119,23 +136,6 @@ const FurnitureAdmin = (f) => {
     }
     
   });
-
-
-
-
-  //Question => Mettre l'id dans l'url
-  /*try {
-    const furniture = await callAPI(API_BASE_URL + id , "GET",undefined);
-    onFurniture(furniture);
-  } catch (err) {
-    console.error("FurnitureUser::onFurniture", err);
-    PrintError(err);
-  }*/
-
-  
-
-
-
 }
 
 const onFurniture = () => {
