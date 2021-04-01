@@ -42,9 +42,7 @@ public class DAOTypeImpl implements DAOType {
       try (ResultSet rs = selectTypeById.executeQuery()) {
         return createType(rs);
       }
-    } catch (
-
-        Exception e) {
+    } catch (Exception e) {
       e.printStackTrace();
       throw new FatalException("Data error : selectTypeById");
     }

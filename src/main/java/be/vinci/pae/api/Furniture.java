@@ -62,12 +62,11 @@ public class Furniture {
       return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir le champ (Etat)")
           .type(MediaType.TEXT_PLAIN).build();
     }
-    
-    if (json.get("condition").asText().equals(ValueLiaison.ON_SALE_STRING)) {
-      if (!json.hasNonNull("price")) {
-        return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir le champ (Prix)")
-            .type(MediaType.TEXT_PLAIN).build();
-      }
+
+    if (json.get("condition").asText().equals(ValueLiaison.ON_SALE_STRING) && !json
+        .hasNonNull("price")) {
+      return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir le champ (Prix)")
+          .type(MediaType.TEXT_PLAIN).build();
     }
 
     if (furnitureUCC
