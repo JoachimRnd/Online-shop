@@ -1,11 +1,12 @@
 package be.vinci.pae.services;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import be.vinci.pae.domain.TypeDTO;
 import be.vinci.pae.domain.TypeFactory;
 import be.vinci.pae.utils.FatalException;
 import jakarta.inject.Inject;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class DAOTypeImpl implements DAOType {
 
@@ -17,6 +18,9 @@ public class DAOTypeImpl implements DAOType {
   @Inject
   private DalBackendServices dalServices;
 
+  /**
+   * Constructor of the DAO.
+   */
   public DAOTypeImpl() {
     super();
     querySelectTypeId =
@@ -32,23 +36,25 @@ public class DAOTypeImpl implements DAOType {
 
   @Override
   public TypeDTO selectTypeById(int id) {
-    TypeDTO type = null;
     try {
       PreparedStatement selectTypeById = dalServices.getPreparedStatement(querySelectTypeId);
       selectTypeById.setInt(1, id);
       try (ResultSet rs = selectTypeById.executeQuery()) {
-        type = this.typeFactory.getType();
-        while (rs.next()) {
-          type.setId(rs.getInt("type_id"));
-          type.setName(rs.getString("name"));
-        }
-        return type;
+        return createType(rs);
       }
-    } catch (
-
-    Exception e) {
+    } catch (Exception e) {
       e.printStackTrace();
       throw new FatalException("Data error : selectTypeById");
     }
+  }
+
+  private TypeDTO createType(ResultSet rs) throws SQLException {
+    TypeDTO type = null;
+    if (rs.next()) {
+      type = typeFactory.getType();
+      type.setId(rs.getInt("type_id"));
+      type.setName(rs.getString("name"));
+    }
+    return type;
   }
 }

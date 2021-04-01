@@ -1,18 +1,28 @@
 package be.vinci.pae.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
 import java.util.Date;
+import views.Views;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class VisitRequestImpl implements VisitRequest {
 
+  @JsonView(Views.Public.class)
   private int id;
+  @JsonView(Views.Public.class)
   private Date requestDate;
+  @JsonView(Views.Public.class)
   private String timeSlot;
+  @JsonView(Views.Public.class)
   private AddressDTO address;
+  @JsonView(Views.Public.class)
   private String status;
+  @JsonView(Views.Public.class)
   private Date chosenDateTime;
+  @JsonView(Views.Public.class)
   private String cancellationReason;
+  @JsonView(Views.Public.class)
   private UserDTO customer;
 
   @Override

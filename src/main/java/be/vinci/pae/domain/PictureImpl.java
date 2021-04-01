@@ -1,14 +1,21 @@
 package be.vinci.pae.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
+import views.Views;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PictureImpl implements Picture {
 
+  @JsonView(Views.Public.class)
   private int id;
+  @JsonView(Views.Public.class)
   private String name;
+  @JsonView(Views.Public.class)
   private boolean visibleForEveryone;
+  @JsonView(Views.Public.class)
   private FurnitureDTO furniture;
+  @JsonView(Views.Public.class)
   private boolean scrollingPicture;
 
   public int getId() {

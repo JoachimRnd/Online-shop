@@ -47,6 +47,7 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     return newFurniture;
   }
 
+  @Override
   public boolean modifyCondition(int id, String condition, double price) {
     this.dalServices.startTransaction();
     FurnitureDTO furniture = this.daoFurniture.selectFurnitureById(id);
@@ -59,18 +60,13 @@ public class FurnitureUCCImpl implements FurnitureUCC {
       case ValueLiaison.ON_SALE_STRING:
         noError = this.daoFurniture.updateSellingPrice(furniture.getId(), price);
         noError = this.daoFurniture.updateSellingDate(furniture.getId(), LocalDateTime.now());
-        break;
+        // fallthrough
       case ValueLiaison.IN_STORE_STRING:
         noError = this.daoFurniture.updateDepositDate(furniture.getId(), LocalDateTime.now());
-        break;
-      case ValueLiaison.IN_RESTORATION_STRING:
-      case ValueLiaison.REMOVED_FROM_SALE_STRING:
-        noError = this.daoFurniture.updateCondition(furniture.getId(), condition);
-        break;
+        // fallthrough
       default:
-        throw new BusinessException("Cet etat n'existe pas");
+        noError = this.daoFurniture.updateCondition(furniture.getId(), condition);
     }
-
     if (!noError) {
       this.dalServices.rollbackTransaction();
       throw new BusinessException("Error modify condition");
@@ -80,6 +76,7 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     this.dalServices.closeConnection();
     return true;
   }
+
 
   @Override
   public FurnitureDTO modifySellingDate(FurnitureDTO furniture, String status) {

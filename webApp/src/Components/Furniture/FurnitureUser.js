@@ -107,58 +107,41 @@ const FurnitureUser = async (data) => {
   let page = document.querySelector("#page");
   page.innerHTML = furniturePage;
 
-  option = document.querySelector("#option");
-
-  // if option is not taken
-  if(getUserSessionData() != null){
-    if(!optionTaken){
-      option.innerHTML = validateOption;
-    }else{
-      option.innerHTML = cancelOption;
+  if(data == null){
+    let queryString = window.location.search;
+    let urlParams = new URLSearchParams(queryString);
+    let id = urlParams.get("id");
+    try {
+      furniture = await callAPI(API_BASE_URL + id , "GET",undefined);
+    } catch (err) {
+      console.error("FurnitureUser::GetFurnitureByID", err);
+      PrintError(err);
     }
-
-  //Valider / Cancel meuble
-  let btnOption = document.querySelector("#btnOption");
-  btnOption.addEventListener("click",onClickOption);
+  }else{
+    furniture = data;
   }
-
-
-
-  //Question => Mettre l'id dans l'url
-  /*try {
-    let id = 1;
-    const furniture = await callAPI(API_BASE_URL + id, "GET", undefined);
-    onFurniture(furniture);
-  } catch (err) {
-    console.error("FurnitureUser::onFurniture", err);
-    PrintError(err);
-  }*/
-
-  furniture = data;
-
-  onFurniture(data);
+  onFurniture();
 }
 
-const onFurniture = (data) => {
+const onFurniture = () => {
 
-  if (!data) return;
   let type = document.querySelector("#type");
-  type.innerHTML = `<input class="form-control" id="type" type="text" placeholder=${data.type.name} readonly />`;
+  type.innerHTML = `<input class="form-control" id="type" type="text" placeholder=${furniture.type.name} readonly />`;
   let prix = document.querySelector("#prix");
-  prix.innerHTML = `<input class="form-control" id="prix" type="text" placeholder=${data.sellingPrice} readonly />`;
+  prix.innerHTML = `<input class="form-control" id="prix" type="text" placeholder=${furniture.sellingPrice} readonly />`;
   let furnitureDescription = document.querySelector("#furnitureDescription");
-  furnitureDescription.innerHTML = `<textarea class="form-control" id="furnituredescription" rows="6" readonly>${data.description}</textarea>`;
+  furnitureDescription.innerHTML = `<textarea class="form-control" id="furnituredescription" rows="6" readonly>${furniture.description}</textarea>`;
 
-  onCheckOption(data);
+  onCheckOption();
+  
 }
 
-const onCheckOption = async (data) => {
+const onCheckOption = async () => {
 
-  if (!data) return;
-  console.log(data);
+  if (!furniture) return;
+  console.log(furniture);
   let optionDocument = document.querySelector("#option");
-  let option = await callAPI(API_BASE_URL + data.id + "/getOption", "GET");
-  console.log(option)
+  let option = await callAPI(API_BASE_URL + furniture.id + "/getOption", "GET");
   let user = getUserSessionData();
   console.log(user)
   if(option.status != undefined && option.status == "en cours") {
@@ -189,9 +172,7 @@ const onClickOption = async (e) => {
   try {
     let optionChoice = document.getElementById("dureeOption");
     optionChoice = optionChoice.value;
-    console.log("avant appel API");
     let apiOption = await callAPIWithoutJSONResponse(API_BASE_URL + furniture.id + "/addOption/" + optionChoice, "POST", user.token);
-    console.log("take option");
     optionDocument.innerHTML = cancelOption;
     let btn = document.querySelector("#btnOption")
     btn.addEventListener("click", onClickCancelOption);
@@ -209,7 +190,6 @@ const onClickCancelOption = async (e) => {
   let optionDocument = document.querySelector("#option");
   try {
     let apiOption = await callAPIWithoutJSONResponse(API_BASE_URL + furniture.id + "/cancelOption", "PUT", user.token);
-    console.log("cancel Option");
     optionDocument.innerHTML = validateOption;
     let btn = document.querySelector("#btnOption")
     btn.addEventListener("click", onClickOption);

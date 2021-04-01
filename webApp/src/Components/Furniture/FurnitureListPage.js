@@ -53,9 +53,9 @@ const onFurnitureList = (data) => {
     furnitureElement.addEventListener("click", (e) => {
       e.preventDefault();
       if(getUserSessionData() == null || getUserSessionData().user.userType != "admin"){
-        RedirectUrl("/furniture",element);
+        RedirectUrl("/furniture",element,"?id="+element.id);
       }else{
-        RedirectUrl("/furnitureAdmin",element);
+        RedirectUrl("/furnitureAdmin",element,"?id="+element.id);
       }
     });
   });

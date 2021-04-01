@@ -1,16 +1,24 @@
 package be.vinci.pae.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
 import java.util.Date;
+import views.Views;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class OptionImpl implements Option {
 
+  @JsonView(Views.Public.class)
   private int id;
+  @JsonView(Views.Public.class)
   private UserDTO buyer;
+  @JsonView(Views.Public.class)
   private FurnitureDTO furniture;
+  @JsonView(Views.Public.class)
   private int duration;
+  @JsonView(Views.Public.class)
   private Date date;
+  @JsonView(Views.Public.class)
   private String status;
 
   @Override

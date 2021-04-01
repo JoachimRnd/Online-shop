@@ -73,9 +73,14 @@ const Router = () => {
   });
 };
 
-const RedirectUrl = (uri, data) => {
+const RedirectUrl = (uri, data, parameter) => {
   // use Web History API to add current page URL to the user's navigation history & set right URL in the browser (instead of "#")
-  window.history.pushState({}, uri, window.location.origin + uri);
+  let url = window.location.origin +uri;
+  if(parameter != null){
+    url += parameter;
+  }
+
+  window.history.pushState({}, uri, url);
   // render the requested component
   // for the components that include JS, we want to assure that the JS included is not runned when the JS file is charged by the browser
   // therefore, those components have to be either a function or a class

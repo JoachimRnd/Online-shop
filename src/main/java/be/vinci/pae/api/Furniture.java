@@ -35,7 +35,6 @@ import org.glassfish.jersey.server.ContainerRequest;
 @Path("/furniture")
 public class Furniture {
 
-  // TODO
   @Inject
   private FurnitureUCC furnitureUCC;
 
@@ -64,16 +63,14 @@ public class Furniture {
           .type(MediaType.TEXT_PLAIN).build();
     }
 
-    double price = -1;
-    if (json.get("condition").asText().equals(ValueLiaison.ON_SALE_STRING)) {
-      if (!json.hasNonNull("price")) {
-        return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir le champ (Prix)")
-            .type(MediaType.TEXT_PLAIN).build();
-      }
-      price = json.get("price").asDouble();
+    if (json.get("condition").asText().equals(ValueLiaison.ON_SALE_STRING) && !json
+        .hasNonNull("price")) {
+      return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir le champ (Prix)")
+          .type(MediaType.TEXT_PLAIN).build();
     }
 
-    if (furnitureUCC.modifyCondition(id, json.get("condition").asText(), price)) {
+    if (furnitureUCC
+        .modifyCondition(id, json.get("condition").asText(), json.get("price").asDouble())) {
       return Response.ok().build();
     } else {
       return Response.serverError().build();
@@ -105,12 +102,16 @@ public class Furniture {
     FurnitureDTO furnitureDTO = furnitureUCC.getFurnitureById(idFurniture);
     if (furnitureDTO == null) {
       throw new WebApplicationException(
-          "Ressource with id = " + idFurniture + " could not be found", null,
-          Status.NOT_FOUND);
+          "Ressource with id = " + idFurniture + " could not be found", null, Status.NOT_FOUND);
     }
     return Json.filterPublicJsonView(furnitureDTO, FurnitureDTO.class);
   }
 
+  /**
+   * Cancel the option on the furniture with id.
+   *
+   * @return Response
+   */
   @PUT
   @Path("/{idFurniture}/cancelOption")
   @Authorize
@@ -121,12 +122,16 @@ public class Furniture {
     return Response.ok().build();
   }
 
+  /**
+   * Add an option on the furniture with id.
+   *
+   * @return Response
+   */
   @POST
   @Path("/{idFurniture}/addOption/{duration}")
   @Authorize
   public Response addOption(@PathParam("idFurniture") int idFurniture,
-      @Context ContainerRequest request,
-      @PathParam("duration") int duration) {
+      @Context ContainerRequest request, @PathParam("duration") int duration) {
     System.out.println("Ici");
     OptionDTO option = optionFactory.getOption();
     option.setDuration(duration);
@@ -140,6 +145,11 @@ public class Furniture {
     return Response.ok().build();
   }
 
+  /**
+   * Get the last option on the furniture with id.
+   *
+   * @return OptionDTO
+   */
   @GET
   @Path("/{idFurniture}/getOption")
   @Produces(MediaType.APPLICATION_JSON)
