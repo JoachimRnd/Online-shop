@@ -28,7 +28,9 @@ class UserImpl implements User {
   private AddressDTO address;
   @JsonView(Views.Public.class)
   private boolean validRegistration;
-  @JsonView(Views.Public.class)
+
+  //TODO Passer en Date et le mettre en public
+  @JsonView(Views.Internal.class)
   private LocalDateTime registrationDate;
 
   @JsonView(Views.Internal.class)

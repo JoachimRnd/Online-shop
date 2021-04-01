@@ -195,6 +195,9 @@ public class OptionUCCImpl implements OptionUCC {
   }
 
   private boolean verifyOptionStatus(OptionDTO option) {
+    if (option == null) {
+      return true;
+    }
     if (!option.getStatus().equals(ValueLiaison.RUNNING_OPTION_STRING)) {
       return true;
     }

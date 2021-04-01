@@ -8,7 +8,6 @@ import img2 from "./2.jpg";
 const API_BASE_URL = "/api/furniture/";
 const IMAGES = "../../../../images";
 
-let optionTaken = false;
 let furniture;
 
 let furniturePage = `
@@ -108,21 +107,6 @@ const FurnitureUser = async (data) => {
   let page = document.querySelector("#page");
   page.innerHTML = furniturePage;
 
-  let option = document.querySelector("#option");
-
-  // if option is not taken
-  if(getUserSessionData() != null){
-    if(!optionTaken){
-      option.innerHTML = validateOption;
-    }else{
-      option.innerHTML = cancelOption;
-    }
-
-  //Valider / Cancel meuble
-  let btnOption = document.querySelector("#btnOption");
-  btnOption.addEventListener("click",onClickOption);
-  }
-
   if(data == null){
     let queryString = window.location.search;
     let urlParams = new URLSearchParams(queryString);
@@ -148,16 +132,16 @@ const onFurniture = () => {
   let furnitureDescription = document.querySelector("#furnitureDescription");
   furnitureDescription.innerHTML = `<textarea class="form-control" id="furnituredescription" rows="6" readonly>${furniture.description}</textarea>`;
 
-  onCheckOption(furniture);
+  onCheckOption();
   
 }
 
-const onCheckOption = async (data) => {
+const onCheckOption = async () => {
 
-  if (!data) return;
-  console.log(data);
+  if (!furniture) return;
+  console.log(furniture);
   let optionDocument = document.querySelector("#option");
-  let option = await callAPI(API_BASE_URL + data.id + "/getOption", "GET");
+  let option = await callAPI(API_BASE_URL + furniture.id + "/getOption", "GET");
   let user = getUserSessionData();
   console.log(user)
   if(option.status != undefined && option.status == "en cours") {
