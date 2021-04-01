@@ -1,8 +1,8 @@
 package be.vinci.pae.domain;
 
-import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
+import java.util.Date;
 import views.Views;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -10,49 +10,34 @@ class FurnitureImpl implements Furniture {
 
   @JsonView(Views.Public.class)
   private int id;
-
   @JsonView(Views.Public.class)
   private String description;
-
   @JsonView(Views.Public.class)
   private TypeDTO type;
-
   @JsonView(Views.Public.class)
   private VisitRequestDTO visitRequest;
-
   @JsonView(Views.Public.class)
   private double purchasePrice;
-
   @JsonView(Views.Public.class)
   private Date withdrawalDateFromCustomer;
-
   @JsonView(Views.Public.class)
   private double sellingPrice;
-
   @JsonView(Views.Public.class)
   private double specialSalePrice;
-
   @JsonView(Views.Public.class)
   private Date depositDate;
-
   @JsonView(Views.Public.class)
   private Date sellingDate;
-
   @JsonView(Views.Public.class)
   private Date deliveryDate;
-
   @JsonView(Views.Public.class)
   private Date withdrawalDateToCustomer;
-
   @JsonView(Views.Public.class)
   private UserDTO buyer;
-
   @JsonView(Views.Public.class)
   private String condition;
-
   @JsonView(Views.Public.class)
   private String unregisteredBuyerEmail;
-
   @JsonView(Views.Public.class)
   private PictureDTO favouritePicture;
 

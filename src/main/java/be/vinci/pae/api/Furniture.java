@@ -1,10 +1,5 @@
 package be.vinci.pae.api;
 
-import java.time.Instant;
-import java.util.Date;
-import java.util.List;
-import org.glassfish.jersey.server.ContainerRequest;
-import com.fasterxml.jackson.databind.JsonNode;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.api.utils.Json;
@@ -16,6 +11,7 @@ import be.vinci.pae.domain.OptionFactory;
 import be.vinci.pae.domain.OptionUCC;
 import be.vinci.pae.domain.UserDTO;
 import be.vinci.pae.utils.ValueLiaison;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -30,12 +26,15 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import java.time.Instant;
+import java.util.Date;
+import java.util.List;
+import org.glassfish.jersey.server.ContainerRequest;
 
 @Singleton
 @Path("/furniture")
 public class Furniture {
 
-  // TODO
   @Inject
   private FurnitureUCC furnitureUCC;
 
@@ -63,17 +62,16 @@ public class Furniture {
       return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir le champ (Etat)")
           .type(MediaType.TEXT_PLAIN).build();
     }
-
-    double price = -1;
+    
     if (json.get("condition").asText().equals(ValueLiaison.ON_SALE_STRING)) {
       if (!json.hasNonNull("price")) {
         return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir le champ (Prix)")
             .type(MediaType.TEXT_PLAIN).build();
       }
-      price = json.get("price").asDouble();
     }
 
-    if (furnitureUCC.modifyCondition(id, json.get("condition").asText(), price)) {
+    if (furnitureUCC
+        .modifyCondition(id, json.get("condition").asText(), json.get("price").asDouble())) {
       return Response.ok().build();
     } else {
       return Response.serverError().build();
@@ -110,6 +108,11 @@ public class Furniture {
     return Json.filterPublicJsonView(furnitureDTO, FurnitureDTO.class);
   }
 
+  /**
+   * Cancel the option on the furniture with id.
+   *
+   * @return Response
+   */
   @PUT
   @Path("/{idFurniture}/cancelOption")
   @Authorize
@@ -120,6 +123,11 @@ public class Furniture {
     return Response.ok().build();
   }
 
+  /**
+   * Add an option on the furniture with id.
+   *
+   * @return Response
+   */
   @POST
   @Path("/{idFurniture}/addOption/{duration}")
   @Authorize
@@ -138,6 +146,11 @@ public class Furniture {
     return Response.ok().build();
   }
 
+  /**
+   * Get the last option on the furniture with id.
+   *
+   * @return OptionDTO
+   */
   @GET
   @Path("/{idFurniture}/getOption")
   @Produces(MediaType.APPLICATION_JSON)

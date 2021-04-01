@@ -1,8 +1,5 @@
 package be.vinci.pae.domain;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import be.vinci.pae.services.DAOFurniture;
 import be.vinci.pae.services.DAOType;
 import be.vinci.pae.services.DAOUser;
@@ -10,6 +7,9 @@ import be.vinci.pae.services.DalServices;
 import be.vinci.pae.utils.BusinessException;
 import be.vinci.pae.utils.ValueLiaison;
 import jakarta.inject.Inject;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FurnitureUCCImpl implements FurnitureUCC {
 
@@ -47,6 +47,7 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     return newFurniture;
   }
 
+  @Override
   public boolean modifyCondition(int id, String condition, double price) {
     this.dalServices.startTransaction();
     FurnitureDTO furniture = this.daoFurniture.selectFurnitureById(id);
@@ -59,11 +60,13 @@ public class FurnitureUCCImpl implements FurnitureUCC {
       case ValueLiaison.ON_SALE_STRING:
         noError = this.daoFurniture.updateSellingPrice(furniture.getId(), price);
         noError = this.daoFurniture.updateSellingDate(furniture.getId(), LocalDateTime.now());
+        // fallthrough
       case ValueLiaison.IN_STORE_STRING:
         noError = this.daoFurniture.updateDepositDate(furniture.getId(), LocalDateTime.now());
+        // fallthrough
+      default:
+        noError = this.daoFurniture.updateCondition(furniture.getId(), condition);
     }
-    noError = this.daoFurniture.updateCondition(furniture.getId(), condition);
-
     if (!noError) {
       this.dalServices.rollbackTransaction();
       throw new BusinessException("Error modify condition");

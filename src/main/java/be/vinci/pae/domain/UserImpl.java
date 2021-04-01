@@ -1,11 +1,11 @@
 package be.vinci.pae.domain;
 
-import java.time.LocalDateTime;
-import org.mindrot.jbcrypt.BCrypt;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonView;
 import be.vinci.pae.utils.BusinessException;
 import be.vinci.pae.utils.ValueLiaison;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
+import java.time.LocalDateTime;
+import org.mindrot.jbcrypt.BCrypt;
 import views.Views;
 
 // ignore all null fields in order to avoid sending props not linked to a JSON view
@@ -26,12 +26,10 @@ class UserImpl implements User {
   private String userType;
   @JsonView(Views.Public.class)
   private AddressDTO address;
-
-  @JsonView(Views.Internal.class)
-  private LocalDateTime registrationDate;
-
   @JsonView(Views.Public.class)
   private boolean validRegistration;
+  @JsonView(Views.Public.class)
+  private LocalDateTime registrationDate;
 
   @JsonView(Views.Internal.class)
   private String password;

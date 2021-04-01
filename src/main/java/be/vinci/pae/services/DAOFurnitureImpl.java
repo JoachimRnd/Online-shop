@@ -1,5 +1,10 @@
 package be.vinci.pae.services;
 
+import be.vinci.pae.domain.FurnitureDTO;
+import be.vinci.pae.domain.FurnitureFactory;
+import be.vinci.pae.utils.FatalException;
+import be.vinci.pae.utils.ValueLiaison;
+import jakarta.inject.Inject;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,11 +13,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import be.vinci.pae.domain.FurnitureDTO;
-import be.vinci.pae.domain.FurnitureFactory;
-import be.vinci.pae.utils.FatalException;
-import be.vinci.pae.utils.ValueLiaison;
-import jakarta.inject.Inject;
 
 public class DAOFurnitureImpl implements DAOFurniture {
 
@@ -21,10 +21,6 @@ public class DAOFurnitureImpl implements DAOFurniture {
   private String querySelectFurnitureByType;
   private String querySelectFurnitureByPrice;
   private String querySelectFurnitureByUser;
-  private String querySelectTypeId;
-  private String querySelectVisitRequestId;
-  private String querySelectUserId;
-  private String querySelectFavouritePictureId;
   private String queryInsertFurniture;
   private String queryUpdateSellingDate;
   private String queryUpdateCondition;
@@ -218,49 +214,28 @@ public class DAOFurnitureImpl implements DAOFurniture {
     }
   }
 
-  // TODO
   @Override
   public int insertFurniture(FurnitureDTO newFurniture) {
     int furnitureId = -1;
     try {
       PreparedStatement insertFurniture =
           this.dalServices.getPreparedStatement(queryInsertFurniture);
-      PreparedStatement selectTypeId = this.dalServices.getPreparedStatement(querySelectTypeId);
-      selectTypeId.setInt(1, newFurniture.getType().getId());
-      PreparedStatement selectVisitRequestId =
-          this.dalServices.getPreparedStatement(querySelectVisitRequestId);
-      selectVisitRequestId.setInt(1, newFurniture.getVisitRequest().getId());
-      PreparedStatement selectUserId = this.dalServices.getPreparedStatement(querySelectUserId);
-      selectUserId.setInt(1, newFurniture.getBuyer().getId());
-      PreparedStatement selectFavouritePictureId =
-          this.dalServices.getPreparedStatement(querySelectFavouritePictureId);
-      selectFavouritePictureId.setInt(1, newFurniture.getFavouritePicture().getId());
-      ResultSet rsType = selectTypeId.executeQuery();
-      ResultSet rsVisitRequest = selectVisitRequestId.executeQuery();
-      ResultSet rsUser = selectUserId.executeQuery();
-      ResultSet rsFavouritePicture = selectFavouritePictureId.executeQuery();
-      if (rsType != null && rsVisitRequest != null && rsUser != null
-          && rsFavouritePicture != null) {
-        insertFurniture.setString(1, newFurniture.getDescription());
-        insertFurniture.setInt(2, newFurniture.getType().getId());
-        insertFurniture.setInt(3, newFurniture.getVisitRequest().getId());
-        insertFurniture.setDouble(4, newFurniture.getPurchasePrice());
-        insertFurniture.setDate(5, (Date) newFurniture.getWithdrawalDateFromCustomer());
-        insertFurniture.setDouble(6, newFurniture.getSellingPrice());
-        insertFurniture.setDouble(7, newFurniture.getSpecialSalePrice());
-        insertFurniture.setDate(8, (Date) newFurniture.getDepositDate());
-        insertFurniture.setDate(9, (Date) newFurniture.getSellingDate());
-        insertFurniture.setDate(10, (Date) newFurniture.getDeliveryDate());
-        insertFurniture.setDate(11, (Date) newFurniture.getWithdrawalDateToCustomer());
-        insertFurniture.setInt(12, newFurniture.getBuyer().getId());
-        insertFurniture.setString(13, newFurniture.getCondition());
-        insertFurniture.setString(14, newFurniture.getUnregisteredBuyerEmail());
-        insertFurniture.setInt(15, newFurniture.getFavouritePicture().getId());
-        insertFurniture.execute();
-      } else {
-        throw new FatalException("there is no typeId or no visiteRequestId or userId or"
-            + " favouritePictureId as mentionned");
-      }
+      insertFurniture.setString(1, newFurniture.getDescription());
+      insertFurniture.setInt(2, newFurniture.getType().getId());
+      insertFurniture.setInt(3, newFurniture.getVisitRequest().getId());
+      insertFurniture.setDouble(4, newFurniture.getPurchasePrice());
+      insertFurniture.setDate(5, (Date) newFurniture.getWithdrawalDateFromCustomer());
+      insertFurniture.setDouble(6, newFurniture.getSellingPrice());
+      insertFurniture.setDouble(7, newFurniture.getSpecialSalePrice());
+      insertFurniture.setDate(8, (Date) newFurniture.getDepositDate());
+      insertFurniture.setDate(9, (Date) newFurniture.getSellingDate());
+      insertFurniture.setDate(10, (Date) newFurniture.getDeliveryDate());
+      insertFurniture.setDate(11, (Date) newFurniture.getWithdrawalDateToCustomer());
+      insertFurniture.setInt(12, newFurniture.getBuyer().getId());
+      insertFurniture.setString(13, newFurniture.getCondition());
+      insertFurniture.setString(14, newFurniture.getUnregisteredBuyerEmail());
+      insertFurniture.setInt(15, newFurniture.getFavouritePicture().getId());
+      insertFurniture.execute();
       try (ResultSet rs = insertFurniture.getGeneratedKeys()) {
         if (rs.next()) {
           furnitureId = rs.getInt(1);
