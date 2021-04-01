@@ -1,5 +1,10 @@
 package be.vinci.pae.api;
 
+import java.time.Instant;
+import java.util.Date;
+import java.util.List;
+import org.glassfish.jersey.server.ContainerRequest;
+import com.fasterxml.jackson.databind.JsonNode;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.api.utils.Json;
@@ -11,7 +16,6 @@ import be.vinci.pae.domain.OptionFactory;
 import be.vinci.pae.domain.OptionUCC;
 import be.vinci.pae.domain.UserDTO;
 import be.vinci.pae.utils.ValueLiaison;
-import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -26,10 +30,6 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-import java.time.Instant;
-import java.util.Date;
-import java.util.List;
-import org.glassfish.jersey.server.ContainerRequest;
 
 @Singleton
 @Path("/furniture")
@@ -105,8 +105,7 @@ public class Furniture {
     FurnitureDTO furnitureDTO = furnitureUCC.getFurnitureById(idFurniture);
     if (furnitureDTO == null) {
       throw new WebApplicationException(
-          "Ressource with id = " + idFurniture + " could not be found", null,
-          Status.NOT_FOUND);
+          "Ressource with id = " + idFurniture + " could not be found", null, Status.NOT_FOUND);
     }
     return Json.filterPublicJsonView(furnitureDTO, FurnitureDTO.class);
   }
@@ -125,8 +124,7 @@ public class Furniture {
   @Path("/{idFurniture}/addOption/{duration}")
   @Authorize
   public Response addOption(@PathParam("idFurniture") int idFurniture,
-      @Context ContainerRequest request,
-      @PathParam("duration") int duration) {
+      @Context ContainerRequest request, @PathParam("duration") int duration) {
     System.out.println("Ici");
     OptionDTO option = optionFactory.getOption();
     option.setDuration(duration);

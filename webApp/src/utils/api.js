@@ -6,6 +6,8 @@
  * @param {*} data : data to be sent in the body of the request (for POST, PUT... requests)
  */
 
+import PrintError from "../Components/PrintError";
+
  async function callAPI(endpoint, method = "get", token, data) {
   let headers = new Headers();
   let options = {};
@@ -120,6 +122,7 @@ async function callAPIWithoutJSONResponse(endpoint, method = "get", token, data)
     return await response;
   } catch (error) {
     console.log("error:", error);
+    PrintError(error);
     throw error;
   }
 }

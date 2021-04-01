@@ -84,6 +84,7 @@ let furniturePage = `
   </div>
 
   <button class="btn btn-success" id="btnSave" type="submit">Enregistrer</button>
+  <div id="toast"></div>
 
 </div>
 `;
@@ -176,10 +177,21 @@ const onSave = async() => {
         condition: conditionChoice
       };
     } 
-
+   
     if(conditionChoice != furniture.condition || furniture.condition == "en_vente"){
-      await callAPIWithoutJSONResponse(API_BASE_URL + furniture.id, "PUT", user.token, struct);
+      let response = await callAPIWithoutJSONResponse(API_BASE_URL + furniture.id, "PUT", user.token, struct);
+      if(response.ok){
+        let toast = document.querySelector("#toast");
+        //TODO ADD a toast
+      }
     }
+
+ 
+
+    
+
+
+
 }
 
 
