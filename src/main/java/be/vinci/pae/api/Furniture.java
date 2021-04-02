@@ -1,5 +1,10 @@
 package be.vinci.pae.api;
 
+import java.time.Instant;
+import java.util.Date;
+import java.util.List;
+import org.glassfish.jersey.server.ContainerRequest;
+import com.fasterxml.jackson.databind.JsonNode;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.api.utils.Json;
@@ -11,7 +16,6 @@ import be.vinci.pae.domain.OptionFactory;
 import be.vinci.pae.domain.OptionUCC;
 import be.vinci.pae.domain.UserDTO;
 import be.vinci.pae.utils.ValueLiaison;
-import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -26,10 +30,6 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-import java.time.Instant;
-import java.util.Date;
-import java.util.List;
-import org.glassfish.jersey.server.ContainerRequest;
 
 @Singleton
 @Path("/furniture")
@@ -63,14 +63,14 @@ public class Furniture {
           .type(MediaType.TEXT_PLAIN).build();
     }
 
-    if (json.get("condition").asText().equals(ValueLiaison.ON_SALE_STRING) && !json
-        .hasNonNull("price")) {
+    if (json.get("condition").asText().equals(ValueLiaison.ON_SALE_STRING)
+        && !json.hasNonNull("price")) {
       return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir le champ (Prix)")
           .type(MediaType.TEXT_PLAIN).build();
     }
 
-    if (furnitureUCC
-        .modifyCondition(id, json.get("condition").asText(), json.get("price").asDouble())) {
+    if (furnitureUCC.modifyCondition(id, json.get("condition").asText(),
+        json.get("price").asDouble())) {
       return Response.ok().build();
     } else {
       return Response.serverError().build();
