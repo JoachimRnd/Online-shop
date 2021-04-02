@@ -12,8 +12,10 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
   private static final String DB_STRING_CONNECTION = Config.getProperty("DatabaseStringConnection");
   private static final String DB_USERNAME = Config.getProperty("DatabaseUsername");
   private static final String DB_PASSWORD = Config.getProperty("DatabasePassword");
-  private static BasicDataSource bds;
-  private static final ThreadLocal<Connection> tl = new ThreadLocal<Connection>();
+  private BasicDataSource bds;
+  private ThreadLocal<Connection> tl;
+
+  //TODO gestion des exceptions
 
   /**
    * Create pool of Connection.
@@ -23,9 +25,10 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
     bds.setUrl(DB_STRING_CONNECTION);
     bds.setUsername(DB_USERNAME);
     bds.setPassword(DB_PASSWORD);
-    bds.setMinIdle(5);
-    bds.setMaxIdle(10);
-    bds.setMaxOpenPreparedStatements(10);
+    //TODO à chercher utilité + passer par fichier de conf.
+    bds.setMinIdle(1);
+    bds.setMaxIdle(5);
+    tl = new ThreadLocal<Connection>();
   }
 
   @Override

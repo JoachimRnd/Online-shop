@@ -2,7 +2,7 @@ package be.vinci.pae.api;
 
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.utils.Json;
-import be.vinci.pae.domain.UserDTO;
+import be.vinci.pae.domain.user.UserDTO;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
