@@ -6,6 +6,8 @@ import jakarta.ws.rs.core.Response.Status;
 
 public class FatalException extends WebApplicationException {
 
+  //TODO Ajouter les logs
+
   private static final long serialVersionUID = -5926196101906096391L;
 
   public FatalException(Throwable cause) {

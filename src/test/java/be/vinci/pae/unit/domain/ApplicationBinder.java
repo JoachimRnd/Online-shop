@@ -1,10 +1,10 @@
 package be.vinci.pae.unit.domain;
 
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
-import be.vinci.pae.domain.UserFactory;
-import be.vinci.pae.domain.UserFactoryImpl;
+import be.vinci.pae.domain.user.UserFactory;
+import be.vinci.pae.domain.user.UserFactoryImpl;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.ext.Provider;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 @Provider
 public class ApplicationBinder extends AbstractBinder {

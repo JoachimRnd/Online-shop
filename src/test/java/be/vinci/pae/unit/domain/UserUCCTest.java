@@ -3,6 +3,14 @@ package be.vinci.pae.unit.domain;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import be.vinci.pae.domain.user.User;
+import be.vinci.pae.domain.user.UserDTO;
+import be.vinci.pae.domain.user.UserFactory;
+import be.vinci.pae.domain.user.UserUCCImpl;
+import be.vinci.pae.services.DalServices;
+import be.vinci.pae.services.user.DAOUser;
+import be.vinci.pae.utils.BusinessException;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,13 +20,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import be.vinci.pae.domain.User;
-import be.vinci.pae.domain.UserDTO;
-import be.vinci.pae.domain.UserFactory;
-import be.vinci.pae.domain.UserUCCImpl;
-import be.vinci.pae.services.DAOUser;
-import be.vinci.pae.services.DalServices;
-import be.vinci.pae.utils.BusinessException;
 
 public class UserUCCTest {
 

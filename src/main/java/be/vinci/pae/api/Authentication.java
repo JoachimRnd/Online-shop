@@ -1,11 +1,11 @@
 package be.vinci.pae.api;
 
 import be.vinci.pae.api.utils.Json;
-import be.vinci.pae.domain.AddressDTO;
-import be.vinci.pae.domain.AddressFactory;
-import be.vinci.pae.domain.UserDTO;
-import be.vinci.pae.domain.UserFactory;
-import be.vinci.pae.domain.UserUCC;
+import be.vinci.pae.domain.address.AddressDTO;
+import be.vinci.pae.domain.address.AddressFactory;
+import be.vinci.pae.domain.user.UserDTO;
+import be.vinci.pae.domain.user.UserFactory;
+import be.vinci.pae.domain.user.UserUCC;
 import be.vinci.pae.utils.Config;
 import be.vinci.pae.utils.FatalException;
 import com.auth0.jwt.JWT;
@@ -22,8 +22,8 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
@@ -123,7 +123,7 @@ public class Authentication {
     }
 
     user.setAddress(address);
-    user.setRegistrationDate(LocalDateTime.now());
+    user.setRegistrationDate(Date.from(Instant.now()));
     user.setValidRegistration(false);
 
     // Try to register

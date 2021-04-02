@@ -2,9 +2,9 @@ package be.vinci.pae.api;
 
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.api.utils.Json;
-import be.vinci.pae.domain.OptionUCC;
-import be.vinci.pae.domain.UserDTO;
-import be.vinci.pae.domain.UserUCC;
+import be.vinci.pae.domain.option.OptionUCC;
+import be.vinci.pae.domain.user.UserDTO;
+import be.vinci.pae.domain.user.UserUCC;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;

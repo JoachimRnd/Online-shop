@@ -3,13 +3,13 @@ package be.vinci.pae.api;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.api.utils.Json;
-import be.vinci.pae.domain.FurnitureDTO;
-import be.vinci.pae.domain.FurnitureFactory;
-import be.vinci.pae.domain.FurnitureUCC;
-import be.vinci.pae.domain.OptionDTO;
-import be.vinci.pae.domain.OptionFactory;
-import be.vinci.pae.domain.OptionUCC;
-import be.vinci.pae.domain.UserDTO;
+import be.vinci.pae.domain.furniture.FurnitureDTO;
+import be.vinci.pae.domain.furniture.FurnitureFactory;
+import be.vinci.pae.domain.furniture.FurnitureUCC;
+import be.vinci.pae.domain.option.OptionDTO;
+import be.vinci.pae.domain.option.OptionFactory;
+import be.vinci.pae.domain.option.OptionUCC;
+import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.utils.ValueLiaison;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.inject.Inject;
@@ -58,14 +58,9 @@ public class Furniture {
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public Response modifyStatus(@PathParam("id") int id, JsonNode json) {
-    if (!json.hasNonNull("condition") || json.get("condition").asText().isEmpty()) {
-      return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir le champ (Etat)")
-          .type(MediaType.TEXT_PLAIN).build();
-    }
-
-    if (json.get("condition").asText().equals(ValueLiaison.ON_SALE_STRING) && !json
+    if (!json.hasNonNull("condition") || json.get("condition").asText().isEmpty() || !json
         .hasNonNull("price")) {
-      return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir le champ (Prix)")
+      return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")
           .type(MediaType.TEXT_PLAIN).build();
     }
 
