@@ -2,6 +2,8 @@ package be.vinci.pae.utils;
 
 public class ValueLiaison {
 
+  //TODO passer en Enum (Avec interface)
+
   public static final String ADMIN_STRING = "admin";
   public static final String CLIENT_STRING = "client";
   public static final String ANTIQUAIRE_STRING = "antiquaire";
@@ -26,7 +28,6 @@ public class ValueLiaison {
   public static final String REMOVED_FROM_SALE_STRING = "retire_de_vente";
   public static final String BOUGHT_STRING = "achete";
   public static final String NOT_SUITABLE_STRING = "ne_convient_pas";
-
 
 
   /**

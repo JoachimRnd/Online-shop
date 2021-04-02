@@ -1,10 +1,10 @@
 package be.vinci.pae.unit.domain;
 
-import java.util.List;
-import be.vinci.pae.domain.UserDTO;
-import be.vinci.pae.domain.UserFactory;
-import be.vinci.pae.services.DAOUser;
+import be.vinci.pae.domain.user.UserDTO;
+import be.vinci.pae.domain.user.UserFactory;
+import be.vinci.pae.services.user.DAOUser;
 import jakarta.inject.Inject;
+import java.util.List;
 
 public class DAOUserMock implements DAOUser {
 

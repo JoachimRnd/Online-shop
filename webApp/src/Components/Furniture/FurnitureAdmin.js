@@ -176,7 +176,8 @@ const onSave = async() => {
       furniture.sellingPrice = p;
     }else if(conditionChoice != furniture.condition){
       struct = {
-        condition: conditionChoice
+        condition: conditionChoice,
+        price: 0
       };
     } 
    

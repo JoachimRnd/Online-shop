@@ -1,6 +1,6 @@
 package be.vinci.pae.api.filters;
 
-import be.vinci.pae.services.DAOUser;
+import be.vinci.pae.domain.user.UserUCC;
 import be.vinci.pae.utils.Config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -26,7 +26,7 @@ public class AuthorizationRequestFilter implements ContainerRequestFilter {
       JWT.require(this.jwtAlgorithm).withIssuer("auth0").build();
 
   @Inject
-  private DAOUser dataService;
+  private UserUCC userUCC;
 
   @Override
   public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -42,7 +42,7 @@ public class AuthorizationRequestFilter implements ContainerRequestFilter {
         throw new WebApplicationException("Malformed token", e, Status.UNAUTHORIZED);
       }
       requestContext.setProperty("user",
-          this.dataService.getUserById(decodedToken.getClaim("user").asInt()));
+          this.userUCC.getUserById(decodedToken.getClaim("user").asInt()));
     }
   }
 
