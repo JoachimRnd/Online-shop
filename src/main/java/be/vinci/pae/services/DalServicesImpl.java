@@ -1,21 +1,23 @@
 package be.vinci.pae.services;
 
-import be.vinci.pae.utils.Config;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import org.apache.commons.dbcp2.BasicDataSource;
+import be.vinci.pae.utils.Config;
 
 public class DalServicesImpl implements DalServices, DalBackendServices {
 
   private static final String DB_STRING_CONNECTION = Config.getProperty("DatabaseStringConnection");
   private static final String DB_USERNAME = Config.getProperty("DatabaseUsername");
   private static final String DB_PASSWORD = Config.getProperty("DatabasePassword");
+  private static final int DB_MINCONNECTION = Config.getIntProperty("MinIdle");
+  private static final int DB_MAXCONNECTION = Config.getIntProperty("MaxIdle");
   private BasicDataSource bds;
   private ThreadLocal<Connection> tl;
 
-  //TODO gestion des exceptions
+  // TODO gestion des exceptions
 
   /**
    * Create pool of Connection.
@@ -25,9 +27,9 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
     bds.setUrl(DB_STRING_CONNECTION);
     bds.setUsername(DB_USERNAME);
     bds.setPassword(DB_PASSWORD);
-    //TODO à chercher utilité + passer par fichier de conf.
-    bds.setMinIdle(1);
-    bds.setMaxIdle(5);
+    // TODO à chercher utilité + passer par fichier de conf.
+    bds.setMinIdle(DB_MINCONNECTION);
+    bds.setMaxIdle(DB_MAXCONNECTION);
     tl = new ThreadLocal<Connection>();
   }
 
