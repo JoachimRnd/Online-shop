@@ -8,7 +8,7 @@ import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.furniture.DAOFurniture;
 import be.vinci.pae.services.option.DAOOption;
 import be.vinci.pae.utils.BusinessException;
-import be.vinci.pae.utils.ValueLiaison;
+import be.vinci.pae.utils.ValueLink.OptionStatus;
 import jakarta.inject.Inject;
 
 public class OptionUCCImpl implements OptionUCC {
@@ -24,7 +24,9 @@ public class OptionUCCImpl implements OptionUCC {
 
   @Override
   public OptionDTO addOption(OptionDTO newOption) {
+
     try {
+
       // TODO changer l'état du meuble
       // TODO test à faire pour voir si on peut mettre l'option (etat user, etat du meuble)
       dalServices.startTransaction();
@@ -37,7 +39,7 @@ public class OptionUCCImpl implements OptionUCC {
       List<OptionDTO> listPreviousOption =
           daoOption.selectOptionsOfFurniture(newOption.getFurniture().getId());
       for (OptionDTO option : listPreviousOption) {
-        if (option.getStatus().equals(ValueLiaison.RUNNING_OPTION_STRING)
+        if (option.getStatus().equals(OptionStatus.en_cours)
             && TimeUnit.DAYS.convert(newOption.getDate().getTime() - option.getDate().getTime(),
                 TimeUnit.MILLISECONDS) <= option.getDuration()) {
           throw new BusinessException("Il y a deja une option en cours pour ce meuble");
@@ -45,10 +47,8 @@ public class OptionUCCImpl implements OptionUCC {
       }
       if (daoOption.selectOptionsOfBuyerFromFurniture(newOption.getBuyer().getId(),
           newOption.getFurniture().getId()) != null
-          && !daoOption
-              .selectOptionsOfBuyerFromFurniture(newOption.getBuyer().getId(),
-                  newOption.getFurniture().getId())
-              .getStatus().equals(ValueLiaison.CANCELED_OPTION_STRING)) {
+          && !daoOption.selectOptionsOfBuyerFromFurniture(newOption.getBuyer().getId(),
+              newOption.getFurniture().getId()).getStatus().equals(OptionStatus.annulee)) {
         throw new BusinessException("Vous avez deja mis une option sur ce meuble");
       }
       int idOption = daoOption.addOption(newOption);
@@ -63,10 +63,13 @@ public class OptionUCCImpl implements OptionUCC {
     } finally {
       dalServices.closeConnection();
     }
+
+
   }
 
   @Override
   public void cancelOption(int idFurniture, UserDTO user) {
+
     try {
       dalServices.startTransaction();
       List<OptionDTO> list = daoOption.selectOptionsOfFurniture(idFurniture);
@@ -75,7 +78,7 @@ public class OptionUCCImpl implements OptionUCC {
       }
       OptionDTO optionToCancel = null;
       for (OptionDTO option : list) {
-        if (option.getStatus().equals(ValueLiaison.RUNNING_OPTION_STRING)) {
+        if (option.getStatus().equals(OptionStatus.en_cours)) {
           optionToCancel = option;
           break;
         }
@@ -95,6 +98,7 @@ public class OptionUCCImpl implements OptionUCC {
     } finally {
       dalServices.closeConnection();
     }
+
   }
 
   @Override
@@ -107,7 +111,7 @@ public class OptionUCCImpl implements OptionUCC {
       }
       OptionDTO optionToCancel = null;
       for (OptionDTO option : list) {
-        if (option.getStatus().equals(ValueLiaison.RUNNING_OPTION_STRING)) {
+        if (option.getStatus().equals(OptionStatus.en_cours)) {
           optionToCancel = option;
           break;
         }
@@ -149,12 +153,13 @@ public class OptionUCCImpl implements OptionUCC {
     }
   }
 
+
   // TODO voir si ce n'est pas automatisable
   private boolean verifyOptionStatus(OptionDTO option) {
     if (option == null) {
       return true;
     }
-    if (!option.getStatus().equals(ValueLiaison.RUNNING_OPTION_STRING)) {
+    if (!option.getStatus().equals(OptionStatus.en_cours)) {
       return true;
     }
     Date now = new Date();

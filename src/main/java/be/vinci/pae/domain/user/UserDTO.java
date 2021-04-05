@@ -1,8 +1,9 @@
 package be.vinci.pae.domain.user;
 
-import be.vinci.pae.domain.address.AddressDTO;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.util.Date;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import be.vinci.pae.domain.address.AddressDTO;
+import be.vinci.pae.utils.ValueLink.UserType;
 
 @JsonDeserialize(as = UserImpl.class)
 public interface UserDTO {
@@ -27,9 +28,9 @@ public interface UserDTO {
 
   void setEmail(String email);
 
-  String getUserType();
+  UserType getUserType();
 
-  void setUserTypeFromInt(int userType);
+  void setUserType(UserType userType);
 
   AddressDTO getAddress();
 

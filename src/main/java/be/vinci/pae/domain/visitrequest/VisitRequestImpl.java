@@ -1,10 +1,11 @@
 package be.vinci.pae.domain.visitrequest;
 
-import be.vinci.pae.domain.address.AddressDTO;
-import be.vinci.pae.domain.user.UserDTO;
+import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
-import java.util.Date;
+import be.vinci.pae.domain.address.AddressDTO;
+import be.vinci.pae.domain.user.UserDTO;
+import be.vinci.pae.utils.ValueLink.VisitRequestStatus;
 import views.Views;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -19,7 +20,7 @@ public class VisitRequestImpl implements VisitRequest {
   @JsonView(Views.Public.class)
   private AddressDTO address;
   @JsonView(Views.Public.class)
-  private String status;
+  private VisitRequestStatus status;
   @JsonView(Views.Public.class)
   private Date chosenDateTime;
   @JsonView(Views.Public.class)
@@ -68,12 +69,12 @@ public class VisitRequestImpl implements VisitRequest {
   }
 
   @Override
-  public String getStatus() {
+  public VisitRequestStatus getStatus() {
     return status;
   }
 
   @Override
-  public void setStatus(String status) {
+  public void setStatus(VisitRequestStatus status) {
     this.status = status;
   }
 

@@ -1,10 +1,11 @@
 package be.vinci.pae.domain.option;
 
-import be.vinci.pae.domain.furniture.FurnitureDTO;
-import be.vinci.pae.domain.user.UserDTO;
+import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
-import java.util.Date;
+import be.vinci.pae.domain.furniture.FurnitureDTO;
+import be.vinci.pae.domain.user.UserDTO;
+import be.vinci.pae.utils.ValueLink.OptionStatus;
 import views.Views;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -21,7 +22,7 @@ public class OptionImpl implements Option {
   @JsonView(Views.Public.class)
   private Date date;
   @JsonView(Views.Public.class)
-  private String status;
+  private OptionStatus status;
 
   @Override
   public int getId() {
@@ -74,12 +75,12 @@ public class OptionImpl implements Option {
   }
 
   @Override
-  public String getStatus() {
+  public OptionStatus getStatus() {
     return status;
   }
 
   @Override
-  public void setStatus(String status) {
+  public void setStatus(OptionStatus status) {
     this.status = status;
   }
 }

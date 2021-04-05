@@ -4,7 +4,7 @@ import java.util.List;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.user.DAOUser;
 import be.vinci.pae.utils.BusinessException;
-import be.vinci.pae.utils.ValueLiaison;
+import be.vinci.pae.utils.ValueLink.UserType;
 import jakarta.inject.Inject;
 
 public class UserUCCImpl implements UserUCC {
@@ -60,7 +60,7 @@ public class UserUCCImpl implements UserUCC {
   }
 
   @Override
-  public boolean validateUser(int id, String type) {
+  public boolean validateUser(int id, UserType type) {
     try {
       this.dalServices.startTransaction();
       User user = (User) daoUser.getUserById(id);
@@ -70,7 +70,7 @@ public class UserUCCImpl implements UserUCC {
       if (user.isValidRegistration()) {
         throw new BusinessException("L'utilisateur est déjà validé");
       }
-      if (daoUser.validateUser(id, ValueLiaison.stringToIntUserType(type))) {
+      if (daoUser.validateUser(id, type.ordinal())) {
         this.dalServices.commitTransaction();
         dalServices.closeConnection();
         return true;

@@ -144,7 +144,7 @@ const onCheckOption = async () => {
   let option = await callAPI(API_BASE_URL + furniture.id + "/getOption", "GET");
   let user = getUserSessionData();
   console.log(user)
-  if(option.status != undefined && option.status == "en cours") {
+  if(option.status != undefined && option.status == "en_cours") {
     if(option.buyer.id == user.user.id) {
       //Afficher bouton annuler
       optionDocument.innerHTML = cancelOption;
