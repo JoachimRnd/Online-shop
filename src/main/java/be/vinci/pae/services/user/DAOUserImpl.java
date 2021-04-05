@@ -1,13 +1,6 @@
 package be.vinci.pae.services.user;
 
 
-import be.vinci.pae.domain.address.AddressDTO;
-import be.vinci.pae.domain.address.AddressFactory;
-import be.vinci.pae.domain.user.UserDTO;
-import be.vinci.pae.domain.user.UserFactory;
-import be.vinci.pae.services.DalBackendServices;
-import be.vinci.pae.utils.FatalException;
-import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,6 +8,14 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import be.vinci.pae.domain.address.AddressDTO;
+import be.vinci.pae.domain.address.AddressFactory;
+import be.vinci.pae.domain.user.UserDTO;
+import be.vinci.pae.domain.user.UserFactory;
+import be.vinci.pae.services.DalBackendServices;
+import be.vinci.pae.utils.FatalException;
+import be.vinci.pae.utils.ValueLink.UserType;
+import jakarta.inject.Inject;
 
 public class DAOUserImpl implements DAOUser {
 
@@ -150,7 +151,7 @@ public class DAOUserImpl implements DAOUser {
       user.setEmail(rs.getString("email"));
       user.setRegistrationDate(Date.from(rs.getTimestamp("registration_date").toInstant()));
       user.setValidRegistration(rs.getBoolean("valid_registration"));
-      user.setUserTypeFromInt(rs.getInt("user_type"));
+      user.setUserType(UserType.values()[rs.getInt("user_type")]);
     }
     return user;
   }

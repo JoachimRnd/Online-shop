@@ -1,5 +1,10 @@
 package be.vinci.pae.api;
 
+import java.time.Instant;
+import java.util.Date;
+import java.util.List;
+import org.glassfish.jersey.server.ContainerRequest;
+import com.fasterxml.jackson.databind.JsonNode;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.api.utils.Json;
@@ -10,8 +15,8 @@ import be.vinci.pae.domain.option.OptionDTO;
 import be.vinci.pae.domain.option.OptionFactory;
 import be.vinci.pae.domain.option.OptionUCC;
 import be.vinci.pae.domain.user.UserDTO;
-import be.vinci.pae.utils.ValueLiaison;
-import com.fasterxml.jackson.databind.JsonNode;
+import be.vinci.pae.utils.ValueLink.FurnitureCondition;
+import be.vinci.pae.utils.ValueLink.OptionStatus;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -26,10 +31,6 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-import java.time.Instant;
-import java.util.Date;
-import java.util.List;
-import org.glassfish.jersey.server.ContainerRequest;
 
 @Singleton
 @Path("/furniture")
@@ -58,14 +59,15 @@ public class Furniture {
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public Response modifyStatus(@PathParam("id") int id, JsonNode json) {
-    if (!json.hasNonNull("condition") || json.get("condition").asText().isEmpty() || !json
-        .hasNonNull("price")) {
+
+    if (!json.hasNonNull("condition") || json.get("condition").asText().isEmpty()
+        || !json.hasNonNull("price")) {
       return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")
           .type(MediaType.TEXT_PLAIN).build();
     }
 
-    if (furnitureUCC
-        .modifyCondition(id, json.get("condition").asText(), json.get("price").asDouble())) {
+    if (furnitureUCC.modifyCondition(id, FurnitureCondition.valueOf(json.get("condition").asText()),
+        json.get("price").asDouble())) {
       return Response.ok().build();
     } else {
       return Response.serverError().build();
@@ -131,7 +133,7 @@ public class Furniture {
     OptionDTO option = optionFactory.getOption();
     option.setDuration(duration);
     option.setDate(Date.from(Instant.now()));
-    option.setStatus(ValueLiaison.RUNNING_OPTION_STRING);
+    option.setStatus(OptionStatus.en_cours);
     option.setFurniture(furnitureFactory.getFurniture());
     option.getFurniture().setId(idFurniture);
     UserDTO currentUser = (UserDTO) request.getProperty("user");

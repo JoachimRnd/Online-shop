@@ -8,7 +8,7 @@ import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.furniture.DAOFurniture;
 import be.vinci.pae.services.option.DAOOption;
 import be.vinci.pae.utils.BusinessException;
-import be.vinci.pae.utils.ValueLiaison;
+import be.vinci.pae.utils.ValueLink.OptionStatus;
 import jakarta.inject.Inject;
 
 public class OptionUCCImpl implements OptionUCC {
@@ -154,7 +154,7 @@ public class OptionUCCImpl implements OptionUCC {
     if (option == null) {
       return true;
     }
-    if (!option.getStatus().equals(ValueLiaison.RUNNING_OPTION_STRING)) {
+    if (!option.getStatus().equals(OptionStatus.en_cours)) {
       return true;
     }
     Date now = new Date();

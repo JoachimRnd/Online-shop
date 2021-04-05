@@ -1,8 +1,8 @@
 package be.vinci.pae.services.furniture;
 
-import be.vinci.pae.domain.furniture.FurnitureDTO;
 import java.time.Instant;
 import java.util.List;
+import be.vinci.pae.domain.furniture.FurnitureDTO;
 
 public interface DAOFurniture {
 
@@ -20,7 +20,7 @@ public interface DAOFurniture {
 
   boolean updateSellingDate(int id, Instant now);
 
-  boolean updateCondition(int id, String status);
+  boolean updateCondition(int id, int condition);
 
   boolean updateDepositDate(int id, Instant now);
 

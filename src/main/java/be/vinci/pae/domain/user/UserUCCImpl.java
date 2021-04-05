@@ -4,7 +4,7 @@ import java.util.List;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.user.DAOUser;
 import be.vinci.pae.utils.BusinessException;
-import be.vinci.pae.utils.ValueLiaison;
+import be.vinci.pae.utils.ValueLink.UserType;
 import jakarta.inject.Inject;
 
 public class UserUCCImpl implements UserUCC {

@@ -1,11 +1,13 @@
 package be.vinci.pae.api;
 
+import java.util.List;
+import com.fasterxml.jackson.databind.JsonNode;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.api.utils.Json;
 import be.vinci.pae.domain.option.OptionUCC;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.user.UserUCC;
-import com.fasterxml.jackson.databind.JsonNode;
+import be.vinci.pae.utils.ValueLink;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -17,7 +19,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-import java.util.List;
 
 @Singleton
 @Path("/admin")
@@ -49,7 +50,8 @@ public class Administration {
     System.out.println("Id : " + json.get("id").asInt());
     System.out.println("Type : " + json.get("type").asText());
 
-    if (userUCC.validateUser(json.get("id").asInt(), json.get("type").asText())) {
+    if (userUCC.validateUser(json.get("id").asInt(),
+        ValueLink.UserType.valueOf(json.get("type").asText()))) {
       return Response.ok().build();
     } else {
       return Response.serverError().build();

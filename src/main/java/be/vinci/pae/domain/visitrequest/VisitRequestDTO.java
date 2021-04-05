@@ -1,9 +1,10 @@
 package be.vinci.pae.domain.visitrequest;
 
+import java.util.Date;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import be.vinci.pae.domain.address.AddressDTO;
 import be.vinci.pae.domain.user.UserDTO;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import java.util.Date;
+import be.vinci.pae.utils.ValueLink.VisitRequestStatus;
 
 @JsonDeserialize(as = VisitRequestImpl.class)
 public interface VisitRequestDTO {
@@ -24,9 +25,9 @@ public interface VisitRequestDTO {
 
   void setAddress(AddressDTO address);
 
-  String getStatus();
+  VisitRequestStatus getStatus();
 
-  void setStatus(String status);
+  void setStatus(VisitRequestStatus status);
 
   Date getChosenDateTime();
 
