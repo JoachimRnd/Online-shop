@@ -1,11 +1,12 @@
 package be.vinci.pae.domain.furniture;
 
+import java.util.Date;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import be.vinci.pae.domain.picture.PictureDTO;
 import be.vinci.pae.domain.type.TypeDTO;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.visitrequest.VisitRequestDTO;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import java.util.Date;
+import be.vinci.pae.utils.ValueLink.FurnitureCondition;
 
 @JsonDeserialize(as = FurnitureImpl.class)
 public interface FurnitureDTO {
@@ -62,9 +63,9 @@ public interface FurnitureDTO {
 
   void setBuyer(UserDTO buyer);
 
-  String getCondition();
+  FurnitureCondition getCondition();
 
-  void setCondition(String condition);
+  void setCondition(FurnitureCondition condition);
 
   String getUnregisteredBuyerEmail();
 

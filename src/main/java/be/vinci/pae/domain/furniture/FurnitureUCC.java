@@ -1,6 +1,7 @@
 package be.vinci.pae.domain.furniture;
 
 import java.util.List;
+import be.vinci.pae.utils.ValueLink.FurnitureCondition;
 
 public interface FurnitureUCC {
 
@@ -14,7 +15,7 @@ public interface FurnitureUCC {
 
   List<FurnitureDTO> getFurnitureByUserName(String typeName);
 
-  boolean modifyCondition(int id, String condition, double price);
+  boolean modifyCondition(int id, FurnitureCondition condition, double price);
 
   FurnitureDTO getFurnitureById(int id);
 

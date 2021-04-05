@@ -1,9 +1,10 @@
 package be.vinci.pae.domain.option;
 
+import java.util.Date;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import be.vinci.pae.domain.furniture.FurnitureDTO;
 import be.vinci.pae.domain.user.UserDTO;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import java.util.Date;
+import be.vinci.pae.utils.ValueLink.OptionStatus;
 
 @JsonDeserialize(as = OptionImpl.class)
 public interface OptionDTO {
@@ -28,8 +29,8 @@ public interface OptionDTO {
 
   void setDate(Date date);
 
-  String getStatus();
+  OptionStatus getStatus();
 
-  void setStatus(String status);
+  void setStatus(OptionStatus status);
 
 }

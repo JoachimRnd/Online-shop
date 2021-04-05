@@ -1,12 +1,13 @@
 package be.vinci.pae.domain.furniture;
 
+import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
 import be.vinci.pae.domain.picture.PictureDTO;
 import be.vinci.pae.domain.type.TypeDTO;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.visitrequest.VisitRequestDTO;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonView;
-import java.util.Date;
+import be.vinci.pae.utils.ValueLink.FurnitureCondition;
 import views.Views;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -31,7 +32,7 @@ class FurnitureImpl implements Furniture {
   @JsonView(Views.Public.class)
   private UserDTO buyer;
   @JsonView(Views.Public.class)
-  private String condition;
+  private FurnitureCondition condition;
 
   @JsonView(Views.Admin.class)
   private double purchasePrice;
@@ -150,11 +151,11 @@ class FurnitureImpl implements Furniture {
     this.buyer = buyer;
   }
 
-  public String getCondition() {
+  public FurnitureCondition getCondition() {
     return condition;
   }
 
-  public void setCondition(String condition) {
+  public void setCondition(FurnitureCondition condition) {
     this.condition = condition;
   }
 

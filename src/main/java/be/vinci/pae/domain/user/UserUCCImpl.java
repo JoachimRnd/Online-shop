@@ -1,15 +1,15 @@
 package be.vinci.pae.domain.user;
 
+import java.util.List;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.user.DAOUser;
 import be.vinci.pae.utils.BusinessException;
-import be.vinci.pae.utils.ValueLiaison;
+import be.vinci.pae.utils.ValueLink.UserType;
 import jakarta.inject.Inject;
-import java.util.List;
 
 public class UserUCCImpl implements UserUCC {
-  //@TODO dalServices.closeConnection() appel automatique ? Si possible
-  //Try finally
+  // @TODO dalServices.closeConnection() appel automatique ? Si possible
+  // Try finally
 
   @Inject
   private DAOUser daoUser;
@@ -33,7 +33,7 @@ public class UserUCCImpl implements UserUCC {
   @Override
   public UserDTO register(UserDTO newUser) {
     this.dalServices.startTransaction();
-    //si champs unique alors recherche dans DB si pas deja utilise
+    // si champs unique alors recherche dans DB si pas deja utilise
     User user = (User) this.daoUser.getUserByUsername(newUser.getUsername());
     if (user != null) {
       throw new BusinessException("Ce pseudo est deja utilise");
@@ -60,7 +60,7 @@ public class UserUCCImpl implements UserUCC {
   }
 
   @Override
-  public boolean validateUser(int id, String type) {
+  public boolean validateUser(int id, UserType type) {
     this.dalServices.startTransaction();
     User user = (User) daoUser.getUserById(id);
     if (user == null) {
@@ -69,7 +69,7 @@ public class UserUCCImpl implements UserUCC {
     if (user.isValidRegistration()) {
       throw new BusinessException("L'utilisateur est déjà validé");
     }
-    if (daoUser.validateUser(id, ValueLiaison.stringToIntUserType(type))) {
+    if (daoUser.validateUser(id, type.ordinal())) {
       this.dalServices.commitTransaction();
       dalServices.closeConnection();
       return true;

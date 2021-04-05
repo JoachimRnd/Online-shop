@@ -1,12 +1,11 @@
 package be.vinci.pae.domain.user;
 
-import be.vinci.pae.domain.address.AddressDTO;
-import be.vinci.pae.utils.BusinessException;
-import be.vinci.pae.utils.ValueLiaison;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonView;
 import java.util.Date;
 import org.mindrot.jbcrypt.BCrypt;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
+import be.vinci.pae.domain.address.AddressDTO;
+import be.vinci.pae.utils.ValueLink.UserType;
 import views.Views;
 
 // ignore all null fields in order to avoid sending props not linked to a JSON view
@@ -24,7 +23,7 @@ class UserImpl implements User {
   @JsonView(Views.Public.class)
   private String email;
   @JsonView(Views.Public.class)
-  private String userType;
+  private UserType userType;
   @JsonView(Views.Public.class)
   private AddressDTO address;
   @JsonView(Views.Public.class)
@@ -88,20 +87,12 @@ class UserImpl implements User {
     this.email = email;
   }
 
-  public String getUserType() {
-    return userType;
+  public UserType getUserType() {
+    return this.userType;
   }
 
-  public void setUserType(String userType) {
-    if (ValueLiaison.isValidUserType(userType)) {
-      this.userType = userType;
-    } else {
-      throw new BusinessException("Wrong user type");
-    }
-  }
-
-  public void setUserTypeFromInt(int userType) {
-    this.userType = ValueLiaison.intToStringUserType(userType);
+  public void setUserType(UserType userType) {
+    this.userType = userType;
   }
 
   public AddressDTO getAddress() {

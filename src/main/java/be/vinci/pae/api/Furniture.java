@@ -15,7 +15,8 @@ import be.vinci.pae.domain.option.OptionDTO;
 import be.vinci.pae.domain.option.OptionFactory;
 import be.vinci.pae.domain.option.OptionUCC;
 import be.vinci.pae.domain.user.UserDTO;
-import be.vinci.pae.utils.ValueLiaison;
+import be.vinci.pae.utils.ValueLink.FurnitureCondition;
+import be.vinci.pae.utils.ValueLink.OptionStatus;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -65,7 +66,7 @@ public class Furniture {
           .type(MediaType.TEXT_PLAIN).build();
     }
 
-    if (furnitureUCC.modifyCondition(id, json.get("condition").asText(),
+    if (furnitureUCC.modifyCondition(id, FurnitureCondition.valueOf(json.get("condition").asText()),
         json.get("price").asDouble())) {
       return Response.ok().build();
     } else {
@@ -132,7 +133,7 @@ public class Furniture {
     OptionDTO option = optionFactory.getOption();
     option.setDuration(duration);
     option.setDate(Date.from(Instant.now()));
-    option.setStatus(ValueLiaison.RUNNING_OPTION_STRING);
+    option.setStatus(OptionStatus.en_cours);
     option.setFurniture(furnitureFactory.getFurniture());
     option.getFurniture().setId(idFurniture);
     UserDTO currentUser = (UserDTO) request.getProperty("user");
