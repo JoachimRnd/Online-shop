@@ -1,6 +1,7 @@
 package be.vinci.pae.domain.user;
 
 import java.util.List;
+import be.vinci.pae.utils.ValueLink.UserType;
 
 public interface UserUCC {
 
@@ -8,7 +9,7 @@ public interface UserUCC {
 
   UserDTO register(UserDTO newUser);
 
-  boolean validateUser(int id, String type);
+  boolean validateUser(int id, UserType type);
 
   List<UserDTO> getUnvalidatedUsers();
 

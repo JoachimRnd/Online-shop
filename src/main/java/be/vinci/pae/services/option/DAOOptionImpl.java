@@ -1,19 +1,19 @@
 package be.vinci.pae.services.option;
 
-import be.vinci.pae.domain.option.OptionDTO;
-import be.vinci.pae.domain.option.OptionFactory;
-import be.vinci.pae.services.DalBackendServices;
-import be.vinci.pae.services.furniture.DAOFurniture;
-import be.vinci.pae.services.user.DAOUser;
-import be.vinci.pae.utils.FatalException;
-import be.vinci.pae.utils.ValueLiaison;
-import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import be.vinci.pae.domain.option.OptionDTO;
+import be.vinci.pae.domain.option.OptionFactory;
+import be.vinci.pae.services.DalBackendServices;
+import be.vinci.pae.services.furniture.DAOFurniture;
+import be.vinci.pae.services.user.DAOUser;
+import be.vinci.pae.utils.FatalException;
+import be.vinci.pae.utils.ValueLink.OptionStatus;
+import jakarta.inject.Inject;
 
 public class DAOOptionImpl implements DAOOption {
 
@@ -41,9 +41,8 @@ public class DAOOptionImpl implements DAOOption {
         + "status FROM project.options WHERE furniture = ?";
     querySelectOptionsOfBuyer = "SELECT option_id, buyer, furniture, duration, date, "
         + "status FROM project.options WHERE buyer = ?";
-    querySelectOptionsOfBuyerFromFurniture =
-        "SELECT option_id, buyer, furniture, duration, date, "
-            + "status FROM project.options WHERE buyer = ? AND furniture = ?";
+    querySelectOptionsOfBuyerFromFurniture = "SELECT option_id, buyer, furniture, duration, date, "
+        + "status FROM project.options WHERE buyer = ? AND furniture = ?";
     queryAddOption = "INSERT INTO project.options (option_id, buyer, furniture, duration, date, "
         + "status) VALUES (DEFAULT, ?, ?, ?, ?, ?)";
     queryChangeStatusOption = "UPDATE project.options SET status = ? WHERE option_id = ?";
@@ -60,7 +59,7 @@ public class DAOOptionImpl implements DAOOption {
       addOption.setInt(2, option.getFurniture().getId());
       addOption.setInt(3, option.getDuration());
       addOption.setTimestamp(4, Timestamp.from(option.getDate().toInstant()));
-      addOption.setInt(5, ValueLiaison.stringToIntOption(option.getStatus()));
+      addOption.setInt(5, option.getStatus().ordinal());
       addOption.executeUpdate();
       try (ResultSet rs = addOption.getGeneratedKeys()) {
         if (rs.next()) {
@@ -77,8 +76,8 @@ public class DAOOptionImpl implements DAOOption {
   @Override
   public List<OptionDTO> selectOptionsOfFurniture(int idFurniture) {
     try {
-      PreparedStatement selectOptionsOfFurniture = dalBackendServices
-          .getPreparedStatement(querySelectOptionsOfFurniture);
+      PreparedStatement selectOptionsOfFurniture =
+          dalBackendServices.getPreparedStatement(querySelectOptionsOfFurniture);
       selectOptionsOfFurniture.setInt(1, idFurniture);
       try (ResultSet rs = selectOptionsOfFurniture.executeQuery()) {
         List<OptionDTO> listOptions = new ArrayList<OptionDTO>();
@@ -99,8 +98,8 @@ public class DAOOptionImpl implements DAOOption {
   @Override
   public List<OptionDTO> selectOptionsOfBuyer(int idBuyer) {
     try {
-      PreparedStatement selectOptionsOfBuyer = dalBackendServices
-          .getPreparedStatement(querySelectOptionsOfBuyer);
+      PreparedStatement selectOptionsOfBuyer =
+          dalBackendServices.getPreparedStatement(querySelectOptionsOfBuyer);
       selectOptionsOfBuyer.setInt(1, idBuyer);
       try (ResultSet rs = selectOptionsOfBuyer.executeQuery()) {
         List<OptionDTO> listOptions = new ArrayList<OptionDTO>();
@@ -121,8 +120,8 @@ public class DAOOptionImpl implements DAOOption {
   @Override
   public OptionDTO selectOptionsOfBuyerFromFurniture(int idBuyer, int idFurniture) {
     try {
-      PreparedStatement selectOptionsOfBuyerFromFurniture = dalBackendServices
-          .getPreparedStatement(querySelectOptionsOfBuyerFromFurniture);
+      PreparedStatement selectOptionsOfBuyerFromFurniture =
+          dalBackendServices.getPreparedStatement(querySelectOptionsOfBuyerFromFurniture);
       selectOptionsOfBuyerFromFurniture.setInt(1, idBuyer);
       selectOptionsOfBuyerFromFurniture.setInt(2, idFurniture);
       try (ResultSet rs = selectOptionsOfBuyerFromFurniture.executeQuery()) {
@@ -137,9 +136,9 @@ public class DAOOptionImpl implements DAOOption {
   @Override
   public boolean finishOption(int id) {
     try {
-      PreparedStatement finishOption = dalBackendServices
-          .getPreparedStatement(queryChangeStatusOption);
-      finishOption.setInt(1, ValueLiaison.FINISHED_OPTION_INT);
+      PreparedStatement finishOption =
+          dalBackendServices.getPreparedStatement(queryChangeStatusOption);
+      finishOption.setInt(1, OptionStatus.finie.ordinal());
       finishOption.setInt(2, id);
       return finishOption.executeUpdate() == 1;
     } catch (SQLException e) {
@@ -151,9 +150,9 @@ public class DAOOptionImpl implements DAOOption {
   @Override
   public boolean cancelOption(OptionDTO optionToCancel) {
     try {
-      PreparedStatement finishOption = dalBackendServices
-          .getPreparedStatement(queryChangeStatusOption);
-      finishOption.setInt(1, ValueLiaison.CANCELED_OPTION_INT);
+      PreparedStatement finishOption =
+          dalBackendServices.getPreparedStatement(queryChangeStatusOption);
+      finishOption.setInt(1, OptionStatus.annulee.ordinal());
       finishOption.setInt(2, optionToCancel.getId());
       return finishOption.executeUpdate() == 1;
     } catch (SQLException e) {
@@ -165,8 +164,8 @@ public class DAOOptionImpl implements DAOOption {
   @Override
   public OptionDTO getLastOptionOfFurniture(int idFurniture) {
     try {
-      PreparedStatement getLastOptionOfFurniture = dalBackendServices
-          .getPreparedStatement(queryGetLastOptionOfFurniture);
+      PreparedStatement getLastOptionOfFurniture =
+          dalBackendServices.getPreparedStatement(queryGetLastOptionOfFurniture);
       getLastOptionOfFurniture.setInt(1, idFurniture);
       try (ResultSet rs = getLastOptionOfFurniture.executeQuery()) {
         return createOption(rs);
@@ -184,7 +183,7 @@ public class DAOOptionImpl implements DAOOption {
       option.setId(rs.getInt("option_id"));
       option.setDate(rs.getDate("date"));
       option.setDuration(rs.getInt("duration"));
-      option.setStatus(ValueLiaison.intToStringOption(rs.getInt("status")));
+      option.setStatus(OptionStatus.values()[rs.getInt("status")]);
       option.setFurniture(daoFurniture.selectFurnitureById(rs.getInt("furniture")));
       option.setBuyer(daoUser.getUserById(rs.getInt("buyer")));
     }
