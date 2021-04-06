@@ -141,7 +141,7 @@ const onCheckOption = async () => {
   if (!furniture) return;
   console.log(furniture);
   let optionDocument = document.querySelector("#option");
-  let option = await callAPI(API_BASE_URL + furniture.id + "/getOption", "GET");
+  let option = await callAPI(API_BASE_URL + furniture.id + "/option", "GET");
   let user = getUserSessionData();
   console.log(user)
   if(option.status != undefined && option.status == "en_cours") {
@@ -172,7 +172,7 @@ const onClickOption = async (e) => {
   try {
     let optionChoice = document.getElementById("dureeOption");
     optionChoice = optionChoice.value;
-    let apiOption = await callAPIWithoutJSONResponse(API_BASE_URL + furniture.id + "/addOption/" + optionChoice, "POST", user.token);
+    let apiOption = await callAPIWithoutJSONResponse(API_BASE_URL + furniture.id + "/option/", "POST", user.token, {duration: optionChoice});
     optionDocument.innerHTML = cancelOption;
     let btn = document.querySelector("#btnOption")
     btn.addEventListener("click", onClickCancelOption);
@@ -189,7 +189,7 @@ const onClickCancelOption = async (e) => {
   let user = getUserSessionData();
   let optionDocument = document.querySelector("#option");
   try {
-    let apiOption = await callAPIWithoutJSONResponse(API_BASE_URL + furniture.id + "/cancelOption", "PUT", user.token);
+    let apiOption = await callAPIWithoutJSONResponse(API_BASE_URL + furniture.id + "/option", "PUT", user.token);
     optionDocument.innerHTML = validateOption;
     let btn = document.querySelector("#btnOption")
     btn.addEventListener("click", onClickOption);

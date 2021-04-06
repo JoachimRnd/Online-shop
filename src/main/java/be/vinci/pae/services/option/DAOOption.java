@@ -11,7 +11,7 @@ public interface DAOOption {
 
   List<OptionDTO> selectOptionsOfBuyer(int idBuyer);
 
-  OptionDTO selectOptionsOfBuyerFromFurniture(int idBuyer, int idFurniture);
+  List<OptionDTO> selectOptionsOfBuyerFromFurniture(int idBuyer, int idFurniture);
 
   boolean finishOption(int id);
 
