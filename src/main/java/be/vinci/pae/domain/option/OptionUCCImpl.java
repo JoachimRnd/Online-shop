@@ -6,6 +6,7 @@ import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.furniture.DAOFurniture;
 import be.vinci.pae.services.option.DAOOption;
 import be.vinci.pae.utils.BusinessException;
+import be.vinci.pae.utils.Config;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
 import be.vinci.pae.utils.ValueLink.OptionStatus;
 import be.vinci.pae.utils.ValueLink.UserType;
@@ -16,6 +17,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class OptionUCCImpl implements OptionUCC {
+
+  private static final int MAX_DURATION_OPTION = Config.getIntProperty("MaxDurationOption");
+  private static final int MIN_DURATION_OPTION = Config.getIntProperty("MinDurationOption");
 
   @Inject
   private DAOOption daoOption;
@@ -33,8 +37,7 @@ public class OptionUCCImpl implements OptionUCC {
   public OptionDTO addOption(int idFurniture, int duration, UserDTO user) {
     try {
       dalServices.startTransaction();
-      //TODO Get dans les properties pour avoir la durée max d'une option
-      if (duration > 5 || duration < 1) {
+      if (duration > MAX_DURATION_OPTION || duration < MIN_DURATION_OPTION) {
         throw new BusinessException("Durée de l'option incorrecte");
       }
       FurnitureDTO furniture = daoFurniture.selectFurnitureById(idFurniture);
@@ -55,8 +58,7 @@ public class OptionUCCImpl implements OptionUCC {
         int totalDuration = duration;
         for (OptionDTO option : listPreviousOptionBuyer) {
           totalDuration += option.getDuration();
-          //TODO Get dans les properties pour avoir la durée max d'une option
-          if (totalDuration >= 5) {
+          if (totalDuration > MAX_DURATION_OPTION) {
             throw new BusinessException(
                 "La duree cumulee de vos options depasse la duree maximale");
           }
@@ -137,7 +139,7 @@ public class OptionUCCImpl implements OptionUCC {
     try {
       dalServices.startTransaction();
       List<OptionDTO> list = daoOption.selectOptionsOfFurniture(idFurniture);
-      if (list.size() == 0) {
+      if (list.isEmpty()) {
         throw new BusinessException("Il n'y a pas d'option sur ce meuble");
       }
       OptionDTO optionToCancel = null;
