@@ -1,11 +1,5 @@
 package be.vinci.pae.services.option;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 import be.vinci.pae.domain.option.OptionDTO;
 import be.vinci.pae.domain.option.OptionFactory;
 import be.vinci.pae.services.DalBackendServices;
@@ -14,6 +8,12 @@ import be.vinci.pae.services.user.DAOUser;
 import be.vinci.pae.utils.FatalException;
 import be.vinci.pae.utils.ValueLink.OptionStatus;
 import jakarta.inject.Inject;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DAOOptionImpl implements DAOOption {
 
@@ -118,14 +118,20 @@ public class DAOOptionImpl implements DAOOption {
   }
 
   @Override
-  public OptionDTO selectOptionsOfBuyerFromFurniture(int idBuyer, int idFurniture) {
+  public List<OptionDTO> selectOptionsOfBuyerFromFurniture(int idBuyer, int idFurniture) {
     try {
       PreparedStatement selectOptionsOfBuyerFromFurniture =
           dalBackendServices.getPreparedStatement(querySelectOptionsOfBuyerFromFurniture);
       selectOptionsOfBuyerFromFurniture.setInt(1, idBuyer);
       selectOptionsOfBuyerFromFurniture.setInt(2, idFurniture);
       try (ResultSet rs = selectOptionsOfBuyerFromFurniture.executeQuery()) {
-        return createOption(rs);
+        List<OptionDTO> list = new ArrayList<>();
+        do {
+          list.add(createOption(rs));
+        }
+        while (list.get(list.size() - 1) != null);
+        list.remove(list.size() - 1);
+        return list;
       }
     } catch (Exception e) {
       e.printStackTrace();

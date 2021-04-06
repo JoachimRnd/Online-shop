@@ -1,10 +1,5 @@
 package be.vinci.pae.api;
 
-import java.time.Instant;
-import java.util.Date;
-import java.util.List;
-import org.glassfish.jersey.server.ContainerRequest;
-import com.fasterxml.jackson.databind.JsonNode;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.api.utils.Json;
@@ -16,7 +11,7 @@ import be.vinci.pae.domain.option.OptionFactory;
 import be.vinci.pae.domain.option.OptionUCC;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
-import be.vinci.pae.utils.ValueLink.OptionStatus;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -31,6 +26,8 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import java.util.List;
+import org.glassfish.jersey.server.ContainerRequest;
 
 @Singleton
 @Path("/furniture")
@@ -110,7 +107,7 @@ public class Furniture {
    * @return Response
    */
   @PUT
-  @Path("/{idFurniture}/cancelOption")
+  @Path("/{idFurniture}/option")
   @Authorize
   public Response cancelOption(@PathParam("idFurniture") int idFurniture,
       @Context ContainerRequest request) {
@@ -125,20 +122,17 @@ public class Furniture {
    * @return Response
    */
   @POST
-  @Path("/{idFurniture}/addOption/{duration}")
+  @Path("/{idFurniture}/option")
+  @Consumes(MediaType.APPLICATION_JSON)
   @Authorize
   public Response addOption(@PathParam("idFurniture") int idFurniture,
-      @Context ContainerRequest request, @PathParam("duration") int duration) {
-    System.out.println("Ici");
-    OptionDTO option = optionFactory.getOption();
-    option.setDuration(duration);
-    option.setDate(Date.from(Instant.now()));
-    option.setStatus(OptionStatus.en_cours);
-    option.setFurniture(furnitureFactory.getFurniture());
-    option.getFurniture().setId(idFurniture);
-    UserDTO currentUser = (UserDTO) request.getProperty("user");
-    option.setBuyer(currentUser);
-    optionUCC.addOption(option);
+      @Context ContainerRequest request, JsonNode json) {
+    if (!json.has("duration")) {
+      return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")
+          .type(MediaType.TEXT_PLAIN).build();
+    }
+    optionUCC.addOption(idFurniture, json.get("duration").asInt(),
+        (UserDTO) request.getProperty("user"));
     return Response.ok().build();
   }
 
@@ -148,7 +142,7 @@ public class Furniture {
    * @return OptionDTO
    */
   @GET
-  @Path("/{idFurniture}/getOption")
+  @Path("/{idFurniture}/option")
   @Produces(MediaType.APPLICATION_JSON)
   public OptionDTO getOption(@PathParam("idFurniture") int idFurniture) {
     OptionDTO option = optionUCC.getLastOptionOfFurniture(idFurniture);
