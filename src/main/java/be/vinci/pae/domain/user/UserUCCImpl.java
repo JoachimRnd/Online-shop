@@ -32,65 +32,74 @@ public class UserUCCImpl implements UserUCC {
 
   @Override
   public UserDTO register(UserDTO newUser) {
-    this.dalServices.startTransaction();
     // si champs unique alors recherche dans DB si pas deja utilise
-    User user = (User) this.daoUser.getUserByUsername(newUser.getUsername());
-    if (user != null) {
-      throw new BusinessException("Ce pseudo est deja utilise");
+    User user;
+    try {
+      this.dalServices.startTransaction();
+      user = (User) this.daoUser.getUserByUsername(newUser.getUsername());
+      if (user != null) {
+        throw new BusinessException("Ce pseudo est deja utilise");
+      }
+      user = (User) this.daoUser.getUserByEmail(newUser.getEmail());
+      if (user != null) {
+        throw new BusinessException("Cet email est deja utilise");
+      }
+      user = (User) newUser;
+      user.setPassword(user.hashPassword(user.getPassword()));
+      int id = daoUser.addUser(newUser);
+      if (id == -1) {
+        this.dalServices.rollbackTransaction();
+      } else {
+        this.dalServices.commitTransaction();
+      }
+      user.setId(id);
+      return user;
+    } finally {
+      dalServices.closeConnection();
     }
-    user = (User) this.daoUser.getUserByEmail(newUser.getEmail());
-    if (user != null) {
-      throw new BusinessException("Cet email est deja utilise");
-    }
-
-    user = (User) newUser;
-
-    user.setPassword(user.hashPassword(user.getPassword()));
-
-    int id = daoUser.addUser(newUser);
-    if (id == -1) {
-      this.dalServices.rollbackTransaction();
-    } else {
-      this.dalServices.commitTransaction();
-    }
-    user.setId(id);
-
-    dalServices.closeConnection();
-    return user;
   }
 
   @Override
   public boolean validateUser(int id, UserType type) {
-    this.dalServices.startTransaction();
-    User user = (User) daoUser.getUserById(id);
-    if (user == null) {
-      throw new BusinessException("L'utilisateur n'existe pas");
-    }
-    if (user.isValidRegistration()) {
-      throw new BusinessException("L'utilisateur est déjà validé");
-    }
-    if (daoUser.validateUser(id, type.ordinal())) {
-      this.dalServices.commitTransaction();
+    try {
+      this.dalServices.startTransaction();
+      User user = (User) daoUser.getUserById(id);
+      if (user == null) {
+        throw new BusinessException("L'utilisateur n'existe pas");
+      }
+      if (user.isValidRegistration()) {
+        throw new BusinessException("L'utilisateur est déjà validé");
+      }
+      if (daoUser.validateUser(id, type.ordinal())) {
+        this.dalServices.commitTransaction();
+        dalServices.closeConnection();
+        return true;
+      } else {
+        this.dalServices.rollbackTransaction();
+        return false;
+      }
+    } finally {
       dalServices.closeConnection();
-      return true;
-    } else {
-      this.dalServices.rollbackTransaction();
-      dalServices.closeConnection();
-      return false;
     }
   }
 
   @Override
   public List<UserDTO> getUnvalidatedUsers() {
-    List<UserDTO> list = daoUser.getUnvalidatedUsers();
-    dalServices.closeConnection();
-    return list;
+    try {
+      List<UserDTO> list = daoUser.getUnvalidatedUsers();
+      return list;
+    } finally {
+      dalServices.closeConnection();
+    }
   }
 
   @Override
   public UserDTO getUserById(int id) {
-    UserDTO user = daoUser.getUserById(id);
-    dalServices.closeConnection();
-    return user;
+    try {
+      UserDTO user = daoUser.getUserById(id);
+      return user;
+    } finally {
+      dalServices.closeConnection();
+    }
   }
 }

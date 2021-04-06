@@ -1,5 +1,14 @@
 package be.vinci.pae.api;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import be.vinci.pae.api.utils.Json;
 import be.vinci.pae.domain.address.AddressDTO;
 import be.vinci.pae.domain.address.AddressFactory;
@@ -8,11 +17,6 @@ import be.vinci.pae.domain.user.UserFactory;
 import be.vinci.pae.domain.user.UserUCC;
 import be.vinci.pae.utils.Config;
 import be.vinci.pae.utils.FatalException;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -22,10 +26,6 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
 
 @Singleton
 @Path("/auths")
@@ -33,6 +33,7 @@ public class Authentication {
 
   private final Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
   private final ObjectMapper jsonMapper = new ObjectMapper();
+  private static final int DURATION_TOKEN = Config.getIntProperty("DurationToken");
 
   @Inject
   private UserUCC userUCC;
@@ -151,9 +152,8 @@ public class Authentication {
     String token;
     try {
       token = JWT.create().withIssuer("auth0").withClaim("user", user.getId())
-          .withClaim("username", user.getUsername())
-          .withExpiresAt(Date
-              .from(LocalDate.now().plusMonths(1).atStartOfDay(ZoneId.systemDefault()).toInstant()))
+          .withClaim("username", user.getUsername()).withExpiresAt(Date.from(LocalDate.now()
+              .plusMonths(DURATION_TOKEN).atStartOfDay(ZoneId.systemDefault()).toInstant()))
           .sign(this.jwtAlgorithm);
     } catch (Exception e) {
       throw new FatalException("Unable to create token", e);
