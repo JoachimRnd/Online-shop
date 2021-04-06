@@ -4,7 +4,6 @@ import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.api.utils.Json;
 import be.vinci.pae.domain.furniture.FurnitureDTO;
-import be.vinci.pae.domain.furniture.FurnitureFactory;
 import be.vinci.pae.domain.furniture.FurnitureUCC;
 import be.vinci.pae.domain.option.OptionDTO;
 import be.vinci.pae.domain.option.OptionFactory;
@@ -41,9 +40,6 @@ public class Furniture {
 
   @Inject
   private OptionFactory optionFactory;
-
-  @Inject
-  private FurnitureFactory furnitureFactory;
 
   /**
    * modify the condition of a furniture.

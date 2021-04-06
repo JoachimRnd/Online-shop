@@ -128,8 +128,7 @@ public class DAOOptionImpl implements DAOOption {
         List<OptionDTO> list = new ArrayList<>();
         do {
           list.add(createOption(rs));
-        }
-        while (list.get(list.size() - 1) != null);
+        } while (list.get(list.size() - 1) != null);
         list.remove(list.size() - 1);
         return list;
       }
