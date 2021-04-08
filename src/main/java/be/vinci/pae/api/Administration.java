@@ -4,6 +4,8 @@ import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.api.utils.Json;
+import be.vinci.pae.domain.furniture.FurnitureDTO;
+import be.vinci.pae.domain.furniture.FurnitureUCC;
 import be.vinci.pae.domain.option.OptionUCC;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.user.UserUCC;
@@ -29,6 +31,9 @@ public class Administration {
 
   @Inject
   private OptionUCC optionUCC;
+
+  @Inject
+  private FurnitureUCC furnitureUCC;
 
   /**
    * Valid a user.
@@ -57,6 +62,19 @@ public class Administration {
       return Response.serverError().build();
     }
 
+  }
+
+  /**
+   * List all furniture.
+   *
+   * @return List of FurnitureDTO
+   */
+  @GET
+  @Path("allFurniture")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public List<FurnitureDTO> listAllFurniture() {
+    return Json.filterPublicJsonViewAsList(furnitureUCC.getAllFurniture(), FurnitureDTO.class);
   }
 
   /**

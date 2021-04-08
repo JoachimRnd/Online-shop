@@ -8,6 +8,8 @@ public interface DAOFurniture {
 
   List<FurnitureDTO> selectAllFurniture();
 
+  List<FurnitureDTO> selectFurnitureUsers();
+
   List<FurnitureDTO> selectFurnitureByType(String type);
 
   List<FurnitureDTO> selectFurnitureByPrice(double price);
@@ -25,5 +27,6 @@ public interface DAOFurniture {
   boolean updateDepositDate(int id, Instant now);
 
   boolean updateSellingPrice(int id, Double price);
+
 
 }

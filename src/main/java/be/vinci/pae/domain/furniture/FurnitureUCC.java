@@ -7,6 +7,8 @@ public interface FurnitureUCC {
 
   List<FurnitureDTO> getAllFurniture();
 
+  List<FurnitureDTO> getFurnitureUsers();
+
   FurnitureDTO addFurniture(FurnitureDTO furniture);
 
   List<FurnitureDTO> getFurnitureByTypeName(String typeName);
@@ -18,5 +20,6 @@ public interface FurnitureUCC {
   boolean modifyCondition(int id, FurnitureCondition condition, double price);
 
   FurnitureDTO getFurnitureById(int id);
+
 
 }
