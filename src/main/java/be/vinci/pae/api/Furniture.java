@@ -1,5 +1,8 @@
 package be.vinci.pae.api;
 
+import java.util.List;
+import org.glassfish.jersey.server.ContainerRequest;
+import com.fasterxml.jackson.databind.JsonNode;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.api.utils.Json;
@@ -10,7 +13,6 @@ import be.vinci.pae.domain.option.OptionFactory;
 import be.vinci.pae.domain.option.OptionUCC;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
-import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -25,8 +27,6 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-import java.util.List;
-import org.glassfish.jersey.server.ContainerRequest;
 
 @Singleton
 @Path("/furniture")
@@ -58,7 +58,6 @@ public class Furniture {
       return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")
           .type(MediaType.TEXT_PLAIN).build();
     }
-
     if (furnitureUCC.modifyCondition(id, FurnitureCondition.valueOf(json.get("condition").asText()),
         json.get("price").asDouble())) {
       return Response.ok().build();
@@ -76,9 +75,8 @@ public class Furniture {
   @Path("allFurniture")
   @Produces(MediaType.APPLICATION_JSON)
   public List<FurnitureDTO> listAllFurniture() {
-    return Json.filterPublicJsonViewAsList(furnitureUCC.getAllFurniture(), FurnitureDTO.class);
+    return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureUsers(), FurnitureDTO.class);
   }
-
 
   /**
    * List furniture with id.
