@@ -21,6 +21,7 @@ import jakarta.inject.Inject;
 public class DAOFurnitureImpl implements DAOFurniture {
 
   private String querySelectAllFurniture;
+  private String querySelectFurnitureUsers;
   private String querySelectFurnitureById;
   private String queryInsertFurniture;
   private String queryUpdateSellingDate;
@@ -73,6 +74,11 @@ public class DAOFurnitureImpl implements DAOFurniture {
         + " f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date,"
         + " f.withdrawal_date_to_customer, f.buyer,f.condition, f.unregistered_buyer_email,"
         + " f.favourite_picture FROM project.furniture f";
+    querySelectFurnitureUsers = "SELECT f.furniture_id, f.description, f.type,"
+        + " f.visit_request, f.purchase_price, f.withdrawal_date_from_customer, f.selling_price,"
+        + " f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date,"
+        + " f.withdrawal_date_to_customer, f.buyer,f.condition, f.unregistered_buyer_email,"
+        + " f.favourite_picture FROM project.furniture f WHERE f.condition = ?";
     querySelectFurnitureById = "SELECT f.furniture_id, f.description, f.type, f.visit_request,"
         + " f.purchase_price, f.withdrawal_date_from_customer, f.selling_price,"
         + " f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date,"
@@ -96,6 +102,28 @@ public class DAOFurnitureImpl implements DAOFurniture {
       PreparedStatement selectAllFurniture =
           dalServices.getPreparedStatement(querySelectAllFurniture);
       try (ResultSet rs = selectAllFurniture.executeQuery()) {
+        List<FurnitureDTO> listFurniture = new ArrayList<>();
+        FurnitureDTO furniture;
+        do {
+          furniture = createFurniture(rs);
+          listFurniture.add(furniture);
+        } while (furniture != null);
+        listFurniture.remove(listFurniture.size() - 1);
+        return listFurniture;
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : selectAllFurnitures");
+    }
+  }
+
+  @Override
+  public List<FurnitureDTO> selectFurnitureUsers() {
+    try {
+      PreparedStatement selectFurnitureUsers =
+          dalServices.getPreparedStatement(querySelectFurnitureUsers);
+      selectFurnitureUsers.setInt(1, FurnitureCondition.en_vente.ordinal());
+      try (ResultSet rs = selectFurnitureUsers.executeQuery()) {
         List<FurnitureDTO> listFurniture = new ArrayList<>();
         FurnitureDTO furniture;
         do {
