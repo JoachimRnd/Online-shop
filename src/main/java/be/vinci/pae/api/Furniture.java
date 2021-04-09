@@ -11,6 +11,8 @@ import be.vinci.pae.domain.furniture.FurnitureUCC;
 import be.vinci.pae.domain.option.OptionDTO;
 import be.vinci.pae.domain.option.OptionFactory;
 import be.vinci.pae.domain.option.OptionUCC;
+import be.vinci.pae.domain.type.TypeDTO;
+import be.vinci.pae.domain.type.TypeUCC;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
 import jakarta.inject.Inject;
@@ -40,6 +42,9 @@ public class Furniture {
 
   @Inject
   private OptionFactory optionFactory;
+
+  @Inject
+  private TypeUCC typeUCC;
 
   /**
    * modify the condition of a furniture.
@@ -76,6 +81,18 @@ public class Furniture {
   @Produces(MediaType.APPLICATION_JSON)
   public List<FurnitureDTO> listAllFurniture() {
     return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureUsers(), FurnitureDTO.class);
+  }
+
+  /**
+   * List all furniture types.
+   *
+   * @return List of TypeDTO
+   */
+  @GET
+  @Path("allFurnitureTypes")
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<TypeDTO> listAllFurnitureTypes() {
+    return Json.filterPublicJsonViewAsList(typeUCC.getFurnitureTypes(), TypeDTO.class);
   }
 
   /**

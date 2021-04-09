@@ -1,14 +1,26 @@
 package be.vinci.pae.domain.type;
 
-public class TypeUCCImpl {
+import java.util.List;
+import be.vinci.pae.services.DalServices;
+import be.vinci.pae.services.type.DAOType;
+import jakarta.inject.Inject;
 
-  // @Inject
-  // private DalServices dalServices;
+public class TypeUCCImpl implements TypeUCC {
 
-  // try {
-  // method to implement
-  // } finally {
-  // this.dalServices.closeConnection();
-  // }
+  @Inject
+  private DAOType daoType;
+
+  @Inject
+  private DalServices dalServices;
+
+  @Override
+  public List<TypeDTO> getFurnitureTypes() {
+    try {
+      List<TypeDTO> listTypes = this.daoType.selectFurnitureTypes();
+      return listTypes;
+    } finally {
+      this.dalServices.closeConnection();
+    }
+  }
 
 }

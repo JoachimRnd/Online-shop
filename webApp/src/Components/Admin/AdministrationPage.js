@@ -4,7 +4,7 @@ import Navbar from "../Navbar.js";
 let adminPage = `<h4 id="pageTitle">Admin</h4>
     <button class="btn btn-primary" id="validation">Demandes d'inscriptions</button>
     <button class="btn btn-success" id="">Demandes de visites</button>
-    <button class="btn btn-dark" id="">Ajouter type meuble</button>
+    <button class="btn btn-dark" id="furnitureType">Ajouter type meuble</button>
 
 `;
 
@@ -15,11 +15,18 @@ const AdministrationPage = () => {
 
     let buttonValidation = document.getElementById("validation");
     buttonValidation.addEventListener("click",onValidation);
+    let buttonFurnitureType = document.getElementById("furnitureType");
+    buttonFurnitureType.addEventListener("click",onFurnitureType);
 };
 
 const onValidation = () => {
     Navbar();
     RedirectUrl("/admin/validation");
+}
+
+const onFurnitureType = () => {
+    Navbar();
+    RedirectUrl("/admin/furnitureType");
 }
 
 
