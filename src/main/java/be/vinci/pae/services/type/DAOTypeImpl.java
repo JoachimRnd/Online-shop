@@ -1,17 +1,22 @@
 package be.vinci.pae.services.type;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import be.vinci.pae.domain.type.TypeDTO;
 import be.vinci.pae.domain.type.TypeFactory;
 import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.utils.FatalException;
 import jakarta.inject.Inject;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class DAOTypeImpl implements DAOType {
 
   private String querySelectTypeId;
+  private String querySelectAllTypes;
+  private String queryDeleteType;
+  private String queryInsertType;
 
   @Inject
   private TypeFactory typeFactory;
@@ -23,9 +28,32 @@ public class DAOTypeImpl implements DAOType {
    * Constructor of the DAO.
    */
   public DAOTypeImpl() {
-    super();
     querySelectTypeId =
         "SELECT t.type_id, t.name FROM project.furniture_types t WHERE t.type_id = ?";
+    querySelectAllTypes = "SELECT t.type_id, t.name FROM project.furniture_types t";
+    queryDeleteType = "DELETE FROM project.furniture_types t WHERE t.type_id = ?";
+    queryInsertType = "INSERT INTO project.furniture_types (type_id,name) VALUES (DEFAULT,?)";
+  }
+
+  @Override
+  public List<TypeDTO> selectFurnitureTypes() {
+    try {
+      PreparedStatement selectFurnitureTypes =
+          dalServices.getPreparedStatement(querySelectAllTypes);
+      try (ResultSet rs = selectFurnitureTypes.executeQuery()) {
+        List<TypeDTO> listTypes = new ArrayList<>();
+        TypeDTO type;
+        do {
+          type = createType(rs);
+          listTypes.add(type);
+        } while (type != null);
+        listTypes.remove(listTypes.size() - 1);
+        return listTypes;
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : selectAllTypes");
+    }
   }
 
   @Override
@@ -49,9 +77,23 @@ public class DAOTypeImpl implements DAOType {
   }
 
   @Override
-  public int addType(TypeDTO type) {
-    // TODO Auto-generated method stub
-    return -1;
+  public int addType(String type) {
+    int typeId = -1;
+    try {
+      PreparedStatement insertType = this.dalServices.getPreparedStatementAdd(queryInsertType);
+      insertType.setString(1, type);
+      insertType.execute();
+
+      ResultSet rs = insertType.getGeneratedKeys();
+      if (rs.next()) {
+        typeId = rs.getInt(1);
+      }
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : insertType");
+    }
+    return typeId;
   }
 
   private TypeDTO createType(ResultSet rs) throws SQLException {
@@ -63,4 +105,19 @@ public class DAOTypeImpl implements DAOType {
     }
     return type;
   }
+
+  @Override
+  public boolean deleteFurnitureType(int id) {
+    try {
+      PreparedStatement deleteFurnitureType =
+          this.dalServices.getPreparedStatement(queryDeleteType);
+      deleteFurnitureType.setInt(1, id);
+      deleteFurnitureType.execute();
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : deleteFurniture");
+    }
+    return true;
+  }
+
 }
