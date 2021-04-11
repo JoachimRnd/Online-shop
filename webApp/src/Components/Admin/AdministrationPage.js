@@ -4,7 +4,7 @@ import Navbar from "../Navbar.js";
 let adminPage = `<h4 id="pageTitle">Admin</h4>
     <button class="btn btn-primary" id="validation">Demandes d'inscriptions</button>
     <button class="btn btn-success" id="">Demandes de visites</button>
-    <button class="btn btn-dark" id="furnitureType">Ajouter type meuble</button>
+    <button class="btn btn-dark" id="furnitureType">Ajouter ou supprimer type meuble</button>
 
 `;
 

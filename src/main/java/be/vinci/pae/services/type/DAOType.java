@@ -11,6 +11,8 @@ public interface DAOType {
 
   TypeDTO selectTypeById(int id);
 
-  int addType(TypeDTO type);
+  int addType(String type);
+
+  boolean deleteFurnitureType(int id);
 
 }

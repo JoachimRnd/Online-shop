@@ -15,6 +15,8 @@ public class DAOTypeImpl implements DAOType {
 
   private String querySelectTypeId;
   private String querySelectAllTypes;
+  private String queryDeleteType;
+  private String queryInsertType;
 
   @Inject
   private TypeFactory typeFactory;
@@ -29,6 +31,8 @@ public class DAOTypeImpl implements DAOType {
     querySelectTypeId =
         "SELECT t.type_id, t.name FROM project.furniture_types t WHERE t.type_id = ?";
     querySelectAllTypes = "SELECT t.type_id, t.name FROM project.furniture_types t";
+    queryDeleteType = "DELETE FROM project.furniture_types t WHERE t.type_id = ?";
+    queryInsertType = "INSERT INTO project.furniture_types (type_id,name) VALUES (DEFAULT,?)";
   }
 
   @Override
@@ -73,9 +77,23 @@ public class DAOTypeImpl implements DAOType {
   }
 
   @Override
-  public int addType(TypeDTO type) {
-    // TODO Auto-generated method stub
-    return -1;
+  public int addType(String type) {
+    int typeId = -1;
+    try {
+      PreparedStatement insertType = this.dalServices.getPreparedStatementAdd(queryInsertType);
+      insertType.setString(1, type);
+      insertType.execute();
+
+      ResultSet rs = insertType.getGeneratedKeys();
+      if (rs.next()) {
+        typeId = rs.getInt(1);
+      }
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : insertType");
+    }
+    return typeId;
   }
 
   private TypeDTO createType(ResultSet rs) throws SQLException {
@@ -87,4 +105,19 @@ public class DAOTypeImpl implements DAOType {
     }
     return type;
   }
+
+  @Override
+  public boolean deleteFurnitureType(int id) {
+    try {
+      PreparedStatement deleteFurnitureType =
+          this.dalServices.getPreparedStatement(queryDeleteType);
+      deleteFurnitureType.setInt(1, id);
+      deleteFurnitureType.execute();
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : deleteFurniture");
+    }
+    return true;
+  }
+
 }
