@@ -185,10 +185,14 @@ public class DAOFurnitureImpl implements DAOFurniture {
     // TODO Auto-generated method stub
     return null;
     /*
-     * List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>(); try { PreparedStatement selectFurnitureByType =
-     * dalServices.getPreparedStatement(querySelectFurnitureByType); selectFurnitureByType.setString(1, type); ResultSet rs =
-     * selectFurnitureByType.executeQuery(); while (rs.next()) { FurnitureDTO furniture = furnitureFactory.getFurniture(); listFurniture.add(furniture); }
-     * return listFurniture; } catch (Exception e) { e.printStackTrace(); throw new FatalException("Data error : selectFurnitureByType"); }
+     * List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>(); try {
+     *  PreparedStatement selectFurnitureByType =
+     * dalServices.getPreparedStatement(querySelectFurnitureByType); 
+     * selectFurnitureByType.setString(1, type); ResultSet rs =
+     * selectFurnitureByType.executeQuery(); while (rs.next()) { 
+     * FurnitureDTO furniture = furnitureFactory.getFurniture(); listFurniture.add(furniture); }
+     * return listFurniture; } catch (Exception e) { e.printStackTrace(); 
+     * throw new FatalException("Data error : selectFurnitureByType"); }
      */
   }
 
@@ -197,10 +201,14 @@ public class DAOFurnitureImpl implements DAOFurniture {
     // TODO Auto-generated method stub
     return null;
     /*
-     * List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>(); try { PreparedStatement selectFurnitureByPrice =
-     * dalServices.getPreparedStatement(querySelectFurnitureByPrice); selectFurnitureByPrice.setDouble(1, price); ResultSet rs =
-     * selectFurnitureByPrice.executeQuery(); while (rs.next()) { FurnitureDTO furniture = furnitureFactory.getFurniture(); listFurniture.add(furniture);
-     * } return listFurniture; } catch (Exception e) { e.printStackTrace(); throw new FatalException("Data error : selectFurnitureByPrice"); }
+     * List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>(); try { 
+     * PreparedStatement selectFurnitureByPrice =
+     * dalServices.getPreparedStatement(querySelectFurnitureByPrice); 
+     * selectFurnitureByPrice.setDouble(1, price); ResultSet rs =
+     * selectFurnitureByPrice.executeQuery(); while (rs.next()) { 
+     * FurnitureDTO furniture = furnitureFactory.getFurniture(); listFurniture.add(furniture);
+     * } return listFurniture; } catch (Exception e) { e.printStackTrace(); 
+     * throw new FatalException("Data error : selectFurnitureByPrice"); }
      */
   }
 
@@ -209,9 +217,12 @@ public class DAOFurnitureImpl implements DAOFurniture {
     // TODO Auto-generated method stub
     return null;
     /*
-     * List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>(); try { PreparedStatement selectFurnitureByUser =
-     * dalServices.getPreparedStatement(querySelectFurnitureByUser); ResultSet rs = selectFurnitureByUser.executeQuery(); while (rs.next()) { FurnitureDTO
-     * furniture = furnitureFactory.getFurniture(); listFurniture.add(furniture); } return listFurniture; } catch (Exception e) { e.printStackTrace();
+     * List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>(); try { 
+     * PreparedStatement selectFurnitureByUser =
+     * dalServices.getPreparedStatement(querySelectFurnitureByUser); 
+     * ResultSet rs = selectFurnitureByUser.executeQuery(); while (rs.next()) { FurnitureDTO
+     * furniture = furnitureFactory.getFurniture(); listFurniture.add(furniture); } 
+     * return listFurniture; } catch (Exception e) { e.printStackTrace();
      * throw new FatalException("Data error : selectFurnitureByUser"); }
      */
   }
