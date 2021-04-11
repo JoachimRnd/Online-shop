@@ -28,5 +28,7 @@ public interface DAOFurniture {
 
   boolean updateSellingPrice(int id, Double price);
 
+  List<FurnitureDTO> selectSalesFurniture();
+
 
 }

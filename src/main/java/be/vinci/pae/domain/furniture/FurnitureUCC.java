@@ -21,5 +21,7 @@ public interface FurnitureUCC {
 
   FurnitureDTO getFurnitureById(int id);
 
+  List<FurnitureDTO> getSalesFurnitureAdmin();
+
 
 }

@@ -163,4 +163,18 @@ public class Furniture {
     return Json.filterPublicJsonView(option, OptionDTO.class);
   }
 
+  /**
+   * List sales furniture.
+   *
+   * @return List of FurnitureDTO
+   */
+  @GET
+  @Path("sales")
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<FurnitureDTO> listSalesFurniture() {
+    return Json.filterPublicJsonViewAsList(furnitureUCC.getSalesFurnitureAdmin(),
+        FurnitureDTO.class);
+  }
+
+
 }

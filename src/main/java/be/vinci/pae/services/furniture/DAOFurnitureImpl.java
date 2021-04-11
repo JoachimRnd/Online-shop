@@ -28,6 +28,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
   private String queryUpdateCondition;
   private String queryUpdateDepositDate;
   private String queryUpdateSellingPrice;
+  private String querySelectSalesFurniture;
 
   @Inject
   private FurnitureFactory furnitureFactory;
@@ -45,23 +46,25 @@ public class DAOFurnitureImpl implements DAOFurniture {
   private DAOUser daoUser;
 
   /*
-   * querySelectFurnitureByType = "SELECT f.furniture_id, f.description, f.type, f.visit_request," +
-   * " f.purchase_price, f.withdrawal_date_from_customer, f.selling_price," +
+   * querySelectFurnitureByType = "SELECT f.furniture_id, f.description, f.type, f.visit_request," 
+   * +" f.purchase_price, f.withdrawal_date_from_customer, f.selling_price," 
+   * + " f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date,"
+   * + " f.withdrawal_date_to_customer, f.buyer, f.condition, f.unregistered_buyer_email,"
+   * + " f.favourite_picture FROM project.furniture f, project.furniture_type ft" 
+   * + " WHERE ft.type_id = f.type AND ft.name = ?";
+   * querySelectFurnitureByPrice = 
+   * "SELECT f.furniture_id, f.description, f.type, f.visit_request,"
+   * +" f.purchase_price, f.withdrawal_date_from_customer, f.selling_price," 
+   * + " f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date,"
+   * + " f.withdrawal_date_to_customer, f.buyer, f.condition, f.unregistered_buyer_email,"
+   * +" f.favourite_picture FROM project.furniture f WHERE f.selling_price = ?" ; 
+   * querySelectFurnitureByUser =
+   * "SELECT f.furniture_id, f.description, f.type, f.visit_request," 
+   * + " f.purchase_price, f.withdrawal_date_from_customer, f.selling_price," +
    * " f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date," +
    * " f.withdrawal_date_to_customer, f.buyer, f.condition, f.unregistered_buyer_email," +
-   * " f.favourite_picture FROM project.furniture f, project.furniture_type ft" +
-   * " WHERE ft.type_id = f.type AND ft.name = ?"; querySelectFurnitureByPrice =
-   * "SELECT f.furniture_id, f.description, f.type, f.visit_request," +
-   * " f.purchase_price, f.withdrawal_date_from_customer, f.selling_price," +
-   * " f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date," +
-   * " f.withdrawal_date_to_customer, f.buyer, f.condition, f.unregistered_buyer_email," +
-   * " f.favourite_picture FROM project.furniture f WHERE f.selling_price = ?" ;
-   * querySelectFurnitureByUser = "SELECT f.furniture_id, f.description, f.type, f.visit_request," +
-   * " f.purchase_price, f.withdrawal_date_from_customer, f.selling_price," +
-   * " f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date," +
-   * " f.withdrawal_date_to_customer, f.buyer, f.condition, f.unregistered_buyer_email," +
-   * " f.favourite_picture FROM project.furniture f, project.visit_requests vr," +
-   * " project.users u WHERE f.visit_request = vr.visit_request_id AND" +
+   * " f.favourite_picture FROM project.furniture f, project.visit_requests vr," 
+   * + " project.users u WHERE f.visit_request = vr.visit_request_id AND" +
    * " vr.customer = u.user_id AND u.last_name = ?";
    */
 
@@ -94,6 +97,12 @@ public class DAOFurnitureImpl implements DAOFurniture {
     queryUpdateDepositDate = "UPDATE project.furniture SET deposit_date = ? WHERE furniture_id = ?";
     queryUpdateSellingPrice =
         "UPDATE project.furniture SET selling_price = ? WHERE furniture_id = ?";
+    querySelectSalesFurniture = "SELECT f.furniture_id, f.description, f.type,"
+        + " f.visit_request, f.purchase_price, f.withdrawal_date_from_customer, f.selling_price,"
+        + " f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date,"
+        + " f.withdrawal_date_to_customer, f.buyer,f.condition, f.unregistered_buyer_email,"
+        + " f.favourite_picture FROM project.furniture f "
+        + " WHERE f.condition = 'vendu' OR f.condition = 'propose'";
   }
 
   @Override
@@ -183,13 +192,14 @@ public class DAOFurnitureImpl implements DAOFurniture {
     // TODO Auto-generated method stub
     return null;
     /*
-     * List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>(); try { PreparedStatement
-     * selectFurnitureByType = dalServices.getPreparedStatement(querySelectFurnitureByType);
+     * List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>(); try {
+     *  PreparedStatement selectFurnitureByType =
+     * dalServices.getPreparedStatement(querySelectFurnitureByType); 
      * selectFurnitureByType.setString(1, type); ResultSet rs =
-     * selectFurnitureByType.executeQuery(); while (rs.next()) { FurnitureDTO furniture =
-     * furnitureFactory.getFurniture(); listFurniture.add(furniture); } return listFurniture; }
-     * catch (Exception e) { e.printStackTrace(); throw new
-     * FatalException("Data error : selectFurnitureByType"); }
+     * selectFurnitureByType.executeQuery(); while (rs.next()) { 
+     * FurnitureDTO furniture = furnitureFactory.getFurniture(); listFurniture.add(furniture); }
+     * return listFurniture; } catch (Exception e) { e.printStackTrace(); 
+     * throw new FatalException("Data error : selectFurnitureByType"); }
      */
   }
 
@@ -198,13 +208,14 @@ public class DAOFurnitureImpl implements DAOFurniture {
     // TODO Auto-generated method stub
     return null;
     /*
-     * List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>(); try { PreparedStatement
-     * selectFurnitureByPrice = dalServices.getPreparedStatement(querySelectFurnitureByPrice);
+     * List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>(); try { 
+     * PreparedStatement selectFurnitureByPrice =
+     * dalServices.getPreparedStatement(querySelectFurnitureByPrice); 
      * selectFurnitureByPrice.setDouble(1, price); ResultSet rs =
-     * selectFurnitureByPrice.executeQuery(); while (rs.next()) { FurnitureDTO furniture =
-     * furnitureFactory.getFurniture(); listFurniture.add(furniture); } return listFurniture; }
-     * catch (Exception e) { e.printStackTrace(); throw new
-     * FatalException("Data error : selectFurnitureByPrice"); }
+     * selectFurnitureByPrice.executeQuery(); while (rs.next()) { 
+     * FurnitureDTO furniture = furnitureFactory.getFurniture(); listFurniture.add(furniture);
+     * } return listFurniture; } catch (Exception e) { e.printStackTrace(); 
+     * throw new FatalException("Data error : selectFurnitureByPrice"); }
      */
   }
 
@@ -213,12 +224,13 @@ public class DAOFurnitureImpl implements DAOFurniture {
     // TODO Auto-generated method stub
     return null;
     /*
-     * List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>(); try { PreparedStatement
-     * selectFurnitureByUser = dalServices.getPreparedStatement(querySelectFurnitureByUser);
+     * List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>(); try { 
+     * PreparedStatement selectFurnitureByUser =
+     * dalServices.getPreparedStatement(querySelectFurnitureByUser); 
      * ResultSet rs = selectFurnitureByUser.executeQuery(); while (rs.next()) { FurnitureDTO
-     * furniture = furnitureFactory.getFurniture(); listFurniture.add(furniture); } return
-     * listFurniture; } catch (Exception e) { e.printStackTrace(); throw new
-     * FatalException("Data error : selectFurnitureByUser"); }
+     * furniture = furnitureFactory.getFurniture(); listFurniture.add(furniture); } 
+     * return listFurniture; } catch (Exception e) { e.printStackTrace();
+     * throw new FatalException("Data error : selectFurnitureByUser"); }
      */
   }
 
@@ -310,6 +322,27 @@ public class DAOFurnitureImpl implements DAOFurniture {
     } catch (Exception e) {
       e.printStackTrace();
       throw new FatalException("Data error : updateDepositDate");
+    }
+  }
+
+  @Override
+  public List<FurnitureDTO> selectSalesFurniture() {
+    try {
+      PreparedStatement selectSalesFurniture =
+          dalServices.getPreparedStatement(querySelectSalesFurniture);
+      try (ResultSet rs = selectSalesFurniture.executeQuery()) {
+        List<FurnitureDTO> listFurniture = new ArrayList<>();
+        FurnitureDTO furniture;
+        do {
+          furniture = createFurniture(rs);
+          listFurniture.add(furniture);
+        } while (furniture != null);
+        listFurniture.remove(listFurniture.size() - 1);
+        return listFurniture;
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : selectSalesFurnitures");
     }
   }
 
