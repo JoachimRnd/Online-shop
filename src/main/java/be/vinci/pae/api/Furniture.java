@@ -1,5 +1,6 @@
 package be.vinci.pae.api;
 
+import java.time.Instant;
 import java.util.List;
 import org.glassfish.jersey.server.ContainerRequest;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -56,20 +57,53 @@ public class Furniture {
   @Path("/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public Response modifyStatus(@PathParam("id") int id, JsonNode json) {
+  public Response modifyFurniture(@PathParam("id") int id, JsonNode json) {
+    boolean noError = true;
+    boolean empty = true;
 
-    if (!json.hasNonNull("condition") || json.get("condition").asText().isEmpty()
-        || !json.hasNonNull("price")) {
+    if (json.hasNonNull("condition") && !json.get("condition").asText().isEmpty()
+        && json.hasNonNull("sellingPrice")) {
+      noError = noError && furnitureUCC.modifyCondition(id,
+          FurnitureCondition.valueOf(json.get("condition").asText()),
+          json.get("sellingPrice").asDouble()); // TODO change in frontend price by sellingPrice
+      empty = false;
+    } else if (json.hasNonNull("type")) {
+      noError = noError && furnitureUCC.modifyType(id, json.get("type").asInt());
+      empty = false;
+    } else if (json.hasNonNull("purchasePrice")) {
+      noError =
+          noError && furnitureUCC.modifyPurchasePrice(id, json.get("purchasePrice").asDouble());
+      empty = false;
+    } else if (json.hasNonNull("description") && !json.get("description").asText().isEmpty()) {
+      noError = noError && furnitureUCC.modifyDescription(id, json.get("description").asText());
+      empty = false;
+    } else if (json.hasNonNull("buyerEmail") && !json.get("buyerEmail").asText().isEmpty()) {
+      noError = noError && furnitureUCC.modifyBuyerEmail(id, json.get("buyerEmail").asText());
+      empty = false;
+    } else if (json.hasNonNull("withdrawalDate")
+        && !json.get("withdrawalDate").asText().isEmpty()) {
+      noError = noError && furnitureUCC.modifyWithdrawalDate(id,
+          Instant.parse(json.get("withdrawalDate").asText())); // Use localDate plutot que instant (pas besoin heures minutes et secondes)
+      empty = false;
+    }
+
+    if (empty) {
       return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")
           .type(MediaType.TEXT_PLAIN).build();
     }
-    if (furnitureUCC.modifyCondition(id, FurnitureCondition.valueOf(json.get("condition").asText()),
-        json.get("price").asDouble())) {
+
+
+
+    // selling price pouvoir le changer sans changer l'état?
+
+    if (noError) {
       return Response.ok().build();
     } else {
       return Response.serverError().build();
     }
   }
+
+
 
   /**
    * List all furniture.
