@@ -222,11 +222,11 @@ const onSave = async() => {
     let struct = {
       condition: conditionChoice,
       type: document.getElementById("typesList").value,
-      price: p,
+      sellingPrice: p,
       specialPrice: specialPrice,
       description: document.getElementById("furnituredescription").value
     }
-    
+    console.log("struct");
     console.log(struct);
    
     if(conditionChoice != furniture.condition || furniture.condition == "en_vente"){
