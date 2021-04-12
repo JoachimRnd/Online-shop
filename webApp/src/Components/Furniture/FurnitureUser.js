@@ -107,6 +107,9 @@ const FurnitureUser = async (data) => {
   let page = document.querySelector("#page");
   page.innerHTML = furniturePage;
 
+  let btnReturn = document.querySelector("#btnReturn");
+  btnReturn.addEventListener("click", () => RedirectUrl("/search"));
+
   if(data == null){
     let queryString = window.location.search;
     let urlParams = new URLSearchParams(queryString);
