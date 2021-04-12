@@ -40,6 +40,8 @@ let furniturePage = `
     <span class="sr-only">Next</span>
   </a>
   </div>
+  </br>
+  <button class="btn btn-secondary" id="btnReturn">Retour</button>
 </div>
 
 <div class="col-6">
