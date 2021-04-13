@@ -1,6 +1,6 @@
 package be.vinci.pae.api;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import org.glassfish.jersey.server.ContainerRequest;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -61,7 +61,6 @@ public class Furniture {
     boolean noError = true;
     boolean empty = true;
 
-    System.out.println("Modify");
     if (json.hasNonNull("condition") && !json.get("condition").asText().isEmpty()
         && json.hasNonNull("sellingPrice")) {
       noError = noError && furnitureUCC.modifyCondition(id,
@@ -70,18 +69,15 @@ public class Furniture {
       empty = false;
     }
     if (json.hasNonNull("type")) {
-      System.out.println("type");
       noError = noError && furnitureUCC.modifyType(id, json.get("type").asInt());
       empty = false;
     }
     if (json.hasNonNull("purchasePrice")) {
-      System.out.println("purchasePrice");
       noError =
           noError && furnitureUCC.modifyPurchasePrice(id, json.get("purchasePrice").asDouble());
       empty = false;
     }
     if (json.hasNonNull("description") && !json.get("description").asText().isEmpty()) {
-      System.out.println("description");
       noError = noError && furnitureUCC.modifyDescription(id, json.get("description").asText());
       empty = false;
     }
@@ -89,13 +85,25 @@ public class Furniture {
       noError = noError && furnitureUCC.modifyBuyerEmail(id, json.get("buyerEmail").asText());
       empty = false;
     }
-    if (json.hasNonNull("withdrawalDate") && !json.get("withdrawalDate").asText().isEmpty()) {
-      noError = noError && furnitureUCC.modifyWithdrawalDate(id,
-          Instant.parse(json.get("withdrawalDate").asText())); // Use localDate plutot que instant
-                                                               // (pas besoin heures minutes et
-                                                               // secondes)
+    if (json.hasNonNull("withdrawalDateFromCustomer")
+        && !json.get("withdrawalDateFromCustomer").asText().isEmpty()) {
+      noError = noError && furnitureUCC.modifyWithdrawalDateFromCustomer(id,
+          LocalDate.parse(json.get("withdrawalDateFromCustomer").asText()));
       empty = false;
     }
+    if (json.hasNonNull("withdrawalDateToCustomer")
+        && !json.get("withdrawalDateToCustomer").asText().isEmpty()) {
+      noError = noError && furnitureUCC.modifyWithdrawalDateToCustomer(id,
+          LocalDate.parse(json.get("withdrawalDateToCustomer").asText()));
+      empty = false;
+    }
+    if (json.hasNonNull("deliveryDate") && !json.get("deliveryDate").asText().isEmpty()) {
+      noError = noError && furnitureUCC.modifyDeliveryDate(id,
+          LocalDate.parse(json.get("deliveryDate").asText()));
+      empty = false;
+    }
+
+
 
     if (empty) {
       return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")

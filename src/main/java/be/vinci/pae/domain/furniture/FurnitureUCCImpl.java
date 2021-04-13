@@ -1,6 +1,7 @@
 package be.vinci.pae.domain.furniture;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import be.vinci.pae.domain.type.TypeDTO;
 import be.vinci.pae.services.DalServices;
@@ -150,9 +151,57 @@ public class FurnitureUCCImpl implements FurnitureUCC {
 
 
   @Override
-  public boolean modifyWithdrawalDate(int id, Instant time) {
-    // TODO Auto-generated method stub
-    return false;
+  public boolean modifyWithdrawalDateToCustomer(int id, LocalDate time) {
+
+    try {
+      this.dalServices.startTransaction();
+
+      if (!this.daoFurniture.updateWithdrawalDateToCustomer(id, time)) {
+        this.dalServices.rollbackTransaction();
+        throw new BusinessException("Error modify WithdrawalDateToCustomer");
+      }
+      this.dalServices.commitTransaction();
+      return true;
+    } finally {
+      this.dalServices.closeConnection();
+    }
+
+  }
+
+  @Override
+  public boolean modifyWithdrawalDateFromCustomer(int id, LocalDate time) {
+
+    try {
+      this.dalServices.startTransaction();
+
+      if (!this.daoFurniture.updateWithdrawalDateFromCustomer(id, time)) {
+        this.dalServices.rollbackTransaction();
+        throw new BusinessException("Error modify WithdrawalDateFromCustomer");
+      }
+      this.dalServices.commitTransaction();
+      return true;
+    } finally {
+      this.dalServices.closeConnection();
+    }
+
+  }
+
+  @Override
+  public boolean modifyDeliveryDate(int id, LocalDate time) {
+
+    try {
+      this.dalServices.startTransaction();
+
+      if (!this.daoFurniture.updateDeliveryDate(id, time)) {
+        this.dalServices.rollbackTransaction();
+        throw new BusinessException("Error modify delivery date");
+      }
+      this.dalServices.commitTransaction();
+      return true;
+    } finally {
+      this.dalServices.closeConnection();
+    }
+
   }
 
 

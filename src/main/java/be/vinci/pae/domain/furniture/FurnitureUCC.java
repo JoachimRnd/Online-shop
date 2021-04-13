@@ -1,6 +1,6 @@
 package be.vinci.pae.domain.furniture;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
 
@@ -24,8 +24,6 @@ public interface FurnitureUCC {
 
   boolean modifyPurchasePrice(int id, double price);
 
-  boolean modifyWithdrawalDate(int id, Instant time);
-
   boolean modifyDescription(int id, String description);
 
   boolean modifyBuyerEmail(int id, String email);
@@ -33,6 +31,12 @@ public interface FurnitureUCC {
   FurnitureDTO getFurnitureById(int id);
 
   List<FurnitureDTO> getSalesFurnitureAdmin();
+
+  boolean modifyDeliveryDate(int id, LocalDate time);
+
+  boolean modifyWithdrawalDateFromCustomer(int id, LocalDate time);
+
+  boolean modifyWithdrawalDateToCustomer(int id, LocalDate time);
 
 
 }

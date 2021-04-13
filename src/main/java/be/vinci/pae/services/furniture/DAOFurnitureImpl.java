@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import be.vinci.pae.domain.furniture.FurnitureDTO;
@@ -32,6 +34,9 @@ public class DAOFurnitureImpl implements DAOFurniture {
   private String queryUpdateType;
   private String queryUpdatePurchasePrice;
   private String queryUpdateDescription;
+  private String queryUpdateWithdrawalDateToCustomer;
+  private String queryUpdateWithdrawalDateFromCustomer;
+  private String queryUpdateDeliveryDate;
 
   @Inject
   private FurnitureFactory furnitureFactory;
@@ -103,6 +108,12 @@ public class DAOFurnitureImpl implements DAOFurniture {
     queryUpdatePurchasePrice =
         "UPDATE project.furniture SET purchase_price = ? WHERE furniture_id = ?";
     queryUpdateDescription = "UPDATE project.furniture SET description = ? WHERE furniture_id = ?";
+    queryUpdateWithdrawalDateToCustomer =
+        "UPDATE project.furniture SET withdrawal_date_to_customer = ? WHERE furniture_id = ?";
+    queryUpdateWithdrawalDateFromCustomer =
+        "UPDATE project.furniture SET withdrawal_date_from_customer = ? WHERE furniture_id = ?";
+    queryUpdateDeliveryDate =
+        "UPDATE project.furniture SET delivery_date = ? WHERE furniture_id = ?";
   }
 
   @Override
@@ -353,6 +364,52 @@ public class DAOFurnitureImpl implements DAOFurniture {
       throw new FatalException("Data error : updateDescription");
     }
   }
+
+  @Override
+  public boolean updateWithdrawalDateToCustomer(int id, LocalDate now) {
+    try {
+      PreparedStatement updateWithdrawalDateToCustomer =
+          this.dalServices.getPreparedStatement(queryUpdateWithdrawalDateToCustomer);
+      updateWithdrawalDateToCustomer.setTimestamp(1,
+          Timestamp.valueOf(now.atTime(LocalTime.MIDNIGHT)));
+      updateWithdrawalDateToCustomer.setInt(2, id);
+      return updateWithdrawalDateToCustomer.executeUpdate() == 1;
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : updateWithdrawalDateToCustomer");
+    }
+  }
+
+  @Override
+  public boolean updateWithdrawalDateFromCustomer(int id, LocalDate now) {
+    try {
+      PreparedStatement updateWithdrawalDateFromCustomer =
+          this.dalServices.getPreparedStatement(queryUpdateWithdrawalDateFromCustomer);
+      updateWithdrawalDateFromCustomer.setTimestamp(1,
+          Timestamp.valueOf(now.atTime(LocalTime.MIDNIGHT)));
+      updateWithdrawalDateFromCustomer.setInt(2, id);
+      return updateWithdrawalDateFromCustomer.executeUpdate() == 1;
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : updateWithdrawalDateFromCustomer");
+    }
+  }
+
+  @Override
+  public boolean updateDeliveryDate(int id, LocalDate now) {
+    try {
+      PreparedStatement updateDeliveryDate =
+          this.dalServices.getPreparedStatement(queryUpdateDeliveryDate);
+      updateDeliveryDate.setTimestamp(1, Timestamp.valueOf(now.atTime(LocalTime.MIDNIGHT)));
+      updateDeliveryDate.setInt(2, id);
+      return updateDeliveryDate.executeUpdate() == 1;
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : updateDeliveryDate");
+    }
+  }
+
+
 
   @Override
   public List<FurnitureDTO> selectSalesFurniture() {

@@ -1,6 +1,7 @@
 package be.vinci.pae.services.furniture;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import be.vinci.pae.domain.furniture.FurnitureDTO;
 
@@ -35,6 +36,12 @@ public interface DAOFurniture {
   boolean updateType(int furnitureId, int typeId);
 
   boolean updatePurchasePrice(int id, Double price);
+
+  boolean updateWithdrawalDateToCustomer(int id, LocalDate now);
+
+  boolean updateWithdrawalDateFromCustomer(int id, LocalDate now);
+
+  boolean updateDeliveryDate(int id, LocalDate now);
 
 
 }
