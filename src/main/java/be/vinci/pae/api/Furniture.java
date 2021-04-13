@@ -75,6 +75,7 @@ public class Furniture {
       empty = false;
     }
     if (json.hasNonNull("purchasePrice")) {
+      System.out.println("purchasePrice");
       noError =
           noError && furnitureUCC.modifyPurchasePrice(id, json.get("purchasePrice").asDouble());
       empty = false;
@@ -90,7 +91,9 @@ public class Furniture {
     }
     if (json.hasNonNull("withdrawalDate") && !json.get("withdrawalDate").asText().isEmpty()) {
       noError = noError && furnitureUCC.modifyWithdrawalDate(id,
-          Instant.parse(json.get("withdrawalDate").asText())); // Use localDate plutot que instant (pas besoin heures minutes et secondes)
+          Instant.parse(json.get("withdrawalDate").asText())); // Use localDate plutot que instant
+                                                               // (pas besoin heures minutes et
+                                                               // secondes)
       empty = false;
     }
 
@@ -144,13 +147,20 @@ public class Furniture {
   @GET
   @Path("/{idFurniture}")
   @Produces(MediaType.APPLICATION_JSON)
-  public FurnitureDTO getFurniture(@PathParam("idFurniture") int idFurniture) {
+  public FurnitureDTO getFurniture(@PathParam("idFurniture") int idFurniture,
+      @Context ContainerRequest request) {
     FurnitureDTO furnitureDTO = furnitureUCC.getFurnitureById(idFurniture);
     if (furnitureDTO == null) {
       throw new WebApplicationException(
           "Ressource with id = " + idFurniture + " could not be found", null, Status.NOT_FOUND);
     }
-    return Json.filterPublicJsonView(furnitureDTO, FurnitureDTO.class);
+
+    // if (currentUser.getUserType().equals(UserType.admin))
+    // TODO Récupérer l'utilisateur
+    return Json.filterAdminJsonView(furnitureDTO, FurnitureDTO.class);
+    // else
+    // return Json.filterPublicJsonView(furnitureDTO, FurnitureDTO.class);
+
   }
 
   /**
