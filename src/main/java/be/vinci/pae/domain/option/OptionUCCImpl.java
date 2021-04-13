@@ -1,5 +1,9 @@
 package be.vinci.pae.domain.option;
 
+import java.time.Instant;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import be.vinci.pae.domain.furniture.FurnitureDTO;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.services.DalServices;
@@ -11,10 +15,6 @@ import be.vinci.pae.utils.ValueLink.FurnitureCondition;
 import be.vinci.pae.utils.ValueLink.OptionStatus;
 import be.vinci.pae.utils.ValueLink.UserType;
 import jakarta.inject.Inject;
-import java.time.Instant;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class OptionUCCImpl implements OptionUCC {
 
@@ -52,8 +52,8 @@ public class OptionUCCImpl implements OptionUCC {
         throw new BusinessException(
             "Votre compte n'est pas encore validé ou vous n'êtes pas client");
       }
-      List<OptionDTO> listPreviousOptionBuyer = daoOption
-          .selectOptionsOfBuyerFromFurniture(user.getId(), furniture.getId());
+      List<OptionDTO> listPreviousOptionBuyer =
+          daoOption.selectOptionsOfBuyerFromFurniture(user.getId(), furniture.getId());
       if (listPreviousOptionBuyer != null) {
         int totalDuration = duration;
         for (OptionDTO option : listPreviousOptionBuyer) {
@@ -72,19 +72,18 @@ public class OptionUCCImpl implements OptionUCC {
       newOption.setDate(Date.from(Instant.now()));
       newOption.setStatus(OptionStatus.en_cours);
 
-      List<OptionDTO> listPreviousOption =
-          daoOption.selectOptionsOfFurniture(furniture.getId());
+      List<OptionDTO> listPreviousOption = daoOption.selectOptionsOfFurniture(furniture.getId());
       for (OptionDTO option : listPreviousOption) {
         if (option.getStatus() == OptionStatus.en_cours
             && TimeUnit.DAYS.convert(newOption.getDate().getTime() - option.getDate().getTime(),
-            TimeUnit.MILLISECONDS) <= option.getDuration()) {
+                TimeUnit.MILLISECONDS) <= option.getDuration()) {
           throw new BusinessException("Il y a deja une option en cours pour ce meuble");
         }
       }
 
       int idOption = daoOption.addOption(newOption);
-      boolean updateFurniture = daoFurniture
-          .updateCondition(idFurniture, FurnitureCondition.en_option.ordinal());
+      boolean updateFurniture =
+          daoFurniture.updateCondition(idFurniture, FurnitureCondition.en_option.ordinal());
       if (idOption == -1 && !updateFurniture) {
         dalServices.rollbackTransaction();
         return null;
@@ -122,8 +121,8 @@ public class OptionUCCImpl implements OptionUCC {
         throw new BusinessException("Vous ne pouvez pas annuler l'option d'un autre utilisateur");
       }
       boolean canceled = daoOption.cancelOption(optionToCancel);
-      boolean updateFurniture = daoFurniture
-          .updateCondition(idFurniture, FurnitureCondition.en_vente.ordinal());
+      boolean updateFurniture =
+          daoFurniture.updateCondition(idFurniture, FurnitureCondition.en_vente.ordinal());
       if (canceled && updateFurniture) {
         dalServices.commitTransaction();
       } else {
@@ -153,8 +152,8 @@ public class OptionUCCImpl implements OptionUCC {
         throw new BusinessException("Il n'y a pas d'option en cours sur ce meuble");
       }
       boolean canceled = daoOption.cancelOption(optionToCancel);
-      boolean updateFurniture = daoFurniture
-          .updateCondition(idFurniture, FurnitureCondition.en_vente.ordinal());
+      boolean updateFurniture =
+          daoFurniture.updateCondition(idFurniture, FurnitureCondition.en_vente.ordinal());
       if (canceled && updateFurniture) {
         dalServices.commitTransaction();
       } else {
@@ -174,14 +173,14 @@ public class OptionUCCImpl implements OptionUCC {
       OptionDTO option = daoOption.getLastOptionOfFurniture(idFurniture);
       if (!verifyOptionStatus(option)) {
         dalServices.startTransaction();
-        if (daoOption.finishOption(option.getId())) {
+        if (daoOption.finishOption(option.getId())
+            && daoFurniture.updateCondition(idFurniture, FurnitureCondition.en_vente.ordinal())) {
           dalServices.commitTransaction();
         } else {
           dalServices.rollbackTransaction();
         }
         option = daoOption.getLastOptionOfFurniture(idFurniture);
       }
-      System.out.println(option);
       return option;
     } finally {
       dalServices.closeConnection();

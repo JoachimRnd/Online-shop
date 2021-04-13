@@ -6,6 +6,7 @@ import PrintError from "../PrintError.js"
 import img1 from "./1.jpg";
 import img2 from "./2.jpg";
 const API_BASE_URL = "/api/furniture/";
+const API_BASE_URL_ADMIN = "/api/admin/";
 const IMAGES = "../../../../images";
 let option;
 let furniture;
@@ -82,14 +83,34 @@ let furniturePage = `
       <option id="en_magasin" value="en_magasin">En magasin</option>
       <option id="en_vente" value="en_vente">En vente</option>
       <option id="retire_de_vente" value="retire_de_vente">Retiré de la vente</option>
+      <option id="en_option" value="en_option">En option</option>
+      <option id="emporte_par_client" value="emporte_par_client">Emporte par le client</option>
     </select>
   </div>
 
   <button class="btn btn-success" id="btnSave" type="submit">Enregistrer</button>
+  <p>
+  <div id=option></div>
+
   <div id="toast"></div>
 
 </div>
 `;
+
+let isOption = `
+<div class="alert alert-secondary" role="alert">
+  Il y a une option sur ce meuble (<strong><span id="userOption"> </span></strong>).
+</div>
+<button class="btn btn-danger" id="btnOption" type="submit">Annuler l'option</button>
+  `;
+
+let noOption =`
+<div class="alert alert-secondary alert-dismissible fade show" role="alert">
+  Il n'y a aucune option sur ce meuble.
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>`;
 
 const FurnitureAdmin = async(f) => {
   let page = document.querySelector("#page");
@@ -116,13 +137,12 @@ const FurnitureAdmin = async(f) => {
     furniture = f;
   }
 
-
-
   let optionCondition = document.querySelector("#"+furniture.condition);
   optionCondition.setAttribute("selected","");
   
 
   onFurniture();
+  onCheckOption();
 
   let conditions = document.querySelector("#conditions");
   if(conditions.value == "en_vente"){
@@ -182,11 +202,14 @@ const onSave = async() => {
     } 
    
     if(conditionChoice != furniture.condition || furniture.condition == "en_vente"){
-      let response = await callAPIWithoutJSONResponse(API_BASE_URL + furniture.id, "PUT", user.token, struct);
-      if(response.ok){
+      try {
+        await callAPIWithoutJSONResponse(API_BASE_URL + furniture.id, "PUT", user.token, struct);
         let toast = document.querySelector("#toast");
-        //TODO ADD a toast
+      } catch (err) {
+        console.error("FurnitureAdmin::Change condition", err);
+        PrintError(err);
       }
+
     }
 
  
@@ -195,6 +218,47 @@ const onSave = async() => {
 
 
 
+}
+
+
+const onCheckOption = async() => {
+
+  let option = await callAPI(API_BASE_URL + furniture.id + "/option", "GET");
+  let optionDocument = document.querySelector("#option");
+  console.log(option);
+  if(option.status != undefined && option.status == "en_cours") {
+    optionDocument.innerHTML = isOption;
+    let userOption = document.querySelector("#userOption");
+    userOption.innerHTML = furniture.buyer.email;
+    let btn = document.querySelector("#btnOption")
+    btn.addEventListener("click", onClickCancelOption);
+  }else{
+    optionDocument.innerHTML = noOption;
+  }
+
+
+}
+
+const onClickCancelOption = async (e) => {
+  e.preventDefault();
+  let optionDocument = document.querySelector("#option");
+  try {
+    let user = getUserSessionData();
+    await callAPIWithoutJSONResponse(API_BASE_URL_ADMIN + furniture.id + "/cancelOption", "PUT",user.token);
+    optionDocument.innerHTML = noOption;
+    try {
+      furniture = await callAPI(API_BASE_URL + furniture.id , "GET",undefined);
+    } catch (err) {
+      console.error("FurnitureAdmin::GetFurnitureByID", err);
+      PrintError(err);
+    }
+    let optionCondition = document.querySelector("#"+furniture.condition);
+    optionCondition.setAttribute("selected","");
+  } catch (e) {
+    console.log(e);
+    PrintError(e);
+    //Erreur
+  }
 }
 
 
