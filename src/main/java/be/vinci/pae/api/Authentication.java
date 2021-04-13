@@ -73,7 +73,7 @@ public class Authentication {
   /**
    * Checking the credentials of a user, create a token, create a user object.
    *
-   * @param json DOM event user informations
+   * @param user userDTO informations
    * @return a response from the responseBuilder
    */
   @POST
