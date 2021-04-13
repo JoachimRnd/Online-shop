@@ -105,19 +105,33 @@ public class Administration {
     return Response.ok().build();
   }
 
+
+  /**
+   * Delete furniture type.
+   *
+   * @return http response
+   */
   @DELETE
   @Path("/type/{id}")
   @AuthorizeAdmin
   public Response deleteFurnitureType(@PathParam("id") int id) {
-    if (id == 0)
+    if (id == 0) {
       throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
           .entity("Lacks of mandatory id info").type("text/plain").build());
-    if (!typeUCC.deleteFurnitureType(id))
+    }
+    if (!typeUCC.deleteFurnitureType(id)) {
       return Response.serverError().build();
-    else
+    } else {
       return Response.ok().build();
+    }
   }
 
+
+  /**
+   * Add a furniture type.
+   *
+   * @return http response
+   */
   @POST
   @Path("/type")
   @Produces(MediaType.APPLICATION_JSON)
