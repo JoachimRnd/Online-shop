@@ -1,9 +1,9 @@
 package be.vinci.pae.api.utils;
 
+import java.util.List;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
 import views.Views;
 
 public class Json {
@@ -13,8 +13,8 @@ public class Json {
   /**
    * Filter whole custom JSON object as a list.
    *
-   * @param <T>         generic return type
-   * @param list        list of generic objects
+   * @param <T> generic return type
+   * @param list list of generic objects
    * @param targetClass name of the targeted class
    * @return a list of objects (with generic type)
    */
@@ -41,8 +41,8 @@ public class Json {
   /**
    * Filter whole custom JSON object.
    *
-   * @param <T>         generic return type
-   * @param item        description
+   * @param <T> generic return type
+   * @param item description
    * @param targetClass name of the targeted class
    * @return a generic object
    */
@@ -65,4 +65,30 @@ public class Json {
 
   }
 
+  /**
+   * Filter whole custom JSON object.
+   *
+   * @param <T> generic return type
+   * @param item description
+   * @param targetClass name of the targeted class
+   * @return a generic object
+   */
+  public static <T> T filterAdminJsonView(T item, Class<T> targetClass) {
+
+    try {
+      // serialize using JSON Views : admin view (all fields not required in the
+      // views are set to null)
+      String adminItemAsString =
+          jsonMapper.writerWithView(Views.Admin.class).writeValueAsString(item);
+      // deserialize using JSON Views : Admin View
+      return jsonMapper.readerWithView(Views.Admin.class).forType(targetClass)
+          .readValue(adminItemAsString);
+
+    } catch (JsonProcessingException e) {
+
+      e.printStackTrace();
+      return null;
+    }
+
+  }
 }
