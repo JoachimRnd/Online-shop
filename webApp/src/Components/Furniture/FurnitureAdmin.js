@@ -321,6 +321,10 @@ const onSave = async() => {
     let withdrawalDateToCustomer = "";
     let buyerEmail = "";
 
+    if(conditionChoice == "vendu"){
+      deliveryDate = document.querySelector("#inputDeliveryDate").value;
+      withdrawalDateToCustomer = document.querySelector("#inputWithdrawalDateToCustomer").value;
+    }
     if(conditionChoice == "en_vente"){
       p = document.querySelector("#inputSellingPrice").value;
       furniture.sellingPrice = p;
@@ -330,8 +334,6 @@ const onSave = async() => {
       purchasePrice = document.querySelector("#inputPurchasePrice").value;
       furniture.purchasePrice = purchasePrice;
       withdrawalDateFromCustomer = document.querySelector("#inputWithdrawalDateFromCustomer").value;
-      deliveryDate = document.querySelector("#inputDeliveryDate").value;
-      withdrawalDateToCustomer = document.querySelector("#inputWithdrawalDateToCustomer").value;
     }else if (conditions.value == "vendu" || conditions.value == "reserve" || 
     conditions.value == "livre" || conditions.value == "emporte_par_client") {
       buyerEmail = document.querySelector("#inputBuyerEmail").value
