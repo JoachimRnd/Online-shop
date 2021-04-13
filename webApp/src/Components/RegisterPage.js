@@ -87,8 +87,8 @@ const onRegister = async (e) => {
   } else{
     let address = {
       street: document.getElementById("street").value,
-      buildingnumber: document.getElementById("buildingnumber").value,
-      unitnumber: document.getElementById("unitnumber").value,
+      buildingNumber: document.getElementById("buildingnumber").value,
+      unitNumber: document.getElementById("unitnumber").value,
       postcode: document.getElementById("postcode").value,
       commune: document.getElementById("commune").value,
       country: document.getElementById("country").value,
@@ -96,8 +96,8 @@ const onRegister = async (e) => {
     };
     let user = {
       username: document.getElementById("username").value,
-      firstname: document.getElementById("firstname").value,
-      lastname: document.getElementById("lastname").value,
+      firstName: document.getElementById("firstname").value,
+      lastName: document.getElementById("lastname").value,
       email: document.getElementById("email").value,
       password: document.getElementById("password").value,
       address: address,

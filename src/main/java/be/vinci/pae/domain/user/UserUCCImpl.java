@@ -1,11 +1,14 @@
 package be.vinci.pae.domain.user;
 
 import java.util.List;
+import org.apache.commons.text.StringEscapeUtils;
+import be.vinci.pae.domain.address.AddressDTO;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.user.DAOUser;
 import be.vinci.pae.utils.BusinessException;
 import be.vinci.pae.utils.ValueLink.UserType;
 import jakarta.inject.Inject;
+
 
 public class UserUCCImpl implements UserUCC {
   // @TODO dalServices.closeConnection() appel automatique ? Si possible
@@ -46,6 +49,23 @@ public class UserUCCImpl implements UserUCC {
       }
       user = (User) newUser;
       user.setPassword(user.hashPassword(user.getPassword()));
+
+      // escape dangerous chars to protect against XSS attacks
+      user.setEmail(StringEscapeUtils.escapeHtml4(user.getEmail()));
+      user.setFirstName(StringEscapeUtils.escapeHtml4(user.getFirstName()));
+      user.setLastName(StringEscapeUtils.escapeHtml4(user.getLastName()));
+      user.setPassword(StringEscapeUtils.escapeHtml4(user.getPassword()));
+      user.setUsername(StringEscapeUtils.escapeHtml4(user.getUsername()));
+      AddressDTO address = user.getAddress();
+      address.setBuildingNumber(StringEscapeUtils.escapeHtml4(address.getBuildingNumber()));
+      address.setCommune(StringEscapeUtils.escapeHtml4(address.getCommune()));
+      address.setCountry(StringEscapeUtils.escapeHtml4(address.getCountry()));
+      address.setPostcode(StringEscapeUtils.escapeHtml4(address.getPostcode()));
+      address.setStreet(StringEscapeUtils.escapeHtml4(address.getStreet()));
+      if (address.getUnitNumber() != null && !address.getUnitNumber().isEmpty()) {
+        address.setUnitNumber(StringEscapeUtils.escapeHtml4(address.getUnitNumber()));
+      }
+
       int id = daoUser.addUser(newUser);
       if (id == -1) {
         this.dalServices.rollbackTransaction();

@@ -17,9 +17,9 @@ class UserImpl implements User {
   @JsonView(Views.Public.class)
   private String username;
   @JsonView(Views.Public.class)
-  private String lastName;
-  @JsonView(Views.Public.class)
   private String firstName;
+  @JsonView(Views.Public.class)
+  private String lastName;
   @JsonView(Views.Public.class)
   private String email;
   @JsonView(Views.Public.class)
