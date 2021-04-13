@@ -165,17 +165,28 @@ const FurnitureAdmin = async(f) => {
   let btnReturn = document.querySelector("#btnReturn");
   btnReturn.addEventListener("click", () => RedirectUrl("/search"));
 
+  const user = getUserSessionData();
 
   if(f == null){
     let queryString = window.location.search;
     let urlParams = new URLSearchParams(queryString);
     let id = urlParams.get("id");
-    try {
-      furniture = await callAPI(API_BASE_URL + id , "GET", undefined);
-    } catch (err) {
-      console.error("FurnitureUser::GetFurnitureByID", err);
-      PrintError(err);
+    if(user && user.token == "admin"){
+      try {
+        furniture = await callAPI(API_BASE_URL_ADMIN + id , "GET", user.token);
+      } catch (err) {
+        console.error("FurnitureUser::GetFurnitureByID", err);
+        PrintError(err);
+      }
+    }else {
+      try {
+        furniture = await callAPI(API_BASE_URL + id , "GET", undefined);
+      } catch (err) {
+        console.error("FurnitureUser::GetFurnitureByID", err);
+        PrintError(err);
+      }
     }
+
   }else{
     furniture = f;
   }
@@ -196,6 +207,9 @@ const FurnitureAdmin = async(f) => {
   onCheckOption();
 
   let conditions = document.querySelector("#conditions");
+  if(conditions.value == "vendu"){
+    onSold();
+  }
   if(conditions.value == "en_vente"){
     onSale();
   } else if (conditions.value == "achete") {
@@ -207,6 +221,9 @@ const FurnitureAdmin = async(f) => {
 
   conditions.addEventListener("change",(e)=>{
     onFurniture();
+    if(conditions.value == "vendu"){
+      onSold();
+    }
     if(conditions.value == "en_vente"){
       onSale();
     } else if (conditions.value == "achete") {
@@ -276,7 +293,9 @@ const onPurchase = () => {
 
   let withdrawalDateFromCustomer = document.querySelector("#withdrawalDateFromCustomer");
   withdrawalDateFromCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateFromCustomer" type="date"/>`;
+}
 
+const onSold = () => {
   let deliveryDate = document.querySelector("#deliveryDate");
   deliveryDate.innerHTML = `<input class="form-control" id="inputDeliveryDate" type="date"/>`;
 
@@ -302,6 +321,10 @@ const onSave = async() => {
     let withdrawalDateToCustomer = "";
     let buyerEmail = "";
 
+    if(conditionChoice == "vendu"){
+      deliveryDate = document.querySelector("#inputDeliveryDate").value;
+      withdrawalDateToCustomer = document.querySelector("#inputWithdrawalDateToCustomer").value;
+    }
     if(conditionChoice == "en_vente"){
       p = document.querySelector("#inputSellingPrice").value;
       furniture.sellingPrice = p;
@@ -311,8 +334,6 @@ const onSave = async() => {
       purchasePrice = document.querySelector("#inputPurchasePrice").value;
       furniture.purchasePrice = purchasePrice;
       withdrawalDateFromCustomer = document.querySelector("#inputWithdrawalDateFromCustomer").value;
-      deliveryDate = document.querySelector("#inputDeliveryDate").value;
-      withdrawalDateToCustomer = document.querySelector("#inputWithdrawalDateToCustomer").value;
     }else if (conditions.value == "vendu" || conditions.value == "reserve" || 
     conditions.value == "livre" || conditions.value == "emporte_par_client") {
       buyerEmail = document.querySelector("#inputBuyerEmail").value

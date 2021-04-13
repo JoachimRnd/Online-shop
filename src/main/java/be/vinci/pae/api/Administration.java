@@ -149,4 +149,22 @@ public class Administration {
     }
   }
 
+  /**
+   * List furniture with id.
+   *
+   * @return FurnitureDTO
+   */
+  @GET
+  @Path("/{idFurniture}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public FurnitureDTO getFurniture(@PathParam("idFurniture") int idFurniture) {
+    FurnitureDTO furnitureDTO = furnitureUCC.getFurnitureById(idFurniture);
+    if (furnitureDTO == null) {
+      throw new WebApplicationException(
+          "Ressource with id = " + idFurniture + " could not be found", null, Status.NOT_FOUND);
+    }
+    return Json.filterAdminJsonView(furnitureDTO, FurnitureDTO.class);
+  }
+
 }
