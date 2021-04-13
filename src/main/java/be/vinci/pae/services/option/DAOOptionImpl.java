@@ -1,5 +1,11 @@
 package be.vinci.pae.services.option;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import be.vinci.pae.domain.option.OptionDTO;
 import be.vinci.pae.domain.option.OptionFactory;
 import be.vinci.pae.services.DalBackendServices;
@@ -8,12 +14,6 @@ import be.vinci.pae.services.user.DAOUser;
 import be.vinci.pae.utils.FatalException;
 import be.vinci.pae.utils.ValueLink.OptionStatus;
 import jakarta.inject.Inject;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DAOOptionImpl implements DAOOption {
 
@@ -48,7 +48,7 @@ public class DAOOptionImpl implements DAOOption {
     queryChangeStatusOption = "UPDATE project.options SET status = ? WHERE option_id = ?";
     queryGetLastOptionOfFurniture = "SELECT option_id, buyer, furniture, duration, date, status "
         + "FROM project.options WHERE furniture = ? AND date = "
-        + "(SELECT MAX(date) FROM project.options)";
+        + "(SELECT MAX(date) FROM project.options WHERE furniture = ?)";
   }
 
   @Override
@@ -172,6 +172,7 @@ public class DAOOptionImpl implements DAOOption {
       PreparedStatement getLastOptionOfFurniture =
           dalBackendServices.getPreparedStatement(queryGetLastOptionOfFurniture);
       getLastOptionOfFurniture.setInt(1, idFurniture);
+      getLastOptionOfFurniture.setInt(2, idFurniture);
       try (ResultSet rs = getLastOptionOfFurniture.executeQuery()) {
         return createOption(rs);
       }
