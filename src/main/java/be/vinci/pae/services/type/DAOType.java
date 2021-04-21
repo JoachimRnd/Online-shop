@@ -1,7 +1,7 @@
 package be.vinci.pae.services.type;
 
-import java.util.List;
 import be.vinci.pae.domain.type.TypeDTO;
+import java.util.List;
 
 public interface DAOType {
 
@@ -15,4 +15,5 @@ public interface DAOType {
 
   boolean deleteFurnitureType(int id);
 
+  List<TypeDTO> getAllTypes();
 }

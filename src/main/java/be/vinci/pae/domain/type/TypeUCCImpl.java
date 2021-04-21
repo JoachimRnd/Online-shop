@@ -1,10 +1,10 @@
 package be.vinci.pae.domain.type;
 
-import java.util.List;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.type.DAOType;
 import be.vinci.pae.utils.BusinessException;
 import jakarta.inject.Inject;
+import java.util.List;
 
 public class TypeUCCImpl implements TypeUCC {
 
@@ -17,8 +17,7 @@ public class TypeUCCImpl implements TypeUCC {
   @Override
   public List<TypeDTO> getFurnitureTypes() {
     try {
-      List<TypeDTO> listTypes = this.daoType.selectFurnitureTypes();
-      return listTypes;
+      return this.daoType.selectFurnitureTypes();
     } finally {
       this.dalServices.closeConnection();
     }
@@ -57,4 +56,12 @@ public class TypeUCCImpl implements TypeUCC {
     }
   }
 
+  @Override
+  public List<TypeDTO> getAllType() {
+    try {
+      return daoType.getAllTypes();
+    } finally {
+      dalServices.closeConnection();
+    }
+  }
 }

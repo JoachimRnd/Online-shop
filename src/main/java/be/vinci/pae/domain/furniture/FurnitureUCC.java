@@ -1,7 +1,7 @@
 package be.vinci.pae.domain.furniture;
 
-import java.util.List;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
+import java.util.List;
 
 public interface FurnitureUCC {
 
@@ -24,4 +24,5 @@ public interface FurnitureUCC {
   List<FurnitureDTO> getSalesFurnitureAdmin();
 
 
+  List<FurnitureDTO> getFurnituresFiltered(String type, double price, String username);
 }

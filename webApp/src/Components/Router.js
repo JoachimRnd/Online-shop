@@ -9,6 +9,7 @@ import FurnitureListPage from "./Furniture/FurnitureListPage";
 import AdministrationPage from "./Admin/AdministrationPage.js";
 import ValidationPage from "./Admin/ValidationPage.js";
 import FurnitureTypePage from "./Admin/FurnitureTypePage.js";
+import SearchPage from "./Admin/SearchPage.js";
 
 
 
@@ -23,6 +24,7 @@ const routes = {
   "/admin": AdministrationPage,
   "/admin/validation": ValidationPage,
   "/admin/furnitureType": FurnitureTypePage,
+  "/admin/search":SearchPage,
   "/furnitureAdmin": FurnitureAdmin
 };
 

@@ -1,15 +1,15 @@
 package be.vinci.pae.services.type;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import be.vinci.pae.domain.type.TypeDTO;
 import be.vinci.pae.domain.type.TypeFactory;
 import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.utils.FatalException;
 import jakarta.inject.Inject;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DAOTypeImpl implements DAOType {
 
@@ -118,6 +118,27 @@ public class DAOTypeImpl implements DAOType {
       throw new FatalException("Data error : deleteFurniture");
     }
     return true;
+  }
+
+  @Override
+  public List<TypeDTO> getAllTypes() {
+    try {
+      PreparedStatement selectAllTypes = this.dalServices
+          .getPreparedStatement(querySelectAllTypes);
+      List<TypeDTO> allTypes = new ArrayList<>();
+      try (ResultSet rs = selectAllTypes.executeQuery()) {
+        TypeDTO type;
+        do {
+          type = createType(rs);
+          allTypes.add(type);
+        } while (type != null);
+        allTypes.remove(allTypes.size() - 1);
+      }
+      return allTypes;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException("Database error : getAllUsers");
+    }
   }
 
 }

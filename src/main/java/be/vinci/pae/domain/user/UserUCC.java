@@ -1,7 +1,7 @@
 package be.vinci.pae.domain.user;
 
-import java.util.List;
 import be.vinci.pae.utils.ValueLink.UserType;
+import java.util.List;
 
 public interface UserUCC {
 
@@ -14,4 +14,8 @@ public interface UserUCC {
   List<UserDTO> getUnvalidatedUsers();
 
   UserDTO getUserById(int id);
+
+  List<UserDTO> getAllUsers();
+
+  List<UserDTO> getUsersFiltered(String username, String postcode, String commune);
 }

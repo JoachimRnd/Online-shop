@@ -1,13 +1,6 @@
 package be.vinci.pae.services.user;
 
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import be.vinci.pae.domain.address.AddressDTO;
 import be.vinci.pae.domain.address.AddressFactory;
 import be.vinci.pae.domain.user.UserDTO;
@@ -16,6 +9,13 @@ import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.utils.FatalException;
 import be.vinci.pae.utils.ValueLink.UserType;
 import jakarta.inject.Inject;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class DAOUserImpl implements DAOUser {
 
@@ -29,6 +29,8 @@ public class DAOUserImpl implements DAOUser {
   private String queryAddUser;
   private String queryValidateUser;
   private String querySelectUnvalidatedUsers;
+  private String querySelectAllUsers;
+  private String querySelectUsersFiltered;
 
   @Inject
   private UserFactory userFactory;
@@ -78,6 +80,17 @@ public class DAOUserImpl implements DAOUser {
         + "a.country, u.email, u.registration_date, u.valid_registration, u.user_type "
         + "FROM project.addresses a, project.users u "
         + "WHERE u.valid_registration = false AND u.address = a.address_id";
+    querySelectAllUsers = "SELECT u.user_id, u.username, u.password, u.last_name, "
+        + "u.first_name, a.street, a.building_number, a.unit_number, a.postcode, a.commune, "
+        + "a.country, u.email, u.registration_date, u.valid_registration, u.user_type "
+        + "FROM project.addresses a, project.users u "
+        + "WHERE u.address = a.address_id";
+    querySelectUsersFiltered = "SELECT u.user_id, u.username, u.password, u.last_name, "
+        + "u.first_name, a.street, a.building_number, a.unit_number, a.postcode, a.commune, "
+        + "a.country, u.email, u.registration_date, u.valid_registration, u.user_type "
+        + "FROM project.addresses a, project.users u "
+        + "WHERE u.address = a.address_id AND lower(u.username) LIKE lower(?) AND "
+        + "lower(a.postcode) LIKE lower(?) AND lower(a.commune) LIKE lower(?)";
   }
 
   @Override
@@ -285,6 +298,51 @@ public class DAOUserImpl implements DAOUser {
     } catch (SQLException e) {
       e.printStackTrace();
       throw new FatalException("Database error : getUnvalidatedUsers");
+    }
+  }
+
+  @Override
+  public List<UserDTO> getAllUsers() {
+    try {
+      PreparedStatement selectAllUsers = this.dalBackendServices
+          .getPreparedStatement(querySelectAllUsers);
+      List<UserDTO> allUsers = new ArrayList<>();
+      try (ResultSet rs = selectAllUsers.executeQuery()) {
+        UserDTO user;
+        do {
+          user = createUser(rs);
+          allUsers.add(user);
+        } while (user != null);
+        allUsers.remove(allUsers.size() - 1);
+      }
+      return allUsers;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException("Database error : getAllUsers");
+    }
+  }
+
+  @Override
+  public List<UserDTO> getUsersFiltered(String username, String postcode, String commune) {
+    try {
+      PreparedStatement selectUsersFiltered = this.dalBackendServices
+          .getPreparedStatement(querySelectUsersFiltered);
+      selectUsersFiltered.setString(1, username + "%");
+      selectUsersFiltered.setString(2, postcode + "%");
+      selectUsersFiltered.setString(3, commune + "%");
+      List<UserDTO> allUsers = new ArrayList<>();
+      try (ResultSet rs = selectUsersFiltered.executeQuery()) {
+        UserDTO user;
+        do {
+          user = createUser(rs);
+          allUsers.add(user);
+        } while (user != null);
+        allUsers.remove(allUsers.size() - 1);
+      }
+      return allUsers;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException("Database error : getUsersFiltered");
     }
   }
 }
