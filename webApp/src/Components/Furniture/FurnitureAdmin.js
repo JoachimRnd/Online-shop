@@ -5,6 +5,7 @@ import { callAPI, callAPIWithoutJSONResponse } from "../../utils/api.js";
 import PrintError from "../PrintError.js"
 import img1 from "./1.jpg";
 import img2 from "./2.jpg";
+
 const API_BASE_URL = "/api/furniture/";
 const API_BASE_URL_ADMIN = "/api/admin/";
 const IMAGES = "../../../../images";
@@ -171,7 +172,7 @@ const FurnitureAdmin = async(f) => {
     let queryString = window.location.search;
     let urlParams = new URLSearchParams(queryString);
     let id = urlParams.get("id");
-    if(user && user.token == "admin"){
+    if(user && user.user.userType == "admin"){
       try {
         furniture = await callAPI(API_BASE_URL_ADMIN + id , "GET", user.token);
       } catch (err) {
@@ -191,6 +192,7 @@ const FurnitureAdmin = async(f) => {
     furniture = f;
   }
   console.log(furniture);
+
   try {
     const types = await callAPI(API_BASE_URL + "allFurnitureTypes", "GET", undefined);
     onTypesList(types);
@@ -264,16 +266,25 @@ const onFurniture = () => {
   furnitureDescription.innerHTML = `<textarea class="form-control" id="furnituredescription" rows="6" >${furniture.description}</textarea>`;
   
   let purchasePrice = document.querySelector("#purchasePrice");
-  purchasePrice.innerHTML = `<input class="form-control" id="inputPurchasePrice" type="number" placeholder=${furniture.purchasePrice} readonly />`;
+  purchasePrice.innerHTML = `<input class="form-control" id="inputPurchasePrice" type="number" placeholder"=${furniture.purchasePrice}" readonly />`;
 
   let withdrawalDateFromCustomer = document.querySelector("#withdrawalDateFromCustomer");
-  withdrawalDateFromCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateFromCustomer" type="date" readonly/>`;
+  if(furniture.withdrawalDateFromCustomer)
+    withdrawalDateFromCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateFromCustomer" type="date" value="${furniture.withdrawalDateFromCustomer}" readonly/>`;
+  else
+    withdrawalDateFromCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateFromCustomer" type="date" readonly/>`;
 
   let deliveryDate = document.querySelector("#deliveryDate");
-  deliveryDate.innerHTML = `<input class="form-control" id="inputDeliveryDate" type="date" readonly/>`;
+  if(furniture.deliveryDate)
+    deliveryDate.innerHTML = `<input class="form-control" id="inputDeliveryDate" type="date" value="${furniture.deliveryDate}" readonly/>`;
+  else
+    deliveryDate.innerHTML = `<input class="form-control" id="inputDeliveryDate" type="date" readonly/>`;
 
   let withdrawalDateToCustomer = document.querySelector("#withdrawalDateToCustomer");
-  withdrawalDateToCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateToCustomer" type="date" readonly/>`;
+  if(furniture.withdrawalDateToCustomer)
+    withdrawalDateToCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateToCustomer" type="date" value="${furniture.withdrawalDateToCustomer}" readonly/>`;
+  else
+    withdrawalDateToCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateToCustomer" type="date" readonly/>`;
 
   let buyerEmail = document.querySelector("#buyerEmail");
   buyerEmail.innerHTML = `<input class="form-control" id="inputBuyerEmail" type="email" readonly/>`;
@@ -292,15 +303,24 @@ const onPurchase = () => {
   purchasePrice.innerHTML = `<input class="form-control" id="inputPurchasePrice" type="number" value=${furniture.purchasePrice} />`;
 
   let withdrawalDateFromCustomer = document.querySelector("#withdrawalDateFromCustomer");
-  withdrawalDateFromCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateFromCustomer" type="date"/>`;
+  if(furniture.withdrawalDateFromCustomer)
+    withdrawalDateFromCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateFromCustomer" type="date" value="${furniture.withdrawalDateFromCustomer}"/>`;
+  else
+    withdrawalDateFromCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateFromCustomer" type="date"/>`;
 }
 
 const onSold = () => {
   let deliveryDate = document.querySelector("#deliveryDate");
-  deliveryDate.innerHTML = `<input class="form-control" id="inputDeliveryDate" type="date"/>`;
+  if(furniture.deliveryDate)
+    deliveryDate.innerHTML = `<input class="form-control" id="inputDeliveryDate" type="date" value="${furniture.deliveryDate}"/>`;
+  else
+    deliveryDate.innerHTML = `<input class="form-control" id="inputDeliveryDate" type="date" />`;
 
   let withdrawalDateToCustomer = document.querySelector("#withdrawalDateToCustomer");
-  withdrawalDateToCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateToCustomer" type="date" />`;
+  if(furniture.withdrawalDateToCustomer)
+    withdrawalDateToCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateToCustomer" type="date" value="${furniture.withdrawalDateToCustomer}" />`;
+  else
+    withdrawalDateToCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateToCustomer" type="date"/>`;
 }
 
 const onBuyerEmail = () => {
