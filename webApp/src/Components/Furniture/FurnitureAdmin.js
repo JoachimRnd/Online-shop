@@ -71,8 +71,8 @@ let furniturePage = `
       </div>
       <div class="col-6">
         <div class="form-group">
-            <label for="specialPrice">Prix de vente spécial</label>
-            <div id="specialPrice"></div>
+            <label for="specialSalePrice">Prix de vente spécial</label>
+            <div id="specialSalePrice"></div>
         </div>
       </div>
       <div class="col-6">
@@ -95,8 +95,8 @@ let furniturePage = `
       </div>
       <div class="col-6">
         <div class="form-group">
-            <label for="buyerEmail">Email du client</label>
-            <div id="buyerEmail"></div>
+            <label for="buyer">Email du client</label>
+            <div id="buyer"></div>
         </div>
       </div>
     </div>
@@ -218,7 +218,7 @@ const FurnitureAdmin = async(f) => {
     onPurchase();
   } else if (conditions.value == "vendu" || conditions.value == "reserve" || 
   conditions.value == "livre" || conditions.value == "emporte_par_client") {
-    onBuyerEmail();
+    onBuyer();
   }
 
   conditions.addEventListener("change",(e)=>{
@@ -232,7 +232,7 @@ const FurnitureAdmin = async(f) => {
       onPurchase();
     } else if (conditions.value == "vendu" || conditions.value == "reserve" || 
     conditions.value == "livre" || conditions.value == "emporte_par_client") {
-      onBuyerEmail();
+      onBuyer();
     }
   });
 }
@@ -259,8 +259,8 @@ const onFurniture = () => {
   let prix = document.querySelector("#prix");
   prix.innerHTML = `<input class="form-control" id="inputSellingPrice" type="number" placeholder=${furniture.sellingPrice} readonly />`;
 
-  let specialPrice = document.querySelector("#specialPrice");
-  specialPrice.innerHTML = `<input class="form-control" id="inputSpecialPrice" type="number" placeholder=${furniture.specialSalePrice} readonly />`;
+  let specialSalePrice = document.querySelector("#specialSalePrice");
+  specialSalePrice.innerHTML = `<input class="form-control" id="inputSpecialSalePrice" type="number" placeholder=${furniture.specialSalePrice} readonly />`;
 
   let furnitureDescription = document.querySelector("#furnitureDescription");
   furnitureDescription.innerHTML = `<textarea class="form-control" id="furnituredescription" rows="6" >${furniture.description}</textarea>`;
@@ -286,16 +286,16 @@ const onFurniture = () => {
   else
     withdrawalDateToCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateToCustomer" type="date" readonly/>`;
 
-  let buyerEmail = document.querySelector("#buyerEmail");
-  buyerEmail.innerHTML = `<input class="form-control" id="inputBuyerEmail" type="email" readonly/>`;
+  let buyer = document.querySelector("#buyer");
+  buyer.innerHTML = `<input class="form-control" id="inputBuyer" type="email" readonly/>`;
 }
 
 const onSale = () => {
   let price = document.querySelector("#prix");
   price.innerHTML = `<input class="form-control" id="inputSellingPrice" type="number" value=${furniture.sellingPrice} />`;
 
-  let specialPrice = document.querySelector("#specialPrice");
-  specialPrice.innerHTML = `<input class="form-control" id="inputSpecialPrice" type="number" value=${furniture.specialSalePrice} />`;
+  let specialSalePrice = document.querySelector("#specialSalePrice");
+  specialSalePrice.innerHTML = `<input class="form-control" id="inputSpecialSalePrice" type="number" value=${furniture.specialSalePrice} />`;
 }
 
 const onPurchase = () => {
@@ -323,67 +323,96 @@ const onSold = () => {
     withdrawalDateToCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateToCustomer" type="date"/>`;
 }
 
-const onBuyerEmail = () => {
-  let buyerEmail = document.querySelector("#buyerEmail");
-  buyerEmail.innerHTML = `<input class="form-control" id="inputBuyerEmail" type="email"/>`;
+const onBuyer = () => {
+  let buyer = document.querySelector("#buyer");
+  buyer.innerHTML = `<input class="form-control" id="inputBuyer" type="email"/>`;
 }
 
 const onSave = async() => {
-    let conditionChoice = document.querySelector("#conditions");
-    conditionChoice = conditionChoice.value;
+    let condition = document.querySelector("#conditions");
+    condition = condition.value;
 
-    let user = getUserSessionData();
-    let p = 0;
-    let specialPrice = 0;
-    let purchasePrice = 0;
-    let withdrawalDateFromCustomer = "";
-    let deliveryDate = "";
-    let withdrawalDateToCustomer = "";
-    let buyerEmail = "";
+    let type = null;
+    if(furniture.type.id != document.getElementById("typesList").value){
+      type = document.getElementById("typesList").value;
+      furniture.type.id = type;
+    }
+    let sellingPrice = null;
+    let specialSalePrice = null;
+    let purchasePrice = null;
+    let withdrawalDateFromCustomer = null;
+    let deliveryDate = null;
+    let withdrawalDateToCustomer = null;
+    let buyer = null;
+    let description = null;
+    if(furniture.description != document.getElementById("furnituredescription").value){
+      description = document.getElementById("furnituredescription").value;
+      furniture.description = description;
+    }
 
-    if(conditionChoice == "vendu"){
-      deliveryDate = document.querySelector("#inputDeliveryDate").value;
-      withdrawalDateToCustomer = document.querySelector("#inputWithdrawalDateToCustomer").value;
+    if(condition == "vendu"){
+      if(furniture.deliveryDate != document.querySelector("#inputDeliveryDate").value){
+        deliveryDate = document.querySelector("#inputDeliveryDate").value;
+        furniture.deliveryDate = deliveryDate;
+      }
+      if(furniture.withdrawalDateToCustomer != document.querySelector("#inputWithdrawalDateToCustomer").value){
+        withdrawalDateToCustomer = document.querySelector("#inputWithdrawalDateToCustomer").value;
+        furniture.withdrawalDateToCustomer = withdrawalDateToCustomer;
+      }
     }
-    if(conditionChoice == "en_vente"){
-      p = document.querySelector("#inputSellingPrice").value;
-      furniture.sellingPrice = p;
-      specialPrice = document.querySelector("#inputSpecialPrice").value;
-      furniture.specialSalePrice = specialPrice;
-    } else if(conditionChoice == "achete"){
-      purchasePrice = document.querySelector("#inputPurchasePrice").value;
-      furniture.purchasePrice = purchasePrice;
-      withdrawalDateFromCustomer = document.querySelector("#inputWithdrawalDateFromCustomer").value;
-    }else if (conditions.value == "vendu" || conditions.value == "reserve" || 
-    conditions.value == "livre" || conditions.value == "emporte_par_client") {
-      buyerEmail = document.querySelector("#inputBuyerEmail").value
+    if(condition == "en_vente"){
+      if(furniture.sellingPrice != document.querySelector("#inputSellingPrice").value){
+        sellingPrice = document.querySelector("#inputSellingPrice").value;
+        furniture.sellingPrice = sellingPrice;
+      }
+      if(furniture.specialSalePrice != document.querySelector("#inputSpecialSalePrice").value){
+        specialSalePrice = document.querySelector("#inputSpecialSalePrice").value;
+        furniture.specialSalePrice = specialSalePrice;
+      }
+    } else if(condition == "achete"){
+      if(furniture.purchasePrice != document.querySelector("#inputPurchasePrice").value){
+        purchasePrice = document.querySelector("#inputPurchasePrice").value;
+        furniture.purchasePrice = purchasePrice;
+      }
+      if(furniture.withdrawalDateFromCustomer != document.querySelector("#inputWithdrawalDateFromCustomer").value){
+        withdrawalDateFromCustomer = document.querySelector("#inputWithdrawalDateFromCustomer").value;
+        furniture.withdrawalDateFromCustomer = withdrawalDateFromCustomer;
+      }
+    }else if (condition == "vendu" || condition == "reserve" || 
+    condition == "livre" || condition == "emporte_par_client") {
+      if(furniture.buyer != document.querySelector("#inputBuyer").value){
+        buyer = document.querySelector("#inputBuyer").value;
+        furniture.buyer = buyer;
+      }
     }
+
+    if(furniture.condition == condition){
+      condition = null;
+    }
+
     let struct = {
-      condition: conditionChoice,
-      type: document.getElementById("typesList").value,
+      condition: condition,
+      type: type,
       purchasePrice: purchasePrice,
-      sellingPrice: p,
-      specialPrice: specialPrice,
+      sellingPrice: sellingPrice,
+      specialSalePrice: specialSalePrice,
       withdrawalDateFromCustomer: withdrawalDateFromCustomer,
       deliveryDate: deliveryDate,
       withdrawalDateToCustomer: withdrawalDateToCustomer,
-      buyerEmail: buyerEmail,
-      description: document.getElementById("furnituredescription").value
+      buyer: buyer,
+      description: description
     }
     
     console.log(struct);
-   
-    if(conditionChoice != furniture.condition || furniture.condition == "en_vente"){
-      try {
-        await callAPIWithoutJSONResponse(API_BASE_URL + furniture.id, "PUT", user.token, struct);
-        document.getElementById("toast").innerHTML = `</br><h5 style="color:green">L'état a bien été modifié</h5>`;
-      } catch (err) {
-        console.error("FurnitureAdmin::Change condition", err);
-        PrintError(err);
-      }
 
+    let user = getUserSessionData();
+    try {
+      await callAPIWithoutJSONResponse(API_BASE_URL + furniture.id, "PUT", user.token, struct);
+      document.getElementById("toast").innerHTML = `</br><h5 style="color:green">L'état a bien été modifié</h5>`;
+    } catch (err) {
+      console.error("FurnitureAdmin::Change condition", err);
+      PrintError(err);
     }
-    
 }
 
 const onCheckOption = async() => {
