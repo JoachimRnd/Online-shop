@@ -3,12 +3,20 @@ const STORE_NAME = "user";
 const THEME = "theme";
 
 const getUserSessionData = () => {
-  const retrievedUserSession = sessionStorage.getItem(STORE_NAME);
+  const retrievedUserSession = getUserInSessionStorage;
   if (retrievedUserSession) return JSON.parse(retrievedUserSession);
-  const retrievedUser = localStorage.getItem(STORE_NAME);
+  const retrievedUser = getUserInLocalStorage;
   if (!retrievedUser) return;
   return JSON.parse(retrievedUser);
 };
+
+const getUserInSessionStorage = () => {
+  return sessionStorage.getItem(STORE_NAME);
+}
+
+const getUserInLocalStorage = () => {
+  return localStorage.getItem(STORE_NAME);
+}
 
 const setUserLocalData = (user) => {
   const storageValue = JSON.stringify(user);
