@@ -42,5 +42,7 @@ public interface FurnitureUCC {
 
   boolean modifySpecialSalePrice(int id, double price);
 
+  boolean modifyFavouritePicture(int id, int pictureId);
+
 
 }

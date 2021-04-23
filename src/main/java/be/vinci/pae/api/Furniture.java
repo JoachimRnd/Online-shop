@@ -12,6 +12,7 @@ import be.vinci.pae.domain.furniture.FurnitureUCC;
 import be.vinci.pae.domain.option.OptionDTO;
 import be.vinci.pae.domain.option.OptionFactory;
 import be.vinci.pae.domain.option.OptionUCC;
+import be.vinci.pae.domain.picture.PictureUCC;
 import be.vinci.pae.domain.type.TypeDTO;
 import be.vinci.pae.domain.type.TypeUCC;
 import be.vinci.pae.domain.user.UserDTO;
@@ -46,6 +47,9 @@ public class Furniture {
 
   @Inject
   private TypeUCC typeUCC;
+
+  @Inject
+  private PictureUCC pictureUCC;
 
   /**
    * modify furniture information.
@@ -229,6 +233,46 @@ public class Furniture {
     return Json.filterPublicJsonViewAsList(furnitureUCC.getSalesFurnitureAdmin(),
         FurnitureDTO.class);
   }
+
+  /**
+   * Add an favourite picture on the furniture with id.
+   *
+   * @return Response
+   */
+  @PUT
+  @Path("/{idFurniture}/favourite-picture")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public Response modifyFavouritePicture(@PathParam("idFurniture") int idFurniture,
+      @Context ContainerRequest request, JsonNode json) {
+    if (!json.has("idPicture")
+        || !furnitureUCC.modifyFavouritePicture(idFurniture, json.get("picture_id").asInt())) {
+      return Response.status(Status.UNAUTHORIZED).entity("Erreur ajouter photo favorite")
+          .type(MediaType.TEXT_PLAIN).build();
+    }
+
+
+    return Response.ok().build();
+  }
+
+
+  /**
+   * update scrolling picture or not on the picture with id.
+   *
+   * @return Response
+   */
+  @PUT
+  @Path("/{idPicture}/scrolling-picture")
+  @AuthorizeAdmin
+  public Response modifyScrollingPicture(@PathParam("idPicture") int idPicture,
+      @Context ContainerRequest request) {
+    if (!pictureUCC.modifyScrollingPicture(idPicture)) {
+      return Response.status(Status.UNAUTHORIZED).entity("Erreur ajouter photo défilante")
+          .type(MediaType.TEXT_PLAIN).build();
+    }
+    return Response.ok().build();
+  }
+
 
 
 }

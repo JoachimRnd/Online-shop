@@ -8,4 +8,6 @@ public interface PictureUCC {
 
   PictureDTO addPicture(int furnitureId, PictureDTO newPicture);
 
+  boolean modifyScrollingPicture(int pictureId);
+
 }

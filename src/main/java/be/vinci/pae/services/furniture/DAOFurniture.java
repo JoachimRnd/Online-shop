@@ -49,5 +49,7 @@ public interface DAOFurniture {
 
   boolean updateBuyer(int id, int buyerId);
 
+  boolean updateFavouritePicture(int id, int pictureId);
+
 
 }
