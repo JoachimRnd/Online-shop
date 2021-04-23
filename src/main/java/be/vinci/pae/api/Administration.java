@@ -194,7 +194,7 @@ public class Administration {
   @Path("/furnitures")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public List<FurnitureDTO> usersFiltered(@DefaultValue("") @QueryParam("type") String type,
+  public List<FurnitureDTO> furnituresFiltered(@DefaultValue("") @QueryParam("type") String type,
       @DefaultValue("" + Double.MAX_VALUE) @QueryParam("price") double price,
       @DefaultValue("") @QueryParam("username") String username) {
     return Json
