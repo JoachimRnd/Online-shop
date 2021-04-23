@@ -17,6 +17,7 @@ public class DAOTypeImpl implements DAOType {
   private String querySelectAllTypes;
   private String queryDeleteType;
   private String queryInsertType;
+  private String querySelectAllTypesNames;
 
   @Inject
   private TypeFactory typeFactory;
@@ -33,6 +34,7 @@ public class DAOTypeImpl implements DAOType {
     querySelectAllTypes = "SELECT t.type_id, t.name FROM project.furniture_types t";
     queryDeleteType = "DELETE FROM project.furniture_types t WHERE t.type_id = ?";
     queryInsertType = "INSERT INTO project.furniture_types (type_id,name) VALUES (DEFAULT,?)";
+    querySelectAllTypesNames = "SELECT DISTINCT t.name FROM project.furniture_types t";
   }
 
   @Override
@@ -121,18 +123,15 @@ public class DAOTypeImpl implements DAOType {
   }
 
   @Override
-  public List<TypeDTO> getAllTypes() {
+  public List<String> getAllTypesNames() {
     try {
       PreparedStatement selectAllTypes = this.dalServices
-          .getPreparedStatement(querySelectAllTypes);
-      List<TypeDTO> allTypes = new ArrayList<>();
+          .getPreparedStatement(querySelectAllTypesNames);
+      List<String> allTypes = new ArrayList<>();
       try (ResultSet rs = selectAllTypes.executeQuery()) {
-        TypeDTO type;
-        do {
-          type = createType(rs);
-          allTypes.add(type);
-        } while (type != null);
-        allTypes.remove(allTypes.size() - 1);
+        while (rs.next()) {
+          allTypes.add(rs.getString(1));
+        }
       }
       return allTypes;
     } catch (SQLException e) {

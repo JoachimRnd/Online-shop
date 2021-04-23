@@ -15,5 +15,5 @@ public interface DAOType {
 
   boolean deleteFurnitureType(int id);
 
-  List<TypeDTO> getAllTypes();
+  List<String> getAllTypesNames();
 }

@@ -29,7 +29,7 @@ public class DAOUserImpl implements DAOUser {
   private String queryAddUser;
   private String queryValidateUser;
   private String querySelectUnvalidatedUsers;
-  private String querySelectAllUsers;
+  private String querySelectAllUsername;
   private String querySelectUsersFiltered;
 
   @Inject
@@ -80,11 +80,7 @@ public class DAOUserImpl implements DAOUser {
         + "a.country, u.email, u.registration_date, u.valid_registration, u.user_type "
         + "FROM project.addresses a, project.users u "
         + "WHERE u.valid_registration = false AND u.address = a.address_id";
-    querySelectAllUsers = "SELECT u.user_id, u.username, u.password, u.last_name, "
-        + "u.first_name, a.street, a.building_number, a.unit_number, a.postcode, a.commune, "
-        + "a.country, u.email, u.registration_date, u.valid_registration, u.user_type "
-        + "FROM project.addresses a, project.users u "
-        + "WHERE u.address = a.address_id";
+    querySelectAllUsername = "SELECT DISTINCT u.username FROM project.users u";
     querySelectUsersFiltered = "SELECT u.user_id, u.username, u.password, u.last_name, "
         + "u.first_name, a.street, a.building_number, a.unit_number, a.postcode, a.commune, "
         + "a.country, u.email, u.registration_date, u.valid_registration, u.user_type "
@@ -302,18 +298,15 @@ public class DAOUserImpl implements DAOUser {
   }
 
   @Override
-  public List<UserDTO> getAllUsers() {
+  public List<String> getAllUsername() {
     try {
       PreparedStatement selectAllUsers = this.dalBackendServices
-          .getPreparedStatement(querySelectAllUsers);
-      List<UserDTO> allUsers = new ArrayList<>();
+          .getPreparedStatement(querySelectAllUsername);
+      List<String> allUsers = new ArrayList<>();
       try (ResultSet rs = selectAllUsers.executeQuery()) {
-        UserDTO user;
-        do {
-          user = createUser(rs);
-          allUsers.add(user);
-        } while (user != null);
-        allUsers.remove(allUsers.size() - 1);
+        while (rs.next()) {
+          allUsers.add(rs.getString(1));
+        }
       }
       return allUsers;
     } catch (SQLException e) {

@@ -2,10 +2,10 @@ package be.vinci.pae.api;
 
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.api.utils.Json;
+import be.vinci.pae.domain.address.AddressUCC;
 import be.vinci.pae.domain.furniture.FurnitureDTO;
 import be.vinci.pae.domain.furniture.FurnitureUCC;
 import be.vinci.pae.domain.option.OptionUCC;
-import be.vinci.pae.domain.type.TypeDTO;
 import be.vinci.pae.domain.type.TypeUCC;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.user.UserUCC;
@@ -44,6 +44,9 @@ public class Administration {
 
   @Inject
   private TypeUCC typeUCC;
+
+  @Inject
+  private AddressUCC addressUCC;
 
   /**
    * Valid a user.
@@ -153,19 +156,27 @@ public class Administration {
   }
 
   @GET
-  @Path("/allusers")
+  @Path("/allusernames")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public List<UserDTO> allUsers() {
-    return Json.filterPublicJsonViewAsList(userUCC.getAllUsers(), UserDTO.class);
+  public List<String> allUsers() {
+    return Json.filterPublicJsonViewAsList(userUCC.getAllUsername(), String.class);
   }
 
   @GET
-  @Path("/alltypes")
+  @Path("/alltypesnames")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public List<TypeDTO> allTypes() {
-    return Json.filterPublicJsonViewAsList(typeUCC.getAllType(), TypeDTO.class);
+  public List<String> allTypes() {
+    return Json.filterPublicJsonViewAsList(typeUCC.getAllTypeNames(), String.class);
+  }
+
+  @GET
+  @Path("/allcommunes")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public List<String> allCommunes() {
+    return Json.filterPublicJsonViewAsList(addressUCC.getAllCommunes(), String.class);
   }
 
   @GET

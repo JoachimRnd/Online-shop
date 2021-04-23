@@ -10,5 +10,5 @@ public interface TypeUCC {
 
   int addFurnitureType(String type);
 
-  List<TypeDTO> getAllType();
+  List<String> getAllTypeNames();
 }

@@ -1,9 +1,10 @@
 import { getUserSessionData } from "../../utils/session.js";
 import { callAPI,callAPIWithoutJSONResponse } from "../../utils/api.js";
 import PrintError from "../PrintError.js";
+import {RedirectUrl} from "../Router";
 const API_BASE_URL = "/api/admin/";
 
-let userList, typeList;
+let userList, typeList, communeList;
 
 let fieldsTypeUser = `
 <input class="col-auto" type="text" id="user" placeholder="Pseudo">
@@ -36,8 +37,9 @@ const SearchPage = async () => {
     let searchType = document.querySelector('#searchType');
     searchType.addEventListener("change", onSearchType);
     let user = getUserSessionData();
-    userList = await callAPI(API_BASE_URL + "allusers", "GET", user.token);
-    typeList = await callAPI(API_BASE_URL + "alltypes", "GET", user.token);
+    userList = await callAPI(API_BASE_URL + "allusernames", "GET", user.token);
+    communeList = await callAPI(API_BASE_URL + "allcommunes", "GET", user.token);
+    typeList = await callAPI(API_BASE_URL + "alltypesnames", "GET", user.token);
     let searchBtn = document.querySelector('#searchBtn');
     searchBtn.addEventListener("click", onSubmitSearch);
     onUserSearchType();
@@ -99,22 +101,22 @@ const onAutoComplete = async () => {
     }
     //Filtrer resultats
     let matches = [];
-    if(searchInput == document.querySelector('#user')) {
+    if(searchInput === document.querySelector('#user')) {
         matches = userList.filter(data => {
                 let regex = new RegExp(`^${search}`, 'gi');
-                return data.username.match(regex);
+                return data.match(regex);
             }
         )
-    } else if (searchInput == document.querySelector('#commune')) {
-        matches = userList.filter(data => {
+    } else if (searchInput === document.querySelector('#commune')) {
+        matches = communeList.filter(data => {
                 let regex = new RegExp(`^${search}`, 'gi');
-                return data.address.commune.match(regex);
+                return data.match(regex);
             }
         )
-    } else if (searchInput == document.querySelector('#type')) {
+    } else if (searchInput === document.querySelector('#type')) {
         matches = typeList.filter(data => {
                 let regex = new RegExp(`^${search}`, 'gi');
-                return data.name.match(regex);
+                return data.match(regex);
             }
         )
     }
@@ -132,19 +134,19 @@ const showAutoCompleteResults = (matches = []) => {
     if(document.activeElement === document.querySelector('#user')) {
         results.innerHTML = matches.map(match => `
             <div class="card card-body mb-1">
-                <p>${match.username}</p>
+                <p>${match}</p>
             </div>
         `).join('');
     } else if (document.activeElement === document.querySelector('#commune')) {
         results.innerHTML = matches.map(match => `
             <div class="card card-body mb-1">
-                <p>${match.address.commune}</p>
+                <p>${match}</p>
             </div>
         `).join('');
     } else if (document.activeElement === document.querySelector('#type')) {
         results.innerHTML = matches.map(match => `
             <div class="card card-body mb-1">
-                <p>${match.name}</p>
+                <p>${match}</p>
             </div>
         `).join('');
     }
@@ -244,16 +246,66 @@ const onResults = (resultList = []) => {
 
 const onResultsForUsers = (resultList) => {
     let resultDiv = document.querySelector('#results');
-    resultList.forEach((item, index) => {
-        resultDiv.innerHTML += (index+1) + `) ` + item.username + `<br/>`;
-    })
+    let resultDisplay =
+        `<div id="tableusers" class="table-responsive mt-3">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Pseudo</th>
+                        <th>Nom Prenom</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+    resultList.forEach((element) => {
+        resultDisplay +=  `<tr>
+                                    <td><a id="user${element.id}" href="" target="_blank">${element.username}</a></td>
+                                    <td>${element.lastName} ${element.firstName}</td>
+                                    <td>${element.email}</td>
+                                </tr>`;
+    });
+    resultDisplay += `</tbody></table></div>`;
+    resultDiv.innerHTML = resultDisplay;
+
+    resultList.forEach((element) => {
+        let userElement = document.getElementById("user"+element.id);
+        userElement.addEventListener("click", (e) => {
+            e.preventDefault();
+            RedirectUrl("/userAdmin",element,"?id="+element.id);
+        });
+    });
 };
 
 const onResultsForFurnitures = (resultList) => {
     let resultDiv = document.querySelector('#results');
-    resultList.forEach((item, index) => {
-        resultDiv.innerHTML += (index+1) + `) ` + item.description + `<br/>`;
-    })
+    let resultDisplay =
+        `<div id="tablefurnitures" class="table-responsive mt-3">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Type</th>
+                        <th>Etat</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+    resultList.forEach((element) => {
+        resultDisplay +=  `<tr>
+                                    <td><a id="furniture${element.id}" href="" target="_blank">${element.description}</a></td>
+                                    <td>${element.type.name}</td>
+                                    <td>${element.condition}</td>
+                                </tr>`;
+    });
+    resultDisplay += `</tbody></table></div>`;
+    resultDiv.innerHTML = resultDisplay;
+
+    resultList.forEach((element) => {
+        let furnitureElement = document.getElementById("furniture"+element.id);
+        furnitureElement.addEventListener("click", (e) => {
+            e.preventDefault();
+            RedirectUrl("/furnitureAdmin",element,"?id="+element.id);
+        });
+    });
 };
 
 const clearResults = () => {

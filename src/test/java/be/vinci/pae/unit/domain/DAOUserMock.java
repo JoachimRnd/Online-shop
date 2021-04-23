@@ -42,7 +42,7 @@ public class DAOUserMock implements DAOUser {
   }
 
   @Override
-  public List<UserDTO> getAllUsers() {
+  public List<String> getAllUsername() {
     return null;
   }
 

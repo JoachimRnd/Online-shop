@@ -57,9 +57,9 @@ public class TypeUCCImpl implements TypeUCC {
   }
 
   @Override
-  public List<TypeDTO> getAllType() {
+  public List<String> getAllTypeNames() {
     try {
-      return daoType.getAllTypes();
+      return daoType.getAllTypesNames();
     } finally {
       dalServices.closeConnection();
     }
