@@ -66,4 +66,19 @@ public class PictureUCCImpl implements PictureUCC {
     }
   }
 
+  @Override
+  public boolean modifyScrollingPicture(int pictureId) {
+    try {
+      this.dalServices.startTransaction();
+      if (!this.daoPicture.updateScrollingPicture(pictureId)) {
+        this.dalServices.rollbackTransaction();
+        throw new BusinessException("Error modify scrolling picture");
+      }
+      this.dalServices.commitTransaction();
+      return true;
+    } finally {
+      this.dalServices.closeConnection();
+    }
+  }
+
 }

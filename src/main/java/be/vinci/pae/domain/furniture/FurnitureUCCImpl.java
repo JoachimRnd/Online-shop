@@ -51,36 +51,6 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     }
   }
 
-  private void checkFurniture(FurnitureDTO furnitureDTO) {
-    if (furnitureDTO.getWithdrawalDateToCustomer() != null) {
-      if (furnitureDTO.getCondition() == FurnitureCondition.vendu) {
-        if (furnitureDTO.getWithdrawalDateToCustomer().getTime() < (new Date().getTime())) {
-          modifyCondition(furnitureDTO.getId(), FurnitureCondition.reserve);
-          furnitureDTO.setCondition(FurnitureCondition.reserve);
-        }
-      }
-      if (furnitureDTO.getCondition() == FurnitureCondition.reserve) {
-        Date dateOneYearAndOneDayLater = furnitureDTO.getWithdrawalDateToCustomer();
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(dateOneYearAndOneDayLater);
-        cal.add(Calendar.YEAR, 1);
-        cal.add(Calendar.DATE, 1);
-        dateOneYearAndOneDayLater = cal.getTime();
-
-        if (new Date().getTime() > dateOneYearAndOneDayLater.getTime()) {
-          modifyCondition(furnitureDTO.getId(), FurnitureCondition.en_vente);
-          modifyWithdrawalDateToCustomer(furnitureDTO.getId(), null);
-          modifyBuyerEmail(furnitureDTO.getId(), null);
-          furnitureDTO.setUnregisteredBuyerEmail(null);
-          furnitureDTO.setWithdrawalDateToCustomer(null);
-          furnitureDTO.setCondition(FurnitureCondition.en_vente);
-        }
-      }
-
-    }
-  }
-
-
 
   private void checkFurnitures(List<FurnitureDTO> listFurniture) {
     for (FurnitureDTO furnitureDTO : listFurniture) {
@@ -339,6 +309,26 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     }
   }
 
+
+  @Override
+  public boolean modifyFavouritePicture(int id, int pictureId) {
+    try {
+      this.dalServices.startTransaction();
+
+      if (!this.daoFurniture.updateFavouritePicture(id, pictureId)) {
+        this.dalServices.rollbackTransaction();
+        throw new BusinessException("Error modify picture");
+      }
+      this.dalServices.commitTransaction();
+      return true;
+    } finally {
+      this.dalServices.closeConnection();
+    }
+
+  }
+
+
+
   @Override
   public List<FurnitureDTO> getFurnitureByTypeName(String typeName) {
     // TODO Auto-generated method stub
@@ -395,4 +385,36 @@ public class FurnitureUCCImpl implements FurnitureUCC {
       this.dalServices.closeConnection();
     }
   }
+
+
+
+  private void checkFurniture(FurnitureDTO furnitureDTO) {
+    if (furnitureDTO.getWithdrawalDateToCustomer() != null) {
+      if (furnitureDTO.getCondition() == FurnitureCondition.vendu) {
+        if (furnitureDTO.getWithdrawalDateToCustomer().getTime() < (new Date().getTime())) {
+          modifyCondition(furnitureDTO.getId(), FurnitureCondition.reserve);
+          furnitureDTO.setCondition(FurnitureCondition.reserve);
+        }
+      }
+      if (furnitureDTO.getCondition() == FurnitureCondition.reserve) {
+        Date dateOneYearAndOneDayLater = furnitureDTO.getWithdrawalDateToCustomer();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(dateOneYearAndOneDayLater);
+        cal.add(Calendar.YEAR, 1);
+        cal.add(Calendar.DATE, 1);
+        dateOneYearAndOneDayLater = cal.getTime();
+
+        if (new Date().getTime() > dateOneYearAndOneDayLater.getTime()) {
+          modifyCondition(furnitureDTO.getId(), FurnitureCondition.en_vente);
+          modifyWithdrawalDateToCustomer(furnitureDTO.getId(), null);
+          modifyBuyerEmail(furnitureDTO.getId(), null);
+          furnitureDTO.setUnregisteredBuyerEmail(null);
+          furnitureDTO.setWithdrawalDateToCustomer(null);
+          furnitureDTO.setCondition(FurnitureCondition.en_vente);
+        }
+      }
+
+    }
+  }
+
 }

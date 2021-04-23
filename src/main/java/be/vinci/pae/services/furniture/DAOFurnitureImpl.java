@@ -40,6 +40,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
   private String queryUpdateDeliveryDate;
   private String queryUpdateUnregisteredBuyerEmail;
   private String queryUpdateBuyer;
+  private String queryUpdateFavouritePicture;
 
   @Inject
   private FurnitureFactory furnitureFactory;
@@ -122,6 +123,8 @@ public class DAOFurnitureImpl implements DAOFurniture {
     queryUpdateUnregisteredBuyerEmail =
         "UPDATE project.furniture SET unregistered_buyer_email = ? WHERE furniture_id = ?";
     queryUpdateBuyer = "UPDATE project.furniture SET buyer = ? WHERE furniture_id = ?";
+    queryUpdateFavouritePicture =
+        "UPDATE project.furniture SET favourite_picture = ? WHERE furniture_id = ?";
   }
 
   @Override
@@ -489,5 +492,21 @@ public class DAOFurnitureImpl implements DAOFurniture {
       throw new FatalException("Data error : selectSalesFurnitures");
     }
   }
+
+  @Override
+  public boolean updateFavouritePicture(int id, int pictureId) {
+    try {
+      PreparedStatement updateFavouritePicture =
+          this.dalServices.getPreparedStatement(queryUpdateFavouritePicture);
+      updateFavouritePicture.setInt(1, pictureId);
+      updateFavouritePicture.setInt(2, id);
+      return updateFavouritePicture.executeUpdate() == 1;
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : updateFavouritePicture");
+    }
+
+  }
+
 
 }

@@ -73,7 +73,7 @@ const onFurnitureList = (data) => {
       if(getUserSessionData() == null || getUserSessionData().user.userType != "admin"){
         RedirectUrl("/furniture",element,"?id="+element.id);
       }else{
-        RedirectUrl("/furnitureAdmin",element,"?id="+element.id);
+        RedirectUrl("/admin/furniture",element,"?id="+element.id);
       }
     });
   });

@@ -10,4 +10,6 @@ public interface PictureUCC {
   PictureDTO addPicture(int furnitureId, PictureDTO newPicture, InputStream uploadedInputStream,
       String pictureType);
 
+  boolean modifyScrollingPicture(int pictureId);
+
 }
