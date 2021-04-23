@@ -1,6 +1,5 @@
 package be.vinci.pae.api;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -8,7 +7,6 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import com.fasterxml.jackson.databind.JsonNode;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.api.utils.Json;
-import be.vinci.pae.api.utils.Upload;
 import be.vinci.pae.domain.furniture.FurnitureDTO;
 import be.vinci.pae.domain.furniture.FurnitureUCC;
 import be.vinci.pae.domain.option.OptionUCC;
@@ -191,38 +189,30 @@ public class Administration {
    * @return Status code
    */
   @POST
-  @Path("image") // Your Path or URL to call this service
+  @Path("picture") // Your Path or URL to call this service
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @AuthorizeAdmin
   public Response uploadFile(@DefaultValue("true") @FormDataParam("enabled") boolean enabled,
       @FormDataParam("furnitureID") int furnitureId,
       @FormDataParam("file") InputStream uploadedInputStream,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
-
-    System.out.println(furnitureId);
-    System.out.println(fileDetail.getFileName());
-    // Your local disk path where you want to store the file
-    String uploadedFileLocation = ".\\images\\" + fileDetail.getFileName();
-    System.out.println(uploadedFileLocation);
-    // save it
-    File objFile = new File(uploadedFileLocation);
-    if (objFile.exists()) {
-      objFile.delete();
+    String pictureType =
+        fileDetail.getFileName().substring(fileDetail.getFileName().lastIndexOf('.') + 1);
+    if (!pictureType.equals("jpg") && !pictureType.equals("jpeg") && !pictureType.equals("png")) {
+      return Response.status(Status.UNAUTHORIZED)
+          .entity("Le type de la photo doit être jpg, jpeg ou png").type(MediaType.TEXT_PLAIN)
+          .build();
     }
-
     PictureDTO picture = pictureFactory.getPicture();
     picture.setAScrollingPicture(false);
     picture.setName(fileDetail.getFileName());
     picture.setVisibleForEveryone(false);
-    System.out.println("Admin " + picture.getName());
-    picture = this.pictureUcc.addPicture(furnitureId, picture);
-
-    Upload.saveToFile(uploadedInputStream, uploadedFileLocation);
-
-    String output = "File uploaded via Jersey based RESTFul Webservice to: " + uploadedFileLocation;
-
-    return Response.status(200).entity(output).build();
-
+    picture = this.pictureUcc.addPicture(furnitureId, picture, uploadedInputStream, pictureType);
+    if (picture == null) {
+      return Response.serverError().build();
+    } else {
+      return Response.ok().build();
+    }
   }
 
 }

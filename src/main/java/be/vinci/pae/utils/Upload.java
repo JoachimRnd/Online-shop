@@ -1,4 +1,4 @@
-package be.vinci.pae.api.utils;
+package be.vinci.pae.utils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -8,7 +8,7 @@ import java.io.OutputStream;
 
 public class Upload {
 
-  public static void saveToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
+  public static boolean saveToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
 
     try {
       OutputStream out = null;
@@ -21,9 +21,10 @@ public class Upload {
       }
       out.flush();
       out.close();
+      return true;
     } catch (IOException e) {
-
       e.printStackTrace();
+      return false;
     }
 
   }
