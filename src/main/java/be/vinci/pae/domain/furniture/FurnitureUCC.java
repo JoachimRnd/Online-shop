@@ -18,7 +18,7 @@ public interface FurnitureUCC {
 
   List<FurnitureDTO> getFurnitureByUserName(String typeName);
 
-  boolean modifyCondition(int id, FurnitureCondition condition, double price);
+  boolean modifyCondition(int id, FurnitureCondition condition);
 
   boolean modifyType(int furnitureId, int typeId);
 
@@ -37,6 +37,10 @@ public interface FurnitureUCC {
   boolean modifyWithdrawalDateFromCustomer(int id, LocalDate time);
 
   boolean modifyWithdrawalDateToCustomer(int id, LocalDate time);
+
+  boolean modifySellingPrice(int id, double price);
+
+  boolean modifySpecialSalePrice(int id, double price);
 
 
 }

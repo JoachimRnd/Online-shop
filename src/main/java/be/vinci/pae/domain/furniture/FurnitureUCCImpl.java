@@ -2,16 +2,23 @@ package be.vinci.pae.domain.furniture;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import be.vinci.pae.domain.type.TypeDTO;
+import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.furniture.DAOFurniture;
 import be.vinci.pae.services.type.DAOType;
+import be.vinci.pae.services.user.DAOUser;
 import be.vinci.pae.utils.BusinessException;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
 import jakarta.inject.Inject;
 
 public class FurnitureUCCImpl implements FurnitureUCC {
+
+  @Inject
+  private DAOUser daoUser;
 
   @Inject
   private DAOFurniture daoFurniture;
@@ -26,6 +33,7 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   public List<FurnitureDTO> getAllFurniture() {
     try {
       List<FurnitureDTO> listFurniture = this.daoFurniture.selectAllFurniture();
+      checkFurnitures(listFurniture);
       return listFurniture;
     } finally {
       this.dalServices.closeConnection();
@@ -36,9 +44,47 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   public List<FurnitureDTO> getFurnitureUsers() {
     try {
       List<FurnitureDTO> listFurniture = this.daoFurniture.selectFurnitureUsers();
+      checkFurnitures(listFurniture);
       return listFurniture;
     } finally {
       this.dalServices.closeConnection();
+    }
+  }
+
+  private void checkFurniture(FurnitureDTO furnitureDTO) {
+    if (furnitureDTO.getWithdrawalDateToCustomer() != null) {
+      if (furnitureDTO.getCondition() == FurnitureCondition.vendu) {
+        if (furnitureDTO.getWithdrawalDateToCustomer().getTime() < (new Date().getTime())) {
+          modifyCondition(furnitureDTO.getId(), FurnitureCondition.reserve);
+          furnitureDTO.setCondition(FurnitureCondition.reserve);
+        }
+      }
+      if (furnitureDTO.getCondition() == FurnitureCondition.reserve) {
+        Date dateOneYearAndOneDayLater = furnitureDTO.getWithdrawalDateToCustomer();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(dateOneYearAndOneDayLater);
+        cal.add(Calendar.YEAR, 1);
+        cal.add(Calendar.DATE, 1);
+        dateOneYearAndOneDayLater = cal.getTime();
+
+        if (new Date().getTime() > dateOneYearAndOneDayLater.getTime()) {
+          modifyCondition(furnitureDTO.getId(), FurnitureCondition.en_vente);
+          modifyWithdrawalDateToCustomer(furnitureDTO.getId(), null);
+          modifyBuyerEmail(furnitureDTO.getId(), null);
+          furnitureDTO.setUnregisteredBuyerEmail(null);
+          furnitureDTO.setWithdrawalDateToCustomer(null);
+          furnitureDTO.setCondition(FurnitureCondition.en_vente);
+        }
+      }
+
+    }
+  }
+
+
+
+  private void checkFurnitures(List<FurnitureDTO> listFurniture) {
+    for (FurnitureDTO furnitureDTO : listFurniture) {
+      checkFurniture(furnitureDTO);
     }
   }
 
@@ -61,21 +107,17 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   }
 
   @Override
-  public boolean modifyCondition(int id, FurnitureCondition condition, double price) {
+  public boolean modifyCondition(int id, FurnitureCondition condition) {
     try {
       // TODO ajouter les etats manquants
       this.dalServices.startTransaction();
-
       boolean noError = true;
 
       switch (condition) {
         case en_vente:
-          noError = noError && this.daoFurniture.updateSellingPrice(id, price)
-              && this.daoFurniture.updateSellingDate(id, Instant.now());
-          // fallthrough
+          noError = noError && this.daoFurniture.updateSellingDate(id, Instant.now());
         case en_magasin:
           noError = noError && this.daoFurniture.updateDepositDate(id, Instant.now());
-          // fallthrough
         default:
           noError = noError && this.daoFurniture.updateCondition(id, condition.ordinal());
       }
@@ -97,7 +139,7 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   public boolean modifyType(int furnitureId, int typeId) {
     TypeDTO type = this.daoType.selectTypeById(typeId);
     if (type == null) {
-      throw new BusinessException("Le type n'existe pas");
+      throw new BusinessException("Type doesn't exist");
     }
     try {
       this.dalServices.startTransaction();
@@ -131,6 +173,38 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     }
   }
 
+  @Override
+  public boolean modifySellingPrice(int id, double price) {
+    try {
+      this.dalServices.startTransaction();
+
+      if (!this.daoFurniture.updateSellingPrice(id, price)) {
+        this.dalServices.rollbackTransaction();
+        throw new BusinessException("Error modify selling price");
+      }
+      this.dalServices.commitTransaction();
+      return true;
+    } finally {
+      this.dalServices.closeConnection();
+    }
+  }
+
+  @Override
+  public boolean modifySpecialSalePrice(int id, double price) {
+    try {
+      this.dalServices.startTransaction();
+
+      if (!this.daoFurniture.updateSpecialSalePrice(id, price)) {
+        this.dalServices.rollbackTransaction();
+        throw new BusinessException("Error modify special sale price");
+      }
+      this.dalServices.commitTransaction();
+      return true;
+    } finally {
+      this.dalServices.closeConnection();
+    }
+  }
+
 
   @Override
   public boolean modifyDescription(int id, String description) {
@@ -152,7 +226,6 @@ public class FurnitureUCCImpl implements FurnitureUCC {
 
   @Override
   public boolean modifyWithdrawalDateToCustomer(int id, LocalDate time) {
-
     try {
       this.dalServices.startTransaction();
 
@@ -207,8 +280,50 @@ public class FurnitureUCCImpl implements FurnitureUCC {
 
   @Override
   public boolean modifyBuyerEmail(int id, String email) {
-    // TODO Auto-generated method stub
-    return false;
+    UserDTO userDTO;
+    if (email == null) {
+      FurnitureDTO furnitureDTO;
+      try {
+        furnitureDTO = this.daoFurniture.selectFurnitureById(id);
+      } finally {
+        this.dalServices.closeConnection();
+      }
+      userDTO = furnitureDTO.getBuyer();
+    } else {
+      try {
+        userDTO = this.daoUser.getUserByEmail(email);
+      } finally {
+        this.dalServices.closeConnection();
+      }
+    }
+
+    try {
+      // User exist
+      if (userDTO != null) {
+        this.dalServices.startTransaction();
+        int idUser = userDTO.getId();
+        if (email == null) {
+          idUser = -1;
+        }
+        if (!this.daoFurniture.updateBuyer(id, idUser)) {
+          this.dalServices.rollbackTransaction();
+          throw new BusinessException("Error modify buyer");
+        }
+        this.dalServices.commitTransaction();
+        return true;
+      } else { // User doesn't exist
+        this.dalServices.startTransaction();
+
+        if (!this.daoFurniture.updateUnregisteredBuyerEmail(id, email)) {
+          this.dalServices.rollbackTransaction();
+          throw new BusinessException("Error modify buyer email");
+        }
+        this.dalServices.commitTransaction();
+        return true;
+      }
+    } finally {
+      this.dalServices.closeConnection();
+    }
   }
 
 
@@ -217,6 +332,7 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   public FurnitureDTO getFurnitureById(int id) {
     try {
       FurnitureDTO furniture = this.daoFurniture.selectFurnitureById(id);
+      checkFurniture(furniture);
       return furniture;
     } finally {
       dalServices.closeConnection();

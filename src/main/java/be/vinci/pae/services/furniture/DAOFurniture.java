@@ -43,5 +43,11 @@ public interface DAOFurniture {
 
   boolean updateDeliveryDate(int id, LocalDate now);
 
+  boolean updateSpecialSalePrice(int id, Double price);
+
+  boolean updateUnregisteredBuyerEmail(int id, String buyer);
+
+  boolean updateBuyer(int id, int buyerId);
+
 
 }

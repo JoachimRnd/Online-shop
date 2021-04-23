@@ -53,7 +53,7 @@ CREATE TABLE project.furniture
     purchase_price                DECIMAL NULL,
     withdrawal_date_from_customer TIMESTAMP NULL,
     selling_price                 DECIMAL NULL,
-    special_sale_price            DECIMAL NULL,
+    special_selling_price            DECIMAL NULL,
     deposit_date                  TIMESTAMP NULL,
     selling_date                  TIMESTAMP NULL,
     delivery_date                 TIMESTAMP NULL,
@@ -63,6 +63,7 @@ CREATE TABLE project.furniture
     unregistered_buyer_email      VARCHAR(100) NULL
     --favourite_picture INTEGER REFERENCES project.pictures (picture_id) NULL
 );
+
 
 CREATE TABLE project.pictures
 (

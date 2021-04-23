@@ -30,6 +30,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
   private String queryUpdateCondition;
   private String queryUpdateDepositDate;
   private String queryUpdateSellingPrice;
+  private String queryUpdateSpecialSalePrice;
   private String querySelectSalesFurniture;
   private String queryUpdateType;
   private String queryUpdatePurchasePrice;
@@ -37,6 +38,8 @@ public class DAOFurnitureImpl implements DAOFurniture {
   private String queryUpdateWithdrawalDateToCustomer;
   private String queryUpdateWithdrawalDateFromCustomer;
   private String queryUpdateDeliveryDate;
+  private String queryUpdateUnregisteredBuyerEmail;
+  private String queryUpdateBuyer;
 
   @Inject
   private FurnitureFactory furnitureFactory;
@@ -98,6 +101,8 @@ public class DAOFurnitureImpl implements DAOFurniture {
     queryUpdateDepositDate = "UPDATE project.furniture SET deposit_date = ? WHERE furniture_id = ?";
     queryUpdateSellingPrice =
         "UPDATE project.furniture SET selling_price = ? WHERE furniture_id = ?";
+    queryUpdateSpecialSalePrice =
+        "UPDATE project.furniture SET special_sale_price = ? WHERE furniture_id = ?";
     querySelectSalesFurniture = "SELECT f.furniture_id, f.description, f.type,"
         + " f.visit_request, f.purchase_price, f.withdrawal_date_from_customer, f.selling_price,"
         + " f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date,"
@@ -114,6 +119,9 @@ public class DAOFurnitureImpl implements DAOFurniture {
         "UPDATE project.furniture SET withdrawal_date_from_customer = ? WHERE furniture_id = ?";
     queryUpdateDeliveryDate =
         "UPDATE project.furniture SET delivery_date = ? WHERE furniture_id = ?";
+    queryUpdateUnregisteredBuyerEmail =
+        "UPDATE project.furniture SET unregistered_buyer_email = ? WHERE furniture_id = ?";
+    queryUpdateBuyer = "UPDATE project.furniture SET buyer = ? WHERE furniture_id = ?";
   }
 
   @Override
@@ -298,6 +306,20 @@ public class DAOFurnitureImpl implements DAOFurniture {
   }
 
   @Override
+  public boolean updateSpecialSalePrice(int id, Double price) {
+    try {
+      PreparedStatement updateSpecialSalePrice =
+          this.dalServices.getPreparedStatement(queryUpdateSpecialSalePrice);
+      updateSpecialSalePrice.setDouble(1, price);
+      updateSpecialSalePrice.setInt(2, id);
+      return updateSpecialSalePrice.executeUpdate() == 1;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : updateSpecialSalePrice");
+    }
+  }
+
+  @Override
   public boolean updateCondition(int id, int condition) {
     try {
       PreparedStatement updateCondition =
@@ -370,8 +392,12 @@ public class DAOFurnitureImpl implements DAOFurniture {
     try {
       PreparedStatement updateWithdrawalDateToCustomer =
           this.dalServices.getPreparedStatement(queryUpdateWithdrawalDateToCustomer);
-      updateWithdrawalDateToCustomer.setTimestamp(1,
-          Timestamp.valueOf(now.atTime(LocalTime.MIDNIGHT)));
+      if (now == null) {
+        updateWithdrawalDateToCustomer.setTimestamp(1, null);
+      } else {
+        updateWithdrawalDateToCustomer.setTimestamp(1,
+            Timestamp.valueOf(now.atTime(LocalTime.MIDNIGHT)));
+      }
       updateWithdrawalDateToCustomer.setInt(2, id);
       return updateWithdrawalDateToCustomer.executeUpdate() == 1;
     } catch (Exception e) {
@@ -406,6 +432,38 @@ public class DAOFurnitureImpl implements DAOFurniture {
     } catch (Exception e) {
       e.printStackTrace();
       throw new FatalException("Data error : updateDeliveryDate");
+    }
+  }
+
+  @Override
+  public boolean updateUnregisteredBuyerEmail(int id, String buyerEmail) {
+    try {
+      PreparedStatement updateUnregisteredBuyerEmail =
+          this.dalServices.getPreparedStatement(queryUpdateUnregisteredBuyerEmail);
+      updateUnregisteredBuyerEmail.setString(1, buyerEmail);
+      updateUnregisteredBuyerEmail.setInt(2, id);
+      return updateUnregisteredBuyerEmail.executeUpdate() == 1;
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : updateUnregisteredBuyerEmail");
+    }
+  }
+
+  @Override
+  public boolean updateBuyer(int id, int buyerId) {
+    try {
+      PreparedStatement updateUnregisteredBuyer =
+          this.dalServices.getPreparedStatement(queryUpdateBuyer);
+      if (buyerId == -1) {
+        updateUnregisteredBuyer.setNull(1, java.sql.Types.INTEGER);
+      } else {
+        updateUnregisteredBuyer.setInt(1, buyerId);
+      }
+      updateUnregisteredBuyer.setInt(2, id);
+      return updateUnregisteredBuyer.executeUpdate() == 1;
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : updateBuyer");
     }
   }
 

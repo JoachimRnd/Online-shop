@@ -48,7 +48,7 @@ public class Furniture {
   private TypeUCC typeUCC;
 
   /**
-   * modify the condition of a furniture.
+   * modify furniture information.
    *
    * @param json json of the user
    * @return http response
@@ -61,11 +61,18 @@ public class Furniture {
     boolean noError = true;
     boolean empty = true;
 
-    if (json.hasNonNull("condition") && !json.get("condition").asText().isEmpty()
-        && json.hasNonNull("sellingPrice")) {
+    if (json.hasNonNull("condition") && !json.get("condition").asText().isEmpty()) {
       noError = noError && furnitureUCC.modifyCondition(id,
-          FurnitureCondition.valueOf(json.get("condition").asText()),
-          json.get("sellingPrice").asDouble()); // TODO change in frontend price by sellingPrice
+          FurnitureCondition.valueOf(json.get("condition").asText()));
+      empty = false;
+    }
+    if (json.hasNonNull("sellingPrice")) {
+      noError = noError && furnitureUCC.modifySellingPrice(id, json.get("sellingPrice").asDouble());
+      empty = false;
+    }
+    if (json.hasNonNull("specialSalePrice")) {
+      noError = noError
+          && furnitureUCC.modifySpecialSalePrice(id, json.get("specialSalePrice").asDouble());
       empty = false;
     }
     if (json.hasNonNull("type")) {
@@ -79,10 +86,6 @@ public class Furniture {
     }
     if (json.hasNonNull("description") && !json.get("description").asText().isEmpty()) {
       noError = noError && furnitureUCC.modifyDescription(id, json.get("description").asText());
-      empty = false;
-    }
-    if (json.hasNonNull("buyerEmail") && !json.get("buyerEmail").asText().isEmpty()) {
-      noError = noError && furnitureUCC.modifyBuyerEmail(id, json.get("buyerEmail").asText());
       empty = false;
     }
     if (json.hasNonNull("withdrawalDateFromCustomer")
@@ -102,17 +105,16 @@ public class Furniture {
           LocalDate.parse(json.get("deliveryDate").asText()));
       empty = false;
     }
-
+    if (json.hasNonNull("buyerEmail") && !json.get("buyerEmail").asText().isEmpty()) {
+      noError = noError && furnitureUCC.modifyBuyerEmail(id, json.get("buyerEmail").asText());
+      empty = false;
+    }
 
 
     if (empty) {
       return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")
           .type(MediaType.TEXT_PLAIN).build();
     }
-
-
-
-    // selling price pouvoir le changer sans changer l'état?
 
     if (noError) {
       return Response.ok().build();
@@ -148,7 +150,7 @@ public class Furniture {
   }
 
   /**
-   * List furniture with id.
+   * Get furniture with id.
    *
    * @return FurnitureDTO
    */
