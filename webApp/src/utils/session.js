@@ -3,19 +3,19 @@ const STORE_NAME = "user";
 const THEME = "theme";
 
 const getUserSessionData = () => {
-  const retrievedUserSession = getUserInSessionStorage;
+  const retrievedUserSession = sessionStorage.getItem(STORE_NAME);
   if (retrievedUserSession) return JSON.parse(retrievedUserSession);
-  const retrievedUser = getUserInLocalStorage;
+  const retrievedUser = localStorage.getItem(STORE_NAME);
   if (!retrievedUser) return;
   return JSON.parse(retrievedUser);
 };
 
 const getUserInSessionStorage = () => {
-  return sessionStorage.getItem(STORE_NAME);
+  return sessionStorage;
 }
 
 const getUserInLocalStorage = () => {
-  return localStorage.getItem(STORE_NAME);
+  return localStorage;
 }
 
 const setUserLocalData = (user) => {
@@ -47,6 +47,8 @@ const removeSessionData = () => {
 };
 
 export {
+  getUserInSessionStorage,
+  getUserInLocalStorage,
   getUserSessionData,
   setUserSessionData,
   setUserLocalData,
