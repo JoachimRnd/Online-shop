@@ -315,7 +315,12 @@ const onFurniture = () => {
     withdrawalDateToCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateToCustomer" type="date" readonly/>`;
 
   let buyerEmail = document.querySelector("#buyerEmail");
-  buyerEmail.innerHTML = `<input class="form-control" id="inputBuyerEmail" type="email" readonly/>`;
+  if(furniture.buyer && furniture.buyer.email)
+    buyerEmail.innerHTML = `<input class="form-control" id="inputBuyerEmail" type="email" value="${furniture.buyer.email}" readonly/>`;
+  else if(furniture.unregisteredBuyerEmail)
+    buyerEmail.innerHTML = `<input class="form-control" id="inputBuyerEmail" type="email" value="${furniture.unregisteredBuyerEmail}" readonly/>`;
+  else
+    buyerEmail.innerHTML = `<input class="form-control" id="inputBuyerEmail" type="email" readonly/>`;
 }
 
 const onSale = () => {
@@ -353,7 +358,12 @@ const onSold = () => {
 
 const onBuyerEmail = () => {
   let buyerEmail = document.querySelector("#buyerEmail");
-  buyerEmail.innerHTML = `<input class="form-control" id="inputBuyerEmail" type="email"/>`;
+  if(furniture.buyer && furniture.buyer.email)
+    buyerEmail.innerHTML = `<input class="form-control" id="inputBuyerEmail" type="email" value="${furniture.buyer.email}"/>`;
+  else if(furniture.unregisteredBuyerEmail)
+    buyerEmail.innerHTML = `<input class="form-control" id="inputBuyerEmail" type="email" value="${furniture.unregisteredBuyerEmail}"/>`;
+  else
+    buyerEmail.innerHTML = `<input class="form-control" id="inputBuyerEmail" type="email"/>`;
 }
 
 const onSave = async() => {
@@ -408,9 +418,12 @@ const onSave = async() => {
       }
     }else if (condition == "vendu" || condition == "reserve" || 
     condition == "livre" || condition == "emporte_par_client") {
-      if(furniture.buyerEmail != document.querySelector("#inputBuyerEmail").value){
+      if(furniture.unregisteredBuyerEmail != document.querySelector("#inputBuyerEmail").value){
         buyerEmail = document.querySelector("#inputBuyerEmail").value;
         furniture.buyerEmail = buyerEmail;
+      } else if(furniture.buyer && furniture.buyer.email){
+        buyerEmail = document.querySelector("#inputBuyerEmail").value;
+        furniture.buyer.email = buyerEmail;
       }
     }
 
