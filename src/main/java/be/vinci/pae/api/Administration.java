@@ -1,12 +1,20 @@
 package be.vinci.pae.api;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.List;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import com.fasterxml.jackson.databind.JsonNode;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.api.utils.Json;
+import be.vinci.pae.api.utils.Upload;
 import be.vinci.pae.domain.furniture.FurnitureDTO;
 import be.vinci.pae.domain.furniture.FurnitureUCC;
 import be.vinci.pae.domain.option.OptionUCC;
+import be.vinci.pae.domain.picture.PictureDTO;
+import be.vinci.pae.domain.picture.PictureFactory;
+import be.vinci.pae.domain.picture.PictureUCC;
 import be.vinci.pae.domain.type.TypeUCC;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.user.UserUCC;
@@ -15,6 +23,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
@@ -41,6 +50,12 @@ public class Administration {
 
   @Inject
   private TypeUCC typeUCC;
+
+  @Inject
+  private PictureFactory pictureFactory;
+
+  @Inject
+  private PictureUCC pictureUcc;
 
   /**
    * Valid a user.
@@ -165,6 +180,49 @@ public class Administration {
           "Ressource with id = " + idFurniture + " could not be found", null, Status.NOT_FOUND);
     }
     return Json.filterAdminJsonView(furnitureDTO, FurnitureDTO.class);
+  }
+
+  /**
+   * Receive file from the frontend.
+   * 
+   * @param enabled FormData
+   * @param uploadedInputStream FormDataFile
+   * @param fileDetail Details of the FormDataFile
+   * @return Status code
+   */
+  @POST
+  @Path("image") // Your Path or URL to call this service
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @AuthorizeAdmin
+  public Response uploadFile(@DefaultValue("true") @FormDataParam("enabled") boolean enabled,
+      @FormDataParam("furnitureID") int furnitureId,
+      @FormDataParam("file") InputStream uploadedInputStream,
+      @FormDataParam("file") FormDataContentDisposition fileDetail) {
+
+    System.out.println(furnitureId);
+    System.out.println(fileDetail.getFileName());
+    // Your local disk path where you want to store the file
+    String uploadedFileLocation = ".\\images\\" + fileDetail.getFileName();
+    System.out.println(uploadedFileLocation);
+    // save it
+    File objFile = new File(uploadedFileLocation);
+    if (objFile.exists()) {
+      objFile.delete();
+    }
+
+    PictureDTO picture = pictureFactory.getPicture();
+    picture.setAScrollingPicture(false);
+    picture.setName(fileDetail.getFileName());
+    picture.setVisibleForEveryone(false);
+    System.out.println("Admin " + picture.getName());
+    picture = this.pictureUcc.addPicture(furnitureId, picture);
+
+    Upload.saveToFile(uploadedInputStream, uploadedFileLocation);
+
+    String output = "File uploaded via Jersey based RESTFul Webservice to: " + uploadedFileLocation;
+
+    return Response.status(200).entity(output).build();
+
   }
 
 }

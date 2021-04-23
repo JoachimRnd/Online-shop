@@ -6,6 +6,6 @@ public interface PictureUCC {
 
   List<PictureDTO> getCarouselPictures();
 
-  PictureDTO addPicture(PictureDTO picture);
+  PictureDTO addPicture(int furnitureId, PictureDTO newPicture);
 
 }

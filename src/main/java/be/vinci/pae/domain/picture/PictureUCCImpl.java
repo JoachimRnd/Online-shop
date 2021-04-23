@@ -1,13 +1,24 @@
 package be.vinci.pae.domain.picture;
 
 import java.util.List;
+import org.apache.commons.text.StringEscapeUtils;
+import be.vinci.pae.domain.furniture.FurnitureDTO;
 import be.vinci.pae.services.DalServices;
+import be.vinci.pae.services.furniture.DAOFurniture;
+import be.vinci.pae.services.picture.DAOPicture;
+import be.vinci.pae.utils.BusinessException;
 import jakarta.inject.Inject;
 
 public class PictureUCCImpl implements PictureUCC {
 
   @Inject
   private DalServices dalServices;
+
+  @Inject
+  private DAOFurniture daoFurniture;
+
+  @Inject
+  private DAOPicture daoPicture;
 
   @Override
   public List<PictureDTO> getCarouselPictures() {
@@ -20,10 +31,28 @@ public class PictureUCCImpl implements PictureUCC {
   }
 
   @Override
-  public PictureDTO addPicture(PictureDTO newPicture) {
+  public PictureDTO addPicture(int furnitureId, PictureDTO newPicture) {
+    Picture picture;
     try {
-      // TODO Auto-generated method stub
-      return null;
+      this.dalServices.startTransaction();
+      picture = (Picture) newPicture;
+      FurnitureDTO furniture = this.daoFurniture.selectFurnitureById(furnitureId);
+      if (furniture == null) {
+        throw new BusinessException("Le meuble n'existe pas");
+      }
+      picture.setAScrollingPicture(picture.isAScrollingPicture());
+      picture.setFurniture(furniture);
+      picture.setName(StringEscapeUtils.escapeHtml4(picture.getName()));
+      System.out.println("UCC " + picture.getName());
+      picture.setVisibleForEveryone(picture.isVisibleForEveryone());
+      int id = this.daoPicture.addPicture(newPicture);
+      if (id == -1) {
+        this.dalServices.rollbackTransaction();
+      } else {
+        this.dalServices.commitTransaction();
+      }
+      picture.setId(id);
+      return picture;
     } finally {
       this.dalServices.closeConnection();
     }
