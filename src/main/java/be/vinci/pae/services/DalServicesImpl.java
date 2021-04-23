@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import org.apache.commons.dbcp2.BasicDataSource;
 import be.vinci.pae.utils.Config;
+import be.vinci.pae.utils.FatalException;
 
 public class DalServicesImpl implements DalServices, DalBackendServices {
 
@@ -44,6 +45,7 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
       preparedStatement = conn.prepareStatement(query);
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new FatalException("Data error : getPreparedStatement");
     }
     return preparedStatement;
   }
@@ -58,9 +60,8 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
       return conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new FatalException("Data error : getPreparedStatementAdd");
     }
-
-    return null;
   }
 
   private Connection getConnection() {
@@ -69,6 +70,7 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
       conn = bds.getConnection();
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new FatalException("Data error : getConnection");
     }
     tl.set(conn);
     return conn;
@@ -84,6 +86,7 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
       conn.setAutoCommit(false);
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new FatalException("Data error : startTransaction");
     }
   }
 
@@ -94,6 +97,7 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
       conn.commit();
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new FatalException("Data error : commitTransaction");
     }
   }
 
@@ -104,6 +108,7 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
       conn.rollback();
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new FatalException("Data error : rollbackTransaction");
     }
   }
 
@@ -118,6 +123,7 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
       conn.close();
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new FatalException("Data error : closeConnection");
     }
   }
 
