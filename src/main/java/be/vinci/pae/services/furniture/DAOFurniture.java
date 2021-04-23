@@ -1,8 +1,8 @@
 package be.vinci.pae.services.furniture;
 
+import be.vinci.pae.domain.furniture.FurnitureDTO;
 import java.time.Instant;
 import java.util.List;
-import be.vinci.pae.domain.furniture.FurnitureDTO;
 
 public interface DAOFurniture {
 
@@ -31,4 +31,5 @@ public interface DAOFurniture {
   List<FurnitureDTO> selectSalesFurniture();
 
 
+  List<FurnitureDTO> selectFurnituresFiltered(String type, double price, String username);
 }

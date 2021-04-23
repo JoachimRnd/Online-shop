@@ -16,4 +16,8 @@ public interface DAOUser {
   boolean validateUser(int id, int type);
 
   List<UserDTO> getUnvalidatedUsers();
+
+  List<String> getAllUsername();
+
+  List<UserDTO> getUsersFiltered(String username, String postcode, String commune);
 }

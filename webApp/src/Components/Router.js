@@ -9,6 +9,8 @@ import FurnitureListPage from "./Furniture/FurnitureListPage";
 import AdministrationPage from "./Admin/AdministrationPage.js";
 import ValidationPage from "./Admin/ValidationPage.js";
 import FurnitureTypePage from "./Admin/FurnitureTypePage.js";
+import SearchPage from "./Admin/SearchPage.js";
+import UserAdmin from "./Admin/UserAdminPage";
 
 
 
@@ -23,7 +25,9 @@ const routes = {
   "/admin": AdministrationPage,
   "/admin/validation": ValidationPage,
   "/admin/furnitureType": FurnitureTypePage,
-  "/furnitureAdmin": FurnitureAdmin
+  "/admin/search":SearchPage,
+  "/furnitureAdmin": FurnitureAdmin,
+  "/userAdmin": UserAdmin
 };
 
 let navBar = document.querySelector("#navBar");

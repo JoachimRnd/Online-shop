@@ -1,15 +1,15 @@
 package be.vinci.pae.services.type;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import be.vinci.pae.domain.type.TypeDTO;
 import be.vinci.pae.domain.type.TypeFactory;
 import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.utils.FatalException;
 import jakarta.inject.Inject;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DAOTypeImpl implements DAOType {
 
@@ -17,6 +17,7 @@ public class DAOTypeImpl implements DAOType {
   private String querySelectAllTypes;
   private String queryDeleteType;
   private String queryInsertType;
+  private String querySelectAllTypesNames;
 
   @Inject
   private TypeFactory typeFactory;
@@ -33,6 +34,7 @@ public class DAOTypeImpl implements DAOType {
     querySelectAllTypes = "SELECT t.type_id, t.name FROM project.furniture_types t";
     queryDeleteType = "DELETE FROM project.furniture_types t WHERE t.type_id = ?";
     queryInsertType = "INSERT INTO project.furniture_types (type_id,name) VALUES (DEFAULT,?)";
+    querySelectAllTypesNames = "SELECT DISTINCT t.name FROM project.furniture_types t";
   }
 
   @Override
@@ -118,6 +120,24 @@ public class DAOTypeImpl implements DAOType {
       throw new FatalException("Data error : deleteFurniture");
     }
     return true;
+  }
+
+  @Override
+  public List<String> getAllTypesNames() {
+    try {
+      PreparedStatement selectAllTypes = this.dalServices
+          .getPreparedStatement(querySelectAllTypesNames);
+      List<String> allTypes = new ArrayList<>();
+      try (ResultSet rs = selectAllTypes.executeQuery()) {
+        while (rs.next()) {
+          allTypes.add(rs.getString(1));
+        }
+      }
+      return allTypes;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException("Database error : getAllUsers");
+    }
   }
 
 }

@@ -4,6 +4,8 @@ import be.vinci.pae.domain.address.AddressDTO;
 import be.vinci.pae.domain.address.AddressFactory;
 import be.vinci.pae.domain.address.AddressFactoryImpl;
 import be.vinci.pae.domain.address.AddressImpl;
+import be.vinci.pae.domain.address.AddressUCC;
+import be.vinci.pae.domain.address.AddressUCCImpl;
 import be.vinci.pae.domain.furniture.FurnitureFactory;
 import be.vinci.pae.domain.furniture.FurnitureFactoryImpl;
 import be.vinci.pae.domain.furniture.FurnitureUCC;
@@ -31,6 +33,8 @@ import be.vinci.pae.domain.visitrequest.VisitRequestUCCImpl;
 import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.DalServicesImpl;
+import be.vinci.pae.services.address.DAOAddress;
+import be.vinci.pae.services.address.DAOAddressImpl;
 import be.vinci.pae.services.furniture.DAOFurniture;
 import be.vinci.pae.services.furniture.DAOFurnitureImpl;
 import be.vinci.pae.services.option.DAOOption;
@@ -65,6 +69,8 @@ public class ApplicationBinder extends AbstractBinder {
     // ADDRESS
     bind(AddressFactoryImpl.class).to(AddressFactory.class).in(Singleton.class);
     bind(AddressImpl.class).to(AddressDTO.class).in(Singleton.class);
+    bind(AddressUCCImpl.class).to(AddressUCC.class).in(Singleton.class);
+    bind(DAOAddressImpl.class).to(DAOAddress.class).in(Singleton.class);
 
     // VISIT REQUEST
     bind(VisitRequestFactoryImpl.class).to(VisitRequestFactory.class).in(Singleton.class);
@@ -89,5 +95,6 @@ public class ApplicationBinder extends AbstractBinder {
     bind(OptionFactoryImpl.class).to(OptionFactory.class).in(Singleton.class);
     bind(OptionUCCImpl.class).to(OptionUCC.class).in(Singleton.class);
     bind(DAOOptionImpl.class).to(DAOOption.class).in(Singleton.class);
+
   }
 }
