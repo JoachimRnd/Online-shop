@@ -1,5 +1,6 @@
 package be.vinci.pae.domain.picture;
 
+import java.io.InputStream;
 import java.util.List;
 import org.apache.commons.text.StringEscapeUtils;
 import be.vinci.pae.domain.furniture.FurnitureDTO;
@@ -7,6 +8,7 @@ import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.furniture.DAOFurniture;
 import be.vinci.pae.services.picture.DAOPicture;
 import be.vinci.pae.utils.BusinessException;
+import be.vinci.pae.utils.Upload;
 import jakarta.inject.Inject;
 
 public class PictureUCCImpl implements PictureUCC {
@@ -31,7 +33,8 @@ public class PictureUCCImpl implements PictureUCC {
   }
 
   @Override
-  public PictureDTO addPicture(int furnitureId, PictureDTO newPicture) {
+  public PictureDTO addPicture(int furnitureId, PictureDTO newPicture,
+      InputStream uploadedInputStream, String pictureType) {
     Picture picture;
     try {
       this.dalServices.startTransaction();
@@ -43,16 +46,21 @@ public class PictureUCCImpl implements PictureUCC {
       picture.setAScrollingPicture(picture.isAScrollingPicture());
       picture.setFurniture(furniture);
       picture.setName(StringEscapeUtils.escapeHtml4(picture.getName()));
-      System.out.println("UCC " + picture.getName());
       picture.setVisibleForEveryone(picture.isVisibleForEveryone());
       int id = this.daoPicture.addPicture(newPicture);
       if (id == -1) {
         this.dalServices.rollbackTransaction();
       } else {
-        this.dalServices.commitTransaction();
+        String uploadedFileLocation = ".\\images\\" + id + "." + pictureType;
+        if (Upload.saveToFile(uploadedInputStream, uploadedFileLocation)) {
+          this.dalServices.commitTransaction();
+          picture.setId(id);
+          return picture;
+        } else {
+          this.dalServices.rollbackTransaction();
+        }
       }
-      picture.setId(id);
-      return picture;
+      return null;
     } finally {
       this.dalServices.closeConnection();
     }

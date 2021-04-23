@@ -79,7 +79,6 @@ public class DAOPictureImpl implements DAOPicture {
       insertPicture.setBoolean(2, picture.isVisibleForEveryone());
       insertPicture.setInt(3, picture.getFurniture().getId());
       insertPicture.setBoolean(4, picture.isAScrollingPicture());
-      System.out.println("DAO " + picture.getName());
       insertPicture.execute();
       ResultSet rs = insertPicture.getGeneratedKeys();
       if (rs.next()) {
@@ -88,7 +87,7 @@ public class DAOPictureImpl implements DAOPicture {
       return pictureId;
     } catch (SQLException e) {
       e.printStackTrace();
-      throw new FatalException("Data error : insertFurniture");
+      throw new FatalException("Data error : insertPicture");
     }
   }
 
