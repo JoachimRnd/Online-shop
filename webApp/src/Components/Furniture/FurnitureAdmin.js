@@ -1,7 +1,7 @@
 import { RedirectUrl } from "../Router.js";
 import Navbar from "../Navbar.js";
 import { getUserSessionData } from "../../utils/session.js";
-import { callAPI, callAPIWithoutJSONResponse } from "../../utils/api.js";
+import { callAPI, callAPIFormData, callAPIWithoutJSONResponse } from "../../utils/api.js";
 import PrintError from "../PrintError.js"
 import img1 from "./1.jpg";
 import img2 from "./2.jpg";
@@ -17,89 +17,108 @@ let optionTaken = false;
 let furniturePage = `
 <h4 id="pageTitle">Furniture User</h4>
 <div class="row">
-  <div class="col-6">
-  <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-  <ol class="carousel-indicators">
-    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-  </ol>
-  <div class="carousel-inner">
-    <div class="carousel-item active">
-      <img src="${img1}" class="d-block w-100" alt="1">
-    </div>
-    <div class="carousel-item">
-      <img src="${img2}" class="d-block w-100" alt="2">
-    </div>
-    <div class="carousel-item">
-      <img src="${img2}" class="d-block w-100" alt="3">
-    </div>
-  </div>
-  <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="sr-only">Previous</span>
-  </a>
-  <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="sr-only">Next</span>
-  </a>
-  </div>
-  </br>
-  <button class="btn btn-secondary" id="btnReturn">Retour</button>
-</div>
-
-<div class="col-6">
-  <div class="form-group">
+    <div class="col-6">
+      <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+      <ol class="carousel-indicators">
+        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+      </ol>
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="${img1}" class="d-block w-100" alt="1">
+        </div>
+        <div class="carousel-item">
+          <img src="${img2}" class="d-block w-100" alt="2">
+        </div>
+        <div class="carousel-item">
+          <img src="${img2}" class="d-block w-100" alt="3">
+        </div>
+      </div>
+      <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+      </div>
+    </br>
     <div class="row">
       <div class="col-6">
-          <div class="form-group">
-            <label for="type">Type de meuble</label>
-            <div id="type"></div>
-          </div>
+        <form id="uploadForm">
+          <input id="file" type="file"/>
+          <input type="submit" value="Upload"/>
+        </form>
       </div>
-      <div class="col-6">
-      <div class="form-group">
-          <label for="purchasePrice">Prix d'achat</label>
-          <div id="purchasePrice"></div>
+      <div class="col-3">
+        <button class="btn btn-primary" id="btnAddScrollingPicture">Ajouter aux photos défilantes</button>
       </div>
+      <div class="col-3">
+        <button class="btn btn-danger" id="btnDeletePicture">Supprimer la photo</button>
       </div>
-      <div class="col-6">
-        <div class="form-group">
-            <label for="prix">Prix de vente</label>
-            <div id="prix"></div>
-        </div>
+      <div class="col-3">
+        <button class="btn btn-warning" id="btnAddFavouritePicture">Ajouter photo favorite</button>
       </div>
-      <div class="col-6">
-        <div class="form-group">
-            <label for="specialSalePrice">Prix de vente spécial</label>
-            <div id="specialSalePrice"></div>
-        </div>
-      </div>
-      <div class="col-6">
-        <div class="form-group">
-            <label for="withdrawalDateFromCustomer">Date de retrait</label>
-            <div id="withdrawalDateFromCustomer"></div>
-        </div>
-      </div>
-      <div class="col-6">
-        <div class="form-group">
-            <label for="deliveryDate">Date de livraison</label>
-            <div id="deliveryDate"></div>
-        </div>
-      </div>
-      <div class="col-6">
-        <div class="form-group">
-            <label for="withdrawalDateToCustomer">Date de retrait par le client</label>
-            <div id="withdrawalDateToCustomer"></div>
-        </div>
-      </div>
-      <div class="col-6">
-        <div class="form-group">
-            <label for="buyer">Email du client</label>
-            <div id="buyer"></div>
-        </div>
+      <div class="col-3">
+        <button class="btn btn-secondary" id="btnReturn">Retour</button>
       </div>
     </div>
+  </div>
+
+  <div class="col-6">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-6">
+            <div class="form-group">
+              <label for="type">Type de meuble</label>
+              <div id="type"></div>
+            </div>
+        </div>
+        <div class="col-6">
+        <div class="form-group">
+            <label for="purchasePrice">Prix d'achat</label>
+            <div id="purchasePrice"></div>
+        </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+              <label for="prix">Prix de vente</label>
+              <div id="prix"></div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+              <label for="specialSalePrice">Prix de vente spécial</label>
+              <div id="specialSalePrice"></div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+              <label for="withdrawalDateFromCustomer">Date de retrait</label>
+              <div id="withdrawalDateFromCustomer"></div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+              <label for="deliveryDate">Date de livraison</label>
+              <div id="deliveryDate"></div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+              <label for="withdrawalDateToCustomer">Date de retrait par le client</label>
+              <div id="withdrawalDateToCustomer"></div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+              <label for="buyerEmail">Email du client</label>
+              <div id="buyerEmail"></div>
+          </div>
+        </div>
+      </div>
   </div>
 
   <div class="row">
@@ -160,11 +179,20 @@ const FurnitureAdmin = async(f) => {
   let page = document.querySelector("#page");
   page.innerHTML = furniturePage;
 
-  let btnSave = document.querySelector("#btnSave");
-  btnSave.addEventListener("click", onSave);
+  let btnAddPicture = document.querySelector("form");
+  btnAddPicture.addEventListener("submit", onAddPicture);
+  let btnAddScrollingPicture = document.querySelector("#btnAddScrollingPicture");
+  btnAddScrollingPicture.addEventListener("click", onAddScrollingPicture);
+  let btnDeletePicture = document.querySelector("#btnDeletePicture");
+  btnDeletePicture.addEventListener("click", onDeletePicture);
+  let btnAddFavouritePicture = document.querySelector("#btnAddFavouritePicture");
+  btnAddFavouritePicture.addEventListener("click", onAddFavouritePicture);
 
   let btnReturn = document.querySelector("#btnReturn");
   btnReturn.addEventListener("click", () => RedirectUrl("/search"));
+
+  let btnSave = document.querySelector("#btnSave");
+  btnSave.addEventListener("click", onSave);
 
   const user = getUserSessionData();
 
@@ -218,7 +246,7 @@ const FurnitureAdmin = async(f) => {
     onPurchase();
   } else if (conditions.value == "vendu" || conditions.value == "reserve" || 
   conditions.value == "livre" || conditions.value == "emporte_par_client") {
-    onBuyer();
+    onBuyerEmail();
   }
 
   conditions.addEventListener("change",(e)=>{
@@ -232,7 +260,7 @@ const FurnitureAdmin = async(f) => {
       onPurchase();
     } else if (conditions.value == "vendu" || conditions.value == "reserve" || 
     conditions.value == "livre" || conditions.value == "emporte_par_client") {
-      onBuyer();
+      onBuyerEmail();
     }
   });
 }
@@ -286,8 +314,8 @@ const onFurniture = () => {
   else
     withdrawalDateToCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateToCustomer" type="date" readonly/>`;
 
-  let buyer = document.querySelector("#buyer");
-  buyer.innerHTML = `<input class="form-control" id="inputBuyer" type="email" readonly/>`;
+  let buyerEmail = document.querySelector("#buyerEmail");
+  buyerEmail.innerHTML = `<input class="form-control" id="inputBuyerEmail" type="email" readonly/>`;
 }
 
 const onSale = () => {
@@ -323,9 +351,9 @@ const onSold = () => {
     withdrawalDateToCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateToCustomer" type="date"/>`;
 }
 
-const onBuyer = () => {
-  let buyer = document.querySelector("#buyer");
-  buyer.innerHTML = `<input class="form-control" id="inputBuyer" type="email"/>`;
+const onBuyerEmail = () => {
+  let buyerEmail = document.querySelector("#buyerEmail");
+  buyerEmail.innerHTML = `<input class="form-control" id="inputBuyerEmail" type="email"/>`;
 }
 
 const onSave = async() => {
@@ -343,7 +371,7 @@ const onSave = async() => {
     let withdrawalDateFromCustomer = null;
     let deliveryDate = null;
     let withdrawalDateToCustomer = null;
-    let buyer = null;
+    let buyerEmail = null;
     let description = null;
     if(furniture.description != document.getElementById("furnituredescription").value){
       description = document.getElementById("furnituredescription").value;
@@ -380,9 +408,9 @@ const onSave = async() => {
       }
     }else if (condition == "vendu" || condition == "reserve" || 
     condition == "livre" || condition == "emporte_par_client") {
-      if(furniture.buyer != document.querySelector("#inputBuyer").value){
-        buyer = document.querySelector("#inputBuyer").value;
-        furniture.buyer = buyer;
+      if(furniture.buyerEmail != document.querySelector("#inputBuyerEmail").value){
+        buyerEmail = document.querySelector("#inputBuyerEmail").value;
+        furniture.buyerEmail = buyerEmail;
       }
     }
 
@@ -399,13 +427,13 @@ const onSave = async() => {
       withdrawalDateFromCustomer: withdrawalDateFromCustomer,
       deliveryDate: deliveryDate,
       withdrawalDateToCustomer: withdrawalDateToCustomer,
-      buyer: buyer,
+      buyerEmail: buyerEmail,
       description: description
     }
     
     console.log(struct);
 
-    let user = getUserSessionData();
+    const user = getUserSessionData();
     try {
       await callAPIWithoutJSONResponse(API_BASE_URL + furniture.id, "PUT", user.token, struct);
       document.getElementById("toast").innerHTML = `</br><h5 style="color:green">L'état a bien été modifié</h5>`;
@@ -423,7 +451,7 @@ const onCheckOption = async() => {
   if(option.status != undefined && option.status == "en_cours") {
     optionDocument.innerHTML = isOption;
     let userOption = document.querySelector("#userOption");
-    userOption.innerHTML = furniture.buyer.email;
+    userOption.innerHTML = furniture.buyerEmail.email;
     let btn = document.querySelector("#btnOption")
     btn.addEventListener("click", onClickCancelOption);
   }else{
@@ -455,5 +483,42 @@ const onClickCancelOption = async (e) => {
   }
 }
 
+const onAddPicture = async (e) => {
+  e.preventDefault();
+  let file = document.getElementById("file").files[0];
+  console.log(file);
+  console.log("AddPicture");
+  
+  let fd = new FormData();
+  fd.append("file",file);
+  fd.append("furnitureID", furniture.id);
+
+
+  const user = getUserSessionData();
+  try {
+    const response = await callAPIFormData(
+      API_BASE_URL_ADMIN + "image",
+      "POST",
+      user.token,
+      fd
+    );
+    console.log(response);
+  } catch (err) {
+    console.error("FurnitureAdmin::onAddPicture", err);
+    PrintError(err);
+  }
+}
+
+const onAddScrollingPicture = () => {
+  console.log("AddScrollingPicture");
+}
+
+const onDeletePicture = () => {
+  console.log("DeletePicture");
+}
+
+const onAddFavouritePicture = () => {
+  console.log("AddFavouritePicture");
+}
 
 export default FurnitureAdmin;
