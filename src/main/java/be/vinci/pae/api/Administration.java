@@ -155,6 +155,11 @@ public class Administration {
     }
   }
 
+  /**
+   * Get all usernames.
+   *
+   * @return List<String>
+   */
   @GET
   @Path("/allusernames")
   @Produces(MediaType.APPLICATION_JSON)
@@ -163,6 +168,11 @@ public class Administration {
     return Json.filterPublicJsonViewAsList(userUCC.getAllUsername(), String.class);
   }
 
+  /**
+   * Get all type names.
+   *
+   * @return List<String>
+   */
   @GET
   @Path("/alltypesnames")
   @Produces(MediaType.APPLICATION_JSON)
@@ -171,6 +181,11 @@ public class Administration {
     return Json.filterPublicJsonViewAsList(typeUCC.getAllTypeNames(), String.class);
   }
 
+  /**
+   * Get all communes.
+   *
+   * @return List<String>
+   */
   @GET
   @Path("/allcommunes")
   @Produces(MediaType.APPLICATION_JSON)
@@ -179,6 +194,11 @@ public class Administration {
     return Json.filterPublicJsonViewAsList(addressUCC.getAllCommunes(), String.class);
   }
 
+  /**
+   * Get all users filtered by username, postcode or commune.
+   *
+   * @return List<UserDTO>
+   */
   @GET
   @Path("/users")
   @Produces(MediaType.APPLICATION_JSON)
@@ -190,6 +210,11 @@ public class Administration {
         UserDTO.class);
   }
 
+  /**
+   * Get all funitures filtered by type, price or username.
+   *
+   * @return List<FurnitureDTO>
+   */
   @GET
   @Path("/furnitures")
   @Produces(MediaType.APPLICATION_JSON)
