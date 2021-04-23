@@ -510,7 +510,7 @@ const onAddPicture = async (e) => {
   const user = getUserSessionData();
   try {
     const response = await callAPIFormData(
-      API_BASE_URL_ADMIN + "image",
+      API_BASE_URL_ADMIN + "picture",
       "POST",
       user.token,
       fd
