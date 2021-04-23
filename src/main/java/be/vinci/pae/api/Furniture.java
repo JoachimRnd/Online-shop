@@ -1,5 +1,6 @@
 package be.vinci.pae.api;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
 import org.glassfish.jersey.server.ContainerRequest;
@@ -230,5 +231,16 @@ public class Furniture {
         FurnitureDTO.class);
   }
 
+  @GET
+  @Path("picture-furniture")
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  @AuthorizeAdmin
+  public Response getFile() {
+    File file = new File(".\\images\\23.png");
+    System.out.println(file);
+    return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
+        .header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"") // optional
+        .build();
+  }
 
 }

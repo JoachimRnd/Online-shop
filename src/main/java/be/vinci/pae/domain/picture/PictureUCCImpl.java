@@ -3,12 +3,12 @@ package be.vinci.pae.domain.picture;
 import java.io.InputStream;
 import java.util.List;
 import org.apache.commons.text.StringEscapeUtils;
+import be.vinci.pae.utils.Upload;
 import be.vinci.pae.domain.furniture.FurnitureDTO;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.furniture.DAOFurniture;
 import be.vinci.pae.services.picture.DAOPicture;
 import be.vinci.pae.utils.BusinessException;
-import be.vinci.pae.utils.Upload;
 import jakarta.inject.Inject;
 
 public class PictureUCCImpl implements PictureUCC {

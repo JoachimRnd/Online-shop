@@ -1,5 +1,4 @@
 import { RedirectUrl } from "../Router.js";
-import Navbar from "../Navbar.js";
 import { getUserSessionData } from "../../utils/session.js";
 import { callAPI, callAPIFormData, callAPIWithoutJSONResponse } from "../../utils/api.js";
 import PrintError from "../PrintError.js"
@@ -53,7 +52,7 @@ let furniturePage = `
         </form>
       </div>
       <div class="col-3">
-        <button class="btn btn-primary" id="btnAddScrollingPicture">Ajouter aux photos défilantes</button>
+        <button class="btn btn-primary" id="btnAddScrollingPicture">Ajouter ou supprimer photo défilante</button>
       </div>
       <div class="col-3">
         <button class="btn btn-danger" id="btnDeletePicture">Supprimer la photo</button>
@@ -143,7 +142,7 @@ let furniturePage = `
       <option id="en_magasin" value="en_magasin">En magasin</option>
       <option id="en_vente" value="en_vente">En vente</option>
       <option id="retire_de_vente" value="retire_de_vente">Retiré de la vente</option>
-      <option id="en_option" value="en_option">En option</option>
+      <option id="en_option" value="en_option" disabled>En option</option>
       <option id="vendu" value="vendu">Vendu</option>
       <option id="reserve" value="reserve">Réservé</option>
       <option id="livre" value="livre">Livré</option>
@@ -195,6 +194,14 @@ const FurnitureAdmin = async(f) => {
   btnSave.addEventListener("click", onSave);
 
   const user = getUserSessionData();
+
+  try {
+    let pictureFile = await callAPIWithoutJSONResponse(API_BASE_URL + "picture-furniture" , "GET", user.token);
+    console.log(pictureFile);
+  } catch (err) {
+    console.error("FurnitureAdmin::getFile", err);
+    PrintError(err);
+  }
 
   if(f == null){
     let queryString = window.location.search;
@@ -524,6 +531,7 @@ const onAddPicture = async (e) => {
 
 const onAddScrollingPicture = () => {
   console.log("AddScrollingPicture");
+  
 }
 
 const onDeletePicture = () => {
