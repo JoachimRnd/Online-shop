@@ -158,7 +158,7 @@ public class Administration {
   /**
    * Get all usernames.
    *
-   * @return List<String>
+   * @return List of String
    */
   @GET
   @Path("/allusernames")
@@ -171,7 +171,7 @@ public class Administration {
   /**
    * Get all type names.
    *
-   * @return List<String>
+   * @return List of String
    */
   @GET
   @Path("/alltypesnames")
@@ -184,7 +184,7 @@ public class Administration {
   /**
    * Get all communes.
    *
-   * @return List<String>
+   * @return List of String
    */
   @GET
   @Path("/allcommunes")
@@ -197,7 +197,7 @@ public class Administration {
   /**
    * Get all users filtered by username, postcode or commune.
    *
-   * @return List<UserDTO>
+   * @return List of UserDTO
    */
   @GET
   @Path("/users")
@@ -213,7 +213,7 @@ public class Administration {
   /**
    * Get all funitures filtered by type, price or username.
    *
-   * @return List<FurnitureDTO>
+   * @return List of FurnitureDTO
    */
   @GET
   @Path("/furnitures")
