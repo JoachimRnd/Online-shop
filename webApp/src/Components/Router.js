@@ -23,7 +23,7 @@ const routes = {
   "/admin": AdministrationPage,
   "/admin/validation": ValidationPage,
   "/admin/furnitureType": FurnitureTypePage,
-  "/furnitureAdmin": FurnitureAdmin
+  "/admin/furniture": FurnitureAdmin
 };
 
 let navBar = document.querySelector("#navBar");
