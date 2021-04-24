@@ -227,4 +227,43 @@ public class Administration {
             FurnitureDTO.class);
   }
 
+  /**
+   * Get an user.
+   *
+   * @return UserDTO
+   */
+  @GET
+  @Path("/user/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public UserDTO getUser(@PathParam("id") int id) {
+    return Json.filterPublicJsonView(userUCC.getUserById(id), UserDTO.class);
+  }
+
+  /**
+   * Get the furniture buy by an user.
+   *
+   * @return List of FurnitureDTO
+   */
+  @GET
+  @Path("/furniturebuyby/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public List<FurnitureDTO> getFurnitureBuyBy(@PathParam("id") int id) {
+    return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureBuyBy(id), FurnitureDTO.class);
+  }
+
+  /**
+   * Get the furniture sell by an user.
+   *
+   * @return List of FurnitureDTO
+   */
+  @GET
+  @Path("/furnituresellby/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public List<FurnitureDTO> getFurnitureSellBy(@PathParam("id") int id) {
+    return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureSellBy(id), FurnitureDTO.class);
+  }
+
 }

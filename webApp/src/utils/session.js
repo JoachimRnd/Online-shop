@@ -12,11 +12,9 @@ const getUserSessionData = () => {
 
 const updateUserInStorage = (user) => {
   let retrievedUser = sessionStorage.getItem(STORE_NAME);
-  console.log("retrievedUser11111   " + retrievedUser);
   if (retrievedUser) {
     retrievedUser = JSON.parse(retrievedUser);
     retrievedUser.user = user;
-    console.log("retrievedUser22222   " + retrievedUser);
     setUserSessionData(retrievedUser);
     return;
   }
