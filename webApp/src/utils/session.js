@@ -10,6 +10,33 @@ const getUserSessionData = () => {
   return JSON.parse(retrievedUser);
 };
 
+const updateUserInStorage = (user) => {
+  let retrievedUser = sessionStorage.getItem(STORE_NAME);
+  console.log("retrievedUser11111   " + retrievedUser);
+  if (retrievedUser) {
+    retrievedUser = JSON.parse(retrievedUser);
+    retrievedUser.user = user;
+    console.log("retrievedUser22222   " + retrievedUser);
+    setUserSessionData(retrievedUser);
+    return;
+  }
+  retrievedUser = localStorage.getItem(STORE_NAME);
+  if (!retrievedUser) return;
+  retrievedUser = JSON.parse(retrievedUser);
+  retrievedUser.user = user;
+    setUserLocalData(retrievedUser);
+};
+
+const getUserInSessionStorage = () => {
+  const user = sessionStorage.getItem(STORE_NAME);
+  return JSON.parse(user);
+}
+
+const getUserInLocalStorage = () => {
+  const user = localStorage.getItem(STORE_NAME);
+  return JSON.parse(user);
+}
+
 const setUserLocalData = (user) => {
   const storageValue = JSON.stringify(user);
   localStorage.setItem(STORE_NAME, storageValue);
@@ -39,10 +66,13 @@ const removeSessionData = () => {
 };
 
 export {
+  getUserInSessionStorage,
+  getUserInLocalStorage,
   getUserSessionData,
   setUserSessionData,
   setUserLocalData,
   removeSessionData,
+  updateUserInStorage,
   getTheme,
   setTheme,
 };

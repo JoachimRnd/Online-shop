@@ -1,9 +1,8 @@
 package be.vinci.pae.unit.domain;
 
-import be.vinci.pae.domain.User;
-import be.vinci.pae.domain.UserDTO;
-import be.vinci.pae.domain.UserFactory;
-import be.vinci.pae.services.DAOUser;
+import be.vinci.pae.domain.user.UserDTO;
+import be.vinci.pae.domain.user.UserFactory;
+import be.vinci.pae.services.user.DAOUser;
 import jakarta.inject.Inject;
 import java.util.List;
 
@@ -14,12 +13,6 @@ public class DAOUserMock implements DAOUser {
 
   @Override
   public UserDTO getUserByUsername(String username) {
-    if (username.equals("login")) {
-      User user = (User) userFactory.getUser();
-      user.setUsername("login");
-      user.setPassword(user.hashPassword("password"));
-      return user;
-    }
     return null;
   }
 
@@ -45,6 +38,16 @@ public class DAOUserMock implements DAOUser {
 
   @Override
   public List<UserDTO> getUnvalidatedUsers() {
+    return null;
+  }
+
+  @Override
+  public List<String> getAllUsername() {
+    return null;
+  }
+
+  @Override
+  public List<UserDTO> getUsersFiltered(String username, String postcode, String commune) {
     return null;
   }
 }

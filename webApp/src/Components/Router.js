@@ -4,6 +4,15 @@ import RegisterPage from "./RegisterPage.js";
 import LogoutComponent from "./LogoutComponent.js";
 import ErrorPage from "./ErrorPage.js";
 import VisitPage from "./VisitPage.js";
+import FurnitureUser from "./Furniture/FurnitureUser.js";
+import FurnitureAdmin from "./Furniture/FurnitureAdmin";
+import FurnitureListPage from "./Furniture/FurnitureListPage";
+import AdministrationPage from "./Admin/AdministrationPage.js";
+import ValidationPage from "./Admin/ValidationPage.js";
+import FurnitureTypePage from "./Admin/FurnitureTypePage.js";
+import SearchPage from "./Admin/SearchPage.js";
+import UserAdmin from "./Admin/UserAdminPage";
+
 
 
 const routes = {
@@ -12,7 +21,15 @@ const routes = {
   "/register": RegisterPage,
   "/logout": LogoutComponent,
   "/error": ErrorPage,
-  "/visit": VisitPage
+  "/visit": VisitPage,
+  "/furniture": FurnitureUser,
+  "/search": FurnitureListPage,
+  "/admin": AdministrationPage,
+  "/admin/validation": ValidationPage,
+  "/admin/furnitureType": FurnitureTypePage,
+  "/admin/search":SearchPage,
+  "/furnitureAdmin": FurnitureAdmin,
+  "/userAdmin": UserAdmin
 };
 
 let navBar = document.querySelector("#navBar");
@@ -64,9 +81,14 @@ const Router = () => {
   });
 };
 
-const RedirectUrl = (uri, data) => {
+const RedirectUrl = (uri, data, parameter) => {
   // use Web History API to add current page URL to the user's navigation history & set right URL in the browser (instead of "#")
-  window.history.pushState({}, uri, window.location.origin + uri);
+  let url = window.location.origin +uri;
+  if(parameter != null){
+    url += parameter;
+  }
+
+  window.history.pushState({}, uri, url);
   // render the requested component
   // for the components that include JS, we want to assure that the JS included is not runned when the JS file is charged by the browser
   // therefore, those components have to be either a function or a class

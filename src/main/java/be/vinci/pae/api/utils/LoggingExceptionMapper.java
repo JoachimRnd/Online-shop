@@ -12,6 +12,8 @@ import java.io.StringWriter;
 @Provider
 public class LoggingExceptionMapper implements ExceptionMapper<Throwable> {
 
+  //TODO Ajouter les logs
+
   @Override
   public Response toResponse(Throwable exception) {
     exception.printStackTrace();

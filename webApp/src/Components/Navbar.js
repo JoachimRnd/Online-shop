@@ -4,7 +4,7 @@ import {getUserSessionData} from "../utils/session.js";
 const Navbar = () => {
   let navbar;
   let user = getUserSessionData();    
-  if (user) {
+  if (user && user.user.userType == "admin") {
     navbar = `<nav class="navbar navbar-expand-lg navbar-light bg-light mb-2" id="navBar">
   <a class="navbar-brand" href="/" data-uri="/">MyCMS</a
   ><button
@@ -20,9 +20,33 @@ const Navbar = () => {
   </button>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
-      <a class="nav-item nav-link" href="#" data-uri="/">Home</a>    
-      <a class="nav-item nav-link" href="#" data-uri="/logout">Se déconnecter</a>
-      <a class="nav-item nav-link" href="#" data-uri="/visit">Introduire une demande</a>
+      <a class="nav-item nav-link" href="#" data-uri="/">Home</a>
+      <a class="nav-item nav-link" href="#" data-uri="/search">Meubles en magasin</a>  
+      <a class="nav-item nav-link" href="#" data-uri="/admin">Administration</a>   
+      <a class="nav-item nav-link" href="#" data-uri="/logout">Logout</a>
+      <a class="nav-item nav-link disabled" id="username" href="#">${user.user.username}</a>
+    </div>
+  </div>
+  </nav>`;
+  } else if(user) {
+    navbar = `<nav class="navbar navbar-expand-lg navbar-light bg-light mb-2" id="navBar">
+  <a class="navbar-brand" href="/" data-uri="/">MyCMS</a
+  ><button
+    class="navbar-toggler"
+    type="button"
+    data-toggle="collapse"
+    data-target="#navbarNavAltMarkup"
+    aria-controls="navbarNavAltMarkup"
+    aria-expanded="false"
+    aria-label="Toggle navigation"
+  >
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav">
+      <a class="nav-item nav-link" href="#" data-uri="/">Home</a>
+      <a class="nav-item nav-link" href="#" data-uri="/search">Meubles en magasin</a>     
+      <a class="nav-item nav-link" href="#" data-uri="/logout">Logout</a>
       <a class="nav-item nav-link disabled" id="username" href="#">${user.user.username}</a>
     </div>
   </div>
@@ -44,11 +68,12 @@ const Navbar = () => {
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
       <a class="nav-item nav-link" href="#" data-uri="/">Home</a>
+      <a class="nav-item nav-link" href="#" data-uri="/search">Meubles en magasin</a>     
       <a class="nav-item nav-link" href="#" data-uri="/register">Register</a>
       <a class="nav-item nav-link" href="#" data-uri="/login">Login</a> 
     </div>
   </div>
-  </nav>`;
+  </nav>`
   }
 
   return (navBar.innerHTML = navbar);

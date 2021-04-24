@@ -1,18 +1,19 @@
 package be.vinci.pae.api;
 
-import be.vinci.pae.api.utils.Json;
-import be.vinci.pae.domain.Address;
-import be.vinci.pae.domain.AddressFactory;
-import be.vinci.pae.domain.UserDTO;
-import be.vinci.pae.domain.UserFactory;
-import be.vinci.pae.domain.UserUCC;
-import be.vinci.pae.utils.Config;
-import be.vinci.pae.utils.FatalException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import be.vinci.pae.api.utils.Json;
+import be.vinci.pae.domain.user.UserDTO;
+import be.vinci.pae.domain.user.UserUCC;
+import be.vinci.pae.utils.Config;
+import be.vinci.pae.utils.FatalException;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -22,10 +23,6 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 
 @Singleton
 @Path("/auths")
@@ -33,15 +30,10 @@ public class Authentication {
 
   private final Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
   private final ObjectMapper jsonMapper = new ObjectMapper();
+  private static final int DURATION_TOKEN = Config.getIntProperty("DurationToken");
 
   @Inject
   private UserUCC userUCC;
-
-  @Inject
-  private UserFactory userFactory;
-
-  @Inject
-  private AddressFactory addressFactory;
 
   /**
    * Checking the credentials of a user, create a token, get the user object associate.
@@ -81,50 +73,30 @@ public class Authentication {
   /**
    * Checking the credentials of a user, create a token, create a user object.
    *
-   * @param json DOM event user informations
+   * @param user userDTO informations
    * @return a response from the responseBuilder
    */
   @POST
   @Path("register")
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response register(JsonNode json) {
-    JsonNode jsonAddress = json.get("address");
+  public Response register(UserDTO user) {
     // Get and check credentials
-    if (!json.hasNonNull("username") || json.get("username").asText().isEmpty()
-        || !json.hasNonNull("lastname") || json.get("lastname").asText().isEmpty()
-        || !json.hasNonNull("firstname") || json.get("firstname").asText().isEmpty()
-        || !json.hasNonNull("email") || json.get("email").asText().isEmpty()
-        || !json.hasNonNull("password") || json.get("password").asText().isEmpty()
-        || !json.hasNonNull("address") || !jsonAddress.hasNonNull("street")
-        || jsonAddress.get("street").asText().isEmpty() || !jsonAddress.hasNonNull("buildingnumber")
-        || jsonAddress.get("buildingnumber").asText().isEmpty()
-        || !jsonAddress.hasNonNull("postcode") || jsonAddress.get("postcode").asText().isEmpty()
-        || !jsonAddress.hasNonNull("commune") || jsonAddress.get("commune").asText().isEmpty()
-        || !jsonAddress.hasNonNull("country") || jsonAddress.get("country").asText().isEmpty()) {
+    if (user == null || user.getUsername() == null || user.getUsername().isEmpty()
+        || user.getLastName() == null || user.getLastName().isEmpty() || user.getFirstName() == null
+        || user.getFirstName().isEmpty() || user.getEmail() == null || user.getEmail().isEmpty()
+        || user.getPassword() == null || user.getPassword().isEmpty() || user.getAddress() == null
+        || user.getAddress().getStreet() == null || user.getAddress().getStreet().isEmpty()
+        || user.getAddress().getBuildingNumber() == null
+        || user.getAddress().getBuildingNumber().isEmpty()
+        || user.getAddress().getPostcode() == null || user.getAddress().getPostcode().isEmpty()
+        || user.getAddress().getCommune() == null || user.getAddress().getCommune().isEmpty()
+        || user.getAddress().getCountry() == null || user.getAddress().getCountry().isEmpty()) {
       return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")
           .type(MediaType.TEXT_PLAIN).build();
     }
-
-    UserDTO user = userFactory.getUser();
-
-    user.setUsername(json.get("username").asText());
-    user.setFirstName(json.get("firstname").asText());
-    user.setLastName(json.get("lastname").asText());
-    user.setEmail(json.get("email").asText());
-    user.setPassword(json.get("password").asText());
-    Address address = addressFactory.getAddress();
-    address.setStreet(jsonAddress.get("street").asText());
-    address.setBuildingNumber(jsonAddress.get("buildingnumber").asText());
-    address.setPostcode(jsonAddress.get("postcode").asText());
-    address.setCommune(jsonAddress.get("commune").asText());
-    address.setCountry(jsonAddress.get("country").asText());
-    if (jsonAddress.hasNonNull("unitnumber") && !jsonAddress.get("unitnumber").asText().isEmpty()) {
-      address.setUnitNumber(jsonAddress.get("unitnumber").asText());
-    }
-
-    user.setAddress(address);
-    user.setRegistrationDate(LocalDateTime.now());
+    user.setRegistrationDate(Date.from(Instant.now()));
     user.setValidRegistration(false);
+
 
     // Try to register
     user = userUCC.register(user);
@@ -137,6 +109,8 @@ public class Authentication {
     // to be returned by the API (such as password)
     UserDTO publicUser = Json.filterPublicJsonView(user, UserDTO.class);
     ObjectNode node = jsonMapper.createObjectNode().put("token", token).putPOJO("user", publicUser);
+
+
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
 
@@ -151,9 +125,8 @@ public class Authentication {
     String token;
     try {
       token = JWT.create().withIssuer("auth0").withClaim("user", user.getId())
-          .withClaim("username", user.getUsername())
-          .withExpiresAt(Date
-              .from(LocalDate.now().plusMonths(1).atStartOfDay(ZoneId.systemDefault()).toInstant()))
+          .withClaim("username", user.getUsername()).withExpiresAt(Date.from(LocalDate.now()
+              .plusMonths(DURATION_TOKEN).atStartOfDay(ZoneId.systemDefault()).toInstant()))
           .sign(this.jwtAlgorithm);
     } catch (Exception e) {
       throw new FatalException("Unable to create token", e);
