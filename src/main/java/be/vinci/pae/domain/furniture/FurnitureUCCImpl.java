@@ -174,4 +174,22 @@ public class FurnitureUCCImpl implements FurnitureUCC {
       this.dalServices.closeConnection();
     }
   }
+
+  @Override
+  public List<FurnitureDTO> getFurnitureBuyBy(int id) {
+    try {
+      return daoFurniture.getFurnitureBuyBy(id);
+    } finally {
+      this.dalServices.closeConnection();
+    }
+  }
+
+  @Override
+  public List<FurnitureDTO> getFurnitureSellBy(int id) {
+    try {
+      return daoFurniture.getFurnitureSellBy(id);
+    } finally {
+      this.dalServices.closeConnection();
+    }
+  }
 }

@@ -25,4 +25,8 @@ public interface FurnitureUCC {
 
 
   List<FurnitureDTO> getFurnituresFiltered(String type, double price, String username);
+
+  List<FurnitureDTO> getFurnitureBuyBy(int id);
+
+  List<FurnitureDTO> getFurnitureSellBy(int id);
 }
