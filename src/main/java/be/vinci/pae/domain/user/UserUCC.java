@@ -15,7 +15,7 @@ public interface UserUCC {
 
   UserDTO getUserById(int id);
 
-  List<String> getAllUsername();
+  List<String> getAllLastnames();
 
   List<UserDTO> getUsersFiltered(String username, String postcode, String commune);
 }
