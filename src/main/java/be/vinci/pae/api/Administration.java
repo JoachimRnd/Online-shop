@@ -161,11 +161,11 @@ public class Administration {
    * @return List of String
    */
   @GET
-  @Path("/allusernames")
+  @Path("/alllastnames")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public List<String> allUsers() {
-    return Json.filterPublicJsonViewAsList(userUCC.getAllUsername(), String.class);
+    return Json.filterPublicJsonViewAsList(userUCC.getAllLastnames(), String.class);
   }
 
   /**

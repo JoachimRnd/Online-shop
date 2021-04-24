@@ -124,9 +124,9 @@ public class UserUCCImpl implements UserUCC {
   }
 
   @Override
-  public List<String> getAllUsername() {
+  public List<String> getAllLastnames() {
     try {
-      return daoUser.getAllUsername();
+      return daoUser.getAllLastnames();
     } finally {
       dalServices.closeConnection();
     }
