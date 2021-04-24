@@ -1,10 +1,10 @@
 import { RedirectUrl } from "./Router.js";
 import Navbar from "./Navbar.js";
 import { getUserSessionData } from "../utils/session.js";
-import { callAPIFormData } from "../utils/api.js";
+import { callAPI, callAPIFormData, callAPIWithoutJSONResponse } from "../utils/api.js";
 import PrintError from "./PrintError.js"
 const API_BASE_URL = "/api/visit/";
-
+const API_BASE_URL_FURNITURE = "/api/furniture/";
 
 let furnitureList = [];
 let picturesList = [];
@@ -81,16 +81,7 @@ let visitPage = `
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <label for="furnituretype">Sélectionner type de meuble*</label>
-                <select class="form-control" id="furnituretype">
-                    <option>Armoire</option>
-                    <option>Chaise</option>
-                    <option>Bahut</option>
-                    <option>Coiffeuse</option>
-                    <option>Miroir</option>
-                </select>
-            </div>
+            <div id="typesList"></div>
             <div class="row">
                 <p>Liste photos</p>
             </div>
@@ -111,7 +102,7 @@ let visitPage = `
 </div>
 `;
 
-const VisitPage = () => {
+const VisitPage = async () => {
 
     let page = document.querySelector("#page");
     page.innerHTML  = visitPage;
@@ -120,16 +111,40 @@ const VisitPage = () => {
     visitRequestForm.addEventListener("submit", onVisitRequest);
     let furnitureForm = document.getElementById("furnitureForm");
     furnitureForm.addEventListener("submit", onFurniture);
+
+    try {
+        const types = await callAPI(API_BASE_URL_FURNITURE + "allFurnitureTypes", "GET", undefined);
+        onTypesList(types);
+    } catch (err) {
+        console.error("VisitPage::onTypesList", err);
+        PrintError(err);
+    }
     //let pictureForm = document.getElementById("pictureForm");
     //pictureForm.addEventListener("submit", onPicture);
 }
 
+const onTypesList = (typesList) => {
+    let typesListPage = `
+    <div class="row">
+    <label for="furnituretype">Sélectionner type de meuble*</label>
+    <select class="form-control" id="furnituretype">`;
+      typesList.forEach(type => {
+        typesListPage += `<option id="${type.id}" value="${type.id}">${type.name}</option>`;
+      });
+    
+    typesListPage += `
+    </select>
+      </div>`;
+  
+  document.getElementById("typesList").innerHTML = typesListPage;
+  }
+  
 const onVisitRequest = async (e) => {
     e.preventDefault();
     let address = {
         street: document.getElementById("street").value,
-        buildingnumber: document.getElementById("buildingnumber").value,
-        unitnumber: document.getElementById("unitnumber").value,
+        buildingNumber: document.getElementById("buildingnumber").value,
+        unitNumber: document.getElementById("unitnumber").value,
         postcode: document.getElementById("postcode").value,
         commune: document.getElementById("commune").value,
         country: document.getElementById("country").value,
@@ -137,7 +152,7 @@ const onVisitRequest = async (e) => {
 
     let visitRequest = {
         address: address,
-        timeslot: document.getElementById("timeslot").value,
+        timeSlot: document.getElementById("timeslot").value,
         furnitureList: furnitureList
     };
     console.log(visitRequest);
@@ -145,7 +160,7 @@ const onVisitRequest = async (e) => {
     const user = getUserSessionData();
 
     try {
-        const visitRequested = await callAPIFormData(
+        const visitRequested = await callAPIWithoutJSONResponse(
           API_BASE_URL + "add",
           "POST",
           user.token,
@@ -160,9 +175,13 @@ const onVisitRequest = async (e) => {
 
 const onFurniture = (e) => {
     e.preventDefault();
+
+    let type = {
+        id:document.getElementById("furnituretype").value,
+    };
     let furniture = {
         description: document.getElementById("furnituredescription").value,
-        type: document.getElementById("furnituretype").value,
+        type: type,
         picturesList: picturesList,
     };
     furnitureList.push(furniture);

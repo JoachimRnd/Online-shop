@@ -5,20 +5,50 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import org.glassfish.jersey.media.multipart.FormDataBodyPart;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
+import java.time.Instant;
+import java.util.Date;
+import org.glassfish.jersey.server.ContainerRequest;
+import be.vinci.pae.api.filters.Authorize;
+import be.vinci.pae.domain.user.UserDTO;
+import be.vinci.pae.domain.visitrequest.VisitRequestDTO;
+import be.vinci.pae.domain.visitrequest.VisitRequestFactory;
+import be.vinci.pae.domain.visitrequest.VisitRequestUCC;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 @Singleton
 @Path("/visit")
 public class VisitRequest {
+
+  @Inject
+  VisitRequestFactory visitRequestFactory;
+
+  @Inject
+  VisitRequestUCC visitRequestUcc;
+
+  /**
+   * Add a furniture type.
+   *
+   * @return http response
+   */
+  @POST
+  @Path("/add")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Authorize
+  public Response addFurnitureType(VisitRequestDTO visitRequest,
+      @Context ContainerRequest request) {
+    UserDTO currentUser = (UserDTO) request.getProperty("user");
+    visitRequest.setRequestDate(Date.from(Instant.now()));
+    visitRequest = this.visitRequestUcc.addVisitRequest(visitRequest, currentUser);
+
+    return Response.ok().build();
+  }
 
 
   /**
@@ -29,43 +59,52 @@ public class VisitRequest {
    * @param fileDetail Details of the FormDataFile
    * @return Status code
    */
-  @POST
-  @Path("add") // Your Path or URL to call this service
-  @Consumes(MediaType.MULTIPART_FORM_DATA)
-  public Response uploadFile(@DefaultValue("true") @FormDataParam("enabled") boolean enabled,
-      @FormDataParam("file") InputStream uploadedInputStream,
-      @FormDataParam("file") FormDataContentDisposition fileDetail,
-      @FormDataParam("data") FormDataBodyPart jsonPart) {
-
-    // System.out.println("Uploaded Input Stream : " + uploadedInputStream);
-    // System.out.println("File detail : " + fileDetail);
-    System.out.println("JSON : " + jsonPart);
-    // System.out.println("Uploaded Input Stream : " + uploadedInputStream);
-    // System.out.println("File detail : " + fileDetail);
-
-
-
-    // Map<String, String> mapa = jsonPart.getParameters();
-    jsonPart.setMediaType(MediaType.APPLICATION_JSON_TYPE);
-    // VisitRequestDTO visitRequest = jsonPart.getValueAs(VisitRequestDTO.class);
-
-    System.out.println("VISITREQUEST : " + jsonPart);
-
-    // Your local disk path where you want to store the file
-    String uploadedFileLocation = ".\\images\\" /* + fileDetail.getFileName() */;
-    /*
-     * System.out.println(uploadedFileLocation); // save it File objFile = new File(uploadedFileLocation); if (objFile.exists()) { objFile.delete();
-     * 
-     * }
-     * 
-     * saveToFile(uploadedInputStream, uploadedFileLocation);
-     */
-
-    String output = "File uploaded via Jersey based RESTFul Webservice to: " + uploadedFileLocation;
-
-    return Response.status(200).entity(output).build();
-
-  }
+  /*
+   * @POST
+   * 
+   * @Path("add") // Your Path or URL to call this service
+   * 
+   * @Consumes(MediaType.MULTIPART_FORM_DATA) public Response
+   * uploadFile(@DefaultValue("true") @FormDataParam("enabled") boolean enabled,
+   * 
+   * @FormDataParam("file") InputStream uploadedInputStream,
+   * 
+   * @FormDataParam("file") FormDataContentDisposition fileDetail,
+   * 
+   * @FormDataParam("data") JsonNode jsonPart) {
+   * 
+   * // System.out.println("Uploaded Input Stream : " + uploadedInputStream); //
+   * System.out.println("File detail : " + fileDetail); System.out.println("JSON : " + jsonPart); //
+   * System.out.println("Uploaded Input Stream : " + uploadedInputStream); //
+   * System.out.println("File detail : " + fileDetail);
+   * 
+   * 
+   * 
+   * // Map<String, String> mapa = jsonPart.getParameters(); // VisitRequestDTO visitRequest =
+   * jsonPart.getValueAs(VisitRequestDTO.class);
+   * 
+   * System.out.println("VISITREQUEST : " + jsonPart);
+   * 
+   * // Your local disk path where you want to store the file String uploadedFileLocation =
+   * ".\\images\\" /* + fileDetail.getFileName()
+   */;
+  /*
+   * System.out.println(uploadedFileLocation); // save it File objFile = new
+   * File(uploadedFileLocation); if (objFile.exists()) { objFile.delete();
+   * 
+   * }
+   * 
+   * saveToFile(uploadedInputStream, uploadedFileLocation);
+   */
+  /*
+   * 
+   * String output = "File uploaded via Jersey based RESTFul Webservice to: " +
+   * uploadedFileLocation;
+   * 
+   * return Response.status(200).entity(output).build();
+   * 
+   * }
+   */
 
   private void saveToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
 

@@ -29,4 +29,8 @@ public interface AddressDTO {
 
   void setCountry(String country);
 
+  int getId();
+
+  void setId(int id);
+
 }

@@ -8,6 +8,8 @@ import views.Views;
 public class AddressImpl implements AddressDTO {
 
   @JsonView(Views.Public.class)
+  private int id;
+  @JsonView(Views.Public.class)
   private String street;
   @JsonView(Views.Public.class)
   private String buildingNumber;
@@ -19,6 +21,16 @@ public class AddressImpl implements AddressDTO {
   private String commune;
   @JsonView(Views.Public.class)
   private String country;
+
+  @Override
+  public int getId() {
+    return id;
+  }
+
+  @Override
+  public void setId(int id) {
+    this.id = id;
+  }
 
   @Override
   public String getStreet() {
