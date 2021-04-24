@@ -18,12 +18,13 @@ import be.vinci.pae.services.user.DAOUser;
 import be.vinci.pae.services.visitrequest.DAOVisitRequest;
 import be.vinci.pae.utils.FatalException;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
+import be.vinci.pae.utils.ValueLink.OptionStatus;
 import jakarta.inject.Inject;
 
 public class DAOFurnitureImpl implements DAOFurniture {
 
   private String querySelectAllFurniture;
-  private String querySelectFurnitureUsers;
+  private String querySelectFurnitureUser;
   private String querySelectFurnitureById;
   private String queryInsertFurniture;
   private String queryUpdateSellingDate;
@@ -41,6 +42,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
   private String queryUpdateUnregisteredBuyerEmail;
   private String queryUpdateBuyer;
   private String queryUpdateFavouritePicture;
+  private String querySelectFurnituresInOptionUser;
 
   @Inject
   private FurnitureFactory furnitureFactory;
@@ -82,7 +84,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
         + " f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date,"
         + " f.withdrawal_date_to_customer, f.buyer,f.condition, f.unregistered_buyer_email,"
         + " f.favourite_picture FROM project.furniture f";
-    querySelectFurnitureUsers = "SELECT f.furniture_id, f.description, f.type,"
+    querySelectFurnitureUser = "SELECT f.furniture_id, f.description, f.type,"
         + " f.visit_request, f.purchase_price, f.withdrawal_date_from_customer, f.selling_price,"
         + " f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date,"
         + " f.withdrawal_date_to_customer, f.buyer,f.condition, f.unregistered_buyer_email,"
@@ -125,6 +127,11 @@ public class DAOFurnitureImpl implements DAOFurniture {
     queryUpdateBuyer = "UPDATE project.furniture SET buyer = ? WHERE furniture_id = ?";
     queryUpdateFavouritePicture =
         "UPDATE project.furniture SET favourite_picture = ? WHERE furniture_id = ?";
+    querySelectFurnituresInOptionUser =
+        "SELECT f.furniture_id, f.description, f.type, f.visit_request, f.purchase_price, f.withdrawal_date_from_customer, "
+            + "f.selling_price, f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date, f.withdrawal_date_to_customer, "
+            + "f.buyer,f.condition, f.unregistered_buyer_email, f.favourite_picture FROM project.furniture f, project.options o "
+            + "WHERE o.furniture = f.furniture_id AND f.condition = ? AND o.status = ? AND o.buyer = ?;";
   }
 
   @Override
@@ -149,24 +156,40 @@ public class DAOFurnitureImpl implements DAOFurniture {
   }
 
   @Override
-  public List<FurnitureDTO> selectFurnitureUsers() {
+  public List<FurnitureDTO> selectFurnitureUsers(int userId) {
+    List<FurnitureDTO> list = new ArrayList<FurnitureDTO>();
     try {
       PreparedStatement selectFurnitureUsers =
-          dalServices.getPreparedStatement(querySelectFurnitureUsers);
+          dalServices.getPreparedStatement(querySelectFurnitureUser);
       selectFurnitureUsers.setInt(1, FurnitureCondition.en_vente.ordinal());
       try (ResultSet rs = selectFurnitureUsers.executeQuery()) {
-        List<FurnitureDTO> listFurniture = new ArrayList<>();
         FurnitureDTO furniture;
         do {
           furniture = createFurniture(rs);
-          listFurniture.add(furniture);
+          list.add(furniture);
         } while (furniture != null);
-        listFurniture.remove(listFurniture.size() - 1);
-        return listFurniture;
+        list.remove(list.size() - 1);
       }
+
+      if (userId != -1) {
+        PreparedStatement selectFurnituresInOptionUser =
+            dalServices.getPreparedStatement(querySelectFurnituresInOptionUser);
+        selectFurnituresInOptionUser.setInt(1, FurnitureCondition.en_option.ordinal());
+        selectFurnituresInOptionUser.setInt(2, OptionStatus.en_cours.ordinal());
+        selectFurnituresInOptionUser.setInt(3, userId);
+        try (ResultSet rs = selectFurnituresInOptionUser.executeQuery()) {
+          FurnitureDTO furniture;
+          do {
+            furniture = createFurniture(rs);
+            list.add(furniture);
+          } while (furniture != null);
+          list.remove(list.size() - 1);
+        }
+      }
+      return list;
     } catch (Exception e) {
       e.printStackTrace();
-      throw new FatalException("Data error : selectAllFurnitures");
+      throw new FatalException("Data error : selectAllFurnituresUser");
     }
   }
 

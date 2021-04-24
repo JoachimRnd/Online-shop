@@ -226,7 +226,6 @@ const FurnitureAdmin = async(f) => {
   }else{
     furniture = f;
   }
-  console.log(furniture);
 
   try {
     const types = await callAPI(API_BASE_URL + "allFurnitureTypes", "GET", undefined);
@@ -241,7 +240,9 @@ const FurnitureAdmin = async(f) => {
   
 
   onFurniture();
-  onCheckOption();
+  if(furniture.condition == "en_vente" || furniture.condition == "en_option"){
+    onCheckOption();
+  }
 
   let conditions = document.querySelector("#conditions");
   if(conditions.value == "vendu"){
@@ -404,6 +405,8 @@ const onSave = async() => {
         withdrawalDateToCustomer = document.querySelector("#inputWithdrawalDateToCustomer").value;
         furniture.withdrawalDateToCustomer = withdrawalDateToCustomer;
       }
+      let optionDocument = document.querySelector("#option");
+      optionDocument.innerHTML = "";
     }
     if(condition == "en_vente"){
       if(furniture.sellingPrice != document.querySelector("#inputSellingPrice").value){
@@ -414,6 +417,8 @@ const onSave = async() => {
         specialSalePrice = document.querySelector("#inputSpecialSalePrice").value;
         furniture.specialSalePrice = specialSalePrice;
       }
+      document.querySelector("#inputWithdrawalDateToCustomer").value = null;
+      document.querySelector("#inputBuyerEmail").value = null;
     } else if(condition == "achete"){
       if(furniture.purchasePrice != document.querySelector("#inputPurchasePrice").value){
         purchasePrice = document.querySelector("#inputPurchasePrice").value;
@@ -423,7 +428,7 @@ const onSave = async() => {
         withdrawalDateFromCustomer = document.querySelector("#inputWithdrawalDateFromCustomer").value;
         furniture.withdrawalDateFromCustomer = withdrawalDateFromCustomer;
       }
-    }else if (condition == "vendu" || condition == "reserve" || 
+    } else if (condition == "vendu" || condition == "reserve" || 
     condition == "livre" || condition == "emporte_par_client") {
       if(furniture.unregisteredBuyerEmail != document.querySelector("#inputBuyerEmail").value){
         buyerEmail = document.querySelector("#inputBuyerEmail").value;
@@ -433,11 +438,11 @@ const onSave = async() => {
         furniture.buyer.email = buyerEmail;
       }
     }
-
+    
     if(furniture.condition == condition){
       condition = null;
     }
-
+    furniture.condition = condition;
     let struct = {
       condition: condition,
       type: type,
@@ -451,7 +456,6 @@ const onSave = async() => {
       description: description
     }
     
-    console.log(struct);
 
     const user = getUserSessionData();
     try {
@@ -467,7 +471,6 @@ const onCheckOption = async() => {
 
   let option = await callAPI(API_BASE_URL + furniture.id + "/option", "GET");
   let optionDocument = document.querySelector("#option");
-  console.log(option);
   if(option.status != undefined && option.status == "en_cours") {
     optionDocument.innerHTML = isOption;
     let userOption = document.querySelector("#userOption");
@@ -522,7 +525,6 @@ const onAddPicture = async (e) => {
       user.token,
       fd
     );
-    console.log(response);
   } catch (err) {
     console.error("FurnitureAdmin::onAddPicture", err);
     PrintError(err);

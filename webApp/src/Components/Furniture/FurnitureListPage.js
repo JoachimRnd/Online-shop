@@ -22,8 +22,12 @@ const FurnitureListPage = async () => {
       PrintError(err);
     }
   } else {
+    let userId = -1;
+    if(user != null){
+      userId = user.user.id;
+    }
     try {
-      const furnitures = await callAPI(API_BASE_URL_USER + "allFurniture", "GET", undefined);
+      const furnitures = await callAPI(API_BASE_URL_USER + userId + "/allFurniture", "GET", undefined);
       onFurnitureList(furnitures);
     } catch (err) {
       console.error("FurnitureListPage::onFurnitureList", err);

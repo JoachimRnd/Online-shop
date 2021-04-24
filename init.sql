@@ -1,6 +1,7 @@
 DROP SCHEMA IF EXISTS project CASCADE;
 CREATE SCHEMA project;
 
+
 CREATE TABLE project.addresses
 (
     address_id      SERIAL PRIMARY KEY,

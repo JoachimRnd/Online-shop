@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import be.vinci.pae.domain.option.OptionDTO;
 import be.vinci.pae.domain.type.TypeDTO;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.services.DalServices;
@@ -45,9 +46,9 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   }
 
   @Override
-  public List<FurnitureDTO> getFurnitureUsers() {
+  public List<FurnitureDTO> getFurnitureUsers(int userId) {
     try {
-      List<FurnitureDTO> listFurniture = this.daoFurniture.selectFurnitureUsers();
+      List<FurnitureDTO> listFurniture = this.daoFurniture.selectFurnitureUsers(userId);
       checkFurnitures(listFurniture);
       return listFurniture;
     } finally {
@@ -81,18 +82,23 @@ public class FurnitureUCCImpl implements FurnitureUCC {
       // TODO ajouter les etats manquants
       this.dalServices.startTransaction();
       boolean noError = true;
-
       switch (condition) {
         case en_vente:
           noError = noError && this.daoFurniture.updateSellingDate(id, Instant.now());
+          break;
         case en_magasin:
           noError = noError && this.daoFurniture.updateDepositDate(id, Instant.now());
+          break;
         case vendu:
-          noError = noError
-              && this.daoOption.finishOption(this.daoOption.selectOptionByFurnitureId(id).getId());
+          OptionDTO optionDTO = this.daoOption.selectOptionByFurnitureId(id);
+          if (optionDTO != null) {
+            noError = noError && this.daoOption.finishOption(optionDTO.getId());
+          }
+          break;
         default:
-          noError = noError && this.daoFurniture.updateCondition(id, condition.ordinal());
+          break;
       }
+      noError = noError && this.daoFurniture.updateCondition(id, condition.ordinal());
       if (!noError) {
         this.dalServices.rollbackTransaction();
         throw new BusinessException("Error modify condition");
@@ -395,32 +401,39 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   }
 
   private void checkFurniture(FurnitureDTO furnitureDTO) {
-    if (furnitureDTO.getWithdrawalDateToCustomer() != null) {
-      if (furnitureDTO.getCondition() == FurnitureCondition.vendu) {
-        if (furnitureDTO.getWithdrawalDateToCustomer().getTime() < (new Date().getTime())) {
-          modifyCondition(furnitureDTO.getId(), FurnitureCondition.reserve);
-          furnitureDTO.setCondition(FurnitureCondition.reserve);
+    if (furnitureDTO != null) {
+      if (furnitureDTO.getWithdrawalDateToCustomer() != null) {
+        if (furnitureDTO.getCondition() == FurnitureCondition.vendu) {
+          if (furnitureDTO.getWithdrawalDateToCustomer().getTime() < (new Date().getTime())) {
+            modifyCondition(furnitureDTO.getId(), FurnitureCondition.reserve);
+            furnitureDTO.setCondition(FurnitureCondition.reserve);
+          }
         }
-      }
-      if (furnitureDTO.getCondition() == FurnitureCondition.reserve) {
-        Date dateOneYearAndOneDayLater = furnitureDTO.getWithdrawalDateToCustomer();
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(dateOneYearAndOneDayLater);
-        cal.add(Calendar.YEAR, 1);
-        cal.add(Calendar.DATE, 1);
-        dateOneYearAndOneDayLater = cal.getTime();
+        if (furnitureDTO.getCondition() == FurnitureCondition.reserve) {
+          Date dateOneYearAndOneDayLater = furnitureDTO.getWithdrawalDateToCustomer();
+          Calendar cal = Calendar.getInstance();
+          cal.setTime(dateOneYearAndOneDayLater);
+          cal.add(Calendar.YEAR, 1);
+          cal.add(Calendar.DATE, 1);
+          dateOneYearAndOneDayLater = cal.getTime();
 
-        if (new Date().getTime() > dateOneYearAndOneDayLater.getTime()) {
-          modifyCondition(furnitureDTO.getId(), FurnitureCondition.en_vente);
-          modifyWithdrawalDateToCustomer(furnitureDTO.getId(), null);
-          modifyBuyerEmail(furnitureDTO.getId(), null);
+          if (new Date().getTime() > dateOneYearAndOneDayLater.getTime()) {
+            modifyCondition(furnitureDTO.getId(), FurnitureCondition.en_vente);
+            furnitureDTO.setCondition(FurnitureCondition.en_vente);
+          }
+        }
+
+      }
+      if (furnitureDTO.getCondition() == FurnitureCondition.en_vente) {
+        modifyWithdrawalDateToCustomer(furnitureDTO.getId(), null);
+        modifyBuyerEmail(furnitureDTO.getId(), null);
+        if (furnitureDTO.getBuyer() != null) {
           furnitureDTO.getBuyer().setEmail(null);
+        } else {
           furnitureDTO.setUnregisteredBuyerEmail(null);
-          furnitureDTO.setWithdrawalDateToCustomer(null);
-          furnitureDTO.setCondition(FurnitureCondition.en_vente);
         }
+        furnitureDTO.setWithdrawalDateToCustomer(null);
       }
-
     }
   }
 

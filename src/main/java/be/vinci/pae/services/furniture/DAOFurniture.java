@@ -9,7 +9,7 @@ public interface DAOFurniture {
 
   List<FurnitureDTO> selectAllFurniture();
 
-  List<FurnitureDTO> selectFurnitureUsers();
+  List<FurnitureDTO> selectFurnitureUsers(int idUser);
 
   List<FurnitureDTO> selectFurnitureByType(String type);
 

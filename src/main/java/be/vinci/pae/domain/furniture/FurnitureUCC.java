@@ -8,7 +8,7 @@ public interface FurnitureUCC {
 
   List<FurnitureDTO> getAllFurniture();
 
-  List<FurnitureDTO> getFurnitureUsers();
+  List<FurnitureDTO> getFurnitureUsers(int idUser);
 
   FurnitureDTO addFurniture(FurnitureDTO furniture);
 

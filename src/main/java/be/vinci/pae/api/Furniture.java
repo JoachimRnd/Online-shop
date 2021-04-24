@@ -136,10 +136,11 @@ public class Furniture {
    * @return List of FurnitureDTO
    */
   @GET
-  @Path("allFurniture")
+  @Path("/{userId}/allFurniture")
   @Produces(MediaType.APPLICATION_JSON)
-  public List<FurnitureDTO> listAllFurniture() {
-    return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureUsers(), FurnitureDTO.class);
+  public List<FurnitureDTO> listAllFurniture(@PathParam("userId") int userId) {
+    return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureUsers(userId),
+        FurnitureDTO.class);
   }
 
   /**

@@ -95,12 +95,13 @@ let validateOption = `<p>Mettre une option sur ce meuble</p>
   </div>
 </div>`;
 
-let cancelOption = `<p>Option sur ce meuble</p>
+let cancelOption = `
 <div class="row">
   <div class="col-12">
-    <div class="row" id="#">
-      <button class="btn btn-danger" id="btnOption" type="submit">Annuler</button>
-    </div>
+      <p>Vous avez une option sur ce meuble.</p>
+      <p>Il vous reste <strong><span id="daysOptionLeft"> </span></strong> jours.
+      <button class="btn btn-danger" id="btnOption" type="submit">Annuler l'option</button>
+      </p>
   </div>
 </div>`;
 
@@ -144,7 +145,6 @@ const onFurniture = () => {
 const onCheckOption = async () => {
 
   if (!furniture) return;
-  console.log(furniture);
   let optionDocument = document.querySelector("#option");
   let option = await callAPI(API_BASE_URL + furniture.id + "/option", "GET");
   let user = getUserSessionData();
@@ -153,6 +153,7 @@ const onCheckOption = async () => {
     if(option.buyer.id == user.user.id) {
       //Afficher bouton annuler
       optionDocument.innerHTML = cancelOption;
+      document.querySelector("#daysOptionLeft").innerHTML = option.duration;
       let btn = document.querySelector("#btnOption")
       btn.addEventListener("click", onClickCancelOption);
     } else {
