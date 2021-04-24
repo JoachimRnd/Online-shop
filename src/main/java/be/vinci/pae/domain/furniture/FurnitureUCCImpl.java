@@ -93,7 +93,7 @@ public class FurnitureUCCImpl implements FurnitureUCC {
         }
         break;
       case achete:
-        if (condition == FurnitureCondition.emporte_par_client
+        if (condition == FurnitureCondition.emporte_par_patron
             || condition == FurnitureCondition.propose) {
           change = true;
         }

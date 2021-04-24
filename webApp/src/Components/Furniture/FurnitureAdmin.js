@@ -232,33 +232,8 @@ const FurnitureAdmin = async(f) => {
     onCheckOption();
   }
 
-  let conditions = document.querySelector("#conditions");
-  if(conditions.value == "vendu"){
-    onSold();
-  }
-  if(conditions.value == "en_vente"){
-    onSale();
-  } else if (conditions.value == "achete") {
-    onPurchase();
-  } else if (conditions.value == "vendu" || conditions.value == "reserve" || 
-  conditions.value == "livre" || conditions.value == "emporte_par_client") {
-    onBuyerEmail();
-  }
+ // let conditions = document.querySelector("#conditions");
 
-  conditions.addEventListener("change",(e)=>{
-    onFurniture();
-    if(conditions.value == "vendu"){
-      onSold();
-    }
-    if(conditions.value == "en_vente"){
-      onSale();
-    } else if (conditions.value == "achete") {
-      onPurchase();
-    } else if (conditions.value == "vendu" || conditions.value == "reserve" || 
-    conditions.value == "livre" || conditions.value == "emporte_par_client") {
-      onBuyerEmail();
-    }
-  });
 }
 
 const onTypesList = (typesList) => {
@@ -448,7 +423,8 @@ const onSave = async() => {
     const user = getUserSessionData();
     try {
       await callAPIWithoutJSONResponse(API_BASE_URL + furniture.id, "PUT", user.token, struct);
-      document.getElementById("toast").innerHTML = `</br><h5 style="color:green">L'état a bien été modifié</h5>`;
+      document.getElementById("toast").innerHTML = `</br><h5 style="color:green">Le meuble a bien été modifié.</h5>`;
+      onCheckConditions();
     } catch (err) {
       console.error("FurnitureAdmin::Change condition", err);
       PrintError(err);
@@ -622,8 +598,35 @@ const onCheckConditions = () =>{
   }
 
   ensemble += `</select>` 
-  let conditions = document.querySelector("#conditionsDiv");
-  conditions.innerHTML = ensemble;
+  let conditionsDiv = document.querySelector("#conditionsDiv");
+  conditionsDiv.innerHTML = ensemble;
+  let conditions = document.querySelector("#conditions");
+  if(conditions.value == "vendu"){
+    onSold();
+  }
+  if(conditions.value == "en_vente"){
+    onSale();
+  } else if (conditions.value == "achete") {
+    onPurchase();
+  } else if (conditions.value == "vendu" || conditions.value == "reserve" || 
+  conditions.value == "livre" || conditions.value == "emporte_par_client") {
+    onBuyerEmail();
+  }
+
+  conditions.addEventListener("change",(e)=>{
+    onFurniture();
+    if(conditions.value == "vendu"){
+      onSold();
+    }
+    if(conditions.value == "en_vente"){
+      onSale();
+    } else if (conditions.value == "achete") {
+      onPurchase();
+    } else if (conditions.value == "vendu" || conditions.value == "reserve" || 
+    conditions.value == "livre" || conditions.value == "emporte_par_client") {
+      onBuyerEmail();
+    }
+  });
 }
 
 export default FurnitureAdmin;

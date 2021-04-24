@@ -13,4 +13,6 @@ public interface DAOPicture {
 
   PictureDTO selectPictureById(int id);
 
+  boolean deletePicture(int pictureId);
+
 }

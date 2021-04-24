@@ -51,5 +51,7 @@ public interface DAOFurniture {
 
   boolean updateFavouritePicture(int id, int pictureId);
 
+  FurnitureDTO selectFurnitureByFavouritePicture(int idFavouritePicture);
+
 
 }

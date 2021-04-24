@@ -21,6 +21,7 @@ import be.vinci.pae.utils.ValueLink.FurnitureCondition;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
@@ -67,7 +68,7 @@ public class Furniture {
     boolean empty = true;
 
 
-
+    System.out.println(json.get("condition"));
     if (json.hasNonNull("condition") && !json.get("condition").asText().isEmpty()) {
       noError = noError && furnitureUCC.modifyCondition(id,
           FurnitureCondition.valueOf(json.get("condition").asText()));
@@ -288,10 +289,26 @@ public class Furniture {
   @PUT
   @Path("/{idPicture}/scrolling-picture")
   @AuthorizeAdmin
-  public Response modifyScrollingPicture(@PathParam("idPicture") int idPicture,
-      @Context ContainerRequest request) {
+  public Response modifyScrollingPicture(@PathParam("idPicture") int idPicture) {
     if (!pictureUCC.modifyScrollingPicture(idPicture)) {
       return Response.status(Status.UNAUTHORIZED).entity("Erreur ajouter photo défilante")
+          .type(MediaType.TEXT_PLAIN).build();
+    }
+    return Response.ok().build();
+  }
+
+
+  /**
+   * delete picture with id.
+   *
+   * @return Response
+   */
+  @DELETE
+  @Path("/{idPicture}/picture")
+  @AuthorizeAdmin
+  public Response deletePicture(@PathParam("idPicture") int idPicture) {
+    if (!pictureUCC.deletePicture(idPicture)) {
+      return Response.status(Status.UNAUTHORIZED).entity("Erreur retirer l'image")
           .type(MediaType.TEXT_PLAIN).build();
     }
     return Response.ok().build();

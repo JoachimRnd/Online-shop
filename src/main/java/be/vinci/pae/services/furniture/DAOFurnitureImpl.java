@@ -43,6 +43,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
   private String queryUpdateBuyer;
   private String queryUpdateFavouritePicture;
   private String querySelectFurnituresInOptionUser;
+  private String querySelectFurnitureByFavouritePicture;
 
   @Inject
   private FurnitureFactory furnitureFactory;
@@ -132,6 +133,10 @@ public class DAOFurnitureImpl implements DAOFurniture {
             + "f.selling_price, f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date, f.withdrawal_date_to_customer, "
             + "f.buyer,f.condition, f.unregistered_buyer_email, f.favourite_picture FROM project.furniture f, project.options o "
             + "WHERE o.furniture = f.furniture_id AND f.condition = ? AND o.status = ? AND o.buyer = ?;";
+    querySelectFurnitureByFavouritePicture =
+        "SELECT f.furniture_id, f.description, f.type, f.visit_request, f.purchase_price, f.withdrawal_date_from_customer, "
+            + "f.selling_price, f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date, f.withdrawal_date_to_customer, "
+            + "f.buyer,f.condition, f.unregistered_buyer_email, f.favourite_picture FROM project.furniture f WHERE f.favourite_picture = ?";
   }
 
   @Override
@@ -205,6 +210,21 @@ public class DAOFurnitureImpl implements DAOFurniture {
     } catch (Exception e) {
       e.printStackTrace();
       throw new FatalException("Data error : selectFurnitureById");
+    }
+  }
+
+  @Override
+  public FurnitureDTO selectFurnitureByFavouritePicture(int idFavouritePicture) {
+    try {
+      PreparedStatement selectFurnitureByFavouritePicture =
+          dalServices.getPreparedStatement(querySelectFurnitureByFavouritePicture);
+      selectFurnitureByFavouritePicture.setInt(1, idFavouritePicture);
+      try (ResultSet rs = selectFurnitureByFavouritePicture.executeQuery()) {
+        return createFurniture(rs);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : selectFurnitureByFavouritePicture");
     }
   }
 

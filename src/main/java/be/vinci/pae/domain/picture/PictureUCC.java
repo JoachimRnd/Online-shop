@@ -12,4 +12,6 @@ public interface PictureUCC {
 
   boolean modifyScrollingPicture(int pictureId);
 
+  boolean deletePicture(int pictureId);
+
 }

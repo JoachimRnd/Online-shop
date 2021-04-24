@@ -16,6 +16,7 @@ public class DAOPictureImpl implements DAOPicture {
   private String queryInsertPicture;
   private String queryUpdateScrollingPicture;
   private String querySelectPictureById;
+  private String queryDeletePictureById;
 
   @Inject
   private DalBackendServices dalServices;
@@ -35,6 +36,7 @@ public class DAOPictureImpl implements DAOPicture {
     querySelectPictureById =
         "SELECT p.picture.id, p.name, p.visible_for_everyone, p.furniture, p.scrolling_picture "
             + "FROM project.pictures p WHERE p.picture_id = ?";
+    queryDeletePictureById = "DELETE FROM project.pictures WHERE picture_id = ?";
   }
 
   @Override
@@ -90,6 +92,21 @@ public class DAOPictureImpl implements DAOPicture {
       throw new FatalException("Data error : insertPicture");
     }
   }
+
+  @Override
+  public boolean deletePicture(int pictureId) {
+    try {
+      PreparedStatement deletePictureById =
+          this.dalServices.getPreparedStatement(queryDeletePictureById);
+      deletePictureById.setInt(1, pictureId);
+      deletePictureById.execute();
+      return true;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : deletePictureById");
+    }
+  }
+
 
   @Override
   public boolean updateScrollingPicture(int pictureId) {
