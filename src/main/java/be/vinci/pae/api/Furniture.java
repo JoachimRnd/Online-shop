@@ -245,7 +245,14 @@ public class Furniture {
     return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
         .header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"") // optional
         .build();
+
+    /*
+     * return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM) .header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"") //
+     * optional .build();
+     */
   }
+
+
 
   /**
    * Add an favourite picture on the furniture with id.

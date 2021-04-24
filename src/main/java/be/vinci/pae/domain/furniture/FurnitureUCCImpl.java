@@ -9,6 +9,7 @@ import be.vinci.pae.domain.type.TypeDTO;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.furniture.DAOFurniture;
+import be.vinci.pae.services.option.DAOOption;
 import be.vinci.pae.services.type.DAOType;
 import be.vinci.pae.services.user.DAOUser;
 import be.vinci.pae.utils.BusinessException;
@@ -25,6 +26,9 @@ public class FurnitureUCCImpl implements FurnitureUCC {
 
   @Inject
   private DAOType daoType;
+
+  @Inject
+  private DAOOption daoOption;
 
   @Inject
   private DalServices dalServices;
@@ -52,11 +56,6 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   }
 
 
-  private void checkFurnitures(List<FurnitureDTO> listFurniture) {
-    for (FurnitureDTO furnitureDTO : listFurniture) {
-      checkFurniture(furnitureDTO);
-    }
-  }
 
   @Override
   public FurnitureDTO addFurniture(FurnitureDTO newFurniture) {
@@ -88,6 +87,9 @@ public class FurnitureUCCImpl implements FurnitureUCC {
           noError = noError && this.daoFurniture.updateSellingDate(id, Instant.now());
         case en_magasin:
           noError = noError && this.daoFurniture.updateDepositDate(id, Instant.now());
+        case vendu:
+          noError = noError
+              && this.daoOption.finishOption(this.daoOption.selectOptionByFurnitureId(id).getId());
         default:
           noError = noError && this.daoFurniture.updateCondition(id, condition.ordinal());
       }
@@ -386,7 +388,11 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     }
   }
 
-
+  private void checkFurnitures(List<FurnitureDTO> listFurniture) {
+    for (FurnitureDTO furnitureDTO : listFurniture) {
+      checkFurniture(furnitureDTO);
+    }
+  }
 
   private void checkFurniture(FurnitureDTO furnitureDTO) {
     if (furnitureDTO.getWithdrawalDateToCustomer() != null) {
@@ -408,6 +414,7 @@ public class FurnitureUCCImpl implements FurnitureUCC {
           modifyCondition(furnitureDTO.getId(), FurnitureCondition.en_vente);
           modifyWithdrawalDateToCustomer(furnitureDTO.getId(), null);
           modifyBuyerEmail(furnitureDTO.getId(), null);
+          furnitureDTO.getBuyer().setEmail(null);
           furnitureDTO.setUnregisteredBuyerEmail(null);
           furnitureDTO.setWithdrawalDateToCustomer(null);
           furnitureDTO.setCondition(FurnitureCondition.en_vente);

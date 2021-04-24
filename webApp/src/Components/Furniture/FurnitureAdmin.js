@@ -471,7 +471,7 @@ const onCheckOption = async() => {
   if(option.status != undefined && option.status == "en_cours") {
     optionDocument.innerHTML = isOption;
     let userOption = document.querySelector("#userOption");
-    userOption.innerHTML = furniture.buyerEmail.email;
+    userOption.innerHTML = option.buyer.email;
     let btn = document.querySelector("#btnOption")
     btn.addEventListener("click", onClickCancelOption);
   }else{
