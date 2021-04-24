@@ -78,36 +78,125 @@ public class FurnitureUCCImpl implements FurnitureUCC {
 
   @Override
   public boolean modifyCondition(int id, FurnitureCondition condition) {
-    try {
-      // TODO ajouter les etats manquants
-      this.dalServices.startTransaction();
-      boolean noError = true;
-      switch (condition) {
-        case en_vente:
-          noError = noError && this.daoFurniture.updateSellingDate(id, Instant.now());
-          break;
-        case en_magasin:
-          noError = noError && this.daoFurniture.updateDepositDate(id, Instant.now());
-          break;
-        case vendu:
-          OptionDTO optionDTO = this.daoOption.selectOptionByFurnitureId(id);
-          if (optionDTO != null) {
-            noError = noError && this.daoOption.finishOption(optionDTO.getId());
-          }
-          break;
-        default:
-          break;
-      }
-      noError = noError && this.daoFurniture.updateCondition(id, condition.ordinal());
-      if (!noError) {
-        this.dalServices.rollbackTransaction();
-        throw new BusinessException("Error modify condition");
-      }
-      this.dalServices.commitTransaction();
-      return true;
+    Boolean change = false;
+    FurnitureDTO furnitureDTO = this.getFurnitureById(id);
+    switch (furnitureDTO.getCondition()) {
+      case propose:
+        if (condition == FurnitureCondition.ne_convient_pas
+            || condition == FurnitureCondition.achete) {
+          change = true;
+        }
+        break;
+      case ne_convient_pas:
+        if (condition == FurnitureCondition.propose) {
+          change = true;
+        }
+        break;
+      case achete:
+        if (condition == FurnitureCondition.emporte_par_client
+            || condition == FurnitureCondition.propose) {
+          change = true;
+        }
+        break;
+      case emporte_par_patron:
+        if (condition == FurnitureCondition.en_restauration
+            || condition == FurnitureCondition.en_magasin
+            || condition == FurnitureCondition.achete) {
+          change = true;
+        }
+        break;
+      case en_restauration:
+        if (condition == FurnitureCondition.en_magasin
+            || condition == FurnitureCondition.emporte_par_patron) {
+          change = true;
+        }
+        break;
+      case en_magasin:
+        if (condition == FurnitureCondition.en_vente
+            || condition == FurnitureCondition.emporte_par_patron
+            || condition == FurnitureCondition.en_restauration) {
+          change = true;
+        }
+      case en_vente:
+        if (condition == FurnitureCondition.retire_de_vente
+            || condition == FurnitureCondition.en_option || condition == FurnitureCondition.vendu
+            || condition == FurnitureCondition.en_magasin) {
+          change = true;
+        }
+        break;
+      case retire_de_vente:
+        if (condition == FurnitureCondition.en_vente) {
+          change = true;
+        }
+        break;
+      case en_option:
+        if (condition == FurnitureCondition.vendu || condition == FurnitureCondition.en_vente) {
+          change = true;
+        }
+        break;
+      case vendu:
+        if (condition == FurnitureCondition.reserve
+            || condition == FurnitureCondition.emporte_par_client
+            || condition == FurnitureCondition.livre || condition == FurnitureCondition.en_option
+            || condition == FurnitureCondition.en_vente) {
+          change = true;
+        }
+        break;
+      case reserve:
+        if (condition == FurnitureCondition.en_vente
+            || condition == FurnitureCondition.emporte_par_client
+            || condition == FurnitureCondition.vendu) {
+          change = true;
+        }
+        break;
+      case emporte_par_client:
+        if (condition == FurnitureCondition.reserve || condition == FurnitureCondition.vendu) {
+          change = true;
+        }
+        break;
+      case livre:
+        if (condition == FurnitureCondition.vendu
+            || condition == FurnitureCondition.emporte_par_client) {
+          change = true;
+        }
+      default:
+        break;
+    }
 
-    } finally {
-      this.dalServices.closeConnection();
+    if (change) {
+      try {
+        // TODO ajouter les etats manquants
+        this.dalServices.startTransaction();
+        boolean noError = true;
+        switch (condition) {
+          case en_vente:
+            noError = noError && this.daoFurniture.updateSellingDate(id, Instant.now());
+            break;
+          case en_magasin:
+            noError = noError && this.daoFurniture.updateDepositDate(id, Instant.now());
+            break;
+          case vendu:
+            OptionDTO optionDTO = this.daoOption.selectOptionByFurnitureId(id);
+            if (optionDTO != null) {
+              noError = noError && this.daoOption.finishOption(optionDTO.getId());
+            }
+            break;
+          default:
+            break;
+        }
+        noError = noError && this.daoFurniture.updateCondition(id, condition.ordinal());
+        if (!noError) {
+          this.dalServices.rollbackTransaction();
+          throw new BusinessException("Error modify condition");
+        }
+        this.dalServices.commitTransaction();
+        return true;
+
+      } finally {
+        this.dalServices.closeConnection();
+      }
+    } else {
+      return false;
     }
 
 

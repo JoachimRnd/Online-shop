@@ -133,21 +133,8 @@ let furniturePage = `
     <div class="input-group-prepend">
       <label class="input-group-text" for="inputGroupSelect01">Etat du meuble</label>
     </div>
-    <select class="custom-select" id="conditions">
-      <option id="propose" value="propose">Proposé</option>
-      <option id="ne_convient_pas" value="ne_convient_pas">Ne convient pas</option>
-      <option id="achete" value="achete">Acheté</option>
-      <option id="emporte_par_patron" value="emporte_par_patron">Emporté par le patron</option>
-      <option id="en_restauration" value="en_restauration">En restauration</option>
-      <option id="en_magasin" value="en_magasin">En magasin</option>
-      <option id="en_vente" value="en_vente">En vente</option>
-      <option id="retire_de_vente" value="retire_de_vente">Retiré de la vente</option>
-      <option id="en_option" value="en_option" disabled>En option</option>
-      <option id="vendu" value="vendu">Vendu</option>
-      <option id="reserve" value="reserve">Réservé</option>
-      <option id="livre" value="livre">Livré</option>
-      <option id="emporte_par_client" value="emporte_par_client">Emporté par le client</option>
-    </select>
+    <div id="conditionsDiv"></div>
+
   </div>
 
   <button class="btn btn-success" id="btnSave" type="submit">Enregistrer</button>
@@ -235,6 +222,7 @@ const FurnitureAdmin = async(f) => {
     PrintError(err);
   }
 
+  onCheckConditions();
   let optionCondition = document.querySelector("#"+furniture.condition);
   optionCondition.setAttribute("selected","");
   
@@ -542,6 +530,100 @@ const onDeletePicture = () => {
 
 const onAddFavouritePicture = () => {
   console.log("AddFavouritePicture");
+}
+
+const onCheckConditions = () =>{
+  let propose = `<option id="propose" value="propose">Proposé</option>`;
+  let ne_convient_pas = `<option id="ne_convient_pas" value="ne_convient_pas">Ne convient pas</option>`
+  let achete = `<option id="achete" value="achete">Acheté</option>`;
+  let emporte_par_patron = `<option id="emporte_par_patron" value="emporte_par_patron">Emporté par le patron</option>`
+  let en_restauration = `<option id="en_restauration" value="en_restauration">En restauration</option>`;
+  let en_magasin = `<option id="en_magasin" value="en_magasin">En magasin</option>`;
+  let en_vente = `<option id="en_vente" value="en_vente">En vente</option>`;
+  let retire_de_vente = `<option id="retire_de_vente" value="retire_de_vente">Retiré de la vente</option>`;
+  let en_option = `<option id="en_option" value="en_option">En option</option>`;
+  let vendu = `<option id="vendu" value="vendu">Vendu</option>`;
+  let reserve = `<option id="reserve" value="reserve">Réservé</option>`;
+  let livre = `<option id="livre" value="livre">Livré</option>`
+  let emporte_par_client = `<option id="emporte_par_client" value="emporte_par_client">Emporté par le client</option>`;
+
+  let ensemble = `<select class="custom-select" id="conditions">`
+
+  switch (furniture.condition) {
+    case "propose":
+      ensemble += propose;
+      ensemble += ne_convient_pas;
+      ensemble += achete;
+      break;
+    case "ne_convient_pas":
+        ensemble += ne_convient_pas;
+        ensemble += propose;
+      break;
+    case "achete":
+      ensemble += achete;
+      ensemble += emporte_par_patron;
+      ensemble += propose;
+      break;
+    case "emporte_par_patron":
+      ensemble += emporte_par_patron;
+      ensemble += en_restauration;
+      ensemble += en_magasin;
+      ensemble += achete;
+      break;
+    case "en_restauration":
+      ensemble += en_restauration;
+      ensemble += en_magasin;
+      ensemble += emporte_par_patron;
+      break;
+    case "en_magasin":
+      ensemble += en_magasin;
+      ensemble += en_vente;
+      ensemble += emporte_par_patron;
+      ensemble += en_restauration;
+      break;
+    case "en_vente":
+      ensemble += en_vente;
+      ensemble += retire_de_vente;
+      ensemble += vendu;
+      ensemble += en_magasin;
+      break;
+    case "retire_de_vente":
+      ensemble += retire_de_vente;
+      ensemble += en_vente;
+      break;
+    case "en_option":
+      ensemble += en_option;
+      ensemble += vendu;
+      ensemble += en_vente;
+      break;
+    case "vendu":
+      ensemble += vendu;
+      ensemble += reserve;
+      ensemble += emporte_par_client;
+      ensemble += livre;
+      ensemble += en_vente;
+      ensemble += en_option;
+      break;
+    case "reserve":
+      ensemble += reserve;
+      ensemble += en_vente;
+      ensemble += emporte_par_client;
+      ensemble += vendu;
+      break;
+    case "livre":
+      ensemble += livre;
+      ensemble += vendu;
+      break;
+    case "emporte_par_client":
+      ensemble += emporte_par_client;
+      ensemble += vendu;
+      ensemble += reserve;
+      break;
+  }
+
+  ensemble += `</select>` 
+  let conditions = document.querySelector("#conditionsDiv");
+  conditions.innerHTML = ensemble;
 }
 
 export default FurnitureAdmin;

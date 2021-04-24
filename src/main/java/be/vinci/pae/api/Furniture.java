@@ -66,6 +66,8 @@ public class Furniture {
     boolean noError = true;
     boolean empty = true;
 
+
+
     if (json.hasNonNull("condition") && !json.get("condition").asText().isEmpty()) {
       noError = noError && furnitureUCC.modifyCondition(id,
           FurnitureCondition.valueOf(json.get("condition").asText()));
@@ -124,7 +126,8 @@ public class Furniture {
     if (noError) {
       return Response.ok().build();
     } else {
-      return Response.serverError().build();
+      return Response.status(Status.UNAUTHORIZED)
+          .entity("Erreur lors de la modification du meuble.").type(MediaType.TEXT_PLAIN).build();
     }
   }
 
