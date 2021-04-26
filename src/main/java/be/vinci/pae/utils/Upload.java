@@ -8,6 +8,13 @@ import java.io.OutputStream;
 
 public class Upload {
 
+  /**
+   * Save uploadedInputStream to uploadedFileLocation;
+   *
+   * @param uploadedInputStream
+   * @param uploadedFileLocation
+   * @return boolean
+   */
   public static boolean saveToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
 
     try {
