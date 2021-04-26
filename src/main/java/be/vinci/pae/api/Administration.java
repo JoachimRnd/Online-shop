@@ -1,11 +1,19 @@
 package be.vinci.pae.api;
 
+import java.io.InputStream;
+import java.util.List;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+import com.fasterxml.jackson.databind.JsonNode;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.api.utils.Json;
 import be.vinci.pae.domain.address.AddressUCC;
 import be.vinci.pae.domain.furniture.FurnitureDTO;
 import be.vinci.pae.domain.furniture.FurnitureUCC;
 import be.vinci.pae.domain.option.OptionUCC;
+import be.vinci.pae.domain.picture.PictureDTO;
+import be.vinci.pae.domain.picture.PictureFactory;
+import be.vinci.pae.domain.picture.PictureUCC;
 import be.vinci.pae.domain.type.TypeUCC;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.user.UserUCC;
@@ -47,6 +55,12 @@ public class Administration {
 
   @Inject
   private AddressUCC addressUCC;
+
+  @Inject
+  private PictureFactory pictureFactory;
+
+  @Inject
+  private PictureUCC pictureUcc;
 
   /**
    * Valid a user.
@@ -264,6 +278,56 @@ public class Administration {
   @AuthorizeAdmin
   public List<FurnitureDTO> getFurnitureSellBy(@PathParam("id") int id) {
     return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureSellBy(id), FurnitureDTO.class);
+   * List furniture with id.
+   *
+   * @return FurnitureDTO
+   */
+  @GET
+  @Path("/{idFurniture}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public FurnitureDTO getFurniture(@PathParam("idFurniture") int idFurniture) {
+    FurnitureDTO furnitureDTO = furnitureUCC.getFurnitureById(idFurniture);
+    if (furnitureDTO == null) {
+      throw new WebApplicationException(
+          "Ressource with id = " + idFurniture + " could not be found", null, Status.NOT_FOUND);
+    }
+    return Json.filterAdminJsonView(furnitureDTO, FurnitureDTO.class);
+  }
+
+  /**
+   * Receive file from the frontend.
+   * 
+   * @param enabled FormData
+   * @param uploadedInputStream FormDataFile
+   * @param fileDetail Details of the FormDataFile
+   * @return Status code
+   */
+  @POST
+  @Path("picture") // Your Path or URL to call this service
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @AuthorizeAdmin
+  public Response uploadFile(@DefaultValue("true") @FormDataParam("enabled") boolean enabled,
+      @FormDataParam("furnitureID") int furnitureId,
+      @FormDataParam("file") InputStream uploadedInputStream,
+      @FormDataParam("file") FormDataContentDisposition fileDetail) {
+    String pictureType =
+        fileDetail.getFileName().substring(fileDetail.getFileName().lastIndexOf('.') + 1);
+    if (!pictureType.equals("jpg") && !pictureType.equals("jpeg") && !pictureType.equals("png")) {
+      return Response.status(Status.UNAUTHORIZED)
+          .entity("Le type de la photo doit être jpg, jpeg ou png").type(MediaType.TEXT_PLAIN)
+          .build();
+    }
+    PictureDTO picture = pictureFactory.getPicture();
+    picture.setAScrollingPicture(false);
+    picture.setName(fileDetail.getFileName());
+    picture.setVisibleForEveryone(false);
+    picture = this.pictureUcc.addPicture(furnitureId, picture, uploadedInputStream, pictureType);
+    if (picture == null) {
+      return Response.serverError().build();
+    } else {
+      return Response.ok().build();
+    }
   }
 
 }

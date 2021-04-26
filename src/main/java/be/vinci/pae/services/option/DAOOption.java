@@ -1,7 +1,7 @@
 package be.vinci.pae.services.option;
 
-import be.vinci.pae.domain.option.OptionDTO;
 import java.util.List;
+import be.vinci.pae.domain.option.OptionDTO;
 
 public interface DAOOption {
 
@@ -18,4 +18,6 @@ public interface DAOOption {
   boolean cancelOption(OptionDTO optionToCancel);
 
   OptionDTO getLastOptionOfFurniture(int idFurniture);
+
+  OptionDTO selectOptionByFurnitureId(int idFurniture);
 }

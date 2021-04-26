@@ -1,10 +1,10 @@
 import { RedirectUrl } from "../Router.js";
-import Navbar from "../Navbar.js";
 import { getUserSessionData } from "../../utils/session.js";
-import { callAPI, callAPIWithoutJSONResponse } from "../../utils/api.js";
+import { callAPI, callAPIFormData, callAPIWithoutJSONResponse } from "../../utils/api.js";
 import PrintError from "../PrintError.js"
 import img1 from "./1.jpg";
 import img2 from "./2.jpg";
+
 const API_BASE_URL = "/api/furniture/";
 const API_BASE_URL_ADMIN = "/api/admin/";
 const IMAGES = "../../../../images";
@@ -16,51 +16,108 @@ let optionTaken = false;
 let furniturePage = `
 <h4 id="pageTitle">Furniture User</h4>
 <div class="row">
-  <div class="col-6">
-  <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-  <ol class="carousel-indicators">
-    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-  </ol>
-  <div class="carousel-inner">
-    <div class="carousel-item active">
-      <img src="${img1}" class="d-block w-100" alt="1">
-    </div>
-    <div class="carousel-item">
-      <img src="${img2}" class="d-block w-100" alt="2">
-    </div>
-    <div class="carousel-item">
-      <img src="${img2}" class="d-block w-100" alt="3">
-    </div>
-  </div>
-  <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="sr-only">Previous</span>
-  </a>
-  <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="sr-only">Next</span>
-  </a>
-  </div>
-</div>
-
-<div class="col-6">
-  <div class="form-group">
-    <div class="row">
-      <div class="col-6">
-          <div class="form-group">
-            <label for="type">Type de meuble</label>
-            <div id="type"></div>
-          </div>
-      </div>
-      <div class="col-6">
-        <div class="form-group">
-            <label for="prix">Prix de vente</label>
-            <div id="prix"></div>
+    <div class="col-6">
+      <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+      <ol class="carousel-indicators">
+        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+      </ol>
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="${img1}" class="d-block w-100" alt="1">
+        </div>
+        <div class="carousel-item">
+          <img src="${img2}" class="d-block w-100" alt="2">
+        </div>
+        <div class="carousel-item">
+          <img src="${img2}" class="d-block w-100" alt="3">
         </div>
       </div>
+      <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+      </div>
+    </br>
+    <div class="row">
+      <div class="col-6">
+        <form id="uploadForm">
+          <input id="file" type="file"/>
+          <input type="submit" value="Upload"/>
+        </form>
+      </div>
+      <div class="col-3">
+        <button class="btn btn-primary" id="btnAddScrollingPicture">Ajouter ou supprimer photo défilante</button>
+      </div>
+      <div class="col-3">
+        <button class="btn btn-danger" id="btnDeletePicture">Supprimer la photo</button>
+      </div>
+      <div class="col-3">
+        <button class="btn btn-warning" id="btnAddFavouritePicture">Ajouter photo favorite</button>
+      </div>
+      <div class="col-3">
+        <button class="btn btn-secondary" id="btnReturn">Retour</button>
+      </div>
     </div>
+  </div>
+
+  <div class="col-6">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-6">
+            <div class="form-group">
+              <label for="type">Type de meuble</label>
+              <div id="type"></div>
+            </div>
+        </div>
+        <div class="col-6">
+        <div class="form-group">
+            <label for="purchasePrice">Prix d'achat</label>
+            <div id="purchasePrice"></div>
+        </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+              <label for="prix">Prix de vente</label>
+              <div id="prix"></div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+              <label for="specialSalePrice">Prix de vente spécial</label>
+              <div id="specialSalePrice"></div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+              <label for="withdrawalDateFromCustomer">Date de retrait</label>
+              <div id="withdrawalDateFromCustomer"></div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+              <label for="deliveryDate">Date de livraison</label>
+              <div id="deliveryDate"></div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+              <label for="withdrawalDateToCustomer">Date de retrait par le client</label>
+              <div id="withdrawalDateToCustomer"></div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+              <label for="buyerEmail">Email du client</label>
+              <div id="buyerEmail"></div>
+          </div>
+        </div>
+      </div>
   </div>
 
   <div class="row">
@@ -76,16 +133,8 @@ let furniturePage = `
     <div class="input-group-prepend">
       <label class="input-group-text" for="inputGroupSelect01">Etat du meuble</label>
     </div>
-    <select class="custom-select" id="conditions">
-      <option id="achete" value="achete">Achete</option>
-      <option id="ne_convient_pas" value="ne_convient_pas">Ne convient pas</option>
-      <option id="en_restauration" value="en_restauration">En restauration</option>
-      <option id="en_magasin" value="en_magasin">En magasin</option>
-      <option id="en_vente" value="en_vente">En vente</option>
-      <option id="retire_de_vente" value="retire_de_vente">Retiré de la vente</option>
-      <option id="en_option" value="en_option">En option</option>
-      <option id="emporte_par_client" value="emporte_par_client">Emporte par le client</option>
-    </select>
+    <div id="conditionsDiv"></div>
+
   </div>
 
   <button class="btn btn-success" id="btnSave" type="submit">Enregistrer</button>
@@ -116,120 +165,280 @@ const FurnitureAdmin = async(f) => {
   let page = document.querySelector("#page");
   page.innerHTML = furniturePage;
 
+  let btnAddPicture = document.querySelector("form");
+  btnAddPicture.addEventListener("submit", onAddPicture);
+  let btnAddScrollingPicture = document.querySelector("#btnAddScrollingPicture");
+  btnAddScrollingPicture.addEventListener("click", onAddScrollingPicture);
+  let btnDeletePicture = document.querySelector("#btnDeletePicture");
+  btnDeletePicture.addEventListener("click", onDeletePicture);
+  let btnAddFavouritePicture = document.querySelector("#btnAddFavouritePicture");
+  btnAddFavouritePicture.addEventListener("click", onAddFavouritePicture);
 
+  let btnReturn = document.querySelector("#btnReturn");
+  btnReturn.addEventListener("click", () => RedirectUrl("/search"));
 
   let btnSave = document.querySelector("#btnSave");
   btnSave.addEventListener("click", onSave);
-  
+
+  const user = getUserSessionData();
+
+  try {
+    let pictureFile = await callAPIWithoutJSONResponse(API_BASE_URL + "picture-furniture" , "GET", user.token);
+    console.log(pictureFile);
+  } catch (err) {
+    console.error("FurnitureAdmin::getFile", err);
+    PrintError(err);
+  }
 
   if(f == null){
     let queryString = window.location.search;
     let urlParams = new URLSearchParams(queryString);
     let id = urlParams.get("id");
-    try {
-      furniture = await callAPI(API_BASE_URL + id , "GET",undefined);
-    } catch (err) {
-      console.error("FurnitureUser::GetFurnitureByID", err);
-      PrintError(err);
+    if(user && user.user.userType == "admin"){
+      try {
+        furniture = await callAPI(API_BASE_URL_ADMIN + id , "GET", user.token);
+      } catch (err) {
+        console.error("FurnitureUser::GetFurnitureByID", err);
+        PrintError(err);
+      }
+    }else {
+      try {
+        furniture = await callAPI(API_BASE_URL + id , "GET", undefined);
+      } catch (err) {
+        console.error("FurnitureUser::GetFurnitureByID", err);
+        PrintError(err);
+      }
     }
 
   }else{
     furniture = f;
   }
 
+  try {
+    const types = await callAPI(API_BASE_URL + "allFurnitureTypes", "GET", undefined);
+    onTypesList(types);
+  } catch (err) {
+    console.error("FurnitureAdmin::onTypesList", err);
+    PrintError(err);
+  }
+
+  onCheckConditions();
   let optionCondition = document.querySelector("#"+furniture.condition);
   optionCondition.setAttribute("selected","");
   
 
   onFurniture();
-  onCheckOption();
-
-  let conditions = document.querySelector("#conditions");
-  if(conditions.value == "en_vente"){
-
-    onSale();
+  if(furniture.condition == "en_vente" || furniture.condition == "en_option"){
+    onCheckOption();
   }
-  conditions.addEventListener("change",(e)=>{
-    if(conditions.value == "en_vente"){
-      onSale();
-    }else{
-      let price = document.querySelector("#prix");
-      //best solution -> removeAttribute but doesnt work (have to investigate)
-      price.innerHTML = `<input class="form-control" id="prix" type="text" placeholder=${furniture.sellingPrice} readonly/>`;
-    }
-    
-  });
+
+ // let conditions = document.querySelector("#conditions");
+
+}
+
+const onTypesList = (typesList) => {
+  let typesListPage = `
+  <div class="input-group mb-3">
+    <select class="custom-select" id="typesList">`;
+    typesList.forEach(type => {
+      if(furniture.type.id == type.id)
+        typesListPage += `<option id="${type.id}" selected="selected" value="${type.id}">${type.name}</option>`;
+      else
+        typesListPage += `<option id="${type.id}" value="${type.id}">${type.name}</option>`;
+    });
+  
+  typesListPage += 
+    `</select>
+  </div>`;
+
+document.getElementById("type").innerHTML = typesListPage;
 }
 
 const onFurniture = () => {
-
-  let type = document.querySelector("#type");
-  type.innerHTML = `<input class="form-control" id="type" type="text" placeholder=${furniture.type.name} readonly />`;
   let prix = document.querySelector("#prix");
-  prix.innerHTML = `<input class="form-control" id="inputPrix" type="text" placeholder=${furniture.sellingPrice} readonly />`;
+  prix.innerHTML = `<input class="form-control" id="inputSellingPrice" type="number" placeholder=${furniture.sellingPrice} readonly />`;
+
+  let specialSalePrice = document.querySelector("#specialSalePrice");
+  specialSalePrice.innerHTML = `<input class="form-control" id="inputSpecialSalePrice" type="number" placeholder=${furniture.specialSalePrice} readonly />`;
+
   let furnitureDescription = document.querySelector("#furnitureDescription");
-  furnitureDescription.innerHTML = `<textarea class="form-control" id="furnituredescription" rows="6" readonly>${furniture.description}</textarea>`;
+  furnitureDescription.innerHTML = `<textarea class="form-control" id="furnituredescription" rows="6" >${furniture.description}</textarea>`;
   
+  let purchasePrice = document.querySelector("#purchasePrice");
+  purchasePrice.innerHTML = `<input class="form-control" id="inputPurchasePrice" type="number" placeholder"=${furniture.purchasePrice}" readonly />`;
+
+  let withdrawalDateFromCustomer = document.querySelector("#withdrawalDateFromCustomer");
+  if(furniture.withdrawalDateFromCustomer)
+    withdrawalDateFromCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateFromCustomer" type="date" value="${furniture.withdrawalDateFromCustomer}" readonly/>`;
+  else
+    withdrawalDateFromCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateFromCustomer" type="date" readonly/>`;
+
+  let deliveryDate = document.querySelector("#deliveryDate");
+  if(furniture.deliveryDate)
+    deliveryDate.innerHTML = `<input class="form-control" id="inputDeliveryDate" type="date" value="${furniture.deliveryDate}" readonly/>`;
+  else
+    deliveryDate.innerHTML = `<input class="form-control" id="inputDeliveryDate" type="date" readonly/>`;
+
+  let withdrawalDateToCustomer = document.querySelector("#withdrawalDateToCustomer");
+  if(furniture.withdrawalDateToCustomer)
+    withdrawalDateToCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateToCustomer" type="date" value="${furniture.withdrawalDateToCustomer}" readonly/>`;
+  else
+    withdrawalDateToCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateToCustomer" type="date" readonly/>`;
+
+  let buyerEmail = document.querySelector("#buyerEmail");
+  if(furniture.buyer && furniture.buyer.email)
+    buyerEmail.innerHTML = `<input class="form-control" id="inputBuyerEmail" type="email" value="${furniture.buyer.email}" readonly/>`;
+  else if(furniture.unregisteredBuyerEmail)
+    buyerEmail.innerHTML = `<input class="form-control" id="inputBuyerEmail" type="email" value="${furniture.unregisteredBuyerEmail}" readonly/>`;
+  else
+    buyerEmail.innerHTML = `<input class="form-control" id="inputBuyerEmail" type="email" readonly/>`;
 }
 
 const onSale = () => {
   let price = document.querySelector("#prix");
-  //best solution -> removeAttribute but doesnt work (have to investigate)
-  price.innerHTML = `<input class="form-control" id="inputPrix" type="text" placeholder=${furniture.sellingPrice} />`;
+  price.innerHTML = `<input class="form-control" id="inputSellingPrice" type="number" value=${furniture.sellingPrice} />`;
+
+  let specialSalePrice = document.querySelector("#specialSalePrice");
+  specialSalePrice.innerHTML = `<input class="form-control" id="inputSpecialSalePrice" type="number" value=${furniture.specialSalePrice} />`;
 }
 
+const onPurchase = () => {
+  let purchasePrice = document.querySelector("#purchasePrice");
+  purchasePrice.innerHTML = `<input class="form-control" id="inputPurchasePrice" type="number" value=${furniture.purchasePrice} />`;
+
+  let withdrawalDateFromCustomer = document.querySelector("#withdrawalDateFromCustomer");
+  if(furniture.withdrawalDateFromCustomer)
+    withdrawalDateFromCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateFromCustomer" type="date" value="${furniture.withdrawalDateFromCustomer}"/>`;
+  else
+    withdrawalDateFromCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateFromCustomer" type="date"/>`;
+}
+
+const onSold = () => {
+  let deliveryDate = document.querySelector("#deliveryDate");
+  if(furniture.deliveryDate)
+    deliveryDate.innerHTML = `<input class="form-control" id="inputDeliveryDate" type="date" value="${furniture.deliveryDate}"/>`;
+  else
+    deliveryDate.innerHTML = `<input class="form-control" id="inputDeliveryDate" type="date" />`;
+
+  let withdrawalDateToCustomer = document.querySelector("#withdrawalDateToCustomer");
+  if(furniture.withdrawalDateToCustomer)
+    withdrawalDateToCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateToCustomer" type="date" value="${furniture.withdrawalDateToCustomer}" />`;
+  else
+    withdrawalDateToCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateToCustomer" type="date"/>`;
+}
+
+const onBuyerEmail = () => {
+  let buyerEmail = document.querySelector("#buyerEmail");
+  if(furniture.buyer && furniture.buyer.email)
+    buyerEmail.innerHTML = `<input class="form-control" id="inputBuyerEmail" type="email" value="${furniture.buyer.email}"/>`;
+  else if(furniture.unregisteredBuyerEmail)
+    buyerEmail.innerHTML = `<input class="form-control" id="inputBuyerEmail" type="email" value="${furniture.unregisteredBuyerEmail}"/>`;
+  else
+    buyerEmail.innerHTML = `<input class="form-control" id="inputBuyerEmail" type="email"/>`;
+}
 
 const onSave = async() => {
-    let conditionChoice = document.querySelector("#conditions");
-    conditionChoice = conditionChoice.value;
+    let condition = document.querySelector("#conditions");
+    condition = condition.value;
 
-    let user = getUserSessionData();
-    let struct;
-
-    if(conditionChoice == "en_vente"){
-      let p = document.querySelector("#inputPrix");
-      p = p.value;
-      struct = {
-        condition: conditionChoice,
-        price: p
-      }
-      furniture.sellingPrice = p;
-    }else if(conditionChoice != furniture.condition){
-      struct = {
-        condition: conditionChoice,
-        price: 0
-      };
-    } 
-   
-    if(conditionChoice != furniture.condition || furniture.condition == "en_vente"){
-      try {
-        await callAPIWithoutJSONResponse(API_BASE_URL + furniture.id, "PUT", user.token, struct);
-        let toast = document.querySelector("#toast");
-      } catch (err) {
-        console.error("FurnitureAdmin::Change condition", err);
-        PrintError(err);
-      }
-
+    let type = null;
+    if(furniture.type.id != document.getElementById("typesList").value){
+      type = document.getElementById("typesList").value;
+      furniture.type.id = type;
+    }
+    let sellingPrice = null;
+    let specialSalePrice = null;
+    let purchasePrice = null;
+    let withdrawalDateFromCustomer = null;
+    let deliveryDate = null;
+    let withdrawalDateToCustomer = null;
+    let buyerEmail = null;
+    let description = null;
+    if(furniture.description != document.getElementById("furnituredescription").value){
+      description = document.getElementById("furnituredescription").value;
+      furniture.description = description;
     }
 
- 
-
+    if(condition == "vendu"){
+      if(furniture.deliveryDate != document.querySelector("#inputDeliveryDate").value){
+        deliveryDate = document.querySelector("#inputDeliveryDate").value;
+        furniture.deliveryDate = deliveryDate;
+      }
+      if(furniture.withdrawalDateToCustomer != document.querySelector("#inputWithdrawalDateToCustomer").value){
+        withdrawalDateToCustomer = document.querySelector("#inputWithdrawalDateToCustomer").value;
+        furniture.withdrawalDateToCustomer = withdrawalDateToCustomer;
+      }
+      let optionDocument = document.querySelector("#option");
+      optionDocument.innerHTML = "";
+    }
+    if(condition == "en_vente"){
+      if(furniture.sellingPrice != document.querySelector("#inputSellingPrice").value){
+        sellingPrice = document.querySelector("#inputSellingPrice").value;
+        furniture.sellingPrice = sellingPrice;
+      }
+      if(furniture.specialSalePrice != document.querySelector("#inputSpecialSalePrice").value){
+        specialSalePrice = document.querySelector("#inputSpecialSalePrice").value;
+        furniture.specialSalePrice = specialSalePrice;
+      }
+      document.querySelector("#inputWithdrawalDateToCustomer").value = null;
+      document.querySelector("#inputBuyerEmail").value = null;
+    } else if(condition == "achete"){
+      if(furniture.purchasePrice != document.querySelector("#inputPurchasePrice").value){
+        purchasePrice = document.querySelector("#inputPurchasePrice").value;
+        furniture.purchasePrice = purchasePrice;
+      }
+      if(furniture.withdrawalDateFromCustomer != document.querySelector("#inputWithdrawalDateFromCustomer").value){
+        withdrawalDateFromCustomer = document.querySelector("#inputWithdrawalDateFromCustomer").value;
+        furniture.withdrawalDateFromCustomer = withdrawalDateFromCustomer;
+      }
+    } else if (condition == "vendu" || condition == "reserve" || 
+    condition == "livre" || condition == "emporte_par_client") {
+      if(furniture.unregisteredBuyerEmail != document.querySelector("#inputBuyerEmail").value){
+        buyerEmail = document.querySelector("#inputBuyerEmail").value;
+        furniture.buyerEmail = buyerEmail;
+      } else if(furniture.buyer && furniture.buyer.email){
+        buyerEmail = document.querySelector("#inputBuyerEmail").value;
+        furniture.buyer.email = buyerEmail;
+      }
+    }
+    
+    if(furniture.condition == condition){
+      condition = null;
+    }
+    furniture.condition = condition;
+    let struct = {
+      condition: condition,
+      type: type,
+      purchasePrice: purchasePrice,
+      sellingPrice: sellingPrice,
+      specialSalePrice: specialSalePrice,
+      withdrawalDateFromCustomer: withdrawalDateFromCustomer,
+      deliveryDate: deliveryDate,
+      withdrawalDateToCustomer: withdrawalDateToCustomer,
+      buyerEmail: buyerEmail,
+      description: description
+    }
     
 
-
-
+    const user = getUserSessionData();
+    try {
+      await callAPIWithoutJSONResponse(API_BASE_URL + furniture.id, "PUT", user.token, struct);
+      document.getElementById("toast").innerHTML = `</br><h5 style="color:green">Le meuble a bien été modifié.</h5>`;
+      onCheckConditions();
+    } catch (err) {
+      console.error("FurnitureAdmin::Change condition", err);
+      PrintError(err);
+    }
 }
-
 
 const onCheckOption = async() => {
 
   let option = await callAPI(API_BASE_URL + furniture.id + "/option", "GET");
   let optionDocument = document.querySelector("#option");
-  console.log(option);
   if(option.status != undefined && option.status == "en_cours") {
     optionDocument.innerHTML = isOption;
     let userOption = document.querySelector("#userOption");
-    userOption.innerHTML = furniture.buyer.email;
+    userOption.innerHTML = option.buyer.email;
     let btn = document.querySelector("#btnOption")
     btn.addEventListener("click", onClickCancelOption);
   }else{
@@ -261,5 +470,163 @@ const onClickCancelOption = async (e) => {
   }
 }
 
+const onAddPicture = async (e) => {
+  e.preventDefault();
+  let file = document.getElementById("file").files[0];
+  console.log(file);
+  console.log("AddPicture");
+  
+  let fd = new FormData();
+  fd.append("file",file);
+  fd.append("furnitureID", furniture.id);
+
+
+  const user = getUserSessionData();
+  try {
+    const response = await callAPIFormData(
+      API_BASE_URL_ADMIN + "picture",
+      "POST",
+      user.token,
+      fd
+    );
+  } catch (err) {
+    console.error("FurnitureAdmin::onAddPicture", err);
+    PrintError(err);
+  }
+}
+
+const onAddScrollingPicture = () => {
+  console.log("AddScrollingPicture");
+  
+}
+
+const onDeletePicture = () => {
+  console.log("DeletePicture");
+}
+
+const onAddFavouritePicture = () => {
+  console.log("AddFavouritePicture");
+}
+
+const onCheckConditions = () =>{
+  let propose = `<option id="propose" value="propose">Proposé</option>`;
+  let ne_convient_pas = `<option id="ne_convient_pas" value="ne_convient_pas">Ne convient pas</option>`
+  let achete = `<option id="achete" value="achete">Acheté</option>`;
+  let emporte_par_patron = `<option id="emporte_par_patron" value="emporte_par_patron">Emporté par le patron</option>`
+  let en_restauration = `<option id="en_restauration" value="en_restauration">En restauration</option>`;
+  let en_magasin = `<option id="en_magasin" value="en_magasin">En magasin</option>`;
+  let en_vente = `<option id="en_vente" value="en_vente">En vente</option>`;
+  let retire_de_vente = `<option id="retire_de_vente" value="retire_de_vente">Retiré de la vente</option>`;
+  let en_option = `<option id="en_option" value="en_option">En option</option>`;
+  let vendu = `<option id="vendu" value="vendu">Vendu</option>`;
+  let reserve = `<option id="reserve" value="reserve">Réservé</option>`;
+  let livre = `<option id="livre" value="livre">Livré</option>`
+  let emporte_par_client = `<option id="emporte_par_client" value="emporte_par_client">Emporté par le client</option>`;
+
+  let ensemble = `<select class="custom-select" id="conditions">`
+
+  switch (furniture.condition) {
+    case "propose":
+      ensemble += propose;
+      ensemble += ne_convient_pas;
+      ensemble += achete;
+      break;
+    case "ne_convient_pas":
+        ensemble += ne_convient_pas;
+        ensemble += propose;
+      break;
+    case "achete":
+      ensemble += achete;
+      ensemble += emporte_par_patron;
+      ensemble += propose;
+      break;
+    case "emporte_par_patron":
+      ensemble += emporte_par_patron;
+      ensemble += en_restauration;
+      ensemble += en_magasin;
+      ensemble += achete;
+      break;
+    case "en_restauration":
+      ensemble += en_restauration;
+      ensemble += en_magasin;
+      ensemble += emporte_par_patron;
+      break;
+    case "en_magasin":
+      ensemble += en_magasin;
+      ensemble += en_vente;
+      ensemble += emporte_par_patron;
+      ensemble += en_restauration;
+      break;
+    case "en_vente":
+      ensemble += en_vente;
+      ensemble += retire_de_vente;
+      ensemble += vendu;
+      ensemble += en_magasin;
+      break;
+    case "retire_de_vente":
+      ensemble += retire_de_vente;
+      ensemble += en_vente;
+      break;
+    case "en_option":
+      ensemble += en_option;
+      ensemble += vendu;
+      ensemble += en_vente;
+      break;
+    case "vendu":
+      ensemble += vendu;
+      ensemble += reserve;
+      ensemble += emporte_par_client;
+      ensemble += livre;
+      ensemble += en_vente;
+      ensemble += en_option;
+      break;
+    case "reserve":
+      ensemble += reserve;
+      ensemble += en_vente;
+      ensemble += emporte_par_client;
+      ensemble += vendu;
+      break;
+    case "livre":
+      ensemble += livre;
+      ensemble += vendu;
+      break;
+    case "emporte_par_client":
+      ensemble += emporte_par_client;
+      ensemble += vendu;
+      ensemble += reserve;
+      break;
+  }
+
+  ensemble += `</select>` 
+  let conditionsDiv = document.querySelector("#conditionsDiv");
+  conditionsDiv.innerHTML = ensemble;
+  let conditions = document.querySelector("#conditions");
+  if(conditions.value == "vendu"){
+    onSold();
+  }
+  if(conditions.value == "en_vente"){
+    onSale();
+  } else if (conditions.value == "achete") {
+    onPurchase();
+  } else if (conditions.value == "vendu" || conditions.value == "reserve" || 
+  conditions.value == "livre" || conditions.value == "emporte_par_client") {
+    onBuyerEmail();
+  }
+
+  conditions.addEventListener("change",(e)=>{
+    onFurniture();
+    if(conditions.value == "vendu"){
+      onSold();
+    }
+    if(conditions.value == "en_vente"){
+      onSale();
+    } else if (conditions.value == "achete") {
+      onPurchase();
+    } else if (conditions.value == "vendu" || conditions.value == "reserve" || 
+    conditions.value == "livre" || conditions.value == "emporte_par_client") {
+      onBuyerEmail();
+    }
+  });
+}
 
 export default FurnitureAdmin;
