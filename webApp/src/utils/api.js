@@ -59,7 +59,6 @@ import PrintError from "../Components/PrintError";
   }
 
   if (data) {
-<<<<<<< HEAD
     /*if(data){
         console.log(data);
         fd.append("file",data);
@@ -67,8 +66,6 @@ import PrintError from "../Components/PrintError";
     if(json){
         fd.append("json", JSON.stringify(json));
     }*/
-=======
->>>>>>> refs/remotes/origin/furnitureUser
     options.body = data;
   }
 
