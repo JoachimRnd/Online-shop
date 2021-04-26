@@ -54,28 +54,19 @@ import PrintError from "../Components/PrintError";
   let headers = new Headers();
   let options = {};
   options.method = method;
-  
   if (token) {    
     headers.append("Authorization", token);   
   }
 
   if (data) {
-    /*console.log("CALLAPIFORMDATA : ",data);
-
-    let furnitureList = data.furnitureList;
-    console.log("FURNITURELIST : ",furnitureList);
-
-    let picturesList = furnitureList[0].picturesList;
-    console.log("PICTURESLIST : ",picturesList);
-
-    furnitureList.picturesList = [];*/
-    data = JSON.stringify(data);
-    
-    let fd = new FormData();
-    fd.append("data",data);
-    console.log(data);
-    //fd.append("file",picturesList[0]);
-    options.body = fd;
+    /*if(data){
+        console.log(data);
+        fd.append("file",data);
+    }
+    if(json){
+        fd.append("json", JSON.stringify(json));
+    }*/
+    options.body = data;
   }
 
   if (
@@ -84,7 +75,7 @@ import PrintError from "../Components/PrintError";
     method.toLowerCase() === "put"
   )
   options.headers = headers;
-  try {
+    try {
     const response = await fetch(endpoint, options);
 
     if (!response.ok) {      
