@@ -1,14 +1,15 @@
 package be.vinci.pae.main;
 
+import be.vinci.pae.utils.ApplicationBinder;
+import be.vinci.pae.utils.Config;
 import java.io.IOException;
 import java.net.URI;
 import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.grizzly.http.server.StaticHttpHandler;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
-import be.vinci.pae.utils.ApplicationBinder;
-import be.vinci.pae.utils.Config;
 
 /**
  * Main class.
@@ -42,6 +43,11 @@ public class Main {
     Config.load("dev.properties");
     // Start the server
     final HttpServer server = startServer();
+    //Service statique du dossier images
+    StaticHttpHandler staticHttpHandler = new StaticHttpHandler(
+        ".\\images\\");
+    //Ajout d'un listener sur BaseUri + /images
+    server.getServerConfiguration().addHttpHandler(staticHttpHandler, "/images");
     System.out.println("Jersey app started at " + Config.getProperty("BaseUri"));
     // Listen to key press and shutdown server
     System.out.println("Hit enter to stop it...");
