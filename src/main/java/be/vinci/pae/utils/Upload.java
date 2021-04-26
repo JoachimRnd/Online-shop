@@ -9,10 +9,10 @@ import java.io.OutputStream;
 public class Upload {
 
   /**
-   * Save uploadedInputStream to uploadedFileLocation;
+   * Save uploadedInputStream to uploadedFileLocation.
    *
-   * @param uploadedInputStream
-   * @param uploadedFileLocation
+   * @param uploadedInputStream  InputStream of file
+   * @param uploadedFileLocation Location of file
    * @return boolean
    */
   public static boolean saveToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
