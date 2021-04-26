@@ -1,6 +1,7 @@
 package be.vinci.pae.domain.furniture;
 
 import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import be.vinci.pae.domain.picture.PictureDTO;
@@ -24,23 +25,28 @@ class FurnitureImpl implements Furniture {
   @JsonView(Views.Public.class)
   private double sellingPrice;
   @JsonView(Views.Public.class)
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   private Date sellingDate;
   @JsonView(Views.Public.class)
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   private Date deliveryDate;
   @JsonView(Views.Public.class)
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   private Date withdrawalDateToCustomer;
   @JsonView(Views.Public.class)
   private UserDTO buyer;
   @JsonView(Views.Public.class)
   private FurnitureCondition condition;
 
-  @JsonView(Views.Admin.class)
+  @JsonView(Views.Public.class)
   private double purchasePrice;
   @JsonView(Views.Admin.class)
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   private Date withdrawalDateFromCustomer;
   @JsonView(Views.Admin.class)
   private double specialSalePrice;
   @JsonView(Views.Admin.class)
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   private Date depositDate;
   @JsonView(Views.Admin.class)
   private String unregisteredBuyerEmail;

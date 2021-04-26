@@ -6,6 +6,9 @@ import be.vinci.pae.domain.address.AddressUCC;
 import be.vinci.pae.domain.furniture.FurnitureDTO;
 import be.vinci.pae.domain.furniture.FurnitureUCC;
 import be.vinci.pae.domain.option.OptionUCC;
+import be.vinci.pae.domain.picture.PictureDTO;
+import be.vinci.pae.domain.picture.PictureFactory;
+import be.vinci.pae.domain.picture.PictureUCC;
 import be.vinci.pae.domain.type.TypeUCC;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.user.UserUCC;
@@ -27,7 +30,10 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import java.io.InputStream;
 import java.util.List;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 @Singleton
 @Path("/admin")
@@ -47,6 +53,12 @@ public class Administration {
 
   @Inject
   private AddressUCC addressUCC;
+
+  @Inject
+  private PictureFactory pictureFactory;
+
+  @Inject
+  private PictureUCC pictureUcc;
 
   /**
    * Valid a user.
@@ -222,9 +234,8 @@ public class Administration {
   public List<FurnitureDTO> furnituresFiltered(@DefaultValue("") @QueryParam("type") String type,
       @DefaultValue("" + Double.MAX_VALUE) @QueryParam("price") double price,
       @DefaultValue("") @QueryParam("username") String username) {
-    return Json
-        .filterPublicJsonViewAsList(furnitureUCC.getFurnituresFiltered(type, price, username),
-            FurnitureDTO.class);
+    return Json.filterPublicJsonViewAsList(
+        furnitureUCC.getFurnituresFiltered(type, price, username), FurnitureDTO.class);
   }
 
   /**
@@ -241,29 +252,57 @@ public class Administration {
   }
 
   /**
-   * Get the furniture buy by an user.
+   * Get a furniture.
    *
-   * @return List of FurnitureDTO
+   * @return FurnitureDTO
    */
   @GET
-  @Path("/furniturebuyby/{id}")
+  @Path("/{idFurniture}")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public List<FurnitureDTO> getFurnitureBuyBy(@PathParam("id") int id) {
-    return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureBuyBy(id), FurnitureDTO.class);
+  public FurnitureDTO getFurniture(@PathParam("idFurniture") int idFurniture) {
+    FurnitureDTO furnitureDTO = furnitureUCC.getFurnitureById(idFurniture);
+    if (furnitureDTO == null) {
+      throw new WebApplicationException(
+          "Ressource with id = " + idFurniture + " could not be found", null, Status.NOT_FOUND);
+    }
+    return Json.filterAdminJsonView(furnitureDTO, FurnitureDTO.class);
   }
 
   /**
-   * Get the furniture sell by an user.
+   * Receive file from the frontend.
    *
-   * @return List of FurnitureDTO
+   * @param enabled             FormData
+   * @param uploadedInputStream FormDataFile
+   * @param fileDetail          Details of the FormDataFile
+   * @return Status code
    */
-  @GET
-  @Path("/furnituresellby/{id}")
-  @Produces(MediaType.APPLICATION_JSON)
+  @POST
+  @Path("picture") // Your Path or URL to call this service
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
   @AuthorizeAdmin
-  public List<FurnitureDTO> getFurnitureSellBy(@PathParam("id") int id) {
-    return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureSellBy(id), FurnitureDTO.class);
+  public Response uploadFile(@DefaultValue("true") @FormDataParam("enabled") boolean enabled,
+      @FormDataParam("furnitureID") int furnitureId,
+      @FormDataParam("file") InputStream uploadedInputStream,
+      @FormDataParam("file") FormDataContentDisposition fileDetail) {
+    String pictureType =
+        fileDetail.getFileName().substring(fileDetail.getFileName().lastIndexOf('.') + 1);
+    if (!pictureType.equals("jpg") && !pictureType.equals("jpeg") && !pictureType.equals("png")) {
+      return Response.status(Status.UNAUTHORIZED)
+          .entity("Le type de la photo doit être jpg, jpeg ou png").type(MediaType.TEXT_PLAIN)
+          .build();
+    }
+    PictureDTO picture = pictureFactory.getPicture();
+    picture.setAScrollingPicture(false);
+    picture.setName(fileDetail.getFileName());
+    picture.setVisibleForEveryone(false);
+    picture = this.pictureUcc.addPicture(furnitureId, picture, uploadedInputStream, pictureType);
+    if (picture == null) {
+      return Response.serverError().build();
+    } else {
+      return Response.ok().build();
+    }
   }
+
 
 }

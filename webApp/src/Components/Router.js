@@ -6,6 +6,8 @@ import ErrorPage from "./ErrorPage.js";
 import FurnitureUser from "./Furniture/FurnitureUser.js";
 import FurnitureAdmin from "./Furniture/FurnitureAdmin";
 import FurnitureListPage from "./Furniture/FurnitureListPage";
+import FurnitureUserListPage from "./Furniture/FurnitureUserListPage";
+import UserFurniture from "./Furniture/UserFurniture";
 import AdministrationPage from "./Admin/AdministrationPage.js";
 import ValidationPage from "./Admin/ValidationPage.js";
 import FurnitureTypePage from "./Admin/FurnitureTypePage.js";
@@ -22,12 +24,14 @@ const routes = {
   "/error": ErrorPage,
   "/furniture": FurnitureUser,
   "/search": FurnitureListPage,
+  "/myfurnitures": FurnitureUserListPage,
+  "/myfurniture" : UserFurniture,
   "/admin": AdministrationPage,
   "/admin/validation": ValidationPage,
   "/admin/furnitureType": FurnitureTypePage,
   "/admin/search":SearchPage,
-  "/furnitureAdmin": FurnitureAdmin,
-  "/userAdmin": UserAdmin
+  "/userAdmin": UserAdmin,
+  "/admin/furniture": FurnitureAdmin
 };
 
 let navBar = document.querySelector("#navBar");

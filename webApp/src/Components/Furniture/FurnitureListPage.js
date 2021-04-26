@@ -22,8 +22,12 @@ const FurnitureListPage = async () => {
       PrintError(err);
     }
   } else {
+    let userId = -1;
+    if(user != null){
+      userId = user.user.id;
+    }
     try {
-      const furnitures = await callAPI(API_BASE_URL_USER + "allFurniture", "GET", undefined);
+      const furnitures = await callAPI(API_BASE_URL_USER + userId + "/allFurniture", "GET", undefined);
       onFurnitureList(furnitures);
     } catch (err) {
       console.error("FurnitureListPage::onFurnitureList", err);
@@ -73,7 +77,7 @@ const onFurnitureList = (data) => {
       if(getUserSessionData() == null || getUserSessionData().user.userType != "admin"){
         RedirectUrl("/furniture",element,"?id="+element.id);
       }else{
-        RedirectUrl("/furnitureAdmin",element,"?id="+element.id);
+        RedirectUrl("/admin/furniture",element,"?id="+element.id);
       }
     });
   });

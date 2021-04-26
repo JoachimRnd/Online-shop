@@ -59,9 +59,7 @@ import PrintError from "../Components/PrintError";
   }
 
   if (data) {
-    let fd = new FormData();
-    fd.append("file",data);
-    options.body = fd;
+    options.body = data;
   }
 
   if (

@@ -18,6 +18,7 @@ import jakarta.inject.Inject;
 public class DAOOptionImpl implements DAOOption {
 
   private String querySelectOptionsOfFurniture;
+  private String querySelectOptionByFurnitureId;
   private String querySelectOptionsOfBuyer;
   private String querySelectOptionsOfBuyerFromFurniture;
   private String queryAddOption;
@@ -27,7 +28,7 @@ public class DAOOptionImpl implements DAOOption {
   @Inject
   private OptionFactory optionFactory;
   @Inject
-  private DalBackendServices dalBackendServices;
+  private DalBackendServices dalServices;
   @Inject
   private DAOFurniture daoFurniture;
   @Inject
@@ -49,12 +50,15 @@ public class DAOOptionImpl implements DAOOption {
     queryGetLastOptionOfFurniture = "SELECT option_id, buyer, furniture, duration, date, status "
         + "FROM project.options WHERE furniture = ? AND date = "
         + "(SELECT MAX(date) FROM project.options WHERE furniture = ?)";
+    querySelectOptionByFurnitureId =
+        "SELECT o.option_id, o.buyer, o.furniture, o.duration, o.date, o.status "
+            + "FROM project.options o WHERE o.furniture = ?";
   }
 
   @Override
   public int addOption(OptionDTO option) {
     try {
-      PreparedStatement addOption = dalBackendServices.getPreparedStatementAdd(queryAddOption);
+      PreparedStatement addOption = dalServices.getPreparedStatementAdd(queryAddOption);
       addOption.setInt(1, option.getBuyer().getId());
       addOption.setInt(2, option.getFurniture().getId());
       addOption.setInt(3, option.getDuration());
@@ -77,7 +81,7 @@ public class DAOOptionImpl implements DAOOption {
   public List<OptionDTO> selectOptionsOfFurniture(int idFurniture) {
     try {
       PreparedStatement selectOptionsOfFurniture =
-          dalBackendServices.getPreparedStatement(querySelectOptionsOfFurniture);
+          dalServices.getPreparedStatement(querySelectOptionsOfFurniture);
       selectOptionsOfFurniture.setInt(1, idFurniture);
       try (ResultSet rs = selectOptionsOfFurniture.executeQuery()) {
         List<OptionDTO> listOptions = new ArrayList<OptionDTO>();
@@ -96,10 +100,27 @@ public class DAOOptionImpl implements DAOOption {
   }
 
   @Override
+  public OptionDTO selectOptionByFurnitureId(int idFurniture) {
+    try {
+      PreparedStatement selectOptionByFurnitureId =
+          dalServices.getPreparedStatement(querySelectOptionByFurnitureId);
+      selectOptionByFurnitureId.setInt(1, idFurniture);
+      try (ResultSet rs = selectOptionByFurnitureId.executeQuery()) {
+        return createOption(rs);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : selectOptionByFurnitureId");
+    }
+  }
+
+
+
+  @Override
   public List<OptionDTO> selectOptionsOfBuyer(int idBuyer) {
     try {
       PreparedStatement selectOptionsOfBuyer =
-          dalBackendServices.getPreparedStatement(querySelectOptionsOfBuyer);
+          dalServices.getPreparedStatement(querySelectOptionsOfBuyer);
       selectOptionsOfBuyer.setInt(1, idBuyer);
       try (ResultSet rs = selectOptionsOfBuyer.executeQuery()) {
         List<OptionDTO> listOptions = new ArrayList<OptionDTO>();
@@ -121,7 +142,7 @@ public class DAOOptionImpl implements DAOOption {
   public List<OptionDTO> selectOptionsOfBuyerFromFurniture(int idBuyer, int idFurniture) {
     try {
       PreparedStatement selectOptionsOfBuyerFromFurniture =
-          dalBackendServices.getPreparedStatement(querySelectOptionsOfBuyerFromFurniture);
+          dalServices.getPreparedStatement(querySelectOptionsOfBuyerFromFurniture);
       selectOptionsOfBuyerFromFurniture.setInt(1, idBuyer);
       selectOptionsOfBuyerFromFurniture.setInt(2, idFurniture);
       try (ResultSet rs = selectOptionsOfBuyerFromFurniture.executeQuery()) {
@@ -141,25 +162,23 @@ public class DAOOptionImpl implements DAOOption {
   @Override
   public boolean finishOption(int id) {
     try {
-      PreparedStatement finishOption =
-          dalBackendServices.getPreparedStatement(queryChangeStatusOption);
+      PreparedStatement finishOption = dalServices.getPreparedStatement(queryChangeStatusOption);
       finishOption.setInt(1, OptionStatus.finie.ordinal());
       finishOption.setInt(2, id);
       return finishOption.executeUpdate() == 1;
     } catch (SQLException e) {
       e.printStackTrace();
-      return false;
+      throw new FatalException("Database error : finishOption");
     }
   }
 
   @Override
   public boolean cancelOption(OptionDTO optionToCancel) {
     try {
-      PreparedStatement finishOption =
-          dalBackendServices.getPreparedStatement(queryChangeStatusOption);
-      finishOption.setInt(1, OptionStatus.annulee.ordinal());
-      finishOption.setInt(2, optionToCancel.getId());
-      return finishOption.executeUpdate() == 1;
+      PreparedStatement cancelOption = dalServices.getPreparedStatement(queryChangeStatusOption);
+      cancelOption.setInt(1, OptionStatus.annulee.ordinal());
+      cancelOption.setInt(2, optionToCancel.getId());
+      return cancelOption.executeUpdate() == 1;
     } catch (SQLException e) {
       e.printStackTrace();
       throw new FatalException("Database error : cancelOption");
@@ -170,7 +189,7 @@ public class DAOOptionImpl implements DAOOption {
   public OptionDTO getLastOptionOfFurniture(int idFurniture) {
     try {
       PreparedStatement getLastOptionOfFurniture =
-          dalBackendServices.getPreparedStatement(queryGetLastOptionOfFurniture);
+          dalServices.getPreparedStatement(queryGetLastOptionOfFurniture);
       getLastOptionOfFurniture.setInt(1, idFurniture);
       getLastOptionOfFurniture.setInt(2, idFurniture);
       try (ResultSet rs = getLastOptionOfFurniture.executeQuery()) {

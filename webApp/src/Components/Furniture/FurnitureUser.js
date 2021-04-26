@@ -1,5 +1,4 @@
 import { RedirectUrl } from "../Router.js";
-import Navbar from "../Navbar.js";
 import { getUserSessionData } from "../../utils/session.js";
 import {callAPI, callAPIWithoutJSONResponse} from "../../utils/api.js";
 import PrintError from "../PrintError.js"
@@ -40,6 +39,8 @@ let furniturePage = `
     <span class="sr-only">Next</span>
   </a>
   </div>
+  </br>
+  <button class="btn btn-secondary" id="btnReturn">Retour</button>
 </div>
 
 <div class="col-6">
@@ -93,12 +94,13 @@ let validateOption = `<p>Mettre une option sur ce meuble</p>
   </div>
 </div>`;
 
-let cancelOption = `<p>Option sur ce meuble</p>
+let cancelOption = `
 <div class="row">
   <div class="col-12">
-    <div class="row" id="#">
-      <button class="btn btn-danger" id="btnOption" type="submit">Annuler</button>
-    </div>
+      <p>Vous avez une option sur ce meuble.</p>
+      <p>Il vous reste <strong><span id="daysOptionLeft"> </span></strong> jours.
+      <button class="btn btn-danger" id="btnOption" type="submit">Annuler l'option</button>
+      </p>
   </div>
 </div>`;
 
@@ -106,6 +108,9 @@ let cancelOption = `<p>Option sur ce meuble</p>
 const FurnitureUser = async (data) => {
   let page = document.querySelector("#page");
   page.innerHTML = furniturePage;
+
+  let btnReturn = document.querySelector("#btnReturn");
+  btnReturn.addEventListener("click", () => RedirectUrl("/search"));
 
   if(data == null){
     let queryString = window.location.search;
@@ -139,7 +144,6 @@ const onFurniture = () => {
 const onCheckOption = async () => {
 
   if (!furniture) return;
-  console.log(furniture);
   let optionDocument = document.querySelector("#option");
   let option = await callAPI(API_BASE_URL + furniture.id + "/option", "GET");
   let user = getUserSessionData();
@@ -148,6 +152,7 @@ const onCheckOption = async () => {
     if(option.buyer.id == user.user.id) {
       //Afficher bouton annuler
       optionDocument.innerHTML = cancelOption;
+      document.querySelector("#daysOptionLeft").innerHTML = option.duration;
       let btn = document.querySelector("#btnOption")
       btn.addEventListener("click", onClickCancelOption);
     } else {
