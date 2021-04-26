@@ -63,7 +63,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
   @Inject
   private DAOUser daoUser;
 
-/*
+  /*
   querySelectFurnitureByType ="SELECT f.furniture_id, f.description, f.type, f.visit_request, "
       + "f.purchase_price, f.withdrawal_date_from_customer, f.selling_price, f.special_sale_price, "
       + "f.deposit_date, f.selling_date, f.delivery_date, f.withdrawal_date_to_customer, f.buyer, "
@@ -80,7 +80,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
       + "f.condition, f.unregistered_buyer_email, f.favourite_picture FROM project.furniture f, "
       + "project.visit_requests vr,"+" project.users u WHERE f.visit_request = vr.visit_request_id "
       + "AND vr.customer = u.user_id AND u.last_name = ?";
-*/
+  */
 
   /**
    * Contructor of DAOFurnitureImpl. Contain queries.
@@ -484,6 +484,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
     }
   }
 
+  @Override
   public boolean updateDescription(int id, String description) {
     try {
       PreparedStatement updateDescription =
@@ -668,7 +669,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
     }
   }
 
-
+  @Override
   public boolean updateFavouritePicture(int id, int pictureId) {
     try {
       PreparedStatement updateFavouritePicture =
