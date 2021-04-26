@@ -1,10 +1,5 @@
 package be.vinci.pae.api;
 
-import java.io.File;
-import java.time.LocalDate;
-import java.util.List;
-import org.glassfish.jersey.server.ContainerRequest;
-import com.fasterxml.jackson.databind.JsonNode;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.api.utils.Json;
@@ -18,6 +13,7 @@ import be.vinci.pae.domain.type.TypeDTO;
 import be.vinci.pae.domain.type.TypeUCC;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -33,6 +29,10 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import java.io.File;
+import java.time.LocalDate;
+import java.util.List;
+import org.glassfish.jersey.server.ContainerRequest;
 
 @Singleton
 @Path("/furniture")
@@ -66,7 +66,6 @@ public class Furniture {
   public Response modifyFurniture(@PathParam("id") int id, JsonNode json) {
     boolean noError = true;
     boolean empty = true;
-
 
     System.out.println(json.get("condition"));
     if (json.hasNonNull("condition") && !json.get("condition").asText().isEmpty()) {
@@ -118,7 +117,6 @@ public class Furniture {
       empty = false;
     }
 
-
     if (empty) {
       return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")
           .type(MediaType.TEXT_PLAIN).build();
@@ -131,7 +129,6 @@ public class Furniture {
           .entity("Erreur lors de la modification du meuble.").type(MediaType.TEXT_PLAIN).build();
     }
   }
-
 
 
   /**
@@ -198,7 +195,6 @@ public class Furniture {
   }
 
 
-
   /**
    * Cancel the option on the furniture with id.
    *
@@ -263,6 +259,11 @@ public class Furniture {
         FurnitureDTO.class);
   }
 
+  /**
+   * Get an image.
+   *
+   * @return Octet Stream
+   */
   @GET
   @Path("picture-furniture")
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
@@ -271,15 +272,9 @@ public class Furniture {
     File file = new File(".\\images\\23.png");
     System.out.println(file);
     return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
-        .header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"") // optional
+        .header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"")
         .build();
-
-    /*
-     * return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM) .header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"") //
-     * optional .build();
-     */
   }
-
 
 
   /**
@@ -298,7 +293,6 @@ public class Furniture {
       return Response.status(Status.UNAUTHORIZED).entity("Erreur ajouter photo favorite")
           .type(MediaType.TEXT_PLAIN).build();
     }
-
 
     return Response.ok().build();
   }
@@ -362,7 +356,6 @@ public class Furniture {
   public List<FurnitureDTO> getFurnitureSellBy(@PathParam("id") int id) {
     return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureSellBy(id), FurnitureDTO.class);
   }
-
 
 
 }
