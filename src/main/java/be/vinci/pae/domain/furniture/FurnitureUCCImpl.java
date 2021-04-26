@@ -414,10 +414,8 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     try {
       FurnitureDTO furniture = this.daoFurniture.selectFurnitureById(id);
       checkFurniture(furniture);
-      if (furniture.getBuyer() != null) {
-        if (furniture.getBuyer().getId() == user.getId()) {
-          return furniture;
-        }
+      if (furniture.getBuyer() != null && furniture.getBuyer().getId() == user.getId()) {
+        return furniture;
       }
       if (this.daoVisitRequest.selectVisitRequestByUserAndFurniture(id, user.getId()) != null) {
         return furniture;
@@ -558,11 +556,10 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   private void checkFurniture(FurnitureDTO furnitureDTO) {
     if (furnitureDTO != null) {
       if (furnitureDTO.getWithdrawalDateToCustomer() != null) {
-        if (furnitureDTO.getCondition() == FurnitureCondition.vendu) {
-          if (furnitureDTO.getWithdrawalDateToCustomer().getTime() < (new Date().getTime())) {
-            modifyCondition(furnitureDTO.getId(), FurnitureCondition.reserve);
-            furnitureDTO.setCondition(FurnitureCondition.reserve);
-          }
+        if (furnitureDTO.getCondition() == FurnitureCondition.vendu
+            && furnitureDTO.getWithdrawalDateToCustomer().getTime() < (new Date().getTime())) {
+          modifyCondition(furnitureDTO.getId(), FurnitureCondition.reserve);
+          furnitureDTO.setCondition(FurnitureCondition.reserve);
         }
         if (furnitureDTO.getCondition() == FurnitureCondition.reserve) {
           Date dateOneYearAndOneDayLater = furnitureDTO.getWithdrawalDateToCustomer();
