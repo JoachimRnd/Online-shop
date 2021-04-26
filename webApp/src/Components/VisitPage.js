@@ -8,6 +8,7 @@ const API_BASE_URL_FURNITURE = "/api/furniture/";
 
 let furnitureList = [];
 let picturesList = [];
+let fd = new FormData();
 
 let visitPage = `
 <h4 id="pageTitle">Ajouter Demande visite</h4>
@@ -112,6 +113,15 @@ const VisitPage = async () => {
     let furnitureForm = document.getElementById("furnitureForm");
     furnitureForm.addEventListener("submit", onFurniture);
 
+    const user = getUserSessionData();
+    try {
+        const address = await callAPI(API_BASE_URL + "address/" + user.user.id, "GET", undefined);
+        onAddress(address);
+    } catch (err) {
+        console.error("VisitPage::onAddress", err);
+        PrintError(err);
+    }
+
     try {
         const types = await callAPI(API_BASE_URL_FURNITURE + "allFurnitureTypes", "GET", undefined);
         onTypesList(types);
@@ -119,8 +129,17 @@ const VisitPage = async () => {
         console.error("VisitPage::onTypesList", err);
         PrintError(err);
     }
-    //let pictureForm = document.getElementById("pictureForm");
-    //pictureForm.addEventListener("submit", onPicture);
+    let pictureForm = document.getElementById("pictureForm");
+    pictureForm.addEventListener("submit", onPicture);
+}
+
+const onAddress = (address) => {
+    document.getElementById("street").value = address.street;
+    document.getElementById("buildingnumber").value = address.buildingNumber;
+    document.getElementById("unitnumber").value = address.unitNumber;
+    document.getElementById("postcode").value = address.postcode;
+    document.getElementById("commune").value = address.commune;
+    document.getElementById("country").value = address.country;
 }
 
 const onTypesList = (typesList) => {
@@ -137,14 +156,18 @@ const onTypesList = (typesList) => {
       </div>`;
   
   document.getElementById("typesList").innerHTML = typesListPage;
-  }
+}
   
 const onVisitRequest = async (e) => {
     e.preventDefault();
+    let unitNumber = null;
+    if(document.getElementById("unitnumber").value != "")
+        unitNumber = document.getElementById("unitnumber").value;
+    
     let address = {
         street: document.getElementById("street").value,
         buildingNumber: document.getElementById("buildingnumber").value,
-        unitNumber: document.getElementById("unitnumber").value,
+        unitNumber: unitNumber,
         postcode: document.getElementById("postcode").value,
         commune: document.getElementById("commune").value,
         country: document.getElementById("country").value,
@@ -155,22 +178,31 @@ const onVisitRequest = async (e) => {
         timeSlot: document.getElementById("timeslot").value,
         furnitureList: furnitureList
     };
-    console.log(visitRequest);
 
+    console.log(visitRequest);
+    fd.append("json", JSON.stringify(visitRequest));
     const user = getUserSessionData();
 
+    for(let i=0; i<visitRequest.furnitureList.length; i++){
+        console.log("i : " + i);
+        for(let j=0; j<visitRequest.furnitureList[i].picturesList.length; j++){
+            console.log("j : " + j);
+            fd.append("file"+i,visitRequest.furnitureList[i].picturesList[j]);
+        }
+    }
     try {
-        const visitRequested = await callAPIWithoutJSONResponse(
-          API_BASE_URL + "add",
+        const visitRequested = await callAPIFormData(
+          API_BASE_URL + "image",
           "POST",
           user.token,
-          visitRequest
+          fd
         );
         onVisitRequestAdded(visitRequested);
       } catch (err) {
         console.error("VisitPage::onVisitRequestAdded", err);
         PrintError(err);
       }
+      fd = new FormData();
 }
 
 const onFurniture = (e) => {

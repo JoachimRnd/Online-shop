@@ -5,6 +5,7 @@ import be.vinci.pae.domain.address.AddressDTO;
 import be.vinci.pae.domain.furniture.FurnitureDTO;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.services.DalServices;
+import be.vinci.pae.services.address.DAOAddress;
 import be.vinci.pae.services.furniture.DAOFurniture;
 import be.vinci.pae.services.visitrequest.DAOVisitRequest;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
@@ -20,6 +21,9 @@ public class VisitRequestUCCImpl implements VisitRequestUCC {
   private DAOFurniture daoFurniture;
 
   @Inject
+  private DAOAddress daoAddress;
+
+  @Inject
   private DAOVisitRequest daoVisitRequest;
 
   @Override
@@ -30,19 +34,24 @@ public class VisitRequestUCCImpl implements VisitRequestUCC {
       visitRequest = (VisitRequest) newVisitRequest;
 
       visitRequest.setCustomer(user);
-      AddressDTO visitRequestAddress = newVisitRequest.getAddress();
+      AddressDTO visitRequestAddress = visitRequest.getAddress();
       AddressDTO userAddress = user.getAddress();
 
-      // if (!visitRequestAddress.equals(userAddress)) {
-      // visitRequest.setAddress(newVisitRequest.getAddress());
-      // } else {
-      // visitRequest.setAddress(null);
-      // }
-      visitRequest.setAddress(userAddress);
+      if (!visitRequestAddress.equals(userAddress)) {
+        int addressId = this.daoAddress.addAddress(visitRequestAddress);
+        if (addressId == -1) {
+          this.dalServices.rollbackTransaction();
+          return null;
+        } else {
+          visitRequestAddress.setId(addressId);
+          visitRequest.setAddress(visitRequestAddress);
+        }
+      } else {
+        visitRequest.setAddress(null);
+      }
       visitRequest.setStatus(VisitRequestStatus.en_attente);
       visitRequest.setTimeSlot(StringEscapeUtils.escapeHtml4(visitRequest.getTimeSlot()));
       visitRequest.setRequestDate(visitRequest.getRequestDate());
-
       int visitRequestId = this.daoVisitRequest.addVisitRequest(newVisitRequest);
       if (visitRequestId == -1) {
         this.dalServices.rollbackTransaction();
@@ -62,9 +71,7 @@ public class VisitRequestUCCImpl implements VisitRequestUCC {
 
       this.dalServices.commitTransaction();
       return visitRequest;
-    } finally
-
-    {
+    } finally {
       dalServices.closeConnection();
     }
   }

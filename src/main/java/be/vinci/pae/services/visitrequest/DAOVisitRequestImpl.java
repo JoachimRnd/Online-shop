@@ -38,7 +38,6 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
           this.dalServices.getPreparedStatementAdd(queryAddVisitRequest);
       insertVisitRequest.setTimestamp(1, Timestamp.from(visitRequest.getRequestDate().toInstant()));
       insertVisitRequest.setString(2, visitRequest.getTimeSlot());
-      System.out.println("Addresse :" + visitRequest.getAddress().getId());
       if (visitRequest.getAddress() == null)
         insertVisitRequest.setNull(3, java.sql.Types.INTEGER);
       else
