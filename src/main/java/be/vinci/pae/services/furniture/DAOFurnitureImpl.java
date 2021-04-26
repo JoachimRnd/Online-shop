@@ -5,6 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import be.vinci.pae.domain.furniture.FurnitureDTO;
@@ -16,22 +18,35 @@ import be.vinci.pae.services.user.DAOUser;
 import be.vinci.pae.services.visitrequest.DAOVisitRequest;
 import be.vinci.pae.utils.FatalException;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
+import be.vinci.pae.utils.ValueLink.OptionStatus;
 import jakarta.inject.Inject;
 
 public class DAOFurnitureImpl implements DAOFurniture {
 
   private String querySelectAllFurniture;
-  private String querySelectFurnitureUsers;
+  private String querySelectFurnitureUser;
   private String querySelectFurnitureById;
   private String queryInsertFurniture;
   private String queryUpdateSellingDate;
   private String queryUpdateCondition;
   private String queryUpdateDepositDate;
   private String queryUpdateSellingPrice;
+  private String queryUpdateSpecialSalePrice;
   private String querySelectSalesFurniture;
   private String querySelectFurnituresFiltered;
   private String querySelectFurnitureBuyBy;
   private String querySelectFurnitureSellBy;
+  private String queryUpdateType;
+  private String queryUpdatePurchasePrice;
+  private String queryUpdateDescription;
+  private String queryUpdateWithdrawalDateToCustomer;
+  private String queryUpdateWithdrawalDateFromCustomer;
+  private String queryUpdateDeliveryDate;
+  private String queryUpdateUnregisteredBuyerEmail;
+  private String queryUpdateBuyer;
+  private String queryUpdateFavouritePicture;
+  private String querySelectFurnituresInOptionUser;
+  private String querySelectFurnitureByFavouritePicture;
 
   @Inject
   private FurnitureFactory furnitureFactory;
@@ -78,7 +93,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
         + " f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date,"
         + " f.withdrawal_date_to_customer, f.buyer,f.condition, f.unregistered_buyer_email,"
         + " f.favourite_picture FROM project.furniture f";
-    querySelectFurnitureUsers = "SELECT f.furniture_id, f.description, f.type,"
+    querySelectFurnitureUser = "SELECT f.furniture_id, f.description, f.type,"
         + " f.visit_request, f.purchase_price, f.withdrawal_date_from_customer, f.selling_price,"
         + " f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date,"
         + " f.withdrawal_date_to_customer, f.buyer,f.condition, f.unregistered_buyer_email,"
@@ -98,6 +113,8 @@ public class DAOFurnitureImpl implements DAOFurniture {
     queryUpdateDepositDate = "UPDATE project.furniture SET deposit_date = ? WHERE furniture_id = ?";
     queryUpdateSellingPrice =
         "UPDATE project.furniture SET selling_price = ? WHERE furniture_id = ?";
+    queryUpdateSpecialSalePrice =
+        "UPDATE project.furniture SET special_sale_price = ? WHERE furniture_id = ?";
     querySelectSalesFurniture = "SELECT f.furniture_id, f.description, f.type,"
         + " f.visit_request, f.purchase_price, f.withdrawal_date_from_customer, f.selling_price,"
         + " f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date,"
@@ -124,6 +141,30 @@ public class DAOFurnitureImpl implements DAOFurniture {
         + " f.withdrawal_date_to_customer, f.buyer,f.condition, f.unregistered_buyer_email,"
         + " f.favourite_picture FROM project.furniture f, project.visit_requests v"
         + " WHERE f.visit_request = v.visit_request_id AND v.customer = ?";
+    queryUpdateType = "UPDATE project.furniture SET type = ? WHERE furniture_id = ?";
+    queryUpdatePurchasePrice =
+        "UPDATE project.furniture SET purchase_price = ? WHERE furniture_id = ?";
+    queryUpdateDescription = "UPDATE project.furniture SET description = ? WHERE furniture_id = ?";
+    queryUpdateWithdrawalDateToCustomer =
+        "UPDATE project.furniture SET withdrawal_date_to_customer = ? WHERE furniture_id = ?";
+    queryUpdateWithdrawalDateFromCustomer =
+        "UPDATE project.furniture SET withdrawal_date_from_customer = ? WHERE furniture_id = ?";
+    queryUpdateDeliveryDate =
+        "UPDATE project.furniture SET delivery_date = ? WHERE furniture_id = ?";
+    queryUpdateUnregisteredBuyerEmail =
+        "UPDATE project.furniture SET unregistered_buyer_email = ? WHERE furniture_id = ?";
+    queryUpdateBuyer = "UPDATE project.furniture SET buyer = ? WHERE furniture_id = ?";
+    queryUpdateFavouritePicture =
+        "UPDATE project.furniture SET favourite_picture = ? WHERE furniture_id = ?";
+    querySelectFurnituresInOptionUser =
+        "SELECT f.furniture_id, f.description, f.type, f.visit_request, f.purchase_price, f.withdrawal_date_from_customer, "
+            + "f.selling_price, f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date, f.withdrawal_date_to_customer, "
+            + "f.buyer,f.condition, f.unregistered_buyer_email, f.favourite_picture FROM project.furniture f, project.options o "
+            + "WHERE o.furniture = f.furniture_id AND f.condition = ? AND o.status = ? AND o.buyer = ?;";
+    querySelectFurnitureByFavouritePicture =
+        "SELECT f.furniture_id, f.description, f.type, f.visit_request, f.purchase_price, f.withdrawal_date_from_customer, "
+            + "f.selling_price, f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date, f.withdrawal_date_to_customer, "
+            + "f.buyer,f.condition, f.unregistered_buyer_email, f.favourite_picture FROM project.furniture f WHERE f.favourite_picture = ?";
   }
 
   @Override
@@ -148,24 +189,40 @@ public class DAOFurnitureImpl implements DAOFurniture {
   }
 
   @Override
-  public List<FurnitureDTO> selectFurnitureUsers() {
+  public List<FurnitureDTO> selectFurnitureUsers(int userId) {
+    List<FurnitureDTO> list = new ArrayList<FurnitureDTO>();
     try {
       PreparedStatement selectFurnitureUsers =
-          dalServices.getPreparedStatement(querySelectFurnitureUsers);
+          dalServices.getPreparedStatement(querySelectFurnitureUser);
       selectFurnitureUsers.setInt(1, FurnitureCondition.en_vente.ordinal());
       try (ResultSet rs = selectFurnitureUsers.executeQuery()) {
-        List<FurnitureDTO> listFurniture = new ArrayList<>();
         FurnitureDTO furniture;
         do {
           furniture = createFurniture(rs);
-          listFurniture.add(furniture);
+          list.add(furniture);
         } while (furniture != null);
-        listFurniture.remove(listFurniture.size() - 1);
-        return listFurniture;
+        list.remove(list.size() - 1);
       }
+
+      if (userId != -1) {
+        PreparedStatement selectFurnituresInOptionUser =
+            dalServices.getPreparedStatement(querySelectFurnituresInOptionUser);
+        selectFurnituresInOptionUser.setInt(1, FurnitureCondition.en_option.ordinal());
+        selectFurnituresInOptionUser.setInt(2, OptionStatus.en_cours.ordinal());
+        selectFurnituresInOptionUser.setInt(3, userId);
+        try (ResultSet rs = selectFurnituresInOptionUser.executeQuery()) {
+          FurnitureDTO furniture;
+          do {
+            furniture = createFurniture(rs);
+            list.add(furniture);
+          } while (furniture != null);
+          list.remove(list.size() - 1);
+        }
+      }
+      return list;
     } catch (Exception e) {
       e.printStackTrace();
-      throw new FatalException("Data error : selectAllFurnitures");
+      throw new FatalException("Data error : selectAllFurnituresUser");
     }
   }
 
@@ -181,6 +238,21 @@ public class DAOFurnitureImpl implements DAOFurniture {
     } catch (Exception e) {
       e.printStackTrace();
       throw new FatalException("Data error : selectFurnitureById");
+    }
+  }
+
+  @Override
+  public FurnitureDTO selectFurnitureByFavouritePicture(int idFavouritePicture) {
+    try {
+      PreparedStatement selectFurnitureByFavouritePicture =
+          dalServices.getPreparedStatement(querySelectFurnitureByFavouritePicture);
+      selectFurnitureByFavouritePicture.setInt(1, idFavouritePicture);
+      try (ResultSet rs = selectFurnitureByFavouritePicture.executeQuery()) {
+        return createFurniture(rs);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : selectFurnitureByFavouritePicture");
     }
   }
 
@@ -322,6 +394,20 @@ public class DAOFurnitureImpl implements DAOFurniture {
   }
 
   @Override
+  public boolean updateSpecialSalePrice(int id, Double price) {
+    try {
+      PreparedStatement updateSpecialSalePrice =
+          this.dalServices.getPreparedStatement(queryUpdateSpecialSalePrice);
+      updateSpecialSalePrice.setDouble(1, price);
+      updateSpecialSalePrice.setInt(2, id);
+      return updateSpecialSalePrice.executeUpdate() == 1;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : updateSpecialSalePrice");
+    }
+  }
+
+  @Override
   public boolean updateCondition(int id, int condition) {
     try {
       PreparedStatement updateCondition =
@@ -348,6 +434,128 @@ public class DAOFurnitureImpl implements DAOFurniture {
       throw new FatalException("Data error : updateDepositDate");
     }
   }
+
+  @Override
+  public boolean updateType(int furnitureId, int typeId) {
+    try {
+      PreparedStatement updateType = this.dalServices.getPreparedStatement(queryUpdateType);
+      updateType.setInt(1, typeId);
+      updateType.setInt(2, furnitureId);
+      return updateType.executeUpdate() == 1;
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : updateType");
+    }
+  }
+
+  @Override
+  public boolean updatePurchasePrice(int id, Double price) {
+    try {
+      PreparedStatement updatePurchasePrice =
+          this.dalServices.getPreparedStatement(queryUpdatePurchasePrice);
+      updatePurchasePrice.setDouble(1, price);
+      updatePurchasePrice.setInt(2, id);
+      return updatePurchasePrice.executeUpdate() == 1;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : updatePurchasePrice");
+    }
+  }
+
+  public boolean updateDescription(int id, String description) {
+    try {
+      PreparedStatement updateDescription =
+          this.dalServices.getPreparedStatement(queryUpdateDescription);
+      updateDescription.setString(1, description);
+      updateDescription.setInt(2, id);
+      return updateDescription.executeUpdate() == 1;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : updateDescription");
+    }
+  }
+
+  @Override
+  public boolean updateWithdrawalDateToCustomer(int id, LocalDate now) {
+    try {
+      PreparedStatement updateWithdrawalDateToCustomer =
+          this.dalServices.getPreparedStatement(queryUpdateWithdrawalDateToCustomer);
+      if (now == null) {
+        updateWithdrawalDateToCustomer.setTimestamp(1, null);
+      } else {
+        updateWithdrawalDateToCustomer.setTimestamp(1,
+            Timestamp.valueOf(now.atTime(LocalTime.MIDNIGHT)));
+      }
+      updateWithdrawalDateToCustomer.setInt(2, id);
+      return updateWithdrawalDateToCustomer.executeUpdate() == 1;
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : updateWithdrawalDateToCustomer");
+    }
+  }
+
+  @Override
+  public boolean updateWithdrawalDateFromCustomer(int id, LocalDate now) {
+    try {
+      PreparedStatement updateWithdrawalDateFromCustomer =
+          this.dalServices.getPreparedStatement(queryUpdateWithdrawalDateFromCustomer);
+      updateWithdrawalDateFromCustomer.setTimestamp(1,
+          Timestamp.valueOf(now.atTime(LocalTime.MIDNIGHT)));
+      updateWithdrawalDateFromCustomer.setInt(2, id);
+      return updateWithdrawalDateFromCustomer.executeUpdate() == 1;
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : updateWithdrawalDateFromCustomer");
+    }
+  }
+
+  @Override
+  public boolean updateDeliveryDate(int id, LocalDate now) {
+    try {
+      PreparedStatement updateDeliveryDate =
+          this.dalServices.getPreparedStatement(queryUpdateDeliveryDate);
+      updateDeliveryDate.setTimestamp(1, Timestamp.valueOf(now.atTime(LocalTime.MIDNIGHT)));
+      updateDeliveryDate.setInt(2, id);
+      return updateDeliveryDate.executeUpdate() == 1;
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : updateDeliveryDate");
+    }
+  }
+
+  @Override
+  public boolean updateUnregisteredBuyerEmail(int id, String buyerEmail) {
+    try {
+      PreparedStatement updateUnregisteredBuyerEmail =
+          this.dalServices.getPreparedStatement(queryUpdateUnregisteredBuyerEmail);
+      updateUnregisteredBuyerEmail.setString(1, buyerEmail);
+      updateUnregisteredBuyerEmail.setInt(2, id);
+      return updateUnregisteredBuyerEmail.executeUpdate() == 1;
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : updateUnregisteredBuyerEmail");
+    }
+  }
+
+  @Override
+  public boolean updateBuyer(int id, int buyerId) {
+    try {
+      PreparedStatement updateUnregisteredBuyer =
+          this.dalServices.getPreparedStatement(queryUpdateBuyer);
+      if (buyerId == -1) {
+        updateUnregisteredBuyer.setNull(1, java.sql.Types.INTEGER);
+      } else {
+        updateUnregisteredBuyer.setInt(1, buyerId);
+      }
+      updateUnregisteredBuyer.setInt(2, id);
+      return updateUnregisteredBuyer.executeUpdate() == 1;
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : updateBuyer");
+    }
+  }
+
+
 
   @Override
   public List<FurnitureDTO> selectSalesFurniture() {
@@ -438,5 +646,20 @@ public class DAOFurnitureImpl implements DAOFurniture {
       throw new FatalException("Data error : selectFurnituresFiltered");
     }
   }
+
+  public boolean updateFavouritePicture(int id, int pictureId) {
+    try {
+      PreparedStatement updateFavouritePicture =
+          this.dalServices.getPreparedStatement(queryUpdateFavouritePicture);
+      updateFavouritePicture.setInt(1, pictureId);
+      updateFavouritePicture.setInt(2, id);
+      return updateFavouritePicture.executeUpdate() == 1;
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : updateFavouritePicture");
+    }
+
+  }
+
 
 }

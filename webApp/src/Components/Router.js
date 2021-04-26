@@ -28,8 +28,8 @@ const routes = {
   "/admin/validation": ValidationPage,
   "/admin/furnitureType": FurnitureTypePage,
   "/admin/search":SearchPage,
-  "/furnitureAdmin": FurnitureAdmin,
-  "/userAdmin": UserAdmin
+  "/userAdmin": UserAdmin,
+  "/admin/furniture": FurnitureAdmin
 };
 
 let navBar = document.querySelector("#navBar");
