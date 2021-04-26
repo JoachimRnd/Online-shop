@@ -1,10 +1,6 @@
 package be.vinci.pae.api;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -67,7 +63,7 @@ public class VisitRequest {
       @Context ContainerRequest request) {
     UserDTO currentUser = (UserDTO) request.getProperty("user");
     visitRequest.setRequestDate(Date.from(Instant.now()));
-    visitRequest = this.visitRequestUcc.addVisitRequest(visitRequest, currentUser);
+    // visitRequest = this.visitRequestUcc.addVisitRequest(visitRequest, currentUser);
 
     return Response.ok().build();
   }
@@ -102,73 +98,53 @@ public class VisitRequest {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Authorize
   public Response uploadFile(FormDataMultiPart formDataMultiPart,
-      @FormDataParam("file") InputStream uploadedInputStream) {
-
+      @FormDataParam("file") InputStream uploadedInputStream, @Context ContainerRequest request) {
     formDataMultiPart.getField("json").setMediaType(MediaType.APPLICATION_JSON_TYPE);
-
     VisitRequestDTO visitRequest =
         formDataMultiPart.getField("json").getValueAs(VisitRequestDTO.class);
+    if (visitRequest == null) {
+      return Response.status(Status.UNAUTHORIZED).entity("La demande de visite est vide")
+          .type(MediaType.TEXT_PLAIN).build();
+    }
+    AddressDTO address = visitRequest.getAddress();
+    if (address == null || address.getStreet() == null || address.getStreet().isEmpty()
+        || address.getBuildingNumber() == null || address.getBuildingNumber().isEmpty()
+        || address.getUnitNumber().isEmpty() || address.getPostcode() == null
+        || address.getPostcode().isEmpty() || address.getCommune() == null
+        || address.getCommune().isEmpty() || address.getCountry() == null
+        || address.getCountry().isEmpty()) {
+      return Response.status(Status.UNAUTHORIZED)
+          .entity("Un ou plusieurs champs sont vides dans l'adresse").type(MediaType.TEXT_PLAIN)
+          .build();
+    }
 
-
-
-    int compteur = 0;
-    List<FormDataBodyPart> parts = formDataMultiPart.getFields("file" + compteur);
+    List<FurnitureDTO> furnitureList = visitRequest.getFurnitureList();
+    List<InputStream> inputStreamList = new ArrayList<>();
+    int count = 0;
+    List<FormDataBodyPart> parts = formDataMultiPart.getFields("file" + count);
     while (parts != null) {
-
-      for (FurnitureDTO furniture : visitRequest.getFurnitureList()) {
-        List<PictureDTO> picturesList = new ArrayList<PictureDTO>();
-        PictureDTO picture = pictureFactory.getPicture();
-        System.out.println("Description : " + furniture.getDescription());
-      }
+      FurnitureDTO furniture = furnitureList.get(count);
+      List<PictureDTO> picturesList = new ArrayList<PictureDTO>();
 
       for (FormDataBodyPart part : parts) {
-        System.out.println("FileName : " + part.getFormDataContentDisposition().getFileName());
+        PictureDTO picture = pictureFactory.getPicture();
+        picture.setName(part.getFormDataContentDisposition().getFileName());
+        picture.setAScrollingPicture(false);
+        picture.setVisibleForEveryone(false);
+        picturesList.add(picture);
+        InputStream inputStream = part.getEntityAs(InputStream.class);
+        inputStreamList.add(inputStream);
       }
-      compteur++;
-      parts = formDataMultiPart.getFields("file" + compteur);
+      furniture.setPicturesList(picturesList);
+      count++;
+      parts = formDataMultiPart.getFields("file" + count);
     }
 
-    // System.out.println(formDataMultiPart.getField("file0").getFormDataContentDisposition());
-
-    // Your local disk path where you want to store the file
-
-    // String uploadedFileLocation = ".\\images\\"
-    // + formDataMultiPart.getField("file").getFormDataContentDisposition().getFileName();
-    // System.out.println(uploadedFileLocation); // save it File objFile = new
-    // File(uploadedFileLocation);
-    // if (objFile.exists()) {
-    // objFile.delete();
-    //
-    // }
-    //
-    // saveToFile(uploadedInputStream, uploadedFileLocation);
-    //
-    // String output = "File uploaded via Jersey based RESTFul Webservice to: " +
-    // uploadedFileLocation;
-
+    UserDTO currentUser = (UserDTO) request.getProperty("user");
+    visitRequest.setRequestDate(Date.from(Instant.now()));
+    visitRequest = this.visitRequestUcc.addVisitRequest(visitRequest, currentUser, inputStreamList);
 
     return Response.status(200).build();
-
-  }
-
-
-  private void saveToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
-
-    try {
-      OutputStream out = null;
-      int read = 0;
-      byte[] bytes = new byte[1024];
-
-      out = new FileOutputStream(new File(uploadedFileLocation));
-      while ((read = uploadedInputStream.read(bytes)) != -1) {
-        out.write(bytes, 0, read);
-      }
-      out.flush();
-      out.close();
-    } catch (IOException e) {
-
-      e.printStackTrace();
-    }
 
   }
 }

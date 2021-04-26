@@ -50,6 +50,7 @@ public class PictureUCCImpl implements PictureUCC {
       int id = this.daoPicture.addPicture(newPicture);
       if (id == -1) {
         this.dalServices.rollbackTransaction();
+        return null;
       } else {
         String uploadedFileLocation = ".\\images\\" + id + "." + pictureType;
         if (Upload.saveToFile(uploadedInputStream, uploadedFileLocation)) {
