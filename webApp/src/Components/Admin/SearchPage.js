@@ -4,10 +4,10 @@ import PrintError from "../PrintError.js";
 import {RedirectUrl} from "../Router";
 const API_BASE_URL = "/api/admin/";
 
-let userList, typeList, communeList;
+let lastnameList, typeList, communeList;
 
 let fieldsTypeUser = `
-<input class="col-auto" type="text" id="user" placeholder="Pseudo">
+<input class="col-auto" type="text" id="user" placeholder="Nom">
 <input class="col-auto" type="text" id="postcode" placeholder="Code Postal">
 <input class="col-auto" type="text" id="commune" placeholder="Commune">`;
 let fieldsTypeFurniture = `
@@ -37,7 +37,7 @@ const SearchPage = async () => {
     let searchType = document.querySelector('#searchType');
     searchType.addEventListener("change", onSearchType);
     let user = getUserSessionData();
-    userList = await callAPI(API_BASE_URL + "allusernames", "GET", user.token);
+    lastnameList = await callAPI(API_BASE_URL + "alllastnames", "GET", user.token);
     communeList = await callAPI(API_BASE_URL + "allcommunes", "GET", user.token);
     typeList = await callAPI(API_BASE_URL + "alltypesnames", "GET", user.token);
     let searchBtn = document.querySelector('#searchBtn');
@@ -102,7 +102,7 @@ const onAutoComplete = async () => {
     //Filtrer resultats
     let matches = [];
     if(searchInput === document.querySelector('#user')) {
-        matches = userList.filter(data => {
+        matches = lastnameList.filter(data => {
                 let regex = new RegExp(`^${search}`, 'gi');
                 return data.match(regex);
             }

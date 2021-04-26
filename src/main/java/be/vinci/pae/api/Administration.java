@@ -161,11 +161,11 @@ public class Administration {
    * @return List of String
    */
   @GET
-  @Path("/allusernames")
+  @Path("/alllastnames")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public List<String> allUsers() {
-    return Json.filterPublicJsonViewAsList(userUCC.getAllUsername(), String.class);
+    return Json.filterPublicJsonViewAsList(userUCC.getAllLastnames(), String.class);
   }
 
   /**
@@ -225,6 +225,45 @@ public class Administration {
     return Json
         .filterPublicJsonViewAsList(furnitureUCC.getFurnituresFiltered(type, price, username),
             FurnitureDTO.class);
+  }
+
+  /**
+   * Get an user.
+   *
+   * @return UserDTO
+   */
+  @GET
+  @Path("/user/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public UserDTO getUser(@PathParam("id") int id) {
+    return Json.filterPublicJsonView(userUCC.getUserById(id), UserDTO.class);
+  }
+
+  /**
+   * Get the furniture buy by an user.
+   *
+   * @return List of FurnitureDTO
+   */
+  @GET
+  @Path("/furniturebuyby/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public List<FurnitureDTO> getFurnitureBuyBy(@PathParam("id") int id) {
+    return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureBuyBy(id), FurnitureDTO.class);
+  }
+
+  /**
+   * Get the furniture sell by an user.
+   *
+   * @return List of FurnitureDTO
+   */
+  @GET
+  @Path("/furnituresellby/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public List<FurnitureDTO> getFurnitureSellBy(@PathParam("id") int id) {
+    return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureSellBy(id), FurnitureDTO.class);
   }
 
 }

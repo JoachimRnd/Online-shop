@@ -32,4 +32,8 @@ public interface DAOFurniture {
 
 
   List<FurnitureDTO> selectFurnituresFiltered(String type, double price, String username);
+
+  List<FurnitureDTO> getFurnitureBuyBy(int id);
+
+  List<FurnitureDTO> getFurnitureSellBy(int id);
 }

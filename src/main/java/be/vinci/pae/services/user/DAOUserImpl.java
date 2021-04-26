@@ -304,7 +304,7 @@ public class DAOUserImpl implements DAOUser {
   }
 
   @Override
-  public List<String> getAllUsername() {
+  public List<String> getAllLastnames() {
     try {
       PreparedStatement selectAllUsers =
           this.dalBackendServices.getPreparedStatement(querySelectAllUsername);
