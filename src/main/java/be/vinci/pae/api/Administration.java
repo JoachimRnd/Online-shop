@@ -1,10 +1,5 @@
 package be.vinci.pae.api;
 
-import java.io.InputStream;
-import java.util.List;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
-import com.fasterxml.jackson.databind.JsonNode;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.api.utils.Json;
 import be.vinci.pae.domain.address.AddressUCC;
@@ -18,6 +13,7 @@ import be.vinci.pae.domain.type.TypeUCC;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.user.UserUCC;
 import be.vinci.pae.utils.ValueLink;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -34,6 +30,10 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import java.io.InputStream;
+import java.util.List;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 @Singleton
 @Path("/admin")
@@ -251,10 +251,14 @@ public class Administration {
     return Json.filterPublicJsonView(userUCC.getUserById(id), UserDTO.class);
   }
 
+  /**
+   * Get a furniture.
+   *
+   * @return FurnitureDTO
+   */
   @GET
   @Path("/{idFurniture}")
   @Produces(MediaType.APPLICATION_JSON)
-
   @AuthorizeAdmin
   public FurnitureDTO getFurniture(@PathParam("idFurniture") int idFurniture) {
     FurnitureDTO furnitureDTO = furnitureUCC.getFurnitureById(idFurniture);
@@ -267,10 +271,10 @@ public class Administration {
 
   /**
    * Receive file from the frontend.
-   * 
-   * @param enabled FormData
+   *
+   * @param enabled             FormData
    * @param uploadedInputStream FormDataFile
-   * @param fileDetail Details of the FormDataFile
+   * @param fileDetail          Details of the FormDataFile
    * @return Status code
    */
   @POST
@@ -299,7 +303,6 @@ public class Administration {
       return Response.ok().build();
     }
   }
-
 
 
 }
