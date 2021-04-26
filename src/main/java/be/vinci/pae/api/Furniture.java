@@ -177,6 +177,29 @@ public class Furniture {
   }
 
   /**
+   * Get personal furniture with id.
+   *
+   * @return FurnitureDTO
+   */
+  @GET
+  @Path("/personal/{idFurniture}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Authorize
+  public FurnitureDTO getPersonalFurniture(@PathParam("idFurniture") int idFurniture,
+      @Context ContainerRequest request) {
+    UserDTO currentUser = (UserDTO) request.getProperty("user");
+    FurnitureDTO furnitureDTO = furnitureUCC.getPersonalFurnitureById(idFurniture, currentUser);
+    if (furnitureDTO == null) {
+      throw new WebApplicationException(
+          "Vous n'avez pas accès au meuble avec " + idFurniture + " comme ID.", null,
+          Status.NOT_FOUND);
+    }
+    return Json.filterPublicJsonView(furnitureDTO, FurnitureDTO.class);
+  }
+
+
+
+  /**
    * Cancel the option on the furniture with id.
    *
    * @return Response
@@ -312,6 +335,32 @@ public class Furniture {
           .type(MediaType.TEXT_PLAIN).build();
     }
     return Response.ok().build();
+  }
+
+  /**
+   * Get the furniture buy by an user.
+   *
+   * @return List of FurnitureDTO
+   */
+  @GET
+  @Path("/furniturebuyby/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Authorize
+  public List<FurnitureDTO> getFurnitureBuyBy(@PathParam("id") int id) {
+    return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureBuyBy(id), FurnitureDTO.class);
+  }
+
+  /**
+   * Get the furniture sell by an user.
+   *
+   * @return List of FurnitureDTO
+   */
+  @GET
+  @Path("/furnituresellby/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Authorize
+  public List<FurnitureDTO> getFurnitureSellBy(@PathParam("id") int id) {
+    return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureSellBy(id), FurnitureDTO.class);
   }
 
 

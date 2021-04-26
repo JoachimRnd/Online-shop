@@ -18,7 +18,6 @@ import be.vinci.pae.domain.type.TypeUCC;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.user.UserUCC;
 import be.vinci.pae.utils.ValueLink;
-import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -35,7 +34,6 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-import java.util.List;
 
 @Singleton
 @Path("/admin")
@@ -236,9 +234,8 @@ public class Administration {
   public List<FurnitureDTO> furnituresFiltered(@DefaultValue("") @QueryParam("type") String type,
       @DefaultValue("" + Double.MAX_VALUE) @QueryParam("price") double price,
       @DefaultValue("") @QueryParam("username") String username) {
-    return Json
-        .filterPublicJsonViewAsList(furnitureUCC.getFurnituresFiltered(type, price, username),
-            FurnitureDTO.class);
+    return Json.filterPublicJsonViewAsList(
+        furnitureUCC.getFurnituresFiltered(type, price, username), FurnitureDTO.class);
   }
 
   /**
@@ -254,37 +251,10 @@ public class Administration {
     return Json.filterPublicJsonView(userUCC.getUserById(id), UserDTO.class);
   }
 
-  /**
-   * Get the furniture buy by an user.
-   *
-   * @return List of FurnitureDTO
-   */
-  @GET
-  @Path("/furniturebuyby/{id}")
-  @Produces(MediaType.APPLICATION_JSON)
-  @AuthorizeAdmin
-  public List<FurnitureDTO> getFurnitureBuyBy(@PathParam("id") int id) {
-    return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureBuyBy(id), FurnitureDTO.class);
-  }
-
-  /**
-   * Get the furniture sell by an user.
-   *
-   * @return List of FurnitureDTO
-   */
-  @GET
-  @Path("/furnituresellby/{id}")
-  @Produces(MediaType.APPLICATION_JSON)
-  @AuthorizeAdmin
-  public List<FurnitureDTO> getFurnitureSellBy(@PathParam("id") int id) {
-    return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureSellBy(id), FurnitureDTO.class);
-   * List furniture with id.
-   *
-   * @return FurnitureDTO
-   */
   @GET
   @Path("/{idFurniture}")
   @Produces(MediaType.APPLICATION_JSON)
+
   @AuthorizeAdmin
   public FurnitureDTO getFurniture(@PathParam("idFurniture") int idFurniture) {
     FurnitureDTO furnitureDTO = furnitureUCC.getFurnitureById(idFurniture);
@@ -329,5 +299,7 @@ public class Administration {
       return Response.ok().build();
     }
   }
+
+
 
 }

@@ -1,5 +1,4 @@
 import { RedirectUrl } from "../Router.js";
-import Navbar from "../Navbar.js";
 import { getUserSessionData } from "../../utils/session.js";
 import {callAPI, callAPIWithoutJSONResponse} from "../../utils/api.js";
 import PrintError from "../PrintError.js"

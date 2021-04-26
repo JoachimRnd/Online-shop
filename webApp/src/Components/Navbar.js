@@ -46,6 +46,7 @@ const Navbar = () => {
     <div class="navbar-nav">
       <a class="nav-item nav-link" href="#" data-uri="/">Home</a>
       <a class="nav-item nav-link" href="#" data-uri="/search">Meubles en magasin</a>     
+      <a class="nav-item nav-link" href="#" data-uri="/myfurnitures">Mes meubles</a> 
       <a class="nav-item nav-link" href="#" data-uri="/logout">Logout</a>
       <a class="nav-item nav-link disabled" id="username" href="#">${user.user.username}</a>
     </div>
