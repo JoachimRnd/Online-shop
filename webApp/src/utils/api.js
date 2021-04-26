@@ -59,13 +59,6 @@ import PrintError from "../Components/PrintError";
   }
 
   if (data) {
-    /*if(data){
-        console.log(data);
-        fd.append("file",data);
-    }
-    if(json){
-        fd.append("json", JSON.stringify(json));
-    }*/
     options.body = data;
   }
 

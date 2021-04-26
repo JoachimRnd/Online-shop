@@ -184,9 +184,7 @@ const onVisitRequest = async (e) => {
     const user = getUserSessionData();
 
     for(let i=0; i<visitRequest.furnitureList.length; i++){
-        console.log("i : " + i);
         for(let j=0; j<visitRequest.furnitureList[i].picturesList.length; j++){
-            console.log("j : " + j);
             fd.append("file"+i,visitRequest.furnitureList[i].picturesList[j]);
         }
     }
