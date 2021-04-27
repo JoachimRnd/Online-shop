@@ -1,14 +1,5 @@
 package be.vinci.pae.services.furniture;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 import be.vinci.pae.domain.furniture.FurnitureDTO;
 import be.vinci.pae.domain.furniture.FurnitureFactory;
 import be.vinci.pae.domain.picture.PictureDTO;
@@ -19,7 +10,6 @@ import be.vinci.pae.services.visitrequest.DAOVisitRequest;
 import be.vinci.pae.utils.FatalException;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
 import jakarta.inject.Inject;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -74,16 +64,19 @@ public class DAOFurnitureImpl implements DAOFurniture {
    * "f.purchase_price, f.withdrawal_date_from_customer, f.selling_price, f.special_sale_price, " +
    * "f.deposit_date, f.selling_date, f.delivery_date, f.withdrawal_date_to_customer, f.buyer, " +
    * "f.condition, f.unregistered_buyer_email, f.favourite_picture FROM project.furniture f, " +
-   * "project.furniture_type ft"+" WHERE ft.type_id = f.type AND ft.name = ?"; querySelectFurnitureByPrice
+   * "project.furniture_type ft"+" WHERE ft.type_id = f.type AND ft.name = ?";
+   * querySelectFurnitureByPrice
    * ="SELECT f.furniture_id, f.description, f.type, f.visit_request, " +
    * "f.purchase_price, f.withdrawal_date_from_customer, f.selling_price, f.special_sale_price, " +
    * "f.deposit_date, f.selling_date, f.delivery_date, f.withdrawal_date_to_customer, f.buyer, " +
-   * "f.condition, f.unregistered_buyer_email, f.favourite_picture FROM project.furniture f " + "WHERE f.selling_price = ?"; querySelectFurnitureByUser
+   * "f.condition, f.unregistered_buyer_email, f.favourite_picture FROM project.furniture f "
+   * + "WHERE f.selling_price = ?"; querySelectFurnitureByUser
    * ="SELECT f.furniture_id, f.description, f.type, f.visit_request, " +
    * "f.purchase_price, f.withdrawal_date_from_customer, f.selling_price, f.special_sale_price, " +
    * "f.deposit_date, f.selling_date, f.delivery_date, f.withdrawal_date_to_customer, f.buyer, " +
    * "f.condition, f.unregistered_buyer_email, f.favourite_picture FROM project.furniture f, " +
-   * "project.visit_requests vr,"+" project.users u WHERE f.visit_request = vr.visit_request_id " + "AND vr.customer = u.user_id AND u.last_name = ?";
+   * "project.visit_requests vr,"+" project.users u WHERE f.visit_request = vr.visit_request_id "
+   * + "AND vr.customer = u.user_id AND u.last_name = ?";
    * querySelectFurnitureByType = "SELECT f.furniture_id, f.description, f.type, f.visit_request,"
    * +" f.purchase_price, f.withdrawal_date_from_customer, f.selling_price," +
    * " f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date," +

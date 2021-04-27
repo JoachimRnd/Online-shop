@@ -250,38 +250,42 @@ public class Furniture {
   public Response modifyFurniture(@PathParam("id") int id, JsonNode json) {
 
     FurnitureCondition condition = null;
-    double sellingPrice = -1, specialSalePrice = -1, purchasePrice = -1;
-    int type = -1;
-    LocalDate withdrawalDateFromCustomer = null, withdrawalDateToCustomer = null, deliveryDate = null;
-    String buyerEmail = null, description = null;
-
     if (json.hasNonNull("condition") && !json.get("condition").asText().isEmpty()) {
       condition = FurnitureCondition.valueOf(json.get("condition").asText());
     }
+    double sellingPrice = -1;
     if (json.hasNonNull("sellingPrice")) {
       sellingPrice = json.get("sellingPrice").asDouble();
     }
+    double specialSalePrice = -1;
     if (json.hasNonNull("specialSalePrice")) {
       specialSalePrice = json.get("specialSalePrice").asDouble();
     }
+    int type = -1;
     if (json.hasNonNull("type")) {
       type = json.get("type").asInt();
     }
+    double purchasePrice = -1;
     if (json.hasNonNull("purchasePrice")) {
       purchasePrice = json.get("purchasePrice").asDouble();
     }
+    String description = null;
     if (json.hasNonNull("description")) {
       description = json.get("description").asText();
     }
+    LocalDate withdrawalDateFromCustomer = null;
     if (json.hasNonNull("withdrawalDateFromCustomer")) {
       withdrawalDateFromCustomer = LocalDate.parse(json.get("withdrawalDateFromCustomer").asText());
     }
+    LocalDate withdrawalDateToCustomer = null;
     if (json.hasNonNull("withdrawalDateToCustomer")) {
       withdrawalDateToCustomer = LocalDate.parse(json.get("withdrawalDateToCustomer").asText());
     }
+    LocalDate deliveryDate = null;
     if (json.hasNonNull("deliveryDate")) {
       deliveryDate = LocalDate.parse(json.get("deliveryDate").asText());
     }
+    String buyerEmail = null;
     if (json.hasNonNull("buyerEmail")) {
       buyerEmail = json.get("buyerEmail").asText();
     }

@@ -19,7 +19,6 @@ public class DAOAddressImpl implements DAOAddress {
   private String queryAddAddressWithUnitNumber;
   private String queryAddAddressWithoutUnitNumber;
   private String querySelectAddressById;
-  private String queryAddAddress;
   private String querySelectAddressByUserId;
 
   @Inject
@@ -47,9 +46,6 @@ public class DAOAddressImpl implements DAOAddress {
         + "building_number, postcode, commune, country) VALUES (DEFAULT, ?, ?, ?, ?, ?)";
     querySelectAddressById = "SELECT a.address_id, a.street, a.building_number, a.unit_number, "
         + "a.postcode, a.commune, a.country FROM project.addresses a WHERE a.address_id = ?";
-    queryAddAddress = "INSERT INTO project.addresses (address_id, street, "
-        + "building_number, unit_number, postcode, commune, country) "
-        + "VALUES (DEFAULT, ?, ?, ?, ?, ?, ?)";
     querySelectAddressByUserId =
         "SELECT a.address_id, a.street, a.building_number, a.unit_number, a.postcode,"
             + " a.commune, a.country FROM project.addresses a, project.users u"

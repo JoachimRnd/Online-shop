@@ -32,8 +32,9 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
   private DAOUser daoUser;
 
   /*
-   * querySelectVisitRequestById = "SELECT v.visit_request_id, v.request_date, v.time_slot, " +
-   * "v.address, v.status, v.chosen_date_time, v.cancellation_reason, v.customer " + "FROM project.visit_requests v WHERE v.visit_request_id  = ?";
+   * querySelectVisitRequestById = "SELECT v.visit_request_id, v.request_date, v.time_slot, "
+   * + "v.address, v.status, v.chosen_date_time, v.cancellation_reason, v.customer "
+   * + "FROM project.visit_requests v WHERE v.visit_request_id  = ?";
    */
 
   /**
