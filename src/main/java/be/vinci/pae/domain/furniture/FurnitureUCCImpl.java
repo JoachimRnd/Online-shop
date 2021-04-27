@@ -49,6 +49,7 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     }
   }
 
+  //@TODO Que fait cette méthode ?
   @Override
   public List<FurnitureDTO> getFurnitureUsers(int userId) {
     try {
@@ -83,6 +84,7 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   public boolean modifyCondition(int id, FurnitureCondition condition) {
     Boolean change = false;
     FurnitureDTO furnitureDTO = this.getFurnitureById(id);
+    //@TODO Hyper brouillon, c'est pas modifiable ? Pourquoi 2 switch ?
     switch (furnitureDTO.getCondition()) {
       case propose:
         if (condition == FurnitureCondition.ne_convient_pas
@@ -209,11 +211,12 @@ public class FurnitureUCCImpl implements FurnitureUCC {
 
   @Override
   public boolean modifyType(int furnitureId, int typeId) {
-    TypeDTO type = this.daoType.selectTypeById(typeId);
-    if (type == null) {
-      throw new BusinessException("Type doesn't exist");
-    }
     try {
+      TypeDTO type = this.daoType.selectTypeById(typeId);
+      if (type == null) {
+        throw new BusinessException("Type doesn't exist");
+      }
+
       this.dalServices.startTransaction();
 
       if (!this.daoFurniture.updateType(furnitureId, typeId)) {
@@ -225,7 +228,6 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     } finally {
       this.dalServices.closeConnection();
     }
-
   }
 
 
@@ -309,12 +311,10 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     } finally {
       this.dalServices.closeConnection();
     }
-
   }
 
   @Override
   public boolean modifyWithdrawalDateFromCustomer(int id, LocalDate time) {
-
     try {
       this.dalServices.startTransaction();
 
@@ -327,12 +327,10 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     } finally {
       this.dalServices.closeConnection();
     }
-
   }
 
   @Override
   public boolean modifyDeliveryDate(int id, LocalDate time) {
-
     try {
       this.dalServices.startTransaction();
 
@@ -345,12 +343,13 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     } finally {
       this.dalServices.closeConnection();
     }
-
   }
 
 
   @Override
   public boolean modifyBuyerEmail(int id, String email) {
+    //@TODO Hyper brouillon, moyen de rendre ça beaucoup plus propre
+
     UserDTO userDTO;
     if (email == null) {
       FurnitureDTO furnitureDTO;
@@ -411,6 +410,7 @@ public class FurnitureUCCImpl implements FurnitureUCC {
 
   @Override
   public FurnitureDTO getPersonalFurnitureById(int id, UserDTO user) {
+    //@TODO Que fait cette méthode ?
     try {
       FurnitureDTO furniture = this.daoFurniture.selectFurnitureById(id);
       checkFurniture(furniture);
@@ -442,6 +442,88 @@ public class FurnitureUCCImpl implements FurnitureUCC {
       this.dalServices.closeConnection();
     }
 
+  }
+
+  @Override
+  public List<FurnitureDTO> getSalesFurnitureAdmin() {
+    try {
+      return this.daoFurniture.selectSalesFurniture();
+    } finally {
+      this.dalServices.closeConnection();
+    }
+  }
+
+  @Override
+  public List<FurnitureDTO> getFurnituresFiltered(String type, double price, String username) {
+    try {
+      return this.daoFurniture.selectFurnituresFiltered(type, price, username);
+    } finally {
+      this.dalServices.closeConnection();
+    }
+  }
+
+  @Override
+  public List<FurnitureDTO> getFurnitureBuyBy(int id) {
+    try {
+      return daoFurniture.getFurnitureBuyBy(id);
+    } finally {
+      this.dalServices.closeConnection();
+    }
+  }
+
+  @Override
+  public List<FurnitureDTO> getFurnitureSellBy(int id) {
+    try {
+      return daoFurniture.getFurnitureSellBy(id);
+    } finally {
+      this.dalServices.closeConnection();
+    }
+  }
+
+  private void checkFurnitures(List<FurnitureDTO> listFurniture) {
+    for (FurnitureDTO furnitureDTO : listFurniture) {
+      checkFurniture(furnitureDTO);
+    }
+  }
+
+  private void checkFurniture(FurnitureDTO furnitureDTO) {
+    if (furnitureDTO != null) {
+      if (furnitureDTO.getWithdrawalDateToCustomer() != null) {
+        //@TODO Peut-être moyen d'optimiser les if
+        if (furnitureDTO.getCondition() == FurnitureCondition.vendu
+            && furnitureDTO.getWithdrawalDateToCustomer().getTime() < (new Date().getTime())) {
+          modifyCondition(furnitureDTO.getId(), FurnitureCondition.reserve);
+          furnitureDTO.setCondition(FurnitureCondition.reserve);
+        }
+
+        //@TODO Il y a plus simple
+        if (furnitureDTO.getCondition() == FurnitureCondition.reserve) {
+          Date dateOneYearAndOneDayLater = furnitureDTO.getWithdrawalDateToCustomer();
+          Calendar cal = Calendar.getInstance();
+          cal.setTime(dateOneYearAndOneDayLater);
+          cal.add(Calendar.YEAR, 1);
+          cal.add(Calendar.DATE, 1);
+          dateOneYearAndOneDayLater = cal.getTime();
+
+          if (new Date().getTime() > dateOneYearAndOneDayLater.getTime()) {
+            modifyCondition(furnitureDTO.getId(), FurnitureCondition.en_vente);
+            furnitureDTO.setCondition(FurnitureCondition.en_vente);
+          }
+        }
+
+      }
+      //@TODO A voir si c'est nécéssaire
+      if (furnitureDTO.getCondition() == FurnitureCondition.en_vente) {
+        modifyWithdrawalDateToCustomer(furnitureDTO.getId(), null);
+        modifyBuyerEmail(furnitureDTO.getId(), null);
+        if (furnitureDTO.getBuyer() != null) {
+          furnitureDTO.getBuyer().setEmail(null);
+        } else {
+          furnitureDTO.setUnregisteredBuyerEmail(null);
+        }
+        furnitureDTO.setWithdrawalDateToCustomer(null);
+      }
+    }
   }
 
 
@@ -509,84 +591,6 @@ public class FurnitureUCCImpl implements FurnitureUCC {
       this.dalServices.closeConnection();
     }
 
-  }
-
-  @Override
-  public List<FurnitureDTO> getSalesFurnitureAdmin() {
-    try {
-      return this.daoFurniture.selectSalesFurniture();
-    } finally {
-      this.dalServices.closeConnection();
-    }
-  }
-
-  @Override
-  public List<FurnitureDTO> getFurnituresFiltered(String type, double price, String username) {
-    try {
-      return this.daoFurniture.selectFurnituresFiltered(type, price, username);
-    } finally {
-      this.dalServices.closeConnection();
-    }
-  }
-
-  @Override
-  public List<FurnitureDTO> getFurnitureBuyBy(int id) {
-    try {
-      return daoFurniture.getFurnitureBuyBy(id);
-    } finally {
-      this.dalServices.closeConnection();
-    }
-  }
-
-  @Override
-  public List<FurnitureDTO> getFurnitureSellBy(int id) {
-    try {
-      return daoFurniture.getFurnitureSellBy(id);
-    } finally {
-      this.dalServices.closeConnection();
-    }
-  }
-
-  private void checkFurnitures(List<FurnitureDTO> listFurniture) {
-    for (FurnitureDTO furnitureDTO : listFurniture) {
-      checkFurniture(furnitureDTO);
-    }
-  }
-
-  private void checkFurniture(FurnitureDTO furnitureDTO) {
-    if (furnitureDTO != null) {
-      if (furnitureDTO.getWithdrawalDateToCustomer() != null) {
-        if (furnitureDTO.getCondition() == FurnitureCondition.vendu
-            && furnitureDTO.getWithdrawalDateToCustomer().getTime() < (new Date().getTime())) {
-          modifyCondition(furnitureDTO.getId(), FurnitureCondition.reserve);
-          furnitureDTO.setCondition(FurnitureCondition.reserve);
-        }
-        if (furnitureDTO.getCondition() == FurnitureCondition.reserve) {
-          Date dateOneYearAndOneDayLater = furnitureDTO.getWithdrawalDateToCustomer();
-          Calendar cal = Calendar.getInstance();
-          cal.setTime(dateOneYearAndOneDayLater);
-          cal.add(Calendar.YEAR, 1);
-          cal.add(Calendar.DATE, 1);
-          dateOneYearAndOneDayLater = cal.getTime();
-
-          if (new Date().getTime() > dateOneYearAndOneDayLater.getTime()) {
-            modifyCondition(furnitureDTO.getId(), FurnitureCondition.en_vente);
-            furnitureDTO.setCondition(FurnitureCondition.en_vente);
-          }
-        }
-
-      }
-      if (furnitureDTO.getCondition() == FurnitureCondition.en_vente) {
-        modifyWithdrawalDateToCustomer(furnitureDTO.getId(), null);
-        modifyBuyerEmail(furnitureDTO.getId(), null);
-        if (furnitureDTO.getBuyer() != null) {
-          furnitureDTO.getBuyer().setEmail(null);
-        } else {
-          furnitureDTO.setUnregisteredBuyerEmail(null);
-        }
-        furnitureDTO.setWithdrawalDateToCustomer(null);
-      }
-    }
   }
 
 }

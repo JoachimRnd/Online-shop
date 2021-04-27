@@ -1,11 +1,5 @@
 package be.vinci.pae.services.option;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 import be.vinci.pae.domain.option.OptionDTO;
 import be.vinci.pae.domain.option.OptionFactory;
 import be.vinci.pae.services.DalBackendServices;
@@ -14,6 +8,12 @@ import be.vinci.pae.services.user.DAOUser;
 import be.vinci.pae.utils.FatalException;
 import be.vinci.pae.utils.ValueLink.OptionStatus;
 import jakarta.inject.Inject;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DAOOptionImpl implements DAOOption {
 
@@ -113,8 +113,6 @@ public class DAOOptionImpl implements DAOOption {
       throw new FatalException("Data error : selectOptionByFurnitureId");
     }
   }
-
-
 
   @Override
   public List<OptionDTO> selectOptionsOfBuyer(int idBuyer) {

@@ -1,6 +1,5 @@
 package be.vinci.pae.utils;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,13 +15,13 @@ public class Upload {
    * @return boolean
    */
   public static boolean saveToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
-
+    //@TODO le out.close() on le mettrai pas dans un finally ?
     try {
-      OutputStream out = null;
+      OutputStream out;
       int read = 0;
       byte[] bytes = new byte[1024];
 
-      out = new FileOutputStream(new File(uploadedFileLocation));
+      out = new FileOutputStream(uploadedFileLocation);
       while ((read = uploadedInputStream.read(bytes)) != -1) {
         out.write(bytes, 0, read);
       }
@@ -31,8 +30,8 @@ public class Upload {
       return true;
     } catch (IOException e) {
       e.printStackTrace();
+      //@TODO Pas besoin de lancer une FatalException ?
       return false;
     }
-
   }
 }

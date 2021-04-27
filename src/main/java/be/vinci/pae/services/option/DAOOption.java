@@ -1,9 +1,11 @@
 package be.vinci.pae.services.option;
 
-import java.util.List;
 import be.vinci.pae.domain.option.OptionDTO;
+import java.util.List;
 
 public interface DAOOption {
+
+  //@TODO Méthodes non utilisée => Supprimer ?
 
   int addOption(OptionDTO picture);
 

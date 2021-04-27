@@ -11,8 +11,6 @@ import org.apache.commons.text.StringEscapeUtils;
 
 
 public class UserUCCImpl implements UserUCC {
-  // @TODO dalServices.closeConnection() appel automatique ? Si possible
-  // Try finally
 
   @Inject
   private DAOUser daoUser;
@@ -106,8 +104,7 @@ public class UserUCCImpl implements UserUCC {
   @Override
   public List<UserDTO> getUnvalidatedUsers() {
     try {
-      List<UserDTO> list = daoUser.getUnvalidatedUsers();
-      return list;
+      return daoUser.getUnvalidatedUsers();
     } finally {
       dalServices.closeConnection();
     }
@@ -116,8 +113,7 @@ public class UserUCCImpl implements UserUCC {
   @Override
   public UserDTO getUserById(int id) {
     try {
-      UserDTO user = daoUser.getUserById(id);
-      return user;
+      return daoUser.getUserById(id);
     } finally {
       dalServices.closeConnection();
     }

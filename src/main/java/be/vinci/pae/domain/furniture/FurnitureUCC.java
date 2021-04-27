@@ -1,11 +1,13 @@
 package be.vinci.pae.domain.furniture;
 
-import java.time.LocalDate;
-import java.util.List;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
+import java.time.LocalDate;
+import java.util.List;
 
 public interface FurnitureUCC {
+
+  //@TODO Méthodes non utilisées => A supprimer ?
 
   List<FurnitureDTO> getAllFurniture();
 
@@ -44,7 +46,6 @@ public interface FurnitureUCC {
   boolean modifySpecialSalePrice(int id, double price);
 
   boolean modifyFavouritePicture(int id, int pictureId);
-
 
   List<FurnitureDTO> getFurnituresFiltered(String type, double price, String username);
 

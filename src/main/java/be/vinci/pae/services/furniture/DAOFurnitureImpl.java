@@ -190,6 +190,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
 
   @Override
   public List<FurnitureDTO> selectFurnitureUsers(int userId) {
+    //@TODO A quoi sert cette méthode ?
     List<FurnitureDTO> list = new ArrayList<FurnitureDTO>();
     try {
       PreparedStatement selectFurnitureUsers =
@@ -204,6 +205,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
         list.remove(list.size() - 1);
       }
 
+      //@TODO Pas de logique dans le DAO => ça doit aller dans le UCC
       if (userId != -1) {
         PreparedStatement selectFurnituresInOptionUser =
             dalServices.getPreparedStatement(querySelectFurnituresInOptionUser);
@@ -243,6 +245,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
 
   @Override
   public FurnitureDTO selectFurnitureByFavouritePicture(int idFavouritePicture) {
+    //@TODO A quoi sert cette méthode ?
     try {
       PreparedStatement selectFurnitureByFavouritePicture =
           dalServices.getPreparedStatement(querySelectFurnitureByFavouritePicture);
@@ -254,102 +257,6 @@ public class DAOFurnitureImpl implements DAOFurniture {
       e.printStackTrace();
       throw new FatalException("Data error : selectFurnitureByFavouritePicture");
     }
-  }
-
-  private FurnitureDTO createFurniture(ResultSet rs) throws SQLException {
-    FurnitureDTO furniture = null;
-    if (rs.next()) {
-      furniture = this.furnitureFactory.getFurniture();
-      furniture.setId(rs.getInt("furniture_id"));
-      furniture.setDescription(rs.getString("description"));
-      furniture.setType(this.daoType.selectTypeById(rs.getInt("type")));
-      furniture
-          .setVisitRequest(this.daoVisitRequest.selectVisitRequestById(rs.getInt("visit_request")));
-      furniture.setPurchasePrice(rs.getDouble("purchase_price"));
-      furniture.setWithdrawalDateFromCustomer(rs.getDate("withdrawal_date_from_customer"));
-      furniture.setSellingPrice(rs.getDouble("selling_price"));
-      furniture.setSpecialSalePrice(rs.getDouble("special_sale_price"));
-      furniture.setDepositDate(rs.getDate("deposit_date"));
-      furniture.setSellingDate(rs.getDate("selling_date"));
-      furniture.setDeliveryDate(rs.getDate("delivery_date"));
-      furniture.setWithdrawalDateToCustomer(rs.getDate("withdrawal_date_to_customer"));
-      furniture.setBuyer(this.daoUser.getUserById(rs.getInt("buyer")));
-      furniture.setCondition(FurnitureCondition.values()[rs.getInt("condition")]);
-      furniture.setUnregisteredBuyerEmail(rs.getString("unregistered_buyer_email"));
-    }
-    return furniture;
-  }
-
-
-  @Override
-  public List<FurnitureDTO> selectFurnitureByType(String type) {
-    // TODO Auto-generated method stub
-    return null;
-    /*
-    List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>();
-    try {
-      PreparedStatement selectFurnitureByType =
-          dalServices.getPreparedStatement(querySelectFurnitureByType);
-      selectFurnitureByType.setString(1, type);
-      ResultSet rs =
-          selectFurnitureByType.executeQuery();
-      while (rs.next()) {
-        FurnitureDTO furniture = furnitureFactory.getFurniture();
-        listFurniture.add(furniture);
-      }
-      return listFurniture;
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new FatalException("Data error : selectFurnitureByType");
-    }
-    */
-  }
-
-  @Override
-  public List<FurnitureDTO> selectFurnitureByPrice(double price) {
-    // TODO Auto-generated method stub
-    return null;
-    /*
-    List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>();
-    try {
-      PreparedStatement selectFurnitureByPrice =
-          dalServices.getPreparedStatement(querySelectFurnitureByPrice);
-      selectFurnitureByPrice.setDouble(1, price);
-      ResultSet rs =
-          selectFurnitureByPrice.executeQuery();
-      while (rs.next()) {
-        FurnitureDTO furniture = furnitureFactory.getFurniture();
-        listFurniture.add(furniture);
-      }
-      return listFurniture;
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new FatalException("Data error : selectFurnitureByPrice");
-    }
-    */
-  }
-
-  @Override
-  public List<FurnitureDTO> selectFurnitureByUser(String lastNameCustomer) {
-    // TODO Auto-generated method stub
-    return null;
-    /*
-    List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>();
-    try {
-      PreparedStatement selectFurnitureByUser =
-          dalServices.getPreparedStatement(querySelectFurnitureByUser);
-      ResultSet rs = selectFurnitureByUser.executeQuery();
-      while (rs.next()) {
-        FurnitureDTO
-            furniture = furnitureFactory.getFurniture();
-        listFurniture.add(furniture);
-      }
-      return listFurniture;
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new FatalException("Data error : selectFurnitureByUser");
-    }
-    */
   }
 
   @Override
@@ -503,9 +410,11 @@ public class DAOFurnitureImpl implements DAOFurniture {
     try {
       PreparedStatement updateWithdrawalDateToCustomer =
           this.dalServices.getPreparedStatement(queryUpdateWithdrawalDateToCustomer);
+      //@TODO Pas de logique dans le DAO => UCC
       if (now == null) {
         updateWithdrawalDateToCustomer.setTimestamp(1, null);
       } else {
+        //@TODO Pourquoi midnight ?
         updateWithdrawalDateToCustomer.setTimestamp(1,
             Timestamp.valueOf(now.atTime(LocalTime.MIDNIGHT)));
       }
@@ -522,6 +431,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
     try {
       PreparedStatement updateWithdrawalDateFromCustomer =
           this.dalServices.getPreparedStatement(queryUpdateWithdrawalDateFromCustomer);
+      //@TODO Pourquoi midnight ?
       updateWithdrawalDateFromCustomer.setTimestamp(1,
           Timestamp.valueOf(now.atTime(LocalTime.MIDNIGHT)));
       updateWithdrawalDateFromCustomer.setInt(2, id);
@@ -537,6 +447,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
     try {
       PreparedStatement updateDeliveryDate =
           this.dalServices.getPreparedStatement(queryUpdateDeliveryDate);
+      //@TODO Pourquoi midnight ?
       updateDeliveryDate.setTimestamp(1, Timestamp.valueOf(now.atTime(LocalTime.MIDNIGHT)));
       updateDeliveryDate.setInt(2, id);
       return updateDeliveryDate.executeUpdate() == 1;
@@ -565,6 +476,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
     try {
       PreparedStatement updateUnregisteredBuyer =
           this.dalServices.getPreparedStatement(queryUpdateBuyer);
+      //@TODO Pas de logique dans le DAO => UCC
       if (buyerId == -1) {
         updateUnregisteredBuyer.setNull(1, java.sql.Types.INTEGER);
       } else {
@@ -627,6 +539,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
 
   @Override
   public List<FurnitureDTO> getFurnitureBuyBy(int id) {
+    //@TODO Rename la méthode ? ça me parait pas hyper clair
     try {
       PreparedStatement selectFurnitureBuyBy =
           dalServices.getPreparedStatement(querySelectFurnitureBuyBy);
@@ -649,6 +562,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
 
   @Override
   public List<FurnitureDTO> getFurnitureSellBy(int id) {
+    //@TODO Rename la méthode ? ça me parait pas hyper clair
     try {
       PreparedStatement selectFurnitureSellBy =
           dalServices.getPreparedStatement(querySelectFurnitureSellBy);
@@ -684,5 +598,99 @@ public class DAOFurnitureImpl implements DAOFurniture {
 
   }
 
+  private FurnitureDTO createFurniture(ResultSet rs) throws SQLException {
+    FurnitureDTO furniture = null;
+    if (rs.next()) {
+      furniture = this.furnitureFactory.getFurniture();
+      furniture.setId(rs.getInt("furniture_id"));
+      furniture.setDescription(rs.getString("description"));
+      furniture.setType(this.daoType.selectTypeById(rs.getInt("type")));
+      furniture
+          .setVisitRequest(this.daoVisitRequest.selectVisitRequestById(rs.getInt("visit_request")));
+      furniture.setPurchasePrice(rs.getDouble("purchase_price"));
+      furniture.setWithdrawalDateFromCustomer(rs.getDate("withdrawal_date_from_customer"));
+      furniture.setSellingPrice(rs.getDouble("selling_price"));
+      furniture.setSpecialSalePrice(rs.getDouble("special_sale_price"));
+      furniture.setDepositDate(rs.getDate("deposit_date"));
+      furniture.setSellingDate(rs.getDate("selling_date"));
+      furniture.setDeliveryDate(rs.getDate("delivery_date"));
+      furniture.setWithdrawalDateToCustomer(rs.getDate("withdrawal_date_to_customer"));
+      furniture.setBuyer(this.daoUser.getUserById(rs.getInt("buyer")));
+      furniture.setCondition(FurnitureCondition.values()[rs.getInt("condition")]);
+      furniture.setUnregisteredBuyerEmail(rs.getString("unregistered_buyer_email"));
+    }
+    return furniture;
+  }
 
+
+  @Override
+  public List<FurnitureDTO> selectFurnitureByType(String type) {
+    // TODO Auto-generated method stub
+    return null;
+    /*
+    List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>();
+    try {
+      PreparedStatement selectFurnitureByType =
+          dalServices.getPreparedStatement(querySelectFurnitureByType);
+      selectFurnitureByType.setString(1, type);
+      ResultSet rs =
+          selectFurnitureByType.executeQuery();
+      while (rs.next()) {
+        FurnitureDTO furniture = furnitureFactory.getFurniture();
+        listFurniture.add(furniture);
+      }
+      return listFurniture;
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : selectFurnitureByType");
+    }
+    */
+  }
+
+  @Override
+  public List<FurnitureDTO> selectFurnitureByPrice(double price) {
+    // TODO Auto-generated method stub
+    return null;
+    /*
+    List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>();
+    try {
+      PreparedStatement selectFurnitureByPrice =
+          dalServices.getPreparedStatement(querySelectFurnitureByPrice);
+      selectFurnitureByPrice.setDouble(1, price);
+      ResultSet rs =
+          selectFurnitureByPrice.executeQuery();
+      while (rs.next()) {
+        FurnitureDTO furniture = furnitureFactory.getFurniture();
+        listFurniture.add(furniture);
+      }
+      return listFurniture;
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : selectFurnitureByPrice");
+    }
+    */
+  }
+
+  @Override
+  public List<FurnitureDTO> selectFurnitureByUser(String lastNameCustomer) {
+    // TODO Auto-generated method stub
+    return null;
+    /*
+    List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>();
+    try {
+      PreparedStatement selectFurnitureByUser =
+          dalServices.getPreparedStatement(querySelectFurnitureByUser);
+      ResultSet rs = selectFurnitureByUser.executeQuery();
+      while (rs.next()) {
+        FurnitureDTO
+            furniture = furnitureFactory.getFurniture();
+        listFurniture.add(furniture);
+      }
+      return listFurniture;
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : selectFurnitureByUser");
+    }
+    */
+  }
 }

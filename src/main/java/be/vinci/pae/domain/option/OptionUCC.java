@@ -4,11 +4,11 @@ import be.vinci.pae.domain.user.UserDTO;
 
 public interface OptionUCC {
 
-  void cancelOption(int id, UserDTO user);
+  boolean cancelOption(int id, UserDTO user);
 
-  void cancelOptionByAdmin(int idFurniture);
+  boolean cancelOptionByAdmin(int idFurniture);
 
   OptionDTO getLastOptionOfFurniture(int idFurniture);
 
-  OptionDTO addOption(int idFurniture, int duration, UserDTO user);
+  boolean addOption(int idFurniture, int duration, UserDTO user);
 }

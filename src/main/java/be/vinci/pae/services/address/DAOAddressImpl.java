@@ -11,9 +11,10 @@ import java.util.List;
 
 public class DAOAddressImpl implements DAOAddress {
 
+  private String querySelectAllCommunes;
+
   @Inject
   DalBackendServices dalBackendServices;
-  private String querySelectAllCommunes;
 
   public DAOAddressImpl() {
     querySelectAllCommunes = "SELECT DISTINCT a.commune FROM project.addresses a";

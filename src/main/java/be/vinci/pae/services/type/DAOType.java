@@ -4,6 +4,7 @@ import be.vinci.pae.domain.type.TypeDTO;
 import java.util.List;
 
 public interface DAOType {
+  //@TODO Methodes inutilisée => Supprimer ?
 
   List<TypeDTO> selectFurnitureTypes();
 

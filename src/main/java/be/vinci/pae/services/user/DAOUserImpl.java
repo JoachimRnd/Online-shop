@@ -22,15 +22,17 @@ public class DAOUserImpl implements DAOUser {
   private String querySelectUserByUsername;
   private String querySelectUserById;
   private String querySelectUserByEmail;
-  private String querySelectAddressIdWithUnitNumber;
-  private String querySelectAddressIdWithoutUnitNumber;
-  private String queryAddAddressWithUnitNumber;
-  private String queryAddAddressWithoutUnitNumber;
   private String queryAddUser;
   private String queryValidateUser;
   private String querySelectUnvalidatedUsers;
   private String querySelectAllUsername;
   private String querySelectUsersFiltered;
+
+  //@TODO Doit aller dans AddressDAO
+  private String querySelectAddressIdWithUnitNumber;
+  private String querySelectAddressIdWithoutUnitNumber;
+  private String queryAddAddressWithUnitNumber;
+  private String queryAddAddressWithoutUnitNumber;
 
   @Inject
   private UserFactory userFactory;
@@ -58,18 +60,6 @@ public class DAOUserImpl implements DAOUser {
         + "a.street, a.building_number, a.unit_number, a.postcode, a.commune, a.country, u.email,"
         + "u.registration_date, u.valid_registration, u.user_type FROM project.addresses a,"
         + " project.users u WHERE u.email = ? AND u.address = a.address_id";
-    querySelectAddressIdWithUnitNumber =
-        "SELECT a.address_id FROM project.addresses a WHERE a.street = ? AND "
-            + "a.building_number = ? AND a.postcode = ? AND "
-            + "a.commune = ? AND a.country = ? AND a.unit_number = ?";
-    querySelectAddressIdWithoutUnitNumber =
-        "SELECT a.address_id FROM project.addresses a WHERE a.street = ? AND "
-            + "a.building_number = ? AND a.postcode = ? AND a.commune = ? AND a.country = ?";
-    queryAddAddressWithUnitNumber = "INSERT INTO project.addresses (address_id, street, "
-        + "building_number, postcode, commune, country, unit_number) "
-        + "VALUES (DEFAULT, ?, ?, ?, ?, ?, ?)";
-    queryAddAddressWithoutUnitNumber = "INSERT INTO project.addresses (address_id, street, "
-        + "building_number, postcode, commune, country) VALUES (DEFAULT, ?, ?, ?, ?, ?)";
     queryAddUser = "INSERT INTO project.users (user_id, username, last_name, first_name, "
         + "email, password, address, registration_date, valid_registration) "
         + "VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -87,19 +77,30 @@ public class DAOUserImpl implements DAOUser {
         + "FROM project.addresses a, project.users u "
         + "WHERE u.address = a.address_id AND lower(u.username) LIKE lower(?) AND "
         + "lower(a.postcode) LIKE lower(?) AND lower(a.commune) LIKE lower(?)";
+
+    //@TODO Doit aller dans AddressDAO
+    querySelectAddressIdWithUnitNumber =
+        "SELECT a.address_id FROM project.addresses a WHERE a.street = ? AND "
+            + "a.building_number = ? AND a.postcode = ? AND "
+            + "a.commune = ? AND a.country = ? AND a.unit_number = ?";
+    querySelectAddressIdWithoutUnitNumber =
+        "SELECT a.address_id FROM project.addresses a WHERE a.street = ? AND "
+            + "a.building_number = ? AND a.postcode = ? AND a.commune = ? AND a.country = ?";
+    queryAddAddressWithUnitNumber = "INSERT INTO project.addresses (address_id, street, "
+        + "building_number, postcode, commune, country, unit_number) "
+        + "VALUES (DEFAULT, ?, ?, ?, ?, ?, ?)";
+    queryAddAddressWithoutUnitNumber = "INSERT INTO project.addresses (address_id, street, "
+        + "building_number, postcode, commune, country) VALUES (DEFAULT, ?, ?, ?, ?, ?)";
   }
 
   @Override
   public UserDTO getUserByUsername(String username) {
     try {
-
       PreparedStatement selectUserByUsername =
           this.dalBackendServices.getPreparedStatement(querySelectUserByUsername);
-
       selectUserByUsername.setString(1, username);
       try (ResultSet rs = selectUserByUsername.executeQuery()) {
-        UserDTO user = createUser(rs);
-        return user;
+        return createUser(rs);
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -110,13 +111,11 @@ public class DAOUserImpl implements DAOUser {
   @Override
   public UserDTO getUserByEmail(String email) {
     try {
-
       PreparedStatement selectUserByEmail =
           this.dalBackendServices.getPreparedStatement(querySelectUserByEmail);
       selectUserByEmail.setString(1, email);
       try (ResultSet rs = selectUserByEmail.executeQuery()) {
-        UserDTO user = createUser(rs);
-        return user;
+        return createUser(rs);
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -131,8 +130,7 @@ public class DAOUserImpl implements DAOUser {
           this.dalBackendServices.getPreparedStatement(querySelectUserById);
       selectUserById.setInt(1, id);
       try (ResultSet rs = selectUserById.executeQuery()) {
-        UserDTO user = createUser(rs);
-        return user;
+        return createUser(rs);
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -140,33 +138,87 @@ public class DAOUserImpl implements DAOUser {
     }
   }
 
-  private UserDTO createUser(ResultSet rs) throws SQLException {
-    UserDTO user = null;
-    if (rs.next()) {
-      user = this.userFactory.getUser();
-      user.setId(rs.getInt("user_id"));
-      user.setUsername(rs.getString("username"));
-      user.setPassword(rs.getString("password"));
-      user.setLastName(rs.getString("last_name"));
-      user.setFirstName(rs.getString("first_name"));
-      AddressDTO address = this.addressFactory.getAddress();
-      address.setStreet(rs.getString("street"));
-      address.setBuildingNumber(rs.getString("building_number"));
-      address.setUnitNumber(rs.getString("unit_number"));
-      address.setPostcode(rs.getString("postcode"));
-      address.setCommune(rs.getString("commune"));
-      address.setCountry(rs.getString("country"));
-      user.setAddress(address);
-      user.setEmail(rs.getString("email"));
-      user.setRegistrationDate(Date.from(rs.getTimestamp("registration_date").toInstant()));
-      user.setValidRegistration(rs.getBoolean("valid_registration"));
-      user.setUserType(UserType.values()[rs.getInt("user_type")]);
+  @Override
+  public boolean validateUser(int id, int type) {
+    try {
+      PreparedStatement validateUser =
+          this.dalBackendServices.getPreparedStatement(queryValidateUser);
+      validateUser.setInt(1, type);
+      validateUser.setBoolean(2, true);
+      validateUser.setInt(3, id);
+      return validateUser.executeUpdate() == 1;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException("Database error : validateUser");
     }
-    return user;
+  }
+
+  @Override
+  public List<UserDTO> getUnvalidatedUsers() {
+    try {
+      PreparedStatement selectUnvalidatedUsers =
+          this.dalBackendServices.getPreparedStatement(querySelectUnvalidatedUsers);
+      List<UserDTO> unvalidatedUsers = new ArrayList<>();
+      try (ResultSet rs = selectUnvalidatedUsers.executeQuery()) {
+        UserDTO user;
+        do {
+          user = createUser(rs);
+          unvalidatedUsers.add(user);
+        } while (user != null);
+        unvalidatedUsers.remove(unvalidatedUsers.size() - 1);
+        return unvalidatedUsers;
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException("Database error : getUnvalidatedUsers");
+    }
+  }
+
+  @Override
+  public List<String> getAllLastnames() {
+    try {
+      PreparedStatement selectAllUsers = this.dalBackendServices
+          .getPreparedStatement(querySelectAllUsername);
+      List<String> allUsers = new ArrayList<>();
+      try (ResultSet rs = selectAllUsers.executeQuery()) {
+        while (rs.next()) {
+          allUsers.add(rs.getString(1));
+        }
+        return allUsers;
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException("Database error : getAllUsers");
+    }
+  }
+
+  @Override
+  public List<UserDTO> getUsersFiltered(String username, String postcode, String commune) {
+    try {
+      PreparedStatement selectUsersFiltered = this.dalBackendServices
+          .getPreparedStatement(querySelectUsersFiltered);
+      selectUsersFiltered.setString(1, username + "%");
+      selectUsersFiltered.setString(2, postcode + "%");
+      selectUsersFiltered.setString(3, commune + "%");
+      List<UserDTO> allUsers = new ArrayList<>();
+      try (ResultSet rs = selectUsersFiltered.executeQuery()) {
+        UserDTO user;
+        do {
+          user = createUser(rs);
+          allUsers.add(user);
+        } while (user != null);
+        allUsers.remove(allUsers.size() - 1);
+        return allUsers;
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException("Database error : getUsersFiltered");
+    }
   }
 
   @Override
   public int addUser(UserDTO user) {
+    //@TODO Doit aller dans AddressDAO
     // get address if exist (récup id et mettre dans user sinon add address)
     long addressId = -1;
     try {
@@ -261,81 +313,28 @@ public class DAOUserImpl implements DAOUser {
     return userId;
   }
 
-  @Override
-  public boolean validateUser(int id, int type) {
-    try {
-      PreparedStatement validateUser =
-          this.dalBackendServices.getPreparedStatement(queryValidateUser);
-      validateUser.setInt(1, type);
-      validateUser.setBoolean(2, true);
-      validateUser.setInt(3, id);
-      return validateUser.executeUpdate() == 1;
-    } catch (SQLException e) {
-      e.printStackTrace();
-      throw new FatalException("Database error : validateUser");
+  private UserDTO createUser(ResultSet rs) throws SQLException {
+    UserDTO user = null;
+    if (rs.next()) {
+      user = this.userFactory.getUser();
+      user.setId(rs.getInt("user_id"));
+      user.setUsername(rs.getString("username"));
+      user.setPassword(rs.getString("password"));
+      user.setLastName(rs.getString("last_name"));
+      user.setFirstName(rs.getString("first_name"));
+      AddressDTO address = this.addressFactory.getAddress();
+      address.setStreet(rs.getString("street"));
+      address.setBuildingNumber(rs.getString("building_number"));
+      address.setUnitNumber(rs.getString("unit_number"));
+      address.setPostcode(rs.getString("postcode"));
+      address.setCommune(rs.getString("commune"));
+      address.setCountry(rs.getString("country"));
+      user.setAddress(address);
+      user.setEmail(rs.getString("email"));
+      user.setRegistrationDate(Date.from(rs.getTimestamp("registration_date").toInstant()));
+      user.setValidRegistration(rs.getBoolean("valid_registration"));
+      user.setUserType(UserType.values()[rs.getInt("user_type")]);
     }
-  }
-
-  @Override
-  public List<UserDTO> getUnvalidatedUsers() {
-    try {
-      PreparedStatement selectUnvalidatedUsers =
-          this.dalBackendServices.getPreparedStatement(querySelectUnvalidatedUsers);
-      List<UserDTO> unvalidatedUsers = new ArrayList<>();
-      try (ResultSet rs = selectUnvalidatedUsers.executeQuery()) {
-        UserDTO user;
-        do {
-          user = createUser(rs);
-          unvalidatedUsers.add(user);
-        } while (user != null);
-        unvalidatedUsers.remove(unvalidatedUsers.size() - 1);
-      }
-      return unvalidatedUsers;
-    } catch (SQLException e) {
-      e.printStackTrace();
-      throw new FatalException("Database error : getUnvalidatedUsers");
-    }
-  }
-
-  @Override
-  public List<String> getAllLastnames() {
-    try {
-      PreparedStatement selectAllUsers = this.dalBackendServices
-          .getPreparedStatement(querySelectAllUsername);
-      List<String> allUsers = new ArrayList<>();
-      try (ResultSet rs = selectAllUsers.executeQuery()) {
-        while (rs.next()) {
-          allUsers.add(rs.getString(1));
-        }
-      }
-      return allUsers;
-    } catch (SQLException e) {
-      e.printStackTrace();
-      throw new FatalException("Database error : getAllUsers");
-    }
-  }
-
-  @Override
-  public List<UserDTO> getUsersFiltered(String username, String postcode, String commune) {
-    try {
-      PreparedStatement selectUsersFiltered = this.dalBackendServices
-          .getPreparedStatement(querySelectUsersFiltered);
-      selectUsersFiltered.setString(1, username + "%");
-      selectUsersFiltered.setString(2, postcode + "%");
-      selectUsersFiltered.setString(3, commune + "%");
-      List<UserDTO> allUsers = new ArrayList<>();
-      try (ResultSet rs = selectUsersFiltered.executeQuery()) {
-        UserDTO user;
-        do {
-          user = createUser(rs);
-          allUsers.add(user);
-        } while (user != null);
-        allUsers.remove(allUsers.size() - 1);
-      }
-      return allUsers;
-    } catch (SQLException e) {
-      e.printStackTrace();
-      throw new FatalException("Database error : getUsersFiltered");
-    }
+    return user;
   }
 }

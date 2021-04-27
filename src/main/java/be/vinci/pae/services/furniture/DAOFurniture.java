@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface DAOFurniture {
 
+  //@TODO Méthodes non utilisées => Supprimer ?
+
   List<FurnitureDTO> selectAllFurniture();
 
   List<FurnitureDTO> selectFurnitureUsers(int idUser);
@@ -52,8 +54,7 @@ public interface DAOFurniture {
   boolean updateFavouritePicture(int id, int pictureId);
 
   FurnitureDTO selectFurnitureByFavouritePicture(int idFavouritePicture);
-
-
+  
   List<FurnitureDTO> selectFurnituresFiltered(String type, double price, String username);
 
   List<FurnitureDTO> getFurnitureBuyBy(int id);

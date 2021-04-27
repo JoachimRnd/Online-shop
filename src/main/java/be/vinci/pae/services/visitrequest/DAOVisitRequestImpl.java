@@ -42,6 +42,40 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
   }
 
   @Override
+  public VisitRequestDTO selectVisitRequestByUserAndFurniture(int furnitureId, int userId) {
+    //@TODO Why ? Si on a la furniture, on a déjà la visit request et le user par extension
+    try {
+      PreparedStatement selectVisitRequestByUserAndFurniture =
+          dalServices.getPreparedStatement(querySelectVisitRequestByUserAndFurniture);
+      selectVisitRequestByUserAndFurniture.setInt(1, userId);
+      selectVisitRequestByUserAndFurniture.setInt(2, furnitureId);
+      try (ResultSet rs = selectVisitRequestByUserAndFurniture.executeQuery()) {
+        return createVisitRequest(rs);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : selectVisitRequestByUserAndFurniture");
+    }
+  }
+
+  private VisitRequestDTO createVisitRequest(ResultSet rs) throws SQLException {
+    VisitRequestDTO visitRequest = null;
+    if (rs.next()) {
+      visitRequest = this.visitRequestFactory.getVisitRequest();
+      visitRequest.setId(rs.getInt("visit_request_id"));
+      visitRequest.setRequestDate(rs.getDate("request_date"));
+      visitRequest.setTimeSlot(rs.getString("time_slot"));
+      visitRequest.setAddress(null); // TODO
+      visitRequest.setStatus(VisitRequestStatus.values()[rs.getInt("status")]);
+      visitRequest.setChosenDateTime(rs.getDate("chosen_date_time"));
+      visitRequest.setCancellationReason(rs.getString("cancellation_reason"));
+      visitRequest.setCustomer(this.daoUser.getUserById(rs.getInt("customer")));
+    }
+    return visitRequest;
+  }
+
+
+  @Override
   public int addVisitRequest(VisitRequestDTO visitRequest) {
     // TODO Auto-generated method stub
     return 0;
@@ -75,41 +109,4 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
       throw new FatalException("Data error : selectTypeById");
     }*/
   }
-
-  @Override
-  public VisitRequestDTO selectVisitRequestByUserAndFurniture(int furnitureId, int userId) {
-    try {
-      PreparedStatement selectVisitRequestByUserAndFurniture =
-          dalServices.getPreparedStatement(querySelectVisitRequestByUserAndFurniture);
-      selectVisitRequestByUserAndFurniture.setInt(1, userId);
-      selectVisitRequestByUserAndFurniture.setInt(2, furnitureId);
-      try (ResultSet rs = selectVisitRequestByUserAndFurniture.executeQuery()) {
-        VisitRequestDTO vs = createVisitRequest(rs);
-        return vs;
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new FatalException("Data error : selectVisitRequestByUserAndFurniture");
-    }
-
-  }
-
-  private VisitRequestDTO createVisitRequest(ResultSet rs) throws SQLException {
-    VisitRequestDTO visitRequest = null;
-    if (rs.next()) {
-      visitRequest = this.visitRequestFactory.getVisitRequest();
-      visitRequest.setId(rs.getInt("visit_request_id"));
-      visitRequest.setRequestDate(rs.getDate("request_date"));
-      visitRequest.setTimeSlot(rs.getString("time_slot"));
-      visitRequest.setAddress(null); // TODO
-      visitRequest.setStatus(VisitRequestStatus.values()[rs.getInt("status")]);
-      visitRequest.setChosenDateTime(rs.getDate("chosen_date_time"));
-      visitRequest.setCancellationReason(rs.getString("cancellation_reason"));
-      visitRequest.setCustomer(this.daoUser.getUserById(rs.getInt("customer")));
-
-    }
-    return visitRequest;
-  }
-
-
 }

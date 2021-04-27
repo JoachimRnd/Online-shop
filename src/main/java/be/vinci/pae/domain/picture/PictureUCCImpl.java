@@ -1,8 +1,5 @@
 package be.vinci.pae.domain.picture;
 
-import java.io.InputStream;
-import java.util.List;
-import org.apache.commons.text.StringEscapeUtils;
 import be.vinci.pae.domain.furniture.FurnitureDTO;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.furniture.DAOFurniture;
@@ -10,6 +7,9 @@ import be.vinci.pae.services.picture.DAOPicture;
 import be.vinci.pae.utils.BusinessException;
 import be.vinci.pae.utils.Upload;
 import jakarta.inject.Inject;
+import java.io.InputStream;
+import java.util.List;
+import org.apache.commons.text.StringEscapeUtils;
 
 public class PictureUCCImpl implements PictureUCC {
 
@@ -24,6 +24,7 @@ public class PictureUCCImpl implements PictureUCC {
 
   @Override
   public List<PictureDTO> getCarouselPictures() {
+    //@TODO Pas plutôt une liste de String vu qu'on a besoin que du nom du fichier ?
     try {
       // TODO Auto-generated method stub
       return null;
@@ -38,6 +39,8 @@ public class PictureUCCImpl implements PictureUCC {
     Picture picture;
     try {
       this.dalServices.startTransaction();
+      //@TODO Pourquoi passer par une Picture ? Il n'y a aucun méthode supp dedans
+      //Surtout que c'est newPicture qu'on mets en DB et Picture à qui on ajoute l'ID    Oo WTF ????
       picture = (Picture) newPicture;
       FurnitureDTO furniture = this.daoFurniture.selectFurnitureById(furnitureId);
       if (furniture == null) {

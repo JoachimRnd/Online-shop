@@ -6,7 +6,6 @@ import be.vinci.pae.api.utils.Json;
 import be.vinci.pae.domain.furniture.FurnitureDTO;
 import be.vinci.pae.domain.furniture.FurnitureUCC;
 import be.vinci.pae.domain.option.OptionDTO;
-import be.vinci.pae.domain.option.OptionFactory;
 import be.vinci.pae.domain.option.OptionUCC;
 import be.vinci.pae.domain.picture.PictureUCC;
 import be.vinci.pae.domain.type.TypeDTO;
@@ -24,7 +23,6 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -45,13 +43,223 @@ public class Furniture {
   private OptionUCC optionUCC;
 
   @Inject
-  private OptionFactory optionFactory;
-
-  @Inject
   private TypeUCC typeUCC;
 
   @Inject
   private PictureUCC pictureUCC;
+
+
+  /**
+   * List all furniture.
+   *
+   * @return List of FurnitureDTO
+   */
+  @GET
+  @Path("/{userId}/allFurniture")
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<FurnitureDTO> listAllFurniture(@PathParam("userId") int userId) {
+    return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureUsers(userId),
+        FurnitureDTO.class);
+  }
+
+  /**
+   * List all furniture types.
+   *
+   * @return List of TypeDTO
+   */
+  @GET
+  @Path("allFurnitureTypes")
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<TypeDTO> listAllFurnitureTypes() {
+    return Json.filterPublicJsonViewAsList(typeUCC.getFurnitureTypes(), TypeDTO.class);
+  }
+
+  /**
+   * Get furniture with id.
+   *
+   * @return FurnitureDTO
+   */
+  @GET
+  @Path("/{idFurniture}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public FurnitureDTO getFurniture(@PathParam("idFurniture") int idFurniture) {
+    return Json
+        .filterPublicJsonView(furnitureUCC.getFurnitureById(idFurniture), FurnitureDTO.class);
+  }
+
+  /**
+   * Get the last option on the furniture with id.
+   *
+   * @return OptionDTO
+   */
+  @GET
+  @Path("/{idFurniture}/option")
+  @Produces(MediaType.APPLICATION_JSON)
+  public OptionDTO getOption(@PathParam("idFurniture") int idFurniture) {
+    return Json
+        .filterPublicJsonView(optionUCC.getLastOptionOfFurniture(idFurniture), OptionDTO.class);
+  }
+
+  /**
+   * List sales furniture.
+   *
+   * @return List of FurnitureDTO
+   */
+  @GET
+  @Path("sales")
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<FurnitureDTO> listSalesFurniture() {
+    return Json.filterPublicJsonViewAsList(furnitureUCC.getSalesFurnitureAdmin(),
+        FurnitureDTO.class);
+  }
+
+  /**
+   * Get personal furniture with id.
+   *
+   * @return FurnitureDTO
+   */
+  @GET
+  @Path("/personal/{idFurniture}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Authorize
+  public FurnitureDTO getPersonalFurniture(@PathParam("idFurniture") int idFurniture,
+      @Context ContainerRequest request) {
+    UserDTO currentUser = (UserDTO) request.getProperty("user");
+    return Json
+        .filterPublicJsonView(furnitureUCC.getPersonalFurnitureById(idFurniture, currentUser),
+            FurnitureDTO.class);
+  }
+
+
+  /**
+   * Cancel the option on the furniture with id.
+   *
+   * @return Response
+   */
+  @PUT
+  @Path("/{idFurniture}/option")
+  @Authorize
+  public Response cancelOption(@PathParam("idFurniture") int idFurniture,
+      @Context ContainerRequest request) {
+    UserDTO currentUser = (UserDTO) request.getProperty("user");
+    return optionUCC.cancelOption(idFurniture, currentUser) ? Response.ok().build()
+        : Response.serverError().build();
+  }
+
+  /**
+   * Add an option on the furniture with id.
+   *
+   * @return Response
+   */
+  @POST
+  @Path("/{idFurniture}/option")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Authorize
+  public Response addOption(@PathParam("idFurniture") int idFurniture,
+      @Context ContainerRequest request, JsonNode json) {
+    if (!json.has("duration")) {
+      return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")
+          .type(MediaType.TEXT_PLAIN).build();
+    }
+    return optionUCC.addOption(idFurniture, json.get("duration").asInt(),
+        (UserDTO) request.getProperty("user")) ? Response.ok().build()
+        : Response.serverError().build();
+  }
+
+  /**
+   * Get the furniture buy by an user.
+   *
+   * @return List of FurnitureDTO
+   */
+  @GET
+  @Path("/furniturebuyby/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Authorize
+  public List<FurnitureDTO> getFurnitureBuyBy(@PathParam("id") int id) {
+    return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureBuyBy(id), FurnitureDTO.class);
+  }
+
+  /**
+   * Get the furniture sell by an user.
+   *
+   * @return List of FurnitureDTO
+   */
+  @GET
+  @Path("/furnituresellby/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Authorize
+  public List<FurnitureDTO> getFurnitureSellBy(@PathParam("id") int id) {
+    return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureSellBy(id), FurnitureDTO.class);
+  }
+
+  //@TODO AuthorizeAdmin => Administration
+
+  /**
+   * Get an image.
+   *
+   * @return Octet Stream
+   */
+  @GET
+  @Path("picture-furniture")
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  @AuthorizeAdmin
+  public Response getFile() {
+    //@TODO Utilité ?
+    File file = new File(".\\images\\23.png");
+    System.out.println(file);
+    return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
+        .header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"")
+        .build();
+  }
+
+  /**
+   * Add an favourite picture on the furniture with id.
+   *
+   * @return Response
+   */
+  @PUT
+  @Path("/{idFurniture}/favourite-picture")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public Response modifyFavouritePicture(@PathParam("idFurniture") int idFurniture,
+      @Context ContainerRequest request, JsonNode json) {
+    //@TODO Soucis ICI json.has et json.get différents
+    if (!json.has("idPicture")
+        || !furnitureUCC.modifyFavouritePicture(idFurniture, json.get("picture_id").asInt())) {
+      return Response.status(Status.UNAUTHORIZED).entity("Erreur ajouter photo favorite")
+          .type(MediaType.TEXT_PLAIN).build();
+    }
+
+    return Response.ok().build();
+  }
+
+  /**
+   * update scrolling picture or not on the picture with id.
+   *
+   * @return Response
+   */
+  @PUT
+  @Path("/{idPicture}/scrolling-picture")
+  @AuthorizeAdmin
+  public Response modifyScrollingPicture(@PathParam("idPicture") int idPicture) {
+    return pictureUCC.modifyScrollingPicture(idPicture) ? Response.ok().build()
+        : Response.status(Status.UNAUTHORIZED).entity("Erreur ajouter photo défilante")
+            .type(MediaType.TEXT_PLAIN).build();
+  }
+
+  /**
+   * delete picture with id.
+   *
+   * @return Response
+   */
+  @DELETE
+  @Path("/{idPicture}/picture")
+  @AuthorizeAdmin
+  public Response deletePicture(@PathParam("idPicture") int idPicture) {
+    return pictureUCC.deletePicture(idPicture) ? Response.ok().build()
+        : Response.status(Status.UNAUTHORIZED).entity("Erreur retirer l'image")
+            .type(MediaType.TEXT_PLAIN).build();
+  }
 
   /**
    * modify furniture information.
@@ -64,6 +272,7 @@ public class Furniture {
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public Response modifyFurniture(@PathParam("id") int id, JsonNode json) {
+    //@TODO A REFAIRE !!!!!
     boolean noError = true;
     boolean empty = true;
 
@@ -129,233 +338,4 @@ public class Furniture {
           .entity("Erreur lors de la modification du meuble.").type(MediaType.TEXT_PLAIN).build();
     }
   }
-
-
-  /**
-   * List all furniture.
-   *
-   * @return List of FurnitureDTO
-   */
-  @GET
-  @Path("/{userId}/allFurniture")
-  @Produces(MediaType.APPLICATION_JSON)
-  public List<FurnitureDTO> listAllFurniture(@PathParam("userId") int userId) {
-    return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureUsers(userId),
-        FurnitureDTO.class);
-  }
-
-  /**
-   * List all furniture types.
-   *
-   * @return List of TypeDTO
-   */
-  @GET
-  @Path("allFurnitureTypes")
-  @Produces(MediaType.APPLICATION_JSON)
-  public List<TypeDTO> listAllFurnitureTypes() {
-    return Json.filterPublicJsonViewAsList(typeUCC.getFurnitureTypes(), TypeDTO.class);
-  }
-
-  /**
-   * Get furniture with id.
-   *
-   * @return FurnitureDTO
-   */
-  @GET
-  @Path("/{idFurniture}")
-  @Produces(MediaType.APPLICATION_JSON)
-  public FurnitureDTO getFurniture(@PathParam("idFurniture") int idFurniture) {
-    FurnitureDTO furnitureDTO = furnitureUCC.getFurnitureById(idFurniture);
-    if (furnitureDTO == null) {
-      throw new WebApplicationException(
-          "Ressource with id = " + idFurniture + " could not be found", null, Status.NOT_FOUND);
-    }
-    return Json.filterPublicJsonView(furnitureDTO, FurnitureDTO.class);
-  }
-
-  /**
-   * Get personal furniture with id.
-   *
-   * @return FurnitureDTO
-   */
-  @GET
-  @Path("/personal/{idFurniture}")
-  @Produces(MediaType.APPLICATION_JSON)
-  @Authorize
-  public FurnitureDTO getPersonalFurniture(@PathParam("idFurniture") int idFurniture,
-      @Context ContainerRequest request) {
-    UserDTO currentUser = (UserDTO) request.getProperty("user");
-    FurnitureDTO furnitureDTO = furnitureUCC.getPersonalFurnitureById(idFurniture, currentUser);
-    if (furnitureDTO == null) {
-      throw new WebApplicationException(
-          "Vous n'avez pas accès au meuble avec " + idFurniture + " comme ID.", null,
-          Status.NOT_FOUND);
-    }
-    return Json.filterPublicJsonView(furnitureDTO, FurnitureDTO.class);
-  }
-
-
-  /**
-   * Cancel the option on the furniture with id.
-   *
-   * @return Response
-   */
-  @PUT
-  @Path("/{idFurniture}/option")
-  @Authorize
-  public Response cancelOption(@PathParam("idFurniture") int idFurniture,
-      @Context ContainerRequest request) {
-    UserDTO currentUser = (UserDTO) request.getProperty("user");
-    optionUCC.cancelOption(idFurniture, currentUser);
-    return Response.ok().build();
-  }
-
-  /**
-   * Add an option on the furniture with id.
-   *
-   * @return Response
-   */
-  @POST
-  @Path("/{idFurniture}/option")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Authorize
-  public Response addOption(@PathParam("idFurniture") int idFurniture,
-      @Context ContainerRequest request, JsonNode json) {
-    if (!json.has("duration")) {
-      return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")
-          .type(MediaType.TEXT_PLAIN).build();
-    }
-    optionUCC.addOption(idFurniture, json.get("duration").asInt(),
-        (UserDTO) request.getProperty("user"));
-    return Response.ok().build();
-  }
-
-  /**
-   * Get the last option on the furniture with id.
-   *
-   * @return OptionDTO
-   */
-  @GET
-  @Path("/{idFurniture}/option")
-  @Produces(MediaType.APPLICATION_JSON)
-  public OptionDTO getOption(@PathParam("idFurniture") int idFurniture) {
-    OptionDTO option = optionUCC.getLastOptionOfFurniture(idFurniture);
-    if (option == null) {
-      option = optionFactory.getOption();
-    }
-    return Json.filterPublicJsonView(option, OptionDTO.class);
-  }
-
-  /**
-   * List sales furniture.
-   *
-   * @return List of FurnitureDTO
-   */
-  @GET
-  @Path("sales")
-  @Produces(MediaType.APPLICATION_JSON)
-  public List<FurnitureDTO> listSalesFurniture() {
-    return Json.filterPublicJsonViewAsList(furnitureUCC.getSalesFurnitureAdmin(),
-        FurnitureDTO.class);
-  }
-
-  /**
-   * Get an image.
-   *
-   * @return Octet Stream
-   */
-  @GET
-  @Path("picture-furniture")
-  @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  @AuthorizeAdmin
-  public Response getFile() {
-    File file = new File(".\\images\\23.png");
-    System.out.println(file);
-    return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
-        .header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"")
-        .build();
-  }
-
-
-  /**
-   * Add an favourite picture on the furniture with id.
-   *
-   * @return Response
-   */
-  @PUT
-  @Path("/{idFurniture}/favourite-picture")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @AuthorizeAdmin
-  public Response modifyFavouritePicture(@PathParam("idFurniture") int idFurniture,
-      @Context ContainerRequest request, JsonNode json) {
-    if (!json.has("idPicture")
-        || !furnitureUCC.modifyFavouritePicture(idFurniture, json.get("picture_id").asInt())) {
-      return Response.status(Status.UNAUTHORIZED).entity("Erreur ajouter photo favorite")
-          .type(MediaType.TEXT_PLAIN).build();
-    }
-
-    return Response.ok().build();
-  }
-
-
-  /**
-   * update scrolling picture or not on the picture with id.
-   *
-   * @return Response
-   */
-  @PUT
-  @Path("/{idPicture}/scrolling-picture")
-  @AuthorizeAdmin
-  public Response modifyScrollingPicture(@PathParam("idPicture") int idPicture) {
-    if (!pictureUCC.modifyScrollingPicture(idPicture)) {
-      return Response.status(Status.UNAUTHORIZED).entity("Erreur ajouter photo défilante")
-          .type(MediaType.TEXT_PLAIN).build();
-    }
-    return Response.ok().build();
-  }
-
-
-  /**
-   * delete picture with id.
-   *
-   * @return Response
-   */
-  @DELETE
-  @Path("/{idPicture}/picture")
-  @AuthorizeAdmin
-  public Response deletePicture(@PathParam("idPicture") int idPicture) {
-    if (!pictureUCC.deletePicture(idPicture)) {
-      return Response.status(Status.UNAUTHORIZED).entity("Erreur retirer l'image")
-          .type(MediaType.TEXT_PLAIN).build();
-    }
-    return Response.ok().build();
-  }
-
-  /**
-   * Get the furniture buy by an user.
-   *
-   * @return List of FurnitureDTO
-   */
-  @GET
-  @Path("/furniturebuyby/{id}")
-  @Produces(MediaType.APPLICATION_JSON)
-  @Authorize
-  public List<FurnitureDTO> getFurnitureBuyBy(@PathParam("id") int id) {
-    return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureBuyBy(id), FurnitureDTO.class);
-  }
-
-  /**
-   * Get the furniture sell by an user.
-   *
-   * @return List of FurnitureDTO
-   */
-  @GET
-  @Path("/furnituresellby/{id}")
-  @Produces(MediaType.APPLICATION_JSON)
-  @Authorize
-  public List<FurnitureDTO> getFurnitureSellBy(@PathParam("id") int id) {
-    return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureSellBy(id), FurnitureDTO.class);
-  }
-
-
 }
