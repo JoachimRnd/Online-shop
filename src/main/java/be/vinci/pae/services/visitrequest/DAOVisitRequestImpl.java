@@ -1,10 +1,7 @@
 package be.vinci.pae.services.visitrequest;
 
 import be.vinci.pae.domain.visitrequest.VisitRequestDTO;
-import be.vinci.pae.domain.visitrequest.VisitRequestFactory;
 import be.vinci.pae.services.DalBackendServices;
-import be.vinci.pae.services.address.DAOAddress;
-import be.vinci.pae.services.user.DAOUser;
 import be.vinci.pae.utils.FatalException;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
@@ -20,6 +17,7 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
   @Inject
   private DalBackendServices dalServices;
 
+  /*
   @Inject
   private VisitRequestFactory visitRequestFactory;
 
@@ -28,6 +26,7 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
 
   @Inject
   private DAOUser daoUser;
+  */
 
   /*
    * querySelectVisitRequestById = "SELECT v.visit_request_id, v.request_date, v.time_slot, "
