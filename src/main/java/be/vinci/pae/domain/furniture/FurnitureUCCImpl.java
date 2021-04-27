@@ -1,5 +1,10 @@
 package be.vinci.pae.domain.furniture;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import be.vinci.pae.domain.option.OptionDTO;
 import be.vinci.pae.domain.type.TypeDTO;
 import be.vinci.pae.domain.user.UserDTO;
@@ -12,11 +17,6 @@ import be.vinci.pae.services.visitrequest.DAOVisitRequest;
 import be.vinci.pae.utils.BusinessException;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
 import jakarta.inject.Inject;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 public class FurnitureUCCImpl implements FurnitureUCC {
 
@@ -49,7 +49,8 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     }
   }
 
-  //@TODO Que fait cette méthode ?
+  // @TODO Que fait cette méthode ?
+  // Liste les meubles en vente et mis en option pour l'user => meubles en magasin
   @Override
   public List<FurnitureDTO> getFurnitureUsers(int userId) {
     try {
@@ -84,7 +85,9 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   public boolean modifyCondition(int id, FurnitureCondition condition) {
     Boolean change = false;
     FurnitureDTO furnitureDTO = this.getFurnitureById(id);
-    //@TODO Hyper brouillon, c'est pas modifiable ? Pourquoi 2 switch ?
+    // @TODO Hyper brouillon, c'est pas modifiable ? Pourquoi 2 switch ?
+    // Seule soluce pour ne pas pouvoir faire ce que l'on veut en changement d'état
+    // je préfère faire deux switchs sinon on va tout mélanger mais ouais on pourrait rassembler
     switch (furnitureDTO.getCondition()) {
       case propose:
         if (condition == FurnitureCondition.ne_convient_pas
@@ -173,6 +176,7 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     if (change) {
       try {
         // TODO ajouter les etats manquants
+        // pas besoin car les autres etats ne necessitent pas de traitement particulier
         this.dalServices.startTransaction();
         boolean noError = true;
         switch (condition) {
@@ -348,7 +352,8 @@ public class FurnitureUCCImpl implements FurnitureUCC {
 
   @Override
   public boolean modifyBuyerEmail(int id, String email) {
-    //@TODO Hyper brouillon, moyen de rendre ça beaucoup plus propre
+    // @TODO Hyper brouillon, moyen de rendre ça beaucoup plus propre
+    // ?
 
     UserDTO userDTO;
     if (email == null) {
@@ -410,7 +415,9 @@ public class FurnitureUCCImpl implements FurnitureUCC {
 
   @Override
   public FurnitureDTO getPersonalFurnitureById(int id, UserDTO user) {
-    //@TODO Que fait cette méthode ?
+    // @TODO Que fait cette méthode ?
+    // Lorsqu'un client veut voir son meuble => il faut prendre celui pour lequel il l'a acheté (ducoup dans buyer) ou alors pour
+    // lequel il a fait une visit request
     try {
       FurnitureDTO furniture = this.daoFurniture.selectFurnitureById(id);
       checkFurniture(furniture);
@@ -489,14 +496,16 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   private void checkFurniture(FurnitureDTO furnitureDTO) {
     if (furnitureDTO != null) {
       if (furnitureDTO.getWithdrawalDateToCustomer() != null) {
-        //@TODO Peut-être moyen d'optimiser les if
+        // @TODO Peut-être moyen d'optimiser les if
+        // ?
         if (furnitureDTO.getCondition() == FurnitureCondition.vendu
             && furnitureDTO.getWithdrawalDateToCustomer().getTime() < (new Date().getTime())) {
           modifyCondition(furnitureDTO.getId(), FurnitureCondition.reserve);
           furnitureDTO.setCondition(FurnitureCondition.reserve);
         }
 
-        //@TODO Il y a plus simple
+        // @TODO Il y a plus simple
+        // quoi ça?
         if (furnitureDTO.getCondition() == FurnitureCondition.reserve) {
           Date dateOneYearAndOneDayLater = furnitureDTO.getWithdrawalDateToCustomer();
           Calendar cal = Calendar.getInstance();
@@ -512,7 +521,8 @@ public class FurnitureUCCImpl implements FurnitureUCC {
         }
 
       }
-      //@TODO A voir si c'est nécéssaire
+      // @TODO A voir si c'est nécéssaire
+      // ça l'est
       if (furnitureDTO.getCondition() == FurnitureCondition.en_vente) {
         modifyWithdrawalDateToCustomer(furnitureDTO.getId(), null);
         modifyBuyerEmail(furnitureDTO.getId(), null);
@@ -532,19 +542,10 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     // TODO Auto-generated method stub
     return null;
     /*
-     * this.dalServices.startTransaction();
-     * List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>();
-     * Type type = (Type) this.daoType.selectTypeByName(typeName);
-     * if (type == null) {
-     *  this.dalServices.rollbackTransaction();
-     * }
-     * else {
-     *  String idType = type.toString();
-     *  listFurniture = this.daoFurniture.selectFurnitureByType(idType);
-     *  this.dalServices.commitTransaction();
-     * }
-     * dalServices.closeConnection();
-     * return listFurniture;
+     * this.dalServices.startTransaction(); List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>(); Type type = (Type)
+     * this.daoType.selectTypeByName(typeName); if (type == null) { this.dalServices.rollbackTransaction(); } else { String idType = type.toString();
+     * listFurniture = this.daoFurniture.selectFurnitureByType(idType); this.dalServices.commitTransaction(); } dalServices.closeConnection(); return
+     * listFurniture;
      */
 
   }
@@ -555,11 +556,8 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     try {
       return null;
       /*
-       * this.dalServices.startTransaction();
-       * List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>();
-       * listFurniture = this.daoFurniture.selectFurnitureByPrice(sellingPrice);
-       * dalServices.closeConnection();
-       * return listFurniture;
+       * this.dalServices.startTransaction(); List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>(); listFurniture =
+       * this.daoFurniture.selectFurnitureByPrice(sellingPrice); dalServices.closeConnection(); return listFurniture;
        */
 
     } finally {
@@ -573,18 +571,10 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     try {
       return null;
       /*
-       * this.dalServices.startTransaction();
-       * List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>();
-       * User user = (User) this.daoUser.getUserByUsername(userName);
-       * if (user == null) {
-       *  this.dalServices.rollbackTransaction();
-       * } else {
-       *  String idUser = String.valueOf(user.getId());
-       *  listFurniture = this.daoFurniture.selectFurnitureByUser(idUser);
-       *  this.dalServices.commitTransaction();
-       * }
-       * dalServices.closeConnection();
-       * return listFurniture;
+       * this.dalServices.startTransaction(); List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>(); User user = (User)
+       * this.daoUser.getUserByUsername(userName); if (user == null) { this.dalServices.rollbackTransaction(); } else { String idUser =
+       * String.valueOf(user.getId()); listFurniture = this.daoFurniture.selectFurnitureByUser(idUser); this.dalServices.commitTransaction(); }
+       * dalServices.closeConnection(); return listFurniture;
        */
 
     } finally {

@@ -1,5 +1,8 @@
 package be.vinci.pae.api;
 
+import java.io.File;
+import java.time.LocalDate;
+import java.util.List;
 import org.glassfish.jersey.server.ContainerRequest;
 import com.fasterxml.jackson.databind.JsonNode;
 import be.vinci.pae.api.filters.Authorize;
@@ -189,6 +192,7 @@ public class Furniture {
   }
 
   // @TODO AuthorizeAdmin => Administration
+  // Non!
 
   /**
    * Get an image.
@@ -220,8 +224,9 @@ public class Furniture {
   public Response modifyFavouritePicture(@PathParam("idFurniture") int idFurniture,
       @Context ContainerRequest request, JsonNode json) {
     // @TODO Soucis ICI json.has et json.get différents
+    // done
     if (!json.has("idPicture")
-        || !furnitureUCC.modifyFavouritePicture(idFurniture, json.get("picture_id").asInt())) {
+        || !furnitureUCC.modifyFavouritePicture(idFurniture, json.get("idPicture").asInt())) {
       return Response.status(Status.UNAUTHORIZED).entity("Erreur ajouter photo favorite")
           .type(MediaType.TEXT_PLAIN).build();
     }
@@ -269,6 +274,7 @@ public class Furniture {
   @AuthorizeAdmin
   public Response modifyFurniture(@PathParam("id") int id, JsonNode json) {
     // @TODO A REFAIRE !!!!!
+    // go se call ce soir
     boolean noError = true;
     boolean empty = true;
 

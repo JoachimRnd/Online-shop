@@ -1,6 +1,13 @@
 package be.vinci.pae.services.user;
 
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import be.vinci.pae.domain.address.AddressDTO;
 import be.vinci.pae.domain.address.AddressFactory;
 import be.vinci.pae.domain.user.UserDTO;
@@ -9,13 +16,6 @@ import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.utils.FatalException;
 import be.vinci.pae.utils.ValueLink.UserType;
 import jakarta.inject.Inject;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 public class DAOUserImpl implements DAOUser {
 
@@ -28,7 +28,8 @@ public class DAOUserImpl implements DAOUser {
   private String querySelectAllUsername;
   private String querySelectUsersFiltered;
 
-  //@TODO Doit aller dans AddressDAO
+  // @TODO Doit aller dans AddressDAO
+  // yes
   private String querySelectAddressIdWithUnitNumber;
   private String querySelectAddressIdWithoutUnitNumber;
   private String queryAddAddressWithUnitNumber;
@@ -78,7 +79,7 @@ public class DAOUserImpl implements DAOUser {
         + "WHERE u.address = a.address_id AND lower(u.username) LIKE lower(?) AND "
         + "lower(a.postcode) LIKE lower(?) AND lower(a.commune) LIKE lower(?)";
 
-    //@TODO Doit aller dans AddressDAO
+    // @TODO Doit aller dans AddressDAO
     querySelectAddressIdWithUnitNumber =
         "SELECT a.address_id FROM project.addresses a WHERE a.street = ? AND "
             + "a.building_number = ? AND a.postcode = ? AND "
@@ -177,8 +178,8 @@ public class DAOUserImpl implements DAOUser {
   @Override
   public List<String> getAllLastnames() {
     try {
-      PreparedStatement selectAllUsers = this.dalBackendServices
-          .getPreparedStatement(querySelectAllUsername);
+      PreparedStatement selectAllUsers =
+          this.dalBackendServices.getPreparedStatement(querySelectAllUsername);
       List<String> allUsers = new ArrayList<>();
       try (ResultSet rs = selectAllUsers.executeQuery()) {
         while (rs.next()) {
@@ -195,8 +196,8 @@ public class DAOUserImpl implements DAOUser {
   @Override
   public List<UserDTO> getUsersFiltered(String username, String postcode, String commune) {
     try {
-      PreparedStatement selectUsersFiltered = this.dalBackendServices
-          .getPreparedStatement(querySelectUsersFiltered);
+      PreparedStatement selectUsersFiltered =
+          this.dalBackendServices.getPreparedStatement(querySelectUsersFiltered);
       selectUsersFiltered.setString(1, username + "%");
       selectUsersFiltered.setString(2, postcode + "%");
       selectUsersFiltered.setString(3, commune + "%");
@@ -218,7 +219,7 @@ public class DAOUserImpl implements DAOUser {
 
   @Override
   public int addUser(UserDTO user) {
-    //@TODO Doit aller dans AddressDAO
+    // @TODO Doit aller dans AddressDAO
     // get address if exist (récup id et mettre dans user sinon add address)
     long addressId = -1;
     try {
