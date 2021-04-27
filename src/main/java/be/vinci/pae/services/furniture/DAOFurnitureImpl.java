@@ -192,6 +192,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
   public List<FurnitureDTO> selectFurnitureUsers(int userId) {
     // @TODO A quoi sert cette méthode ?
     // Si je me rappelle bien c'est pour afficher la liste des meubles en vente pour les users
+
     List<FurnitureDTO> list = new ArrayList<FurnitureDTO>();
     try {
       PreparedStatement selectFurnitureUsers =
@@ -541,6 +542,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
   @Override
   public List<FurnitureDTO> getFurnitureBuyBy(int id) {
     // @TODO Rename la méthode ? ça me parait pas hyper clair
+    // mettre getFurnitureBoughtByUserId() ? et donc modifier aussi les preparedStatement...
     try {
       PreparedStatement selectFurnitureBuyBy =
           dalServices.getPreparedStatement(querySelectFurnitureBuyBy);
@@ -564,6 +566,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
   @Override
   public List<FurnitureDTO> getFurnitureSellBy(int id) {
     // @TODO Rename la méthode ? ça me parait pas hyper clair
+    // getFurnitureSoldByUserId() ? et donc modifier les preparedStatement too...
     try {
       PreparedStatement selectFurnitureSellBy =
           dalServices.getPreparedStatement(querySelectFurnitureSellBy);
@@ -629,13 +632,22 @@ public class DAOFurnitureImpl implements DAOFurniture {
     // TODO Auto-generated method stub
     return null;
     /*
-     * List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>(); try { PreparedStatement
-     * selectFurnitureByType = dalServices.getPreparedStatement(querySelectFurnitureByType);
+     * <<<<<<< HEAD List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>(); try {
+     * PreparedStatement selectFurnitureByType =
+     * dalServices.getPreparedStatement(querySelectFurnitureByType);
      * selectFurnitureByType.setString(1, type); ResultSet rs =
      * selectFurnitureByType.executeQuery(); while (rs.next()) { FurnitureDTO furniture =
      * furnitureFactory.getFurniture(); listFurniture.add(furniture); } return listFurniture; }
      * catch (Exception e) { e.printStackTrace(); throw new
-     * FatalException("Data error : selectFurnitureByType"); }
+     * FatalException("Data error : selectFurnitureByType"); } ======= List<FurnitureDTO>
+     * listFurniture = new ArrayList<FurnitureDTO>(); try { PreparedStatement selectFurnitureByType
+     * = dalServices.getPreparedStatement(querySelectFurnitureByType);
+     * selectFurnitureByType.setString(1, type); ResultSet rs =
+     * selectFurnitureByType.executeQuery(); while (rs.next()) { FurnitureDTO furniture =
+     * furnitureFactory.getFurniture(); listFurniture.add(furniture); } return listFurniture; }
+     * catch (Exception e) { e.printStackTrace(); throw new
+     * FatalException("Data error : selectFurnitureByType"); } >>>>>>> branch 'codeCheck' of
+     * https://gitlab.vinci.be/6i2-cae/2020-2021/projet-ae-groupe-15.git
      */
   }
 
@@ -644,13 +656,22 @@ public class DAOFurnitureImpl implements DAOFurniture {
     // TODO Auto-generated method stub
     return null;
     /*
-     * List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>(); try { PreparedStatement
-     * selectFurnitureByPrice = dalServices.getPreparedStatement(querySelectFurnitureByPrice);
+     * <<<<<<< HEAD List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>(); try {
+     * PreparedStatement selectFurnitureByPrice =
+     * dalServices.getPreparedStatement(querySelectFurnitureByPrice);
      * selectFurnitureByPrice.setDouble(1, price); ResultSet rs =
      * selectFurnitureByPrice.executeQuery(); while (rs.next()) { FurnitureDTO furniture =
      * furnitureFactory.getFurniture(); listFurniture.add(furniture); } return listFurniture; }
      * catch (Exception e) { e.printStackTrace(); throw new
-     * FatalException("Data error : selectFurnitureByPrice"); }
+     * FatalException("Data error : selectFurnitureByPrice"); } ======= List<FurnitureDTO>
+     * listFurniture = new ArrayList<FurnitureDTO>(); try { PreparedStatement selectFurnitureByPrice
+     * = dalServices.getPreparedStatement(querySelectFurnitureByPrice);
+     * selectFurnitureByPrice.setDouble(1, price); ResultSet rs =
+     * selectFurnitureByPrice.executeQuery(); while (rs.next()) { FurnitureDTO furniture =
+     * furnitureFactory.getFurniture(); listFurniture.add(furniture); } return listFurniture; }
+     * catch (Exception e) { e.printStackTrace(); throw new
+     * FatalException("Data error : selectFurnitureByPrice"); } >>>>>>> branch 'codeCheck' of
+     * https://gitlab.vinci.be/6i2-cae/2020-2021/projet-ae-groupe-15.git
      */
   }
 
@@ -659,12 +680,20 @@ public class DAOFurnitureImpl implements DAOFurniture {
     // TODO Auto-generated method stub
     return null;
     /*
-     * List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>(); try { PreparedStatement
-     * selectFurnitureByUser = dalServices.getPreparedStatement(querySelectFurnitureByUser);
-     * ResultSet rs = selectFurnitureByUser.executeQuery(); while (rs.next()) { FurnitureDTO
-     * furniture = furnitureFactory.getFurniture(); listFurniture.add(furniture); } return
-     * listFurniture; } catch (Exception e) { e.printStackTrace(); throw new
-     * FatalException("Data error : selectFurnitureByUser"); }
+     * <<<<<<< HEAD List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>(); try {
+     * PreparedStatement selectFurnitureByUser =
+     * dalServices.getPreparedStatement(querySelectFurnitureByUser); ResultSet rs =
+     * selectFurnitureByUser.executeQuery(); while (rs.next()) { FurnitureDTO furniture =
+     * furnitureFactory.getFurniture(); listFurniture.add(furniture); } return listFurniture; }
+     * catch (Exception e) { e.printStackTrace(); throw new
+     * FatalException("Data error : selectFurnitureByUser"); } ======= List<FurnitureDTO>
+     * listFurniture = new ArrayList<FurnitureDTO>(); try { PreparedStatement selectFurnitureByUser
+     * = dalServices.getPreparedStatement(querySelectFurnitureByUser); ResultSet rs =
+     * selectFurnitureByUser.executeQuery(); while (rs.next()) { FurnitureDTO furniture =
+     * furnitureFactory.getFurniture(); listFurniture.add(furniture); } return listFurniture; }
+     * catch (Exception e) { e.printStackTrace(); throw new
+     * FatalException("Data error : selectFurnitureByUser"); } >>>>>>> branch 'codeCheck' of
+     * https://gitlab.vinci.be/6i2-cae/2020-2021/projet-ae-groupe-15.git
      */
   }
 }

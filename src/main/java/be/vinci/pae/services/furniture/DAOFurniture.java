@@ -1,13 +1,14 @@
 package be.vinci.pae.services.furniture;
 
-import be.vinci.pae.domain.furniture.FurnitureDTO;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
+import be.vinci.pae.domain.furniture.FurnitureDTO;
 
 public interface DAOFurniture {
 
-  //@TODO Méthodes non utilisées => Supprimer ?
+  // @TODO Méthodes non utilisées => Supprimer ?
+  // oui... ? comme dans une des classes de furniture je suppose...
 
   List<FurnitureDTO> selectAllFurniture();
 
@@ -54,7 +55,7 @@ public interface DAOFurniture {
   boolean updateFavouritePicture(int id, int pictureId);
 
   FurnitureDTO selectFurnitureByFavouritePicture(int idFavouritePicture);
-  
+
   List<FurnitureDTO> selectFurnituresFiltered(String type, double price, String username);
 
   List<FurnitureDTO> getFurnitureBuyBy(int id);

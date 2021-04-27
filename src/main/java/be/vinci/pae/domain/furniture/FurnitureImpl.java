@@ -16,10 +16,14 @@ class FurnitureImpl implements Furniture {
 
   // @TODO Pourquoi le format.shape ?
   // Pcq c'est une solution qu'on a vue en backend-java et formater la date dans le frontend était
-  // pas si simple que ça
+  // pas si simple que ça (VEVE)
+
   // Pourquoi pas récup le Timestamp et le formater dans le frontend ? => Plus universel
   // Pourquoi sous le format yyyy-MM-dd et pas dd-MM-yyyy ?
-  // Il fallait ce format là pour mettre l'input.value dans un datePicker bootstrap
+  // Il fallait ce format là pour mettre l'input.value dans un datePicker bootstrap (VEVE)
+
+  // les dates sont toujours sous format yyyy-MM-dd en sql et en java en tout cas initialement...
+  // apr�s sit vous d�cidez de modifier �a, why not mais il faut tout changer alors... (LORINE)
 
   @JsonView(Views.Public.class)
   private int id;

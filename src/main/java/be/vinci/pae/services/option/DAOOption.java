@@ -1,11 +1,12 @@
 package be.vinci.pae.services.option;
 
-import be.vinci.pae.domain.option.OptionDTO;
 import java.util.List;
+import be.vinci.pae.domain.option.OptionDTO;
 
 public interface DAOOption {
 
-  //@TODO Méthodes non utilisée => Supprimer ?
+  // @TODO Méthodes non utilisée => Supprimer ?
+  // yep je suppose pour toutes le ml�thodes non utilis�es...
 
   int addOption(OptionDTO picture);
 

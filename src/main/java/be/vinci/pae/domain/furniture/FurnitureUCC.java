@@ -8,7 +8,10 @@ import be.vinci.pae.utils.ValueLink.FurnitureCondition;
 public interface FurnitureUCC {
 
   // @TODO Méthodes non utilisées => A supprimer ?
-  // Oui on peut
+  // Oui on peut (VEVE)
+  // oui ... ? c'est comme du dead code mais je sais pas si on est p�nalis� si on le laisse...
+  // (LORINE)
+
   List<FurnitureDTO> getAllFurniture();
 
   List<FurnitureDTO> getFurnitureUsers(int idUser);
