@@ -28,12 +28,10 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
   private DAOUser daoUser;
 
   /*
-   * querySelectVisitRequestById = "SELECT v.visit_request_id, v.request_date, v.time_slot, " +
-   * <<<<<<< HEAD "v.address, v.status, v.chosen_date_time, v.cancellation_reason, v.customer " +
-   * "FROM project.visit_requests v WHERE v.visit_request_id  = ?"; =======
-   * "v.address, v.status, v.chosen_date_time, v.cancellation_reason, v.customer " +
-   * "FROM project.visit_requests v WHERE v.visit_request_id  = ?"; >>>>>>>
-   * refs/remotes/origin/master
+   * querySelectVisitRequestById = "SELECT v.visit_request_id, v.request_date, v.time_slot, " + <<<<<<< HEAD
+   * "v.address, v.status, v.chosen_date_time, v.cancellation_reason, v.customer " + "FROM project.visit_requests v WHERE v.visit_request_id  = ?";
+   * ======= "v.address, v.status, v.chosen_date_time, v.cancellation_reason, v.customer " +
+   * "FROM project.visit_requests v WHERE v.visit_request_id  = ?"; >>>>>>> refs/remotes/origin/master
    */
 
   /**
@@ -46,7 +44,7 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
             + " (DEFAULT,?,?,?,?,NULL,NULL,?)";
     querySelectVisitRequestByUserAndFurniture = "SELECT v.visit_request_id, v.request_date, "
         + "v.time_slot, v.address, v.status, v.chosen_date_time, v.cancellation_reason, v.customer "
-        + "+ FROM project.visit_requests v, project.furniture f WHERE v.customer = ? "
+        + "FROM project.visit_requests v, project.furniture f WHERE v.customer = ? "
         + "AND f.furniture_id = ? AND v.visit_request_id = f.visit_request;";
   }
 
@@ -85,19 +83,13 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
 
     /*
      * VisitRequestDTO visitRequest = null; try { PreparedStatement selectVisitRequestById =
-     * dalServices.getPreparedStatement(querySelectVisitRequestById);
-     * selectVisitRequestById.setInt(1, id); try (ResultSet rs =
-     * selectVisitRequestById.executeQuery()) { visitRequest =
-     * this.visitRequestFactory.getVisitRequest(); while (rs.next()) {
-     * visitRequest.setId(rs.getInt("visit_request_id"));
-     * visitRequest.setRequestDate(rs.getDate("request_date"));
-     * visitRequest.setTimeSlot(rs.getString("time_slot"));
-     * visitRequest.setStatus(String.valueOf(rs.getInt("status")));
-     * visitRequest.setChosenDateTime(rs.getDate("chosen_date_time"));
-     * visitRequest.setCancellationReason(rs.getString("cancellation_reason"));
-     * visitRequest.setCustomer(this.daoUser.getUserById(rs.getInt("customer"))); } return
-     * visitRequest; } } catch (SQLException e) { e.printStackTrace(); throw new
-     * FatalException("Data error : selectTypeById"); }
+     * dalServices.getPreparedStatement(querySelectVisitRequestById); selectVisitRequestById.setInt(1, id); try (ResultSet rs =
+     * selectVisitRequestById.executeQuery()) { visitRequest = this.visitRequestFactory.getVisitRequest(); while (rs.next()) {
+     * visitRequest.setId(rs.getInt("visit_request_id")); visitRequest.setRequestDate(rs.getDate("request_date"));
+     * visitRequest.setTimeSlot(rs.getString("time_slot")); visitRequest.setStatus(String.valueOf(rs.getInt("status")));
+     * visitRequest.setChosenDateTime(rs.getDate("chosen_date_time")); visitRequest.setCancellationReason(rs.getString("cancellation_reason"));
+     * visitRequest.setCustomer(this.daoUser.getUserById(rs.getInt("customer"))); } return visitRequest; } } catch (SQLException e) { e.printStackTrace();
+     * throw new FatalException("Data error : selectTypeById"); }
      */
   }
 

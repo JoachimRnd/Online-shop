@@ -23,10 +23,10 @@ public class PictureUCCImpl implements PictureUCC {
   private DAOPicture daoPicture;
 
   @Override
-  public List<PictureDTO> getCarouselPictures() {
+  public List<PictureDTO> getPicturesByFurnitureId(int furnitureId) {
     try {
-      // TODO Auto-generated method stub
-      return null;
+      List<PictureDTO> listPicture = this.daoPicture.selectPicturesByFurnitureId(furnitureId);
+      return listPicture;
     } finally {
       this.dalServices.closeConnection();
     }

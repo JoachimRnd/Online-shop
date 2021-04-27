@@ -1,5 +1,9 @@
 package be.vinci.pae.api;
 
+import java.time.LocalDate;
+import java.util.List;
+import org.glassfish.jersey.server.ContainerRequest;
+import com.fasterxml.jackson.databind.JsonNode;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.api.utils.Json;
@@ -8,12 +12,12 @@ import be.vinci.pae.domain.furniture.FurnitureUCC;
 import be.vinci.pae.domain.option.OptionDTO;
 import be.vinci.pae.domain.option.OptionFactory;
 import be.vinci.pae.domain.option.OptionUCC;
+import be.vinci.pae.domain.picture.PictureDTO;
 import be.vinci.pae.domain.picture.PictureUCC;
 import be.vinci.pae.domain.type.TypeDTO;
 import be.vinci.pae.domain.type.TypeUCC;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
-import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -29,10 +33,6 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-import java.io.File;
-import java.time.LocalDate;
-import java.util.List;
-import org.glassfish.jersey.server.ContainerRequest;
 
 @Singleton
 @Path("/furniture")
@@ -52,6 +52,7 @@ public class Furniture {
 
   @Inject
   private PictureUCC pictureUCC;
+
 
   /**
    * modify furniture information.
@@ -260,20 +261,17 @@ public class Furniture {
   }
 
   /**
-   * Get an image.
+   * List all pictures by furniture ID.
    *
-   * @return Octet Stream
+   * @return List of PictureDTO
    */
   @GET
-  @Path("picture-furniture")
-  @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  @AuthorizeAdmin
-  public Response getFile() {
-    File file = new File(".\\images\\23.png");
-    System.out.println(file);
-    return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
-        .header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"")
-        .build();
+  @Path("{idFurniture}/pictures-furniture")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Authorize
+  public List<PictureDTO> getPicturesByFurnitureId(@PathParam("idFurniture") int idFurniture) {
+    return Json.filterPublicJsonViewAsList(this.pictureUCC.getPicturesByFurnitureId(idFurniture),
+        PictureDTO.class);
   }
 
 

@@ -2,47 +2,18 @@ import { RedirectUrl } from "../Router.js";
 import { getUserSessionData } from "../../utils/session.js";
 import { callAPI, callAPIFormData, callAPIWithoutJSONResponse } from "../../utils/api.js";
 import PrintError from "../PrintError.js"
-import img1 from "./1.jpg";
-import img2 from "./2.jpg";
 
 const API_BASE_URL = "/api/furniture/";
 const API_BASE_URL_ADMIN = "/api/admin/";
-const IMAGES = "../../../../images";
-let option;
-let furniture;
+const IMAGES = "http://localhost:8080/images/";
 
-let optionTaken = false;
+let furniture;
 
 let furniturePage = `
 <h4 id="pageTitle">Furniture User</h4>
 <div class="row">
-    <div class="col-6">
-      <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-      <ol class="carousel-indicators">
-        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-      </ol>
-      <div class="carousel-inner">
-        <div class="carousel-item active">
-          <img src="${img1}" class="d-block w-100" alt="1">
-        </div>
-        <div class="carousel-item">
-          <img src="${img2}" class="d-block w-100" alt="2">
-        </div>
-        <div class="carousel-item">
-          <img src="${img2}" class="d-block w-100" alt="3">
-        </div>
-      </div>
-      <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="sr-only">Previous</span>
-      </a>
-      <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="sr-only">Next</span>
-      </a>
-      </div>
+    <span id="carousel">
+    </span>
     </br>
     <div class="row">
       <div class="col-6">
@@ -182,14 +153,6 @@ const FurnitureAdmin = async(f) => {
 
   const user = getUserSessionData();
 
-  try {
-    let pictureFile = await callAPIWithoutJSONResponse(API_BASE_URL + "picture-furniture" , "GET", user.token);
-    console.log(pictureFile);
-  } catch (err) {
-    console.error("FurnitureAdmin::getFile", err);
-    PrintError(err);
-  }
-
   if(f == null){
     let queryString = window.location.search;
     let urlParams = new URLSearchParams(queryString);
@@ -213,6 +176,25 @@ const FurnitureAdmin = async(f) => {
   }else{
     furniture = f;
   }
+
+  try {
+    const pictures = await callAPI(API_BASE_URL + furniture.id + "/pictures-furniture", "GET", user.token);
+    onPicturesList(pictures);
+  } catch (err) {
+    console.error("FurnitureListPage::onPicturesList", err);
+    PrintError(err);
+  }
+
+  document.querySelector('#carouselPictures').addEventListener('slid.bs.carousel', (e) => {
+    console.log("switch");
+    var ele = $('#myCarousel .carousel-indicators li.active');
+    console.log('target: ' + ele.data('target') + 
+                ' value: ' + ele.data('value') + 
+                ' slide-to: ' + ele.data('slideTo'));
+})
+
+
+
 
   try {
     const types = await callAPI(API_BASE_URL + "allFurnitureTypes", "GET", undefined);
@@ -253,6 +235,49 @@ const onTypesList = (typesList) => {
 
 document.getElementById("type").innerHTML = typesListPage;
 }
+
+const onPicturesList = (picturesList) => {
+    let carousel = `<div  class="col-6">
+    <div id="carouselPictures" class="carousel slide" data-ride="carousel"><ol class="carousel-indicators">`;
+    for (let i = 0; i < picturesList.length; i++) {
+      if(i== 0){
+        carousel += `<li data-target="#carouselPictures" data-slide-to="${i}" class="active"></li>`
+      }
+      carousel += `<li data-target="#carouselPictures" data-slide-to="${i}"></li>`;
+    }
+    carousel += `</ol> <div class="carousel-inner">`;
+
+    let counter = 0;
+    picturesList.forEach(picture => {
+      if(counter == 0){
+        carousel += `<div class="carousel-item active"> 
+        <img src="${IMAGES}${picture.id}.${picture.name.substring(picture.name.lastIndexOf('.')+1)}" class="d-block w-100" alt="${counter}">
+        </div>`;
+      }else{
+        carousel += `<div class="carousel-item"> 
+        <img src="${IMAGES}${picture.id}.${picture.name.substring(picture.name.lastIndexOf('.')+1)}" class="d-block w-100" alt="${counter}">
+        </div>`;
+      }
+        counter ++;
+    });
+  
+  carousel += 
+    `</div>
+    <a class="carousel-control-prev" href="#carouselPictures" role="button" data-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselPictures" role="button" data-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="sr-only">Next</span>
+    </a>
+    </div>`;
+    document.querySelector("#carousel").innerHTML = carousel;
+}
+
+
+
+
 
 const onFurniture = () => {
   let prix = document.querySelector("#prix");
@@ -495,7 +520,21 @@ const onAddPicture = async (e) => {
   }
 }
 
-const onAddScrollingPicture = () => {
+const onAddScrollingPicture = (picture) => {
+
+
+
+  console.log(document.querySelector('div.carousel-item[active]'));
+
+
+
+  /*try {
+    await callAPIWithoutJSONResponse(API_BASE_URL + picture.id + "/scrolling-picture", "PUT", user.token);
+    document.getElementById("toast").innerHTML = `</br><h5 style="color:green">La photo a bien été modifiée</h5>`;
+  } catch (err) {
+    console.error("FurnitureAdmin::Change scrolling picture", err);
+    PrintError(err);
+  }*/
   console.log("AddScrollingPicture");
   
 }

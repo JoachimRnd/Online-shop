@@ -1,5 +1,6 @@
 package be.vinci.pae.utils;
 
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import be.vinci.pae.domain.address.AddressDTO;
 import be.vinci.pae.domain.address.AddressFactory;
 import be.vinci.pae.domain.address.AddressFactoryImpl;
@@ -14,8 +15,10 @@ import be.vinci.pae.domain.option.OptionFactory;
 import be.vinci.pae.domain.option.OptionFactoryImpl;
 import be.vinci.pae.domain.option.OptionUCC;
 import be.vinci.pae.domain.option.OptionUCCImpl;
+import be.vinci.pae.domain.picture.PictureDTO;
 import be.vinci.pae.domain.picture.PictureFactory;
 import be.vinci.pae.domain.picture.PictureFactoryImpl;
+import be.vinci.pae.domain.picture.PictureImpl;
 import be.vinci.pae.domain.picture.PictureUCC;
 import be.vinci.pae.domain.picture.PictureUCCImpl;
 import be.vinci.pae.domain.type.TypeFactory;
@@ -49,7 +52,6 @@ import be.vinci.pae.services.visitrequest.DAOVisitRequest;
 import be.vinci.pae.services.visitrequest.DAOVisitRequestImpl;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.ext.Provider;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 @Provider
 public class ApplicationBinder extends AbstractBinder {

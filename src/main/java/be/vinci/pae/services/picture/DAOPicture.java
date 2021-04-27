@@ -7,12 +7,12 @@ public interface DAOPicture {
 
   int addPicture(PictureDTO picture);
 
-  List<PictureDTO> selectPictureByFurnitureId(int idFurniture);
-
   boolean updateScrollingPicture(int pictureId);
 
   PictureDTO selectPictureById(int id);
 
   boolean deletePicture(int pictureId);
+
+  List<PictureDTO> selectPicturesByFurnitureId(int furnitureId);
 
 }

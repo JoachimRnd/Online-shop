@@ -1,15 +1,16 @@
 package be.vinci.pae.services.picture;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import be.vinci.pae.domain.picture.PictureDTO;
 import be.vinci.pae.domain.picture.PictureFactory;
 import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.services.furniture.DAOFurniture;
 import be.vinci.pae.utils.FatalException;
 import jakarta.inject.Inject;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
 
 public class DAOPictureImpl implements DAOPicture {
 
@@ -17,6 +18,7 @@ public class DAOPictureImpl implements DAOPicture {
   private String queryUpdateScrollingPicture;
   private String querySelectPictureById;
   private String queryDeletePictureById;
+  private String querySelectPicturesByFurnitureId;
 
   @Inject
   private DalBackendServices dalServices;
@@ -36,9 +38,12 @@ public class DAOPictureImpl implements DAOPicture {
     queryUpdateScrollingPicture =
         "UPDATE project.pictures SET scrolling_picture = ? WHERE picture_id = ?";
     querySelectPictureById =
-        "SELECT p.picture.id, p.name, p.visible_for_everyone, p.furniture, p.scrolling_picture "
+        "SELECT p.picture_id, p.name, p.visible_for_everyone, p.furniture, p.scrolling_picture "
             + "FROM project.pictures p WHERE p.picture_id = ?";
     queryDeletePictureById = "DELETE FROM project.pictures WHERE picture_id = ?";
+    querySelectPicturesByFurnitureId =
+        "SELECT p.picture_id, p.name, p.visible_for_everyone, p.furniture, p.scrolling_picture "
+            + "FROM project.pictures p WHERE p.furniture = ?";
   }
 
   @Override
@@ -53,6 +58,28 @@ public class DAOPictureImpl implements DAOPicture {
     } catch (Exception e) {
       e.printStackTrace();
       throw new FatalException("Data error : selectPictureById");
+    }
+  }
+
+  @Override
+  public List<PictureDTO> selectPicturesByFurnitureId(int furnitureId) {
+    try {
+      PreparedStatement selectPicturesByFurnitureId =
+          dalServices.getPreparedStatement(querySelectPicturesByFurnitureId);
+      selectPicturesByFurnitureId.setInt(1, furnitureId);
+      try (ResultSet rs = selectPicturesByFurnitureId.executeQuery()) {
+        List<PictureDTO> listPicture = new ArrayList<>();
+        PictureDTO picture;
+        do {
+          picture = createPicture(rs);
+          listPicture.add(picture);
+        } while (picture != null);
+        listPicture.remove(listPicture.size() - 1);
+        return listPicture;
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : selectPicturesByFurnitureId");
     }
   }
 
@@ -125,10 +152,5 @@ public class DAOPictureImpl implements DAOPicture {
   }
 
 
-  @Override
-  public List<PictureDTO> selectPictureByFurnitureId(int idFurniture) {
-    // TODO Auto-generated method stub
-    return null;
-  }
 
 }
