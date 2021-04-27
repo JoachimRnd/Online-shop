@@ -92,5 +92,47 @@ public class AddressImpl implements AddressDTO {
     this.country = country;
   }
 
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    AddressImpl other = (AddressImpl) obj;
+    if (buildingNumber == null) {
+      if (other.buildingNumber != null)
+        return false;
+    } else if (!buildingNumber.equals(other.buildingNumber))
+      return false;
+    if (commune == null) {
+      if (other.commune != null)
+        return false;
+    } else if (!commune.equals(other.commune))
+      return false;
+    if (country == null) {
+      if (other.country != null)
+        return false;
+    } else if (!country.equals(other.country))
+      return false;
+    if (postcode == null) {
+      if (other.postcode != null)
+        return false;
+    } else if (!postcode.equals(other.postcode))
+      return false;
+    if (street == null) {
+      if (other.street != null)
+        return false;
+    } else if (!street.equals(other.street))
+      return false;
+    if (unitNumber == null) {
+      if (other.unitNumber != null)
+        return false;
+    } else if (!unitNumber.equals(other.unitNumber))
+      return false;
+    return true;
+  }
+
 
 }
