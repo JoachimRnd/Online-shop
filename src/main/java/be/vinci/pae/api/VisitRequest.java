@@ -109,26 +109,45 @@ public class VisitRequest {
     AddressDTO address = visitRequest.getAddress();
     if (address == null || address.getStreet() == null || address.getStreet().isEmpty()
         || address.getBuildingNumber() == null || address.getBuildingNumber().isEmpty()
-        || address.getUnitNumber().isEmpty() || address.getPostcode() == null
-        || address.getPostcode().isEmpty() || address.getCommune() == null
-        || address.getCommune().isEmpty() || address.getCountry() == null
-        || address.getCountry().isEmpty()) {
+        || address.getPostcode() == null || address.getPostcode().isEmpty()
+        || address.getCommune() == null || address.getCommune().isEmpty()
+        || address.getCountry() == null || address.getCountry().isEmpty()) {
       return Response.status(Status.UNAUTHORIZED)
           .entity("Un ou plusieurs champs sont vides dans l'adresse").type(MediaType.TEXT_PLAIN)
           .build();
     }
-
-    List<FurnitureDTO> furnitureList = visitRequest.getFurnitureList();
+    if (visitRequest.getFurnitureList() == null || visitRequest.getFurnitureList().isEmpty()
+        || visitRequest.getTimeSlot() == null || visitRequest.getTimeSlot().isEmpty()) {
+      return Response.status(Status.UNAUTHORIZED)
+          .entity("Il n'y a pas de meuble ou la plage horaire est vide").type(MediaType.TEXT_PLAIN)
+          .build();
+    }
+    for (FurnitureDTO furniture : visitRequest.getFurnitureList()) {
+      if (furniture.getDescription() == null || furniture.getDescription().isEmpty()
+          || furniture.getType() == null) {
+        return Response.status(Status.UNAUTHORIZED)
+            .entity("Les informations encodées pour un meuble sont vides")
+            .type(MediaType.TEXT_PLAIN).build();
+      }
+    }
     List<InputStream> inputStreamList = new ArrayList<>();
     int count = 0;
     List<FormDataBodyPart> parts = formDataMultiPart.getFields("file" + count);
     while (parts != null) {
-      FurnitureDTO furniture = furnitureList.get(count);
+      FurnitureDTO furniture = visitRequest.getFurnitureList().get(count);
       List<PictureDTO> picturesList = new ArrayList<PictureDTO>();
 
       for (FormDataBodyPart part : parts) {
         PictureDTO picture = pictureFactory.getPicture();
         picture.setName(part.getFormDataContentDisposition().getFileName());
+        String pictureType =
+            picture.getName().toLowerCase().substring(picture.getName().lastIndexOf('.') + 1);
+        if (!pictureType.equals("jpg") && !pictureType.equals("jpeg")
+            && !pictureType.equals("png")) {
+          return Response.status(Status.UNAUTHORIZED)
+              .entity("Le type de la photo doit être jpg, jpeg ou png").type(MediaType.TEXT_PLAIN)
+              .build();
+        }
         picture.setAScrollingPicture(false);
         picture.setVisibleForEveryone(false);
         picturesList.add(picture);
@@ -139,12 +158,21 @@ public class VisitRequest {
       count++;
       parts = formDataMultiPart.getFields("file" + count);
     }
+    for (FurnitureDTO furniture : visitRequest.getFurnitureList()) {
+      if (furniture.getPicturesList() == null || furniture.getPicturesList().isEmpty()) {
+        return Response.status(Status.UNAUTHORIZED)
+            .entity("Il manque une photo pour un ou plusieurs meubles").type(MediaType.TEXT_PLAIN)
+            .build();
+      }
+    }
 
     UserDTO currentUser = (UserDTO) request.getProperty("user");
     visitRequest.setRequestDate(Date.from(Instant.now()));
     visitRequest = this.visitRequestUcc.addVisitRequest(visitRequest, currentUser, inputStreamList);
-
-    return Response.status(200).build();
-
+    if (visitRequest == null) {
+      return Response.serverError().build();
+    } else {
+      return Response.ok().build();
+    }
   }
 }
