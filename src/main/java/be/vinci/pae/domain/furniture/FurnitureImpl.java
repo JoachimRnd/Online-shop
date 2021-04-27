@@ -41,7 +41,7 @@ class FurnitureImpl implements Furniture {
   @JsonView(Views.Public.class)
   private List<PictureDTO> picturesList;
 
-  @JsonView(Views.Admin.class)
+  @JsonView(Views.Public.class)
   private double purchasePrice;
   @JsonView(Views.Admin.class)
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

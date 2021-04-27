@@ -252,7 +252,7 @@ public class Administration {
   }
 
   /**
-   * Get the furniture buy by an user.
+   * <<<<<<< HEAD Get the furniture buy by an user.
    *
    * @return List of FurnitureDTO
    */
@@ -278,7 +278,7 @@ public class Administration {
   }
 
   /*
-   * List furniture with id.
+   * List furniture with id. ======= Get a furniture. >>>>>>> refs/remotes/origin/master
    *
    * @return FurnitureDTO
    */
@@ -297,7 +297,7 @@ public class Administration {
 
   /**
    * Receive file from the frontend.
-   * 
+   *
    * @param enabled FormData
    * @param uploadedInputStream FormDataFile
    * @param fileDetail Details of the FormDataFile
@@ -329,5 +329,6 @@ public class Administration {
       return Response.ok().build();
     }
   }
+
 
 }

@@ -2,7 +2,8 @@ import { RedirectUrl } from "../Router.js";
 import { getUserSessionData } from "../../utils/session.js";
 import { callAPI } from "../../utils/api.js";
 import PrintError from "../PrintError.js"
-const API_BASE_URL = "/api/admin/";
+const API_BASE_URL_USER = "/api/furniture/";
+const API_BASE_URL_ADMIN = "/api/admin/";
 
 let userAdmin = `
 <div class="col-12">
@@ -49,18 +50,17 @@ let userAdmin = `
                 </div>
             </div>
         </div>
-        <div class="row">
+        div class="row">
             <div class="col-6">
                 <div class="form-group">
-                    <label for="furniture_selled">Meuble acheté par le client</label>
-                    <div id="furniture_selled"></div>
-                </div>
+                <label for="furniture_buyed">Meuble acheté par le client</label>
+                <div id="furniture_buyed"></div>
             </div>
-            <div class="col-6">
-                <div class="form-group">
-                    <label for="furniture_buyed">Meuble vendu par le client</label>
-                    <div id="furniture_buyed"></div>
-                </div>
+        </div>
+        <div class="col-6">
+            <div class="form-group">
+                <label for="furniture_selled">Meuble vendu par le client</label>
+                <div id="furniture_selled"></div>
             </div>
         </div>
     </div>
@@ -77,7 +77,7 @@ const UserAdmin = async(f) => {
         let urlParams = new URLSearchParams(queryString);
         let id = urlParams.get("id");
         try {
-            f = await callAPI(API_BASE_URL + "user/" + id , "GET", user.token);
+            f = await callAPI(API_BASE_URL_ADMIN + "user/" + id , "GET", user.token);
         } catch (err) {
             console.error(err);
             console.log("call 1")
@@ -87,11 +87,11 @@ const UserAdmin = async(f) => {
 
     onUserInformation(f);
 
-    let furnitureBuyByUser = await callAPI(API_BASE_URL + "furniturebuyby/" + f.id , "GET", user.token);
+    let furnitureBuyByUser = await callAPI(API_BASE_URL_USER + "furniturebuyby/" + f.id , "GET", user.token);
 
     onFurnitureBuy(furnitureBuyByUser);
 
-    let furnitureSellByUser = await callAPI(API_BASE_URL + "furnituresellby/" + f.id , "GET", user.token);
+    let furnitureSellByUser = await callAPI(API_BASE_URL_USER + "furnituresellby/" + f.id , "GET", user.token);
 
     onFurnitureSell(furnitureSellByUser);
 }

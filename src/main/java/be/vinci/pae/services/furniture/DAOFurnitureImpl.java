@@ -82,6 +82,23 @@ public class DAOFurnitureImpl implements DAOFurniture {
    * " f.favourite_picture FROM project.furniture f, project.visit_requests vr," +
    * " project.users u WHERE f.visit_request = vr.visit_request_id AND" +
    * " vr.customer = u.user_id AND u.last_name = ?";
+   * 
+   * querySelectFurnitureByType="SELECT f.furniture_id, f.description, f.type, f.visit_request, "
+   * +"f.purchase_price, f.withdrawal_date_from_customer, f.selling_price, f.special_sale_price, "
+   * +"f.deposit_date, f.selling_date, f.delivery_date, f.withdrawal_date_to_customer, f.buyer, "
+   * +"f.condition, f.unregistered_buyer_email, f.favourite_picture FROM project.furniture f, "
+   * +"project.furniture_type ft"+" WHERE ft.type_id = f.type AND ft.name = ?"
+   * ;querySelectFurnitureByPrice="SELECT f.furniture_id, f.description, f.type, f.visit_request, "
+   * +"f.purchase_price, f.withdrawal_date_from_customer, f.selling_price, f.special_sale_price, "
+   * +"f.deposit_date, f.selling_date, f.delivery_date, f.withdrawal_date_to_customer, f.buyer, "
+   * +"f.condition, f.unregistered_buyer_email, f.favourite_picture FROM project.furniture f "
+   * +"WHERE f.selling_price = ?"
+   * ;querySelectFurnitureByUser="SELECT f.furniture_id, f.description, f.type, f.visit_request, "
+   * +"f.purchase_price, f.withdrawal_date_from_customer, f.selling_price, f.special_sale_price, "
+   * +"f.deposit_date, f.selling_date, f.delivery_date, f.withdrawal_date_to_customer, f.buyer, "
+   * +"f.condition, f.unregistered_buyer_email, f.favourite_picture FROM project.furniture f, "
+   * +"project.visit_requests vr,"+" project.users u WHERE f.visit_request = vr.visit_request_id "
+   * +"AND vr.customer = u.user_id AND u.last_name = ?";
    */
 
   /**
@@ -156,15 +173,17 @@ public class DAOFurnitureImpl implements DAOFurniture {
     queryUpdateBuyer = "UPDATE project.furniture SET buyer = ? WHERE furniture_id = ?";
     queryUpdateFavouritePicture =
         "UPDATE project.furniture SET favourite_picture = ? WHERE furniture_id = ?";
-    querySelectFurnituresInOptionUser =
-        "SELECT f.furniture_id, f.description, f.type, f.visit_request, f.purchase_price, f.withdrawal_date_from_customer, "
-            + "f.selling_price, f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date, f.withdrawal_date_to_customer, "
-            + "f.buyer,f.condition, f.unregistered_buyer_email, f.favourite_picture FROM project.furniture f, project.options o "
-            + "WHERE o.furniture = f.furniture_id AND f.condition = ? AND o.status = ? AND o.buyer = ?;";
-    querySelectFurnitureByFavouritePicture =
-        "SELECT f.furniture_id, f.description, f.type, f.visit_request, f.purchase_price, f.withdrawal_date_from_customer, "
-            + "f.selling_price, f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date, f.withdrawal_date_to_customer, "
-            + "f.buyer,f.condition, f.unregistered_buyer_email, f.favourite_picture FROM project.furniture f WHERE f.favourite_picture = ?";
+    querySelectFurnituresInOptionUser = "SELECT f.furniture_id, f.description, f.type, "
+        + "f.visit_request, f.purchase_price, f.withdrawal_date_from_customer, f.selling_price, "
+        + "f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date, "
+        + "f.withdrawal_date_to_customer, f.buyer,f.condition, f.unregistered_buyer_email, "
+        + "f.favourite_picture FROM project.furniture f, project.options o "
+        + "WHERE o.furniture = f.furniture_id AND f.condition = ? AND o.status = ? AND o.buyer = ?";
+    querySelectFurnitureByFavouritePicture = "SELECT f.furniture_id, f.description, f.type, "
+        + "f.visit_request, f.purchase_price, f.withdrawal_date_from_customer, f.selling_price, "
+        + "f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date, "
+        + "f.withdrawal_date_to_customer, f.buyer,f.condition, f.unregistered_buyer_email, "
+        + "f.favourite_picture FROM project.furniture f WHERE f.favourite_picture = ?";
   }
 
   @Override
@@ -283,6 +302,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
     return furniture;
   }
 
+
   @Override
   public List<FurnitureDTO> selectFurnitureByType(String type) {
     // TODO Auto-generated method stub
@@ -303,6 +323,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
     // TODO Auto-generated method stub
     return null;
     /*
+     * 
      * List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>(); try { PreparedStatement
      * selectFurnitureByPrice = dalServices.getPreparedStatement(querySelectFurnitureByPrice);
      * selectFurnitureByPrice.setDouble(1, price); ResultSet rs =
@@ -462,6 +483,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
     }
   }
 
+  @Override
   public boolean updateDescription(int id, String description) {
     try {
       PreparedStatement updateDescription =
@@ -556,7 +578,6 @@ public class DAOFurnitureImpl implements DAOFurniture {
   }
 
 
-
   @Override
   public List<FurnitureDTO> selectSalesFurniture() {
     try {
@@ -621,7 +642,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
       }
     } catch (Exception e) {
       e.printStackTrace();
-      throw new FatalException("Data error : selectFurnituresFiltered");
+      throw new FatalException("Data error : getFurnitureBuyBy");
     }
   }
 
@@ -643,10 +664,12 @@ public class DAOFurnitureImpl implements DAOFurniture {
       }
     } catch (Exception e) {
       e.printStackTrace();
-      throw new FatalException("Data error : selectFurnituresFiltered");
+      throw new FatalException("Data error : getFurnitureSellBy");
     }
   }
 
+
+  @Override
   public boolean updateFavouritePicture(int id, int pictureId) {
     try {
       PreparedStatement updateFavouritePicture =

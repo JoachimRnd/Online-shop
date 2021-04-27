@@ -8,4 +8,6 @@ public interface DAOVisitRequest {
 
   VisitRequestDTO selectVisitRequestById(int id);
 
+  VisitRequestDTO selectVisitRequestByUserAndFurniture(int userId, int furnitureId);
+
 }

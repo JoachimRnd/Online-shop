@@ -1,15 +1,15 @@
 package be.vinci.pae.services.picture;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
 import be.vinci.pae.domain.picture.PictureDTO;
 import be.vinci.pae.domain.picture.PictureFactory;
 import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.services.furniture.DAOFurniture;
 import be.vinci.pae.utils.FatalException;
 import jakarta.inject.Inject;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
 public class DAOPictureImpl implements DAOPicture {
 
@@ -27,7 +27,9 @@ public class DAOPictureImpl implements DAOPicture {
   @Inject
   private PictureFactory pictureFactory;
 
-
+  /**
+   * Contructor of DAOPictureImpl. Contain queries.
+   */
   public DAOPictureImpl() {
     queryInsertPicture = "INSERT INTO project.pictures (picture_id,name,visible_for_everyone,"
         + "furniture,scrolling_picture) VALUES (DEFAULT,?,?,?,?)";
@@ -67,7 +69,6 @@ public class DAOPictureImpl implements DAOPicture {
     }
     return picture;
   }
-
 
 
   @Override
@@ -122,7 +123,6 @@ public class DAOPictureImpl implements DAOPicture {
       throw new FatalException("Data error : updateScrollingPicture");
     }
   }
-
 
 
   @Override
