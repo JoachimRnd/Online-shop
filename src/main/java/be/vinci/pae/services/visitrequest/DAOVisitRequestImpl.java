@@ -6,7 +6,6 @@ import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.services.address.DAOAddress;
 import be.vinci.pae.services.user.DAOUser;
 import be.vinci.pae.utils.FatalException;
-import be.vinci.pae.utils.ValueLink.VisitRequestStatus;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -96,7 +95,7 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
      * FatalException("Data error : selectTypeById"); }
      */
   }
-
+  /*
   private VisitRequestDTO createVisitRequest(ResultSet rs) throws SQLException {
     VisitRequestDTO visitRequest = null;
     if (rs.next()) {
@@ -113,5 +112,5 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
     return visitRequest;
   }
 
-
+ */
 }
