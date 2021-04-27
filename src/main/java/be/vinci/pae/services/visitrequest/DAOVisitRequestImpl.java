@@ -1,11 +1,8 @@
 package be.vinci.pae.services.visitrequest;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
 import be.vinci.pae.domain.visitrequest.VisitRequestDTO;
 import be.vinci.pae.domain.visitrequest.VisitRequestFactory;
+import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.services.address.DAOAddress;
 import be.vinci.pae.services.user.DAOUser;
 import be.vinci.pae.utils.FatalException;
@@ -14,6 +11,7 @@ import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 
 public class DAOVisitRequestImpl implements DAOVisitRequest {
@@ -101,24 +99,6 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
      * visitRequest; } } catch (SQLException e) { e.printStackTrace(); throw new
      * FatalException("Data error : selectTypeById"); }
      */
-  }
-
-  @Override
-  public VisitRequestDTO selectVisitRequestByUserAndFurniture(int furnitureId, int userId) {
-    try {
-      PreparedStatement selectVisitRequestByUserAndFurniture =
-          dalServices.getPreparedStatement(querySelectVisitRequestByUserAndFurniture);
-      selectVisitRequestByUserAndFurniture.setInt(1, userId);
-      selectVisitRequestByUserAndFurniture.setInt(2, furnitureId);
-      try (ResultSet rs = selectVisitRequestByUserAndFurniture.executeQuery()) {
-        VisitRequestDTO vs = createVisitRequest(rs);
-        return vs;
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new FatalException("Data error : selectVisitRequestByUserAndFurniture");
-    }
-
   }
 
   private VisitRequestDTO createVisitRequest(ResultSet rs) throws SQLException {

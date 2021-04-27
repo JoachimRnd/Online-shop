@@ -10,11 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import be.vinci.pae.domain.address.AddressDTO;
-import be.vinci.pae.domain.address.AddressFactory;
-import be.vinci.pae.services.DalBackendServices;
-import be.vinci.pae.utils.FatalException;
-import jakarta.inject.Inject;
 
 public class DAOAddressImpl implements DAOAddress {
 
@@ -29,9 +24,6 @@ public class DAOAddressImpl implements DAOAddress {
 
   @Inject
   DalBackendServices dalBackendServices;
-
-  @Inject
-  AddressFactory addressFactory;
 
   @Inject
   AddressFactory addressFactory;
