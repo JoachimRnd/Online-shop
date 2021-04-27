@@ -68,7 +68,7 @@ public class VisitRequest {
   }
 
   /**
-   * Add a visitRequest
+   * Add a visitRequest.
    *
    * @return Http response
    */

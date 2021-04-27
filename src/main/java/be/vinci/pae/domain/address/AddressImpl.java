@@ -93,6 +93,20 @@ public class AddressImpl implements AddressDTO {
   }
 
   @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((buildingNumber == null) ? 0 : buildingNumber.hashCode());
+    result = prime * result + ((commune == null) ? 0 : commune.hashCode());
+    result = prime * result + ((country == null) ? 0 : country.hashCode());
+    result = prime * result + id;
+    result = prime * result + ((postcode == null) ? 0 : postcode.hashCode());
+    result = prime * result + ((street == null) ? 0 : street.hashCode());
+    result = prime * result + ((unitNumber == null) ? 0 : unitNumber.hashCode());
+    return result;
+  }
+
+  @Override
   public boolean equals(Object obj) {
     if (this == obj) {
       return true;
@@ -148,6 +162,7 @@ public class AddressImpl implements AddressDTO {
     }
     return true;
   }
+
 
 
 }

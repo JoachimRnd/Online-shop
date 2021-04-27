@@ -277,8 +277,8 @@ public class Administration {
     return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureSellBy(id), FurnitureDTO.class);
   }
 
-  /*
-   * Get a furniture
+  /**
+   * Get a furniture.
    *
    * @return FurnitureDTO
    */
