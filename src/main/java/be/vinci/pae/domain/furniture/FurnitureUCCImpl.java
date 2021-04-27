@@ -471,23 +471,18 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   }
 
   private void checkFurniture(FurnitureDTO furnitureDTO) {
-    if (furnitureDTO != null) {
-      if (furnitureDTO.getWithdrawalDateToCustomer() != null) {
-        Date now = new Date();
-        if (furnitureDTO.getCondition() == FurnitureCondition.vendu && TimeUnit.DAYS
-            .convert(furnitureDTO.getWithdrawalDateToCustomer().getTime() - now.getTime(),
-                TimeUnit.MILLISECONDS) < 0) {
-          if (modifyCondition(furnitureDTO.getId(), FurnitureCondition.reserve)) {
-            furnitureDTO.setCondition(FurnitureCondition.reserve);
-          }
-        }
-        if (furnitureDTO.getCondition() == FurnitureCondition.reserve && TimeUnit.DAYS
-            .convert(furnitureDTO.getWithdrawalDateToCustomer().getTime() - now.getTime(),
-                TimeUnit.MILLISECONDS) > 366) {
-          if (returnToSelling(furnitureDTO.getId())) {
-            furnitureDTO.setCondition(FurnitureCondition.en_vente);
-          }
-        }
+    if (furnitureDTO != null && furnitureDTO.getWithdrawalDateToCustomer() != null) {
+      Date now = new Date();
+      if (furnitureDTO.getCondition() == FurnitureCondition.vendu && TimeUnit.DAYS
+          .convert(furnitureDTO.getWithdrawalDateToCustomer().getTime() - now.getTime(),
+              TimeUnit.MILLISECONDS) < 0 && modifyCondition(furnitureDTO.getId(),
+          FurnitureCondition.reserve)) {
+        furnitureDTO.setCondition(FurnitureCondition.reserve);
+      }
+      if (furnitureDTO.getCondition() == FurnitureCondition.reserve && TimeUnit.DAYS
+          .convert(furnitureDTO.getWithdrawalDateToCustomer().getTime() - now.getTime(),
+              TimeUnit.MILLISECONDS) > 366 && returnToSelling(furnitureDTO.getId())) {
+        furnitureDTO.setCondition(FurnitureCondition.en_vente);
       }
     }
   }

@@ -17,7 +17,6 @@ import java.sql.Timestamp;
 public class DAOVisitRequestImpl implements DAOVisitRequest {
 
   private String queryAddVisitRequest;
-  private String querySelectVisitRequestByUserAndFurniture;
 
   @Inject
   private DalBackendServices dalServices;
@@ -45,10 +44,6 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
         "INSERT INTO project.visit_requests (visit_request_id, request_date, time_slot, address,"
             + " status, chosen_date_time, cancellation_reason, customer) VALUES"
             + " (DEFAULT,?,?,?,?,NULL,NULL,?)";
-    querySelectVisitRequestByUserAndFurniture = "SELECT v.visit_request_id, v.request_date, "
-        + "v.time_slot, v.address, v.status, v.chosen_date_time, v.cancellation_reason, v.customer "
-        + "+ FROM project.visit_requests v, project.furniture f WHERE v.customer = ? "
-        + "AND f.furniture_id = ? AND v.visit_request_id = f.visit_request;";
   }
 
   @Override

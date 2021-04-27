@@ -189,7 +189,7 @@ public class OptionUCCImpl implements OptionUCC {
   private void verifyOptionStatus(OptionDTO option) {
     if (option != null && option.getStatus().equals(
         OptionStatus.en_cours)
-        && TimeUnit.DAYS.convert((new Date()).getTime() - option.getDate().getTime(),
+        && TimeUnit.DAYS.convert(new Date().getTime() - option.getDate().getTime(),
         TimeUnit.MILLISECONDS) > option.getDuration()) {
       try {
         dalServices.startTransaction();

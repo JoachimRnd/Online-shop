@@ -1,14 +1,6 @@
 package be.vinci.pae.services.user;
 
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import be.vinci.pae.domain.address.AddressDTO;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.user.UserFactory;
 import be.vinci.pae.services.DalBackendServices;
@@ -16,6 +8,13 @@ import be.vinci.pae.services.address.DAOAddress;
 import be.vinci.pae.utils.FatalException;
 import be.vinci.pae.utils.ValueLink.UserType;
 import jakarta.inject.Inject;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class DAOUserImpl implements DAOUser {
 

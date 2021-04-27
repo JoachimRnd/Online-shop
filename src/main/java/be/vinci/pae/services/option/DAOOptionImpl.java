@@ -19,7 +19,6 @@ public class DAOOptionImpl implements DAOOption {
 
   private String querySelectOptionsOfFurniture;
   private String querySelectOptionByFurnitureId;
-  private String querySelectOptionsOfBuyer;
   private String querySelectOptionsOfBuyerFromFurniture;
   private String queryAddOption;
   private String queryChangeStatusOption;
@@ -40,8 +39,6 @@ public class DAOOptionImpl implements DAOOption {
   public DAOOptionImpl() {
     querySelectOptionsOfFurniture = "SELECT option_id, buyer, furniture, duration, date, "
         + "status FROM project.options WHERE furniture = ?";
-    querySelectOptionsOfBuyer = "SELECT option_id, buyer, furniture, duration, date, "
-        + "status FROM project.options WHERE buyer = ?";
     querySelectOptionsOfBuyerFromFurniture = "SELECT option_id, buyer, furniture, duration, date, "
         + "status FROM project.options WHERE buyer = ? AND furniture = ?";
     queryAddOption = "INSERT INTO project.options (option_id, buyer, furniture, duration, date, "
