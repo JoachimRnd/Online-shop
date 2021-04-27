@@ -68,7 +68,7 @@ import PrintError from "../Components/PrintError";
     method.toLowerCase() === "put"
   )
   options.headers = headers;
-  try {
+    try {
     const response = await fetch(endpoint, options);
 
     if (!response.ok) {      

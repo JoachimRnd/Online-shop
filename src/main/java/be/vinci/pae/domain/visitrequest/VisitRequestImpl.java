@@ -1,9 +1,11 @@
 package be.vinci.pae.domain.visitrequest;
 
 import java.util.Date;
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import be.vinci.pae.domain.address.AddressDTO;
+import be.vinci.pae.domain.furniture.FurnitureDTO;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.utils.ValueLink.VisitRequestStatus;
 import views.Views;
@@ -21,6 +23,8 @@ public class VisitRequestImpl implements VisitRequest {
   private AddressDTO address;
   @JsonView(Views.Public.class)
   private VisitRequestStatus status;
+  @JsonView(Views.Public.class)
+  private List<FurnitureDTO> furnitureList;
   @JsonView(Views.Public.class)
   private Date chosenDateTime;
   @JsonView(Views.Public.class)
@@ -76,6 +80,16 @@ public class VisitRequestImpl implements VisitRequest {
   @Override
   public void setStatus(VisitRequestStatus status) {
     this.status = status;
+  }
+
+  @Override
+  public List<FurnitureDTO> getFurnitureList() {
+    return furnitureList;
+  }
+
+  @Override
+  public void setFurnitureList(List<FurnitureDTO> furnitureList) {
+    this.furnitureList = furnitureList;
   }
 
   @Override

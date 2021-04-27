@@ -1,15 +1,15 @@
 package be.vinci.pae.services.type;
 
-import be.vinci.pae.domain.type.TypeDTO;
-import be.vinci.pae.domain.type.TypeFactory;
-import be.vinci.pae.services.DalBackendServices;
-import be.vinci.pae.utils.FatalException;
-import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import be.vinci.pae.domain.type.TypeDTO;
+import be.vinci.pae.domain.type.TypeFactory;
+import be.vinci.pae.services.DalBackendServices;
+import be.vinci.pae.utils.FatalException;
+import jakarta.inject.Inject;
 
 public class DAOTypeImpl implements DAOType {
 
@@ -106,8 +106,8 @@ public class DAOTypeImpl implements DAOType {
   @Override
   public List<String> getAllTypesNames() {
     try {
-      PreparedStatement selectAllTypes = this.dalServices
-          .getPreparedStatement(querySelectAllTypesNames);
+      PreparedStatement selectAllTypes =
+          this.dalServices.getPreparedStatement(querySelectAllTypesNames);
       List<String> allTypes = new ArrayList<>();
       try (ResultSet rs = selectAllTypes.executeQuery()) {
         while (rs.next()) {

@@ -1,7 +1,7 @@
 package be.vinci.pae.services.address;
 
-import be.vinci.pae.domain.address.AddressDTO;
 import java.util.List;
+import be.vinci.pae.domain.address.AddressDTO;
 
 public interface DAOAddress {
 
@@ -12,4 +12,6 @@ public interface DAOAddress {
   int addAddress(AddressDTO addressDTO);
 
   AddressDTO getAddressById(int id);
+
+  AddressDTO getAddressByUserId(int userId);
 }

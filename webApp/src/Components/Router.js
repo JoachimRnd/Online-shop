@@ -3,6 +3,7 @@ import LoginPage from "./LoginPage.js";
 import RegisterPage from "./RegisterPage.js";
 import LogoutComponent from "./LogoutComponent.js";
 import ErrorPage from "./ErrorPage.js";
+import VisitPage from "./VisitPage.js";
 import FurnitureUser from "./Furniture/FurnitureUser.js";
 import FurnitureAdmin from "./Furniture/FurnitureAdmin";
 import FurnitureListPage from "./Furniture/FurnitureListPage";
@@ -22,6 +23,7 @@ const routes = {
   "/register": RegisterPage,
   "/logout": LogoutComponent,
   "/error": ErrorPage,
+  "/visit": VisitPage,
   "/furniture": FurnitureUser,
   "/search": FurnitureListPage,
   "/myfurnitures": FurnitureUserListPage,

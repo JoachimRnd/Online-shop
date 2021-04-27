@@ -32,4 +32,5 @@ public interface AddressDTO {
   int getId();
 
   void setId(int id);
+
 }

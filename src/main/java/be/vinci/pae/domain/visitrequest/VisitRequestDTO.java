@@ -1,8 +1,10 @@
 package be.vinci.pae.domain.visitrequest;
 
 import java.util.Date;
+import java.util.List;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import be.vinci.pae.domain.address.AddressDTO;
+import be.vinci.pae.domain.furniture.FurnitureDTO;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.utils.ValueLink.VisitRequestStatus;
 
@@ -40,4 +42,8 @@ public interface VisitRequestDTO {
   UserDTO getCustomer();
 
   void setCustomer(UserDTO customer);
+
+  List<FurnitureDTO> getFurnitureList();
+
+  void setFurnitureList(List<FurnitureDTO> furnitureList);
 }

@@ -10,6 +10,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import be.vinci.pae.domain.address.AddressDTO;
+import be.vinci.pae.domain.address.AddressFactory;
+import be.vinci.pae.services.DalBackendServices;
+import be.vinci.pae.utils.FatalException;
+import jakarta.inject.Inject;
 
 public class DAOAddressImpl implements DAOAddress {
 
@@ -19,6 +24,8 @@ public class DAOAddressImpl implements DAOAddress {
   private String queryAddAddressWithUnitNumber;
   private String queryAddAddressWithoutUnitNumber;
   private String querySelectAddressById;
+  private String queryAddAddress;
+  private String querySelectAddressByUserId;
 
   @Inject
   DalBackendServices dalBackendServices;
@@ -26,6 +33,12 @@ public class DAOAddressImpl implements DAOAddress {
   @Inject
   AddressFactory addressFactory;
 
+  @Inject
+  AddressFactory addressFactory;
+
+  /**
+   * constructor of DAOAddressImpl. contains queries.
+   */
   public DAOAddressImpl() {
     querySelectAllCommunes = "SELECT DISTINCT a.commune FROM project.addresses a";
     querySelectAddressIdWithUnitNumber =
@@ -42,13 +55,20 @@ public class DAOAddressImpl implements DAOAddress {
         + "building_number, postcode, commune, country) VALUES (DEFAULT, ?, ?, ?, ?, ?)";
     querySelectAddressById = "SELECT a.address_id, a.street, a.building_number, a.unit_number, "
         + "a.postcode, a.commune, a.country FROM project.addresses a WHERE a.address_id = ?";
+    queryAddAddress = "INSERT INTO project.addresses (address_id, street, "
+        + "building_number, unit_number, postcode, commune, country) "
+        + "VALUES (DEFAULT, ?, ?, ?, ?, ?, ?)";
+    querySelectAddressByUserId =
+        "SELECT a.address_id, a.street, a.building_number, a.unit_number, a.postcode,"
+            + " a.commune, a.country FROM project.addresses a, project.users u"
+            + " WHERE a.address_id = u.address AND u.user_id = ?";
   }
 
   @Override
   public List<String> getAllCommunes() {
     try {
-      PreparedStatement selectAllCommunes = this.dalBackendServices
-          .getPreparedStatement(querySelectAllCommunes);
+      PreparedStatement selectAllCommunes =
+          this.dalBackendServices.getPreparedStatement(querySelectAllCommunes);
       List<String> allCommunes = new ArrayList<>();
       try (ResultSet rs = selectAllCommunes.executeQuery()) {
         while (rs.next()) {
@@ -133,6 +153,21 @@ public class DAOAddressImpl implements DAOAddress {
     } catch (SQLException e) {
       e.printStackTrace();
       throw new FatalException("Database error : getAllCommunes");
+    }
+  }
+
+  @Override
+  public AddressDTO getAddressByUserId(int userId) {
+    try {
+      PreparedStatement selectAddressByUserId =
+          this.dalBackendServices.getPreparedStatement(querySelectAddressByUserId);
+      selectAddressByUserId.setInt(1, userId);
+      try (ResultSet rs = selectAddressByUserId.executeQuery()) {
+        return createAddress(rs);
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException("Database error : getAddressByUserId");
     }
   }
 
