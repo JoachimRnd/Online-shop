@@ -1,22 +1,25 @@
 package be.vinci.pae.domain.furniture;
 
+import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
 import be.vinci.pae.domain.picture.PictureDTO;
 import be.vinci.pae.domain.type.TypeDTO;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.visitrequest.VisitRequestDTO;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonView;
-import java.util.Date;
 import views.Views;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class FurnitureImpl implements Furniture {
 
-  //@TODO Pourquoi le format.shape ?
+  // @TODO Pourquoi le format.shape ?
+  // Pcq c'est une solution qu'on a vue en backend-java et formater la date dans le frontend était
+  // pas si simple que ça
   // Pourquoi pas récup le Timestamp et le formater dans le frontend ? => Plus universel
   // Pourquoi sous le format yyyy-MM-dd et pas dd-MM-yyyy ?
+  // Il fallait ce format là pour mettre l'input.value dans un datePicker bootstrap
 
   @JsonView(Views.Public.class)
   private int id;

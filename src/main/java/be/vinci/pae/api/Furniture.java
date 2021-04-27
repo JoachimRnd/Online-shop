@@ -1,5 +1,7 @@
 package be.vinci.pae.api;
 
+import org.glassfish.jersey.server.ContainerRequest;
+import com.fasterxml.jackson.databind.JsonNode;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.api.utils.Json;
@@ -12,7 +14,6 @@ import be.vinci.pae.domain.type.TypeDTO;
 import be.vinci.pae.domain.type.TypeUCC;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
-import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -27,10 +28,6 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-import java.io.File;
-import java.time.LocalDate;
-import java.util.List;
-import org.glassfish.jersey.server.ContainerRequest;
 
 @Singleton
 @Path("/furniture")
@@ -83,8 +80,8 @@ public class Furniture {
   @Path("/{idFurniture}")
   @Produces(MediaType.APPLICATION_JSON)
   public FurnitureDTO getFurniture(@PathParam("idFurniture") int idFurniture) {
-    return Json
-        .filterPublicJsonView(furnitureUCC.getFurnitureById(idFurniture), FurnitureDTO.class);
+    return Json.filterPublicJsonView(furnitureUCC.getFurnitureById(idFurniture),
+        FurnitureDTO.class);
   }
 
   /**
@@ -96,8 +93,8 @@ public class Furniture {
   @Path("/{idFurniture}/option")
   @Produces(MediaType.APPLICATION_JSON)
   public OptionDTO getOption(@PathParam("idFurniture") int idFurniture) {
-    return Json
-        .filterPublicJsonView(optionUCC.getLastOptionOfFurniture(idFurniture), OptionDTO.class);
+    return Json.filterPublicJsonView(optionUCC.getLastOptionOfFurniture(idFurniture),
+        OptionDTO.class);
   }
 
   /**
@@ -125,9 +122,8 @@ public class Furniture {
   public FurnitureDTO getPersonalFurniture(@PathParam("idFurniture") int idFurniture,
       @Context ContainerRequest request) {
     UserDTO currentUser = (UserDTO) request.getProperty("user");
-    return Json
-        .filterPublicJsonView(furnitureUCC.getPersonalFurnitureById(idFurniture, currentUser),
-            FurnitureDTO.class);
+    return Json.filterPublicJsonView(
+        furnitureUCC.getPersonalFurnitureById(idFurniture, currentUser), FurnitureDTO.class);
   }
 
 
@@ -163,7 +159,7 @@ public class Furniture {
     }
     return optionUCC.addOption(idFurniture, json.get("duration").asInt(),
         (UserDTO) request.getProperty("user")) ? Response.ok().build()
-        : Response.serverError().build();
+            : Response.serverError().build();
   }
 
   /**
@@ -192,7 +188,7 @@ public class Furniture {
     return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureSellBy(id), FurnitureDTO.class);
   }
 
-  //@TODO AuthorizeAdmin => Administration
+  // @TODO AuthorizeAdmin => Administration
 
   /**
    * Get an image.
@@ -204,12 +200,12 @@ public class Furniture {
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @AuthorizeAdmin
   public Response getFile() {
-    //@TODO Utilité ?
+    // @TODO Utilité ?
+    // Plus utile car on va passer par static
     File file = new File(".\\images\\23.png");
     System.out.println(file);
     return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
-        .header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"")
-        .build();
+        .header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"").build();
   }
 
   /**
@@ -223,7 +219,7 @@ public class Furniture {
   @AuthorizeAdmin
   public Response modifyFavouritePicture(@PathParam("idFurniture") int idFurniture,
       @Context ContainerRequest request, JsonNode json) {
-    //@TODO Soucis ICI json.has et json.get différents
+    // @TODO Soucis ICI json.has et json.get différents
     if (!json.has("idPicture")
         || !furnitureUCC.modifyFavouritePicture(idFurniture, json.get("picture_id").asInt())) {
       return Response.status(Status.UNAUTHORIZED).entity("Erreur ajouter photo favorite")
@@ -272,7 +268,7 @@ public class Furniture {
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public Response modifyFurniture(@PathParam("id") int id, JsonNode json) {
-    //@TODO A REFAIRE !!!!!
+    // @TODO A REFAIRE !!!!!
     boolean noError = true;
     boolean empty = true;
 
