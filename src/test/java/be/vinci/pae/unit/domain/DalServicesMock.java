@@ -23,4 +23,19 @@ public class DalServicesMock implements DalServices {
   public void closeConnection() {
 
   }
+
+  @Override
+  public void rollbackMultipleTransaction() {
+    
+  }
+
+  @Override
+  public void commitMultipleTransactions() {
+
+  }
+
+  @Override
+  public void startMultipleTransactions() {
+
+  }
 }
