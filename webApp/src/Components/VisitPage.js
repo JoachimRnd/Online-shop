@@ -191,7 +191,7 @@ const onVisitRequest = async (e) => {
     }
     try {
         const visitRequested = await callAPIFormData(
-          API_BASE_URL + "image",
+          API_BASE_URL + "add",
           "POST",
           user.token,
           fd

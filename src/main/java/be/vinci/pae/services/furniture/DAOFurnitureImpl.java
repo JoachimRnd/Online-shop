@@ -124,7 +124,8 @@ public class DAOFurnitureImpl implements DAOFurniture {
         + " visit_request, purchase_price, withdrawal_date_from_customer, selling_price,"
         + " special_sale_price, deposit_date, selling_date, delivery_date,"
         + " withdrawal_date_to_customer, buyer, condition, unregistered_buyer_email,"
-        + " favourite_picture) VALUES (DEFAULT,?,?,?,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,?,NULL,NULL)";
+        + " favourite_picture) VALUES (DEFAULT,?,?,?,"
+        + "NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,?,NULL,NULL)";
     queryUpdateSellingDate = "UPDATE project.furniture SET selling_date = ? WHERE furniture_id = ?";
     queryUpdateCondition = "UPDATE project.furniture SET condition = ? WHERE furniture_id = ?";
     queryUpdateDepositDate = "UPDATE project.furniture SET deposit_date = ? WHERE furniture_id = ?";

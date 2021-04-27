@@ -51,24 +51,6 @@ public class VisitRequest {
   AddressUCC addressUcc;
 
   /**
-   * Add a furniture type.
-   *
-   * @return http response
-   */
-  @POST
-  @Path("/add")
-  @Produces(MediaType.APPLICATION_JSON)
-  @Authorize
-  public Response addFurnitureType(VisitRequestDTO visitRequest,
-      @Context ContainerRequest request) {
-    UserDTO currentUser = (UserDTO) request.getProperty("user");
-    visitRequest.setRequestDate(Date.from(Instant.now()));
-    // visitRequest = this.visitRequestUcc.addVisitRequest(visitRequest, currentUser);
-
-    return Response.ok().build();
-  }
-
-  /**
    * List furniture with id.
    *
    * @return FurnitureDTO
@@ -86,15 +68,12 @@ public class VisitRequest {
   }
 
   /**
-   * Receive file from the frontend.
+   * Add a visitRequest
    *
-   * @param enabled FormData
-   * @param uploadedInputStream FormDataFile
-   * @param fileDetail Details of the FormDataFile
-   * @return Status code
+   * @return Http response
    */
   @POST
-  @Path("image") // Your Path or URL to call this service
+  @Path("/add") // Your Path or URL to call this service
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Authorize
   public Response uploadFile(FormDataMultiPart formDataMultiPart,

@@ -94,43 +94,58 @@ public class AddressImpl implements AddressDTO {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (obj == null) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (getClass() != obj.getClass()) {
       return false;
+    }
     AddressImpl other = (AddressImpl) obj;
     if (buildingNumber == null) {
-      if (other.buildingNumber != null)
+      if (other.buildingNumber != null) {
         return false;
-    } else if (!buildingNumber.equals(other.buildingNumber))
+      }
+    } else if (!buildingNumber.equals(other.buildingNumber)) {
       return false;
+    }
     if (commune == null) {
-      if (other.commune != null)
+      if (other.commune != null) {
         return false;
-    } else if (!commune.equals(other.commune))
+      }
+    } else if (!commune.equals(other.commune)) {
       return false;
+    }
     if (country == null) {
-      if (other.country != null)
+      if (other.country != null) {
         return false;
-    } else if (!country.equals(other.country))
+      }
+    } else if (!country.equals(other.country)) {
       return false;
+    }
     if (postcode == null) {
-      if (other.postcode != null)
+      if (other.postcode != null) {
         return false;
-    } else if (!postcode.equals(other.postcode))
+      }
+    } else if (!postcode.equals(other.postcode)) {
       return false;
+    }
     if (street == null) {
-      if (other.street != null)
+      if (other.street != null) {
         return false;
-    } else if (!street.equals(other.street))
+      }
+    } else if (!street.equals(other.street)) {
       return false;
+    }
     if (unitNumber == null) {
-      if (other.unitNumber != null)
+      if (other.unitNumber != null) {
         return false;
-    } else if (!unitNumber.equals(other.unitNumber))
+      }
+    } else if (!unitNumber.equals(other.unitNumber)) {
       return false;
+    }
     return true;
   }
 

@@ -42,7 +42,8 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
   public DAOVisitRequestImpl() {
     queryAddVisitRequest =
         "INSERT INTO project.visit_requests (visit_request_id, request_date, time_slot, address,"
-            + " status, chosen_date_time, cancellation_reason, customer) VALUES (DEFAULT,?,?,?,?,NULL,NULL,?)";
+            + " status, chosen_date_time, cancellation_reason, customer) VALUES"
+            + " (DEFAULT,?,?,?,?,NULL,NULL,?)";
     querySelectVisitRequestByUserAndFurniture = "SELECT v.visit_request_id, v.request_date, "
         + "v.time_slot, v.address, v.status, v.chosen_date_time, v.cancellation_reason, v.customer "
         + "+ FROM project.visit_requests v, project.furniture f WHERE v.customer = ? "
@@ -57,10 +58,11 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
           this.dalServices.getPreparedStatementAdd(queryAddVisitRequest);
       insertVisitRequest.setTimestamp(1, Timestamp.from(visitRequest.getRequestDate().toInstant()));
       insertVisitRequest.setString(2, visitRequest.getTimeSlot());
-      if (visitRequest.getAddress() == null)
+      if (visitRequest.getAddress() == null) {
         insertVisitRequest.setNull(3, java.sql.Types.INTEGER);
-      else
+      } else {
         insertVisitRequest.setInt(3, visitRequest.getAddress().getId());
+      }
       insertVisitRequest.setInt(4, visitRequest.getStatus().ordinal());
       insertVisitRequest.setInt(5, visitRequest.getCustomer().getId());
       insertVisitRequest.execute();

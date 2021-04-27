@@ -278,7 +278,7 @@ public class Administration {
   }
 
   /*
-   * List furniture with id. ======= Get a furniture. >>>>>>> refs/remotes/origin/master
+   * Get a furniture
    *
    * @return FurnitureDTO
    */

@@ -23,6 +23,9 @@ public class DAOAddressImpl implements DAOAddress {
   private String queryAddAddress;
   private String querySelectAddressByUserId;
 
+  /**
+   * constructor of DAOAddressImpl. contains queries.
+   */
   public DAOAddressImpl() {
     querySelectAllCommunes = "SELECT DISTINCT a.commune FROM project.addresses a";
     queryAddAddress = "INSERT INTO project.addresses (address_id, street, "
