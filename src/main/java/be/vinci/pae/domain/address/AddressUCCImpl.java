@@ -1,9 +1,9 @@
 package be.vinci.pae.domain.address;
 
+import java.util.List;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.address.DAOAddress;
 import jakarta.inject.Inject;
-import java.util.List;
 
 public class AddressUCCImpl implements AddressUCC {
 
@@ -17,6 +17,15 @@ public class AddressUCCImpl implements AddressUCC {
   public List<String> getAllCommunes() {
     try {
       return daoAddress.getAllCommunes();
+    } finally {
+      dalServices.closeConnection();
+    }
+  }
+
+  @Override
+  public AddressDTO getAddressByUserId(int userId) {
+    try {
+      return daoAddress.getAddressByUserId(userId);
     } finally {
       dalServices.closeConnection();
     }

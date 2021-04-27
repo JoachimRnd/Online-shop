@@ -1,5 +1,10 @@
 package be.vinci.pae.api;
 
+import java.io.InputStream;
+import java.util.List;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+import com.fasterxml.jackson.databind.JsonNode;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.api.utils.Json;
 import be.vinci.pae.domain.address.AddressUCC;
@@ -13,7 +18,6 @@ import be.vinci.pae.domain.type.TypeUCC;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.user.UserUCC;
 import be.vinci.pae.utils.ValueLink;
-import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -30,10 +34,6 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-import java.io.InputStream;
-import java.util.List;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 
 @Singleton
 @Path("/admin")
@@ -252,6 +252,32 @@ public class Administration {
   }
 
   /**
+   * <<<<<<< HEAD Get the furniture buy by an user.
+   *
+   * @return List of FurnitureDTO
+   */
+  @GET
+  @Path("/furniturebuyby/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public List<FurnitureDTO> getFurnitureBuyBy(@PathParam("id") int id) {
+    return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureBuyBy(id), FurnitureDTO.class);
+  }
+
+  /**
+   * Get the furniture sell by an user.
+   *
+   * @return List of FurnitureDTO
+   */
+  @GET
+  @Path("/furnituresellby/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public List<FurnitureDTO> getFurnitureSellBy(@PathParam("id") int id) {
+    return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureSellBy(id), FurnitureDTO.class);
+  }
+
+  /**
    * Get a furniture.
    *
    * @return FurnitureDTO
@@ -272,9 +298,9 @@ public class Administration {
   /**
    * Receive file from the frontend.
    *
-   * @param enabled             FormData
+   * @param enabled FormData
    * @param uploadedInputStream FormDataFile
-   * @param fileDetail          Details of the FormDataFile
+   * @param fileDetail Details of the FormDataFile
    * @return Status code
    */
   @POST

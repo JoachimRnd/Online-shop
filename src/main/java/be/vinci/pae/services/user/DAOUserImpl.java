@@ -1,6 +1,13 @@
 package be.vinci.pae.services.user;
 
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import be.vinci.pae.domain.address.AddressDTO;
 import be.vinci.pae.domain.address.AddressFactory;
 import be.vinci.pae.domain.user.UserDTO;
@@ -9,13 +16,6 @@ import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.utils.FatalException;
 import be.vinci.pae.utils.ValueLink.UserType;
 import jakarta.inject.Inject;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 public class DAOUserImpl implements DAOUser {
 
@@ -46,15 +46,18 @@ public class DAOUserImpl implements DAOUser {
    */
   public DAOUserImpl() {
     querySelectUserByUsername =
-        "SELECT u.user_id, u.username, u.password, u.last_name, u.first_name, a.street,"
+        "SELECT u.user_id, u.username, u.password, u.last_name, u.first_name, a.address_id,"
+            + " a.street,"
             + " a.building_number, a.unit_number, a.postcode, a.commune, a.country, u.email,"
             + " u.registration_date, u.valid_registration, u.user_type FROM project.addresses a,"
             + "project.users u WHERE u.username = ? AND u.address = a.address_id";
     querySelectUserById = "SELECT u.user_id, u.username, u.password, u.last_name, u.first_name, "
+        + "a.address_id,"
         + "a.street, a.building_number, a.unit_number, a.postcode, a.commune, a.country, u.email,"
         + "u.registration_date, u.valid_registration, u.user_type FROM project.addresses a,"
         + " project.users u WHERE u.user_id = ? AND u.address = a.address_id";
-    querySelectUserByEmail = "SELECT u.user_id, u.username, u.password, u.last_name, u.first_name, "
+    querySelectUserByEmail = "SELECT u.user_id, u.username, u.password, u.last_name, u.first_name,"
+        + "a.address_id, "
         + "a.street, a.building_number, a.unit_number, a.postcode, a.commune, a.country, u.email,"
         + "u.registration_date, u.valid_registration, u.user_type FROM project.addresses a,"
         + " project.users u WHERE u.email = ? AND u.address = a.address_id";
@@ -75,18 +78,20 @@ public class DAOUserImpl implements DAOUser {
         + "VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?)";
     queryValidateUser = "UPDATE project.users " + "SET user_type = ?, valid_registration = ? "
         + "WHERE user_id = ?";
-    querySelectUnvalidatedUsers = "SELECT u.user_id, u.username, u.password, u.last_name, "
-        + "u.first_name, a.street, a.building_number, a.unit_number, a.postcode, a.commune, "
-        + "a.country, u.email, u.registration_date, u.valid_registration, u.user_type "
-        + "FROM project.addresses a, project.users u "
-        + "WHERE u.valid_registration = false AND u.address = a.address_id";
-    querySelectAllUsername = "SELECT DISTINCT u.last_name FROM project.users u";
-    querySelectUsersFiltered = "SELECT u.user_id, u.username, u.password, u.last_name, "
-        + "u.first_name, a.street, a.building_number, a.unit_number, a.postcode, a.commune, "
-        + "a.country, u.email, u.registration_date, u.valid_registration, u.user_type "
-        + "FROM project.addresses a, project.users u "
-        + "WHERE u.address = a.address_id AND lower(u.username) LIKE lower(?) AND "
-        + "lower(a.postcode) LIKE lower(?) AND lower(a.commune) LIKE lower(?)";
+    querySelectUnvalidatedUsers =
+        "SELECT u.user_id, u.username, u.password, u.last_name, " + "u.first_name, a.address_id,"
+            + "a.street, a.building_number, a.unit_number, a.postcode, a.commune, "
+            + "a.country, u.email, u.registration_date, u.valid_registration, u.user_type "
+            + "FROM project.addresses a, project.users u "
+            + "WHERE u.valid_registration = false AND u.address = a.address_id";
+    querySelectAllUsername = "SELECT DISTINCT u.username FROM project.users u";
+    querySelectUsersFiltered =
+        "SELECT u.user_id, u.username, u.password, u.last_name, " + "u.first_name,a.address_id,"
+            + "a.street, a.building_number, a.unit_number, a.postcode, a.commune, "
+            + "a.country, u.email, u.registration_date, u.valid_registration, u.user_type "
+            + "FROM project.addresses a, project.users u "
+            + "WHERE u.address = a.address_id AND lower(u.username) LIKE lower(?) AND "
+            + "lower(a.postcode) LIKE lower(?) AND lower(a.commune) LIKE lower(?)";
   }
 
   @Override
@@ -150,6 +155,7 @@ public class DAOUserImpl implements DAOUser {
       user.setLastName(rs.getString("last_name"));
       user.setFirstName(rs.getString("first_name"));
       AddressDTO address = this.addressFactory.getAddress();
+      address.setId(rs.getInt("address_id"));
       address.setStreet(rs.getString("street"));
       address.setBuildingNumber(rs.getString("building_number"));
       address.setUnitNumber(rs.getString("unit_number"));
@@ -300,8 +306,8 @@ public class DAOUserImpl implements DAOUser {
   @Override
   public List<String> getAllLastnames() {
     try {
-      PreparedStatement selectAllUsers = this.dalBackendServices
-          .getPreparedStatement(querySelectAllUsername);
+      PreparedStatement selectAllUsers =
+          this.dalBackendServices.getPreparedStatement(querySelectAllUsername);
       List<String> allUsers = new ArrayList<>();
       try (ResultSet rs = selectAllUsers.executeQuery()) {
         while (rs.next()) {
@@ -318,8 +324,8 @@ public class DAOUserImpl implements DAOUser {
   @Override
   public List<UserDTO> getUsersFiltered(String username, String postcode, String commune) {
     try {
-      PreparedStatement selectUsersFiltered = this.dalBackendServices
-          .getPreparedStatement(querySelectUsersFiltered);
+      PreparedStatement selectUsersFiltered =
+          this.dalBackendServices.getPreparedStatement(querySelectUsersFiltered);
       selectUsersFiltered.setString(1, username + "%");
       selectUsersFiltered.setString(2, postcode + "%");
       selectUsersFiltered.setString(3, commune + "%");

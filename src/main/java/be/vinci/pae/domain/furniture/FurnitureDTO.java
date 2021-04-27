@@ -1,6 +1,7 @@
 package be.vinci.pae.domain.furniture;
 
 import java.util.Date;
+import java.util.List;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import be.vinci.pae.domain.picture.PictureDTO;
 import be.vinci.pae.domain.type.TypeDTO;
@@ -26,6 +27,10 @@ public interface FurnitureDTO {
   VisitRequestDTO getVisitRequest();
 
   void setVisitRequest(VisitRequestDTO visitRequest);
+
+  List<PictureDTO> getPicturesList();
+
+  void setPicturesList(List<PictureDTO> picturesList);
 
   double getPurchasePrice();
 

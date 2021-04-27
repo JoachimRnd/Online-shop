@@ -8,7 +8,6 @@ let homePage = `<h4 id="pageTitle">Home</h4>
 <form id="uploadForm">
   <input id="file" type="file" />
   <input type="submit" value="Upload"/>
-  <div id="outputDiv"></div>
 </form>
 `;
 
