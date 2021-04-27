@@ -1,11 +1,11 @@
 package be.vinci.pae.services.type;
 
-import be.vinci.pae.domain.type.TypeDTO;
 import java.util.List;
+import be.vinci.pae.domain.type.TypeDTO;
 
 public interface DAOType {
-  //@TODO Methodes inutilisée => Supprimer ?
-
+  // @TODO Methodes inutilisée => Supprimer ?
+  // yep
   List<TypeDTO> selectFurnitureTypes();
 
   TypeDTO selectTypeByName(String typeName);

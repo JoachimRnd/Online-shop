@@ -1,22 +1,25 @@
 package be.vinci.pae.domain.furniture;
 
+import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
 import be.vinci.pae.domain.picture.PictureDTO;
 import be.vinci.pae.domain.type.TypeDTO;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.visitrequest.VisitRequestDTO;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonView;
-import java.util.Date;
 import views.Views;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class FurnitureImpl implements Furniture {
 
-  //@TODO Pourquoi le format.shape ?
+  // @TODO Pourquoi le format.shape ?
   // Pourquoi pas rÃ©cup le Timestamp et le formater dans le frontend ? => Plus universel
   // Pourquoi sous le format yyyy-MM-dd et pas dd-MM-yyyy ?
+
+  // les dates sont toujours sous format yyyy-MM-dd en sql et en java en tout cas initialement...
+  // après sit vous décidez de modifier ça, why not mais il faut tout changer alors...
 
   @JsonView(Views.Public.class)
   private int id;

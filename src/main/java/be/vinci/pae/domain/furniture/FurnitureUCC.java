@@ -1,13 +1,14 @@
 package be.vinci.pae.domain.furniture;
 
-import be.vinci.pae.domain.user.UserDTO;
-import be.vinci.pae.utils.ValueLink.FurnitureCondition;
 import java.time.LocalDate;
 import java.util.List;
+import be.vinci.pae.domain.user.UserDTO;
+import be.vinci.pae.utils.ValueLink.FurnitureCondition;
 
 public interface FurnitureUCC {
 
-  //@TODO Méthodes non utilisées => A supprimer ?
+  // @TODO Méthodes non utilisées => A supprimer ?
+  // oui ... ? c'est comme du dead code mais je sais pas si on est p�nalis� si on le laisse...
 
   List<FurnitureDTO> getAllFurniture();
 

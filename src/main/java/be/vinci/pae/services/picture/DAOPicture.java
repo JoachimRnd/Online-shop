@@ -1,10 +1,11 @@
 package be.vinci.pae.services.picture;
 
-import be.vinci.pae.domain.picture.PictureDTO;
 import java.util.List;
+import be.vinci.pae.domain.picture.PictureDTO;
 
 public interface DAOPicture {
-  //@TODO Methodes non utilisée => Supprimer ?
+  // @TODO Methodes non utilisée => Supprimer ?
+  // yep
 
   int addPicture(PictureDTO picture);
 
