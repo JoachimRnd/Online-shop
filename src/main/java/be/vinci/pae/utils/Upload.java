@@ -10,16 +10,15 @@ public class Upload {
   /**
    * Save uploadedInputStream to uploadedFileLocation.
    *
-   * @param uploadedInputStream InputStream of file
+   * @param uploadedInputStream  InputStream of file
    * @param uploadedFileLocation Location of file
    * @return boolean
    */
   public static boolean saveToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
-    // @TODO le out.close() on le mettrai pas dans un finally ?
-    // Oui pq pas, c'est vrai que j'ai pas trop check ce que faisais cette méthode et j'ai pas
-    // cherché à l'optimiser
+
     try {
       OutputStream out;
+
       int read = 0;
       byte[] bytes = new byte[1024];
 
@@ -32,9 +31,7 @@ public class Upload {
       return true;
     } catch (IOException e) {
       e.printStackTrace();
-      // @TODO Pas besoin de lancer une FatalException ?
-      // Ca serait surement mieux oui
-      return false;
+      throw new FatalException("Error while copying the file on the disk");
     }
   }
 }

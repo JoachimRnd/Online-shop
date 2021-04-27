@@ -115,28 +115,6 @@ public class DAOOptionImpl implements DAOOption {
   }
 
   @Override
-  public List<OptionDTO> selectOptionsOfBuyer(int idBuyer) {
-    try {
-      PreparedStatement selectOptionsOfBuyer =
-          dalServices.getPreparedStatement(querySelectOptionsOfBuyer);
-      selectOptionsOfBuyer.setInt(1, idBuyer);
-      try (ResultSet rs = selectOptionsOfBuyer.executeQuery()) {
-        List<OptionDTO> listOptions = new ArrayList<OptionDTO>();
-        OptionDTO option;
-        do {
-          option = createOption(rs);
-          listOptions.add(option);
-        } while (option != null);
-        listOptions.remove(listOptions.size() - 1);
-        return listOptions;
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new FatalException("Database error : selectOptionsOfBuyer");
-    }
-  }
-
-  @Override
   public List<OptionDTO> selectOptionsOfBuyerFromFurniture(int idBuyer, int idFurniture) {
     try {
       PreparedStatement selectOptionsOfBuyerFromFurniture =

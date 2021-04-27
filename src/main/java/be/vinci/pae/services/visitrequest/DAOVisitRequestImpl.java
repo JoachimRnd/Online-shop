@@ -2,7 +2,7 @@ package be.vinci.pae.services.visitrequest;
 
 import be.vinci.pae.domain.visitrequest.VisitRequestDTO;
 import be.vinci.pae.domain.visitrequest.VisitRequestFactory;
-import be.vinci.pae.services.DalBackendServices;
+import be.vinci.pae.services.address.DAOAddress;
 import be.vinci.pae.services.user.DAOUser;
 import be.vinci.pae.utils.ValueLink.VisitRequestStatus;
 import jakarta.inject.Inject;
@@ -11,14 +11,12 @@ import java.sql.SQLException;
 
 
 public class DAOVisitRequestImpl implements DAOVisitRequest {
-
-  private String querySelectVisitRequestByUserAndFurniture;
-
-  @Inject
-  private DalBackendServices dalServices;
-
+  
   @Inject
   private VisitRequestFactory visitRequestFactory;
+
+  @Inject
+  private DAOAddress daoAddress;
 
   @Inject
   private DAOUser daoUser;
@@ -32,10 +30,7 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
    * constructor of DAOVisitRequestImpl. contains queries.
    */
   public DAOVisitRequestImpl() {
-    querySelectVisitRequestByUserAndFurniture = "SELECT v.visit_request_id, v.request_date, "
-        + "v.time_slot, v.address, v.status, v.chosen_date_time, v.cancellation_reason, v.customer "
-        + "+ FROM project.visit_requests v, project.furniture f WHERE v.customer = ? "
-        + "AND f.furniture_id = ? AND v.visit_request_id = f.visit_request;";
+
   }
 
   private VisitRequestDTO createVisitRequest(ResultSet rs) throws SQLException {
@@ -45,20 +40,13 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
       visitRequest.setId(rs.getInt("visit_request_id"));
       visitRequest.setRequestDate(rs.getDate("request_date"));
       visitRequest.setTimeSlot(rs.getString("time_slot"));
-      visitRequest.setAddress(null); // TODO
+      visitRequest.setAddress(daoAddress.getAddressById(rs.getInt("address")));
       visitRequest.setStatus(VisitRequestStatus.values()[rs.getInt("status")]);
       visitRequest.setChosenDateTime(rs.getDate("chosen_date_time"));
       visitRequest.setCancellationReason(rs.getString("cancellation_reason"));
       visitRequest.setCustomer(this.daoUser.getUserById(rs.getInt("customer")));
     }
     return visitRequest;
-  }
-
-
-  @Override
-  public int addVisitRequest(VisitRequestDTO visitRequest) {
-    // TODO Auto-generated method stub
-    return 0;
   }
 
   @Override

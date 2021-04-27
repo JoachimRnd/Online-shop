@@ -1,10 +1,5 @@
 package be.vinci.pae.api;
 
-import java.io.File;
-import java.time.LocalDate;
-import java.util.List;
-import org.glassfish.jersey.server.ContainerRequest;
-import com.fasterxml.jackson.databind.JsonNode;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.api.utils.Json;
@@ -17,6 +12,7 @@ import be.vinci.pae.domain.type.TypeDTO;
 import be.vinci.pae.domain.type.TypeUCC;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -31,6 +27,9 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import java.time.LocalDate;
+import java.util.List;
+import org.glassfish.jersey.server.ContainerRequest;
 
 @Singleton
 @Path("/furniture")
@@ -55,10 +54,10 @@ public class Furniture {
    * @return List of FurnitureDTO
    */
   @GET
-  @Path("/{userId}/allFurniture")
+  @Path("allFurniture")
   @Produces(MediaType.APPLICATION_JSON)
-  public List<FurnitureDTO> listAllFurniture(@PathParam("userId") int userId) {
-    return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureUsers(userId),
+  public List<FurnitureDTO> listAllFurniture() {
+    return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureUsers(),
         FurnitureDTO.class);
   }
 
@@ -162,7 +161,7 @@ public class Furniture {
     }
     return optionUCC.addOption(idFurniture, json.get("duration").asInt(),
         (UserDTO) request.getProperty("user")) ? Response.ok().build()
-            : Response.serverError().build();
+        : Response.serverError().build();
   }
 
   /**
@@ -191,27 +190,6 @@ public class Furniture {
     return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureSellBy(id), FurnitureDTO.class);
   }
 
-  // @TODO AuthorizeAdmin => Administration
-  // Non!
-
-  /**
-   * Get an image.
-   *
-   * @return Octet Stream
-   */
-  @GET
-  @Path("picture-furniture")
-  @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  @AuthorizeAdmin
-  public Response getFile() {
-    // @TODO Utilité ?
-    // Plus utile car on va passer par static
-    File file = new File(".\\images\\23.png");
-    System.out.println(file);
-    return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
-        .header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"").build();
-  }
-
   /**
    * Add an favourite picture on the furniture with id.
    *
@@ -221,17 +199,14 @@ public class Furniture {
   @Path("/{idFurniture}/favourite-picture")
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public Response modifyFavouritePicture(@PathParam("idFurniture") int idFurniture,
-      @Context ContainerRequest request, JsonNode json) {
-    // @TODO Soucis ICI json.has et json.get différents
-    // done
-    if (!json.has("idPicture")
-        || !furnitureUCC.modifyFavouritePicture(idFurniture, json.get("idPicture").asInt())) {
-      return Response.status(Status.UNAUTHORIZED).entity("Erreur ajouter photo favorite")
+  public Response modifyFavouritePicture(@PathParam("idFurniture") int idFurniture, JsonNode json) {
+    if (!json.has("idPicture")) {
+      return Response.status(Status.UNAUTHORIZED).entity("Veuillez indiquer l'id d'une image")
           .type(MediaType.TEXT_PLAIN).build();
     }
 
-    return Response.ok().build();
+    return furnitureUCC.modifyFavouritePicture(idFurniture, json.get("idPicture").asInt())
+        ? Response.ok().build() : Response.serverError().build();
   }
 
   /**
@@ -273,71 +248,47 @@ public class Furniture {
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public Response modifyFurniture(@PathParam("id") int id, JsonNode json) {
-    // @TODO A REFAIRE !!!!!
-    // go se call ce soir
-    boolean noError = true;
-    boolean empty = true;
 
-    System.out.println(json.get("condition"));
+    FurnitureCondition condition = null;
+    double sellingPrice = -1, specialSalePrice = -1, purchasePrice = -1;
+    int type = -1;
+    LocalDate withdrawalDateFromCustomer = null, withdrawalDateToCustomer = null, deliveryDate = null;
+    String buyerEmail = null, description = null;
+
     if (json.hasNonNull("condition") && !json.get("condition").asText().isEmpty()) {
-      noError = noError && furnitureUCC.modifyCondition(id,
-          FurnitureCondition.valueOf(json.get("condition").asText()));
-      empty = false;
+      condition = FurnitureCondition.valueOf(json.get("condition").asText());
     }
     if (json.hasNonNull("sellingPrice")) {
-      noError = noError && furnitureUCC.modifySellingPrice(id, json.get("sellingPrice").asDouble());
-      empty = false;
+      sellingPrice = json.get("sellingPrice").asDouble();
     }
     if (json.hasNonNull("specialSalePrice")) {
-      noError = noError
-          && furnitureUCC.modifySpecialSalePrice(id, json.get("specialSalePrice").asDouble());
-      empty = false;
+      specialSalePrice = json.get("specialSalePrice").asDouble();
     }
     if (json.hasNonNull("type")) {
-      noError = noError && furnitureUCC.modifyType(id, json.get("type").asInt());
-      empty = false;
+      type = json.get("type").asInt();
     }
     if (json.hasNonNull("purchasePrice")) {
-      noError =
-          noError && furnitureUCC.modifyPurchasePrice(id, json.get("purchasePrice").asDouble());
-      empty = false;
+      purchasePrice = json.get("purchasePrice").asDouble();
     }
-    if (json.hasNonNull("description") && !json.get("description").asText().isEmpty()) {
-      noError = noError && furnitureUCC.modifyDescription(id, json.get("description").asText());
-      empty = false;
+    if (json.hasNonNull("description")) {
+      description = json.get("description").asText();
     }
-    if (json.hasNonNull("withdrawalDateFromCustomer")
-        && !json.get("withdrawalDateFromCustomer").asText().isEmpty()) {
-      noError = noError && furnitureUCC.modifyWithdrawalDateFromCustomer(id,
-          LocalDate.parse(json.get("withdrawalDateFromCustomer").asText()));
-      empty = false;
+    if (json.hasNonNull("withdrawalDateFromCustomer")) {
+      withdrawalDateFromCustomer = LocalDate.parse(json.get("withdrawalDateFromCustomer").asText());
     }
-    if (json.hasNonNull("withdrawalDateToCustomer")
-        && !json.get("withdrawalDateToCustomer").asText().isEmpty()) {
-      noError = noError && furnitureUCC.modifyWithdrawalDateToCustomer(id,
-          LocalDate.parse(json.get("withdrawalDateToCustomer").asText()));
-      empty = false;
+    if (json.hasNonNull("withdrawalDateToCustomer")) {
+      withdrawalDateToCustomer = LocalDate.parse(json.get("withdrawalDateToCustomer").asText());
     }
-    if (json.hasNonNull("deliveryDate") && !json.get("deliveryDate").asText().isEmpty()) {
-      noError = noError && furnitureUCC.modifyDeliveryDate(id,
-          LocalDate.parse(json.get("deliveryDate").asText()));
-      empty = false;
+    if (json.hasNonNull("deliveryDate")) {
+      deliveryDate = LocalDate.parse(json.get("deliveryDate").asText());
     }
-    if (json.hasNonNull("buyerEmail") && !json.get("buyerEmail").asText().isEmpty()) {
-      noError = noError && furnitureUCC.modifyBuyerEmail(id, json.get("buyerEmail").asText());
-      empty = false;
+    if (json.hasNonNull("buyerEmail")) {
+      buyerEmail = json.get("buyerEmail").asText();
     }
 
-    if (empty) {
-      return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")
-          .type(MediaType.TEXT_PLAIN).build();
-    }
-
-    if (noError) {
-      return Response.ok().build();
-    } else {
-      return Response.status(Status.UNAUTHORIZED)
-          .entity("Erreur lors de la modification du meuble.").type(MediaType.TEXT_PLAIN).build();
-    }
+    return furnitureUCC
+        .modifyFurniture(id, condition, sellingPrice, specialSalePrice, purchasePrice, type,
+            withdrawalDateFromCustomer, withdrawalDateToCustomer, deliveryDate, buyerEmail,
+            description) ? Response.ok().build() : Response.serverError().build();
   }
 }

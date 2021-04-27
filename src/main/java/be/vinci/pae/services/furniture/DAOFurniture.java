@@ -1,24 +1,15 @@
 package be.vinci.pae.services.furniture;
 
 import be.vinci.pae.domain.furniture.FurnitureDTO;
+import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.List;
 
 public interface DAOFurniture {
 
-  // @TODO Méthodes non utilisées => Supprimer ?
-  // oui... ? comme dans une des classes de furniture je suppose...
-
   List<FurnitureDTO> selectAllFurniture();
 
-  List<FurnitureDTO> selectFurnitureUsers(int idUser);
-
-  List<FurnitureDTO> selectFurnitureByType(String type);
-
-  List<FurnitureDTO> selectFurnitureByPrice(double price);
-
-  List<FurnitureDTO> selectFurnitureByUser(String lastNameCustomer);
+  List<FurnitureDTO> selectFurnitureUsers();
 
   FurnitureDTO selectFurnitureById(int id);
 
@@ -40,11 +31,11 @@ public interface DAOFurniture {
 
   boolean updatePurchasePrice(int id, Double price);
 
-  boolean updateWithdrawalDateToCustomer(int id, LocalDate now);
+  boolean updateWithdrawalDateToCustomer(int id, Timestamp now);
 
-  boolean updateWithdrawalDateFromCustomer(int id, LocalDate now);
+  boolean updateWithdrawalDateFromCustomer(int id, Timestamp now);
 
-  boolean updateDeliveryDate(int id, LocalDate now);
+  boolean updateDeliveryDate(int id, Timestamp now);
 
   boolean updateSpecialSalePrice(int id, Double price);
 
@@ -56,7 +47,9 @@ public interface DAOFurniture {
 
   List<FurnitureDTO> selectFurnituresFiltered(String type, double price, String username);
 
-  List<FurnitureDTO> getFurnitureBuyBy(int id);
+  List<FurnitureDTO> getFurnitureBoughtByUserId(int id);
 
-  List<FurnitureDTO> getFurnitureSellBy(int id);
+  List<FurnitureDTO> getFurnitureSoldByUserId(int id);
+
+  boolean returnToSelling(int id);
 }

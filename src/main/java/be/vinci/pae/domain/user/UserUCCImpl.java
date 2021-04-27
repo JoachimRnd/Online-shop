@@ -1,7 +1,7 @@
 package be.vinci.pae.domain.user;
 
-import be.vinci.pae.domain.address.AddressDTO;
 import be.vinci.pae.services.DalServices;
+import be.vinci.pae.services.address.DAOAddress;
 import be.vinci.pae.services.user.DAOUser;
 import be.vinci.pae.utils.BusinessException;
 import be.vinci.pae.utils.ValueLink.UserType;
@@ -14,6 +14,9 @@ public class UserUCCImpl implements UserUCC {
 
   @Inject
   private DAOUser daoUser;
+
+  @Inject
+  private DAOAddress daoAddress;
 
   @Inject
   private DalServices dalServices;
@@ -54,17 +57,25 @@ public class UserUCCImpl implements UserUCC {
       user.setLastName(StringEscapeUtils.escapeHtml4(user.getLastName()));
       user.setPassword(StringEscapeUtils.escapeHtml4(user.getPassword()));
       user.setUsername(StringEscapeUtils.escapeHtml4(user.getUsername()));
-      AddressDTO address = user.getAddress();
-      address.setBuildingNumber(StringEscapeUtils.escapeHtml4(address.getBuildingNumber()));
-      address.setCommune(StringEscapeUtils.escapeHtml4(address.getCommune()));
-      address.setCountry(StringEscapeUtils.escapeHtml4(address.getCountry()));
-      address.setPostcode(StringEscapeUtils.escapeHtml4(address.getPostcode()));
-      address.setStreet(StringEscapeUtils.escapeHtml4(address.getStreet()));
-      if (address.getUnitNumber() != null && !address.getUnitNumber().isEmpty()) {
-        address.setUnitNumber(StringEscapeUtils.escapeHtml4(address.getUnitNumber()));
+      user.getAddress()
+          .setBuildingNumber(StringEscapeUtils.escapeHtml4(user.getAddress().getBuildingNumber()));
+      user.getAddress().setCommune(StringEscapeUtils.escapeHtml4(user.getAddress().getCommune()));
+      user.getAddress().setCountry(StringEscapeUtils.escapeHtml4(user.getAddress().getCountry()));
+      user.getAddress().setPostcode(StringEscapeUtils.escapeHtml4(user.getAddress().getPostcode()));
+      user.getAddress().setStreet(StringEscapeUtils.escapeHtml4(user.getAddress().getStreet()));
+      if (user.getAddress().getUnitNumber() != null && !user.getAddress().getUnitNumber()
+          .isEmpty()) {
+        user.getAddress()
+            .setUnitNumber(StringEscapeUtils.escapeHtml4(user.getAddress().getUnitNumber()));
       }
 
-      int id = daoUser.addUser(newUser);
+      int addressID = daoAddress.selectAddressID(user.getAddress());
+      if (addressID == -1) {
+        addressID = daoAddress.addAddress(user.getAddress());
+      }
+      user.getAddress().setId(addressID);
+
+      int id = daoUser.addUser(user);
       if (id == -1) {
         this.dalServices.rollbackTransaction();
       } else {

@@ -1,28 +1,17 @@
 package be.vinci.pae.domain.furniture;
 
-import java.time.LocalDate;
-import java.util.List;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
+import java.time.LocalDate;
+import java.util.List;
 
 public interface FurnitureUCC {
 
-  // @TODO Méthodes non utilisées => A supprimer ?
-  // Oui on peut (VEVE)
-  // oui ... ? c'est comme du dead code mais je sais pas si on est p�nalis� si on le laisse...
-  // (LORINE)
-
   List<FurnitureDTO> getAllFurniture();
 
-  List<FurnitureDTO> getFurnitureUsers(int idUser);
+  List<FurnitureDTO> getFurnitureUsers();
 
   FurnitureDTO addFurniture(FurnitureDTO furniture);
-
-  List<FurnitureDTO> getFurnitureByTypeName(String typeName);
-
-  List<FurnitureDTO> getFurnitureBySellingPrice(double sellingPrice);
-
-  List<FurnitureDTO> getFurnitureByUserName(String typeName);
 
   boolean modifyCondition(int id, FurnitureCondition condition);
 
@@ -57,4 +46,9 @@ public interface FurnitureUCC {
   List<FurnitureDTO> getFurnitureSellBy(int id);
 
   FurnitureDTO getPersonalFurnitureById(int id, UserDTO user);
+
+  boolean modifyFurniture(int furnitureId, FurnitureCondition condition, double sellingPrice,
+      double specialSalePrice, double purchasePrice, int type, LocalDate withdrawalDateFromCustomer,
+      LocalDate withdrawalDateToCustomer, LocalDate deliveryDate,
+      String buyerEmail, String description);
 }

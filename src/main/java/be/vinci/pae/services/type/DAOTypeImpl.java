@@ -130,12 +130,4 @@ public class DAOTypeImpl implements DAOType {
     }
     return type;
   }
-
-
-  @Override
-  public TypeDTO selectTypeByName(String typeName) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
 }

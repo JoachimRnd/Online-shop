@@ -9,7 +9,6 @@ import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 public class DAOPictureImpl implements DAOPicture {
 
@@ -119,12 +118,4 @@ public class DAOPictureImpl implements DAOPicture {
     }
     return picture;
   }
-
-
-  @Override
-  public List<PictureDTO> selectPictureByFurnitureId(int idFurniture) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
 }

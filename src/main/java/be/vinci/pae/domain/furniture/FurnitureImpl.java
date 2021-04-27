@@ -5,7 +5,6 @@ import be.vinci.pae.domain.type.TypeDTO;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.visitrequest.VisitRequestDTO;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.util.Date;
@@ -13,19 +12,6 @@ import views.Views;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class FurnitureImpl implements Furniture {
-
-  // @TODO Pourquoi le format.shape ?
-  // Pcq c'est une solution qu'on a vue en backend-java et formater la date dans le frontend était
-  // pas si simple que ça (VEVE)
-
-  // Pourquoi pas récup le Timestamp et le formater dans le frontend ? => Plus universel
-  // Pourquoi sous le format yyyy-MM-dd et pas dd-MM-yyyy ?
-  // Il fallait ce format là pour mettre l'input.value dans un datePicker bootstrap (VEVE)
-
-  // les dates sont toujours sous format yyyy-MM-dd en sql et en java en tout cas initialement...
-  // apr�s sit vous d�cidez de modifier �a, why not mais il faut tout changer alors... (LORINE)
-
-  //On abandonne et passe en JS dans le Front End (new Date)
 
   @JsonView(Views.Public.class)
   private int id;
@@ -38,13 +24,10 @@ class FurnitureImpl implements Furniture {
   @JsonView(Views.Public.class)
   private double sellingPrice;
   @JsonView(Views.Public.class)
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   private Date sellingDate;
   @JsonView(Views.Public.class)
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   private Date deliveryDate;
   @JsonView(Views.Public.class)
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   private Date withdrawalDateToCustomer;
   @JsonView(Views.Public.class)
   private UserDTO buyer;
@@ -54,12 +37,10 @@ class FurnitureImpl implements Furniture {
   private double purchasePrice;
 
   @JsonView(Views.Admin.class)
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   private Date withdrawalDateFromCustomer;
   @JsonView(Views.Admin.class)
   private double specialSalePrice;
   @JsonView(Views.Admin.class)
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   private Date depositDate;
   @JsonView(Views.Admin.class)
   private String unregisteredBuyerEmail;

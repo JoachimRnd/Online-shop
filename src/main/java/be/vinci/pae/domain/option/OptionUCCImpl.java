@@ -52,7 +52,7 @@ public class OptionUCCImpl implements OptionUCC {
         throw new BusinessException(
             "Votre compte n'est pas encore validé ou vous n'êtes pas client");
       }
-      
+
       List<OptionDTO> listPreviousOptionBuyer =
           daoOption.selectOptionsOfBuyerFromFurniture(user.getId(), furniture.getId());
 
@@ -177,16 +177,7 @@ public class OptionUCCImpl implements OptionUCC {
         throw new BusinessException("Ce meuble n'existe pas");
       }
       OptionDTO option = daoOption.getLastOptionOfFurniture(idFurniture);
-      if (!verifyOptionStatus(option)) {
-        dalServices.startTransaction();
-        if (daoOption.finishOption(option.getId())
-            && daoFurniture.updateCondition(idFurniture, FurnitureCondition.en_vente.ordinal())) {
-          dalServices.commitTransaction();
-        } else {
-          dalServices.rollbackTransaction();
-        }
-        option = daoOption.getLastOptionOfFurniture(idFurniture);
-      }
+      verifyOptionStatus(option);
       return option;
     } finally {
       dalServices.closeConnection();
@@ -195,19 +186,25 @@ public class OptionUCCImpl implements OptionUCC {
 
 
   // TODO voir si ce n'est pas automatisable
-  private boolean verifyOptionStatus(OptionDTO option) {
-    if (option == null) {
-      return true;
+  private void verifyOptionStatus(OptionDTO option) {
+    if (option != null && option.getStatus().equals(
+        OptionStatus.en_cours)
+        && TimeUnit.DAYS.convert((new Date()).getTime() - option.getDate().getTime(),
+        TimeUnit.MILLISECONDS) > option.getDuration()) {
+      try {
+        dalServices.startTransaction();
+        if (daoOption.finishOption(option.getId())
+            && daoFurniture
+            .updateCondition(option.getFurniture().getId(),
+                FurnitureCondition.en_vente.ordinal())) {
+          dalServices.commitTransaction();
+        } else {
+          dalServices.rollbackTransaction();
+        }
+      } finally {
+        dalServices.closeConnection();
+      }
     }
-    if (!option.getStatus().equals(OptionStatus.en_cours)) {
-      return true;
-    }
-    Date now = new Date();
-    if (TimeUnit.DAYS.convert(now.getTime() - option.getDate().getTime(),
-        TimeUnit.MILLISECONDS) <= option.getDuration()) {
-      return true;
-    }
-    return false;
   }
 
 
