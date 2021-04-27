@@ -1,15 +1,5 @@
 package be.vinci.pae.services.furniture;
 
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 import be.vinci.pae.domain.furniture.FurnitureDTO;
 import be.vinci.pae.domain.furniture.FurnitureFactory;
 import be.vinci.pae.services.DalBackendServices;
@@ -20,6 +10,16 @@ import be.vinci.pae.utils.FatalException;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
 import be.vinci.pae.utils.ValueLink.OptionStatus;
 import jakarta.inject.Inject;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DAOFurnitureImpl implements DAOFurniture {
 
@@ -191,7 +191,6 @@ public class DAOFurnitureImpl implements DAOFurniture {
     // @TODO A quoi sert cette méthode ?
     // Si je me rappelle bien c'est pour afficher la liste des meubles en vente pour les users
 
-
     // + les meubles en option pour l'user mais ouais jvais plutot mettre la logique dans l'ucc
     // en gros je fais si il y a un user faut aussi rajouter ses meubles en option + en plus de ceux en vente (Jo)
 
@@ -244,23 +243,6 @@ public class DAOFurnitureImpl implements DAOFurniture {
     } catch (Exception e) {
       e.printStackTrace();
       throw new FatalException("Data error : selectFurnitureById");
-    }
-  }
-
-  @Override
-  public FurnitureDTO selectFurnitureByFavouritePicture(int idFavouritePicture) {
-    // @TODO A quoi sert cette méthode ?
-    // aucune idee peut etre qu'elle a été faite y a longtemps
-    try {
-      PreparedStatement selectFurnitureByFavouritePicture =
-          dalServices.getPreparedStatement(querySelectFurnitureByFavouritePicture);
-      selectFurnitureByFavouritePicture.setInt(1, idFavouritePicture);
-      try (ResultSet rs = selectFurnitureByFavouritePicture.executeQuery()) {
-        return createFurniture(rs);
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new FatalException("Data error : selectFurnitureByFavouritePicture");
     }
   }
 
@@ -412,6 +394,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
 
   @Override
   public boolean updateWithdrawalDateToCustomer(int id, LocalDate now) {
+    // @TODO Passer LocalDate en TimeStamp et retirer la logique
     try {
       PreparedStatement updateWithdrawalDateToCustomer =
           this.dalServices.getPreparedStatement(queryUpdateWithdrawalDateToCustomer);
@@ -435,6 +418,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
 
   @Override
   public boolean updateWithdrawalDateFromCustomer(int id, LocalDate now) {
+    // @TODO Passer LocalDate en TimeStamp et retirer la logique
     try {
       PreparedStatement updateWithdrawalDateFromCustomer =
           this.dalServices.getPreparedStatement(queryUpdateWithdrawalDateFromCustomer);
@@ -451,6 +435,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
 
   @Override
   public boolean updateDeliveryDate(int id, LocalDate now) {
+    // @TODO Passer LocalDate en TimeStamp et retirer la logique
     try {
       PreparedStatement updateDeliveryDate =
           this.dalServices.getPreparedStatement(queryUpdateDeliveryDate);
@@ -480,6 +465,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
 
   @Override
   public boolean updateBuyer(int id, int buyerId) {
+    //Logique à enlever grace à delete buyer
     try {
       PreparedStatement updateUnregisteredBuyer =
           this.dalServices.getPreparedStatement(queryUpdateBuyer);

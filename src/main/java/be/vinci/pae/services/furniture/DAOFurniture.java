@@ -1,9 +1,9 @@
 package be.vinci.pae.services.furniture;
 
+import be.vinci.pae.domain.furniture.FurnitureDTO;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
-import be.vinci.pae.domain.furniture.FurnitureDTO;
 
 public interface DAOFurniture {
 
@@ -53,8 +53,6 @@ public interface DAOFurniture {
   boolean updateBuyer(int id, int buyerId);
 
   boolean updateFavouritePicture(int id, int pictureId);
-
-  FurnitureDTO selectFurnitureByFavouritePicture(int idFavouritePicture);
 
   List<FurnitureDTO> selectFurnituresFiltered(String type, double price, String username);
 

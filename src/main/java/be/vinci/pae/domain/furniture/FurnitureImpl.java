@@ -1,14 +1,14 @@
 package be.vinci.pae.domain.furniture;
 
-import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonView;
 import be.vinci.pae.domain.picture.PictureDTO;
 import be.vinci.pae.domain.type.TypeDTO;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.visitrequest.VisitRequestDTO;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
+import java.util.Date;
 import views.Views;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -24,6 +24,8 @@ class FurnitureImpl implements Furniture {
 
   // les dates sont toujours sous format yyyy-MM-dd en sql et en java en tout cas initialement...
   // apr�s sit vous d�cidez de modifier �a, why not mais il faut tout changer alors... (LORINE)
+
+  //On abandonne et passe en JS dans le Front End (new Date)
 
   @JsonView(Views.Public.class)
   private int id;

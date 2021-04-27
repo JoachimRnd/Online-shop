@@ -1,10 +1,5 @@
 package be.vinci.pae.domain.furniture;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 import be.vinci.pae.domain.option.OptionDTO;
 import be.vinci.pae.domain.type.TypeDTO;
 import be.vinci.pae.domain.user.UserDTO;
@@ -17,6 +12,11 @@ import be.vinci.pae.services.visitrequest.DAOVisitRequest;
 import be.vinci.pae.utils.BusinessException;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
 import jakarta.inject.Inject;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class FurnitureUCCImpl implements FurnitureUCC {
 
@@ -51,6 +51,9 @@ public class FurnitureUCCImpl implements FurnitureUCC {
 
   // @TODO Que fait cette méthode ?
   // Liste les meubles en vente et mis en option pour l'user => meubles en magasin
+
+  // Changer par select tout les meubles en ventes + en option (retirer userId du coup
+  // et rename la méthode)
   @Override
   public List<FurnitureDTO> getFurnitureUsers(int userId) {
     try {
@@ -195,6 +198,7 @@ public class FurnitureUCCImpl implements FurnitureUCC {
           default:
             break;
         }
+        //Quoi qu'il arrive
         noError = noError && this.daoFurniture.updateCondition(id, condition.ordinal());
         if (!noError) {
           this.dalServices.rollbackTransaction();
@@ -352,52 +356,22 @@ public class FurnitureUCCImpl implements FurnitureUCC {
 
   @Override
   public boolean modifyBuyerEmail(int id, String email) {
-    // @TODO Hyper brouillon, moyen de rendre ça beaucoup plus propre
-    // ?
-
-    UserDTO userDTO;
-    if (email == null) {
-      FurnitureDTO furnitureDTO;
-      try {
-        furnitureDTO = this.daoFurniture.selectFurnitureById(id);
-      } finally {
-        this.dalServices.closeConnection();
-      }
-      userDTO = furnitureDTO.getBuyer();
-    } else {
-      try {
-        userDTO = this.daoUser.getUserByEmail(email);
-      } finally {
-        this.dalServices.closeConnection();
-      }
-    }
-
     try {
-      // User exist
-      if (userDTO != null) {
-        this.dalServices.startTransaction();
-        int idUser = userDTO.getId();
-        if (email == null) {
-          idUser = -1;
-        }
-        if (!this.daoFurniture.updateBuyer(id, idUser)) {
-          this.dalServices.rollbackTransaction();
-          throw new BusinessException("Error modify buyer");
-        }
-        this.dalServices.commitTransaction();
+      if (email == null) {
+        //@TODO DELETE BUYER
+        //Update => Delete buyer et uneregistered
+        //return daoFurniture.deleteBuyer(id);
         return true;
-      } else { // User doesn't exist
-        this.dalServices.startTransaction();
-
-        if (!this.daoFurniture.updateUnregisteredBuyerEmail(id, email)) {
-          this.dalServices.rollbackTransaction();
-          throw new BusinessException("Error modify buyer email");
+      } else {
+        UserDTO userDTO = daoUser.getUserByEmail(email);
+        if (userDTO != null) {
+          return daoFurniture.updateBuyer(id, userDTO.getId());
+        } else {
+          return daoFurniture.updateUnregisteredBuyerEmail(id, email);
         }
-        this.dalServices.commitTransaction();
-        return true;
       }
     } finally {
-      this.dalServices.closeConnection();
+      dalServices.closeConnection();
     }
   }
 
@@ -415,16 +389,15 @@ public class FurnitureUCCImpl implements FurnitureUCC {
 
   @Override
   public FurnitureDTO getPersonalFurnitureById(int id, UserDTO user) {
-    // @TODO Que fait cette méthode ?
-    // Lorsqu'un client veut voir son meuble => il faut prendre celui pour lequel il l'a acheté (ducoup dans buyer) ou alors pour
-    // lequel il a fait une visit request
     try {
       FurnitureDTO furniture = this.daoFurniture.selectFurnitureById(id);
       checkFurniture(furniture);
+      //Si tu l'as acheté
       if (furniture.getBuyer() != null && furniture.getBuyer().getId() == user.getId()) {
         return furniture;
       }
-      if (this.daoVisitRequest.selectVisitRequestByUserAndFurniture(id, user.getId()) != null) {
+      //Si tu l'as vendu
+      if (furniture.getVisitRequest().getCustomer().getId() == user.getId()) {
         return furniture;
       }
       return null;

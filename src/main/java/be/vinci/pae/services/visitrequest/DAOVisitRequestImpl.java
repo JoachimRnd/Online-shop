@@ -1,15 +1,13 @@
 package be.vinci.pae.services.visitrequest;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import be.vinci.pae.domain.visitrequest.VisitRequestDTO;
 import be.vinci.pae.domain.visitrequest.VisitRequestFactory;
 import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.services.user.DAOUser;
-import be.vinci.pae.utils.FatalException;
 import be.vinci.pae.utils.ValueLink.VisitRequestStatus;
 import jakarta.inject.Inject;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 
 public class DAOVisitRequestImpl implements DAOVisitRequest {
@@ -38,24 +36,6 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
         + "v.time_slot, v.address, v.status, v.chosen_date_time, v.cancellation_reason, v.customer "
         + "+ FROM project.visit_requests v, project.furniture f WHERE v.customer = ? "
         + "AND f.furniture_id = ? AND v.visit_request_id = f.visit_request;";
-  }
-
-  @Override
-  public VisitRequestDTO selectVisitRequestByUserAndFurniture(int furnitureId, int userId) {
-    // @TODO Why ? Si on a la furniture, on a déjà la visit request et le user par extension
-    // ptn mb jvais changer
-    try {
-      PreparedStatement selectVisitRequestByUserAndFurniture =
-          dalServices.getPreparedStatement(querySelectVisitRequestByUserAndFurniture);
-      selectVisitRequestByUserAndFurniture.setInt(1, userId);
-      selectVisitRequestByUserAndFurniture.setInt(2, furnitureId);
-      try (ResultSet rs = selectVisitRequestByUserAndFurniture.executeQuery()) {
-        return createVisitRequest(rs);
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new FatalException("Data error : selectVisitRequestByUserAndFurniture");
-    }
   }
 
   private VisitRequestDTO createVisitRequest(ResultSet rs) throws SQLException {

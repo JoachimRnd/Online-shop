@@ -26,7 +26,7 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
     bds.setUrl(DB_STRING_CONNECTION);
     bds.setUsername(DB_USERNAME);
     bds.setPassword(DB_PASSWORD);
-    //@TODO à chercher utilité + passer par fichier de conf.
+    //@TODO à chercher utilité
     bds.setMinIdle(DB_MINCONNECTION);
     bds.setMaxIdle(DB_MAXCONNECTION);
     tl = new ThreadLocal<Connection>();
