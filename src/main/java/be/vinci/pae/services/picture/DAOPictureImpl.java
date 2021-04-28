@@ -1,15 +1,14 @@
 package be.vinci.pae.services.picture;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import be.vinci.pae.domain.picture.PictureDTO;
 import be.vinci.pae.domain.picture.PictureFactory;
 import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.services.furniture.DAOFurniture;
 import be.vinci.pae.utils.FatalException;
 import jakarta.inject.Inject;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
 
 public class DAOPictureImpl implements DAOPicture {
 
@@ -28,7 +27,7 @@ public class DAOPictureImpl implements DAOPicture {
   private PictureFactory pictureFactory;
 
   /**
-   * Contructor of DAOPictureImpl. Contain queries.
+   * Constructor of DAOPictureImpl. Contain queries.
    */
   public DAOPictureImpl() {
     queryInsertPicture = "INSERT INTO project.pictures (picture_id,name,visible_for_everyone,"
@@ -51,33 +50,15 @@ public class DAOPictureImpl implements DAOPicture {
         return createPicture(rs);
       }
     } catch (Exception e) {
-      e.printStackTrace();
       throw new FatalException("Data error : selectPictureById");
     }
   }
 
-
-  private PictureDTO createPicture(ResultSet rs) throws SQLException {
-    PictureDTO picture = null;
-    if (rs.next()) {
-      picture = this.pictureFactory.getPicture();
-      picture.setId(rs.getInt("picture_id"));
-      picture.setName(rs.getString("name"));
-      picture.setVisibleForEveryone(rs.getBoolean("visible_for_everyone"));
-      picture.setFurniture(this.daoFurniture.selectFurnitureById(rs.getInt("furniture")));
-      picture.setAScrollingPicture(rs.getBoolean("scrolling_picture"));
-    }
-    return picture;
-  }
-
-
   @Override
   public int addPicture(PictureDTO picture) {
-    int pictureId = -1;
     try {
       PreparedStatement insertPicture =
           this.dalServices.getPreparedStatementAdd(queryInsertPicture);
-
       insertPicture.setString(1, picture.getName());
       insertPicture.setBoolean(2, picture.isVisibleForEveryone());
       insertPicture.setInt(3, picture.getFurniture().getId());
@@ -85,11 +66,11 @@ public class DAOPictureImpl implements DAOPicture {
       insertPicture.execute();
       ResultSet rs = insertPicture.getGeneratedKeys();
       if (rs.next()) {
-        pictureId = rs.getInt(1);
+        return rs.getInt(1);
+      } else {
+        return -1;
       }
-      return pictureId;
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException("Data error : insertPicture");
     }
   }
@@ -100,10 +81,8 @@ public class DAOPictureImpl implements DAOPicture {
       PreparedStatement deletePictureById =
           this.dalServices.getPreparedStatement(queryDeletePictureById);
       deletePictureById.setInt(1, pictureId);
-      deletePictureById.execute();
-      return true;
+      return deletePictureById.executeUpdate() == 1;
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException("Data error : deletePictureById");
     }
   }
@@ -119,16 +98,20 @@ public class DAOPictureImpl implements DAOPicture {
       updateScrollingPicture.setInt(2, pictureId);
       return updateScrollingPicture.executeUpdate() == 1;
     } catch (Exception e) {
-      e.printStackTrace();
       throw new FatalException("Data error : updateScrollingPicture");
     }
   }
 
-
-  @Override
-  public List<PictureDTO> selectPictureByFurnitureId(int idFurniture) {
-    // TODO Auto-generated method stub
-    return null;
+  private PictureDTO createPicture(ResultSet rs) throws SQLException {
+    PictureDTO picture = null;
+    if (rs.next()) {
+      picture = this.pictureFactory.getPicture();
+      picture.setId(rs.getInt("picture_id"));
+      picture.setName(rs.getString("name"));
+      picture.setVisibleForEveryone(rs.getBoolean("visible_for_everyone"));
+      picture.setFurniture(this.daoFurniture.selectFurnitureById(rs.getInt("furniture")));
+      picture.setAScrollingPicture(rs.getBoolean("scrolling_picture"));
+    }
+    return picture;
   }
-
 }

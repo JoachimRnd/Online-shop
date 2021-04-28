@@ -7,7 +7,11 @@ public interface DAOAddress {
 
   List<String> getAllCommunes();
 
-  int addAddress(AddressDTO address);
+  int selectAddressID(AddressDTO addressDTO);
+
+  int addAddress(AddressDTO addressDTO);
+
+  AddressDTO getAddressById(int id);
 
   AddressDTO getAddressByUserId(int userId);
 }

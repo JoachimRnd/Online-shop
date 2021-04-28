@@ -19,7 +19,6 @@ public class DAOOptionImpl implements DAOOption {
 
   private String querySelectOptionsOfFurniture;
   private String querySelectOptionByFurnitureId;
-  private String querySelectOptionsOfBuyer;
   private String querySelectOptionsOfBuyerFromFurniture;
   private String queryAddOption;
   private String queryChangeStatusOption;
@@ -40,8 +39,6 @@ public class DAOOptionImpl implements DAOOption {
   public DAOOptionImpl() {
     querySelectOptionsOfFurniture = "SELECT option_id, buyer, furniture, duration, date, "
         + "status FROM project.options WHERE furniture = ?";
-    querySelectOptionsOfBuyer = "SELECT option_id, buyer, furniture, duration, date, "
-        + "status FROM project.options WHERE buyer = ?";
     querySelectOptionsOfBuyerFromFurniture = "SELECT option_id, buyer, furniture, duration, date, "
         + "status FROM project.options WHERE buyer = ? AND furniture = ?";
     queryAddOption = "INSERT INTO project.options (option_id, buyer, furniture, duration, date, "
@@ -72,7 +69,6 @@ public class DAOOptionImpl implements DAOOption {
         return -1;
       }
     } catch (Exception e) {
-      e.printStackTrace();
       throw new FatalException("Database error : addOption");
     }
   }
@@ -94,7 +90,6 @@ public class DAOOptionImpl implements DAOOption {
         return listOptions;
       }
     } catch (Exception e) {
-      e.printStackTrace();
       throw new FatalException("Database error : selectOptionsOfFurniture");
     }
   }
@@ -109,32 +104,7 @@ public class DAOOptionImpl implements DAOOption {
         return createOption(rs);
       }
     } catch (Exception e) {
-      e.printStackTrace();
       throw new FatalException("Data error : selectOptionByFurnitureId");
-    }
-  }
-
-
-
-  @Override
-  public List<OptionDTO> selectOptionsOfBuyer(int idBuyer) {
-    try {
-      PreparedStatement selectOptionsOfBuyer =
-          dalServices.getPreparedStatement(querySelectOptionsOfBuyer);
-      selectOptionsOfBuyer.setInt(1, idBuyer);
-      try (ResultSet rs = selectOptionsOfBuyer.executeQuery()) {
-        List<OptionDTO> listOptions = new ArrayList<OptionDTO>();
-        OptionDTO option;
-        do {
-          option = createOption(rs);
-          listOptions.add(option);
-        } while (option != null);
-        listOptions.remove(listOptions.size() - 1);
-        return listOptions;
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new FatalException("Database error : selectOptionsOfBuyer");
     }
   }
 
@@ -154,7 +124,6 @@ public class DAOOptionImpl implements DAOOption {
         return list;
       }
     } catch (Exception e) {
-      e.printStackTrace();
       throw new FatalException("Database error : selectOptionsOfBuyerFromFurniture");
     }
   }
@@ -167,7 +136,6 @@ public class DAOOptionImpl implements DAOOption {
       finishOption.setInt(2, id);
       return finishOption.executeUpdate() == 1;
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException("Database error : finishOption");
     }
   }
@@ -180,7 +148,6 @@ public class DAOOptionImpl implements DAOOption {
       cancelOption.setInt(2, optionToCancel.getId());
       return cancelOption.executeUpdate() == 1;
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException("Database error : cancelOption");
     }
   }
@@ -196,7 +163,6 @@ public class DAOOptionImpl implements DAOOption {
         return createOption(rs);
       }
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException("Database error : getLastOptionOfFurniture");
     }
   }

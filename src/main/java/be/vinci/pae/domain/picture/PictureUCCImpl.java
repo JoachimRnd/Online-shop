@@ -1,8 +1,5 @@
 package be.vinci.pae.domain.picture;
 
-import java.io.InputStream;
-import java.util.List;
-import org.apache.commons.text.StringEscapeUtils;
 import be.vinci.pae.domain.furniture.FurnitureDTO;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.furniture.DAOFurniture;
@@ -10,6 +7,8 @@ import be.vinci.pae.services.picture.DAOPicture;
 import be.vinci.pae.utils.BusinessException;
 import be.vinci.pae.utils.Upload;
 import jakarta.inject.Inject;
+import java.io.InputStream;
+import java.util.List;
 
 public class PictureUCCImpl implements PictureUCC {
 
@@ -23,7 +22,7 @@ public class PictureUCCImpl implements PictureUCC {
   private DAOPicture daoPicture;
 
   @Override
-  public List<PictureDTO> getCarouselPictures() {
+  public List<String> getCarouselPictures() {
     try {
       // TODO Auto-generated method stub
       return null;
@@ -35,18 +34,12 @@ public class PictureUCCImpl implements PictureUCC {
   @Override
   public PictureDTO addPicture(int furnitureId, PictureDTO newPicture,
       InputStream uploadedInputStream, String pictureType) {
-    Picture picture;
     try {
       this.dalServices.startTransaction();
-      picture = (Picture) newPicture;
       FurnitureDTO furniture = this.daoFurniture.selectFurnitureById(furnitureId);
       if (furniture == null) {
         throw new BusinessException("Le meuble n'existe pas");
       }
-      picture.setAScrollingPicture(picture.isAScrollingPicture());
-      picture.setFurniture(furniture);
-      picture.setName(StringEscapeUtils.escapeHtml4(picture.getName()));
-      picture.setVisibleForEveryone(picture.isVisibleForEveryone());
       int id = this.daoPicture.addPicture(newPicture);
       if (id == -1) {
         this.dalServices.rollbackTransaction();
@@ -55,8 +48,8 @@ public class PictureUCCImpl implements PictureUCC {
         String uploadedFileLocation = ".\\images\\" + id + "." + pictureType;
         if (Upload.saveToFile(uploadedInputStream, uploadedFileLocation)) {
           this.dalServices.commitTransaction();
-          picture.setId(id);
-          return picture;
+          newPicture.setId(id);
+          return newPicture;
         } else {
           this.dalServices.rollbackTransaction();
         }
@@ -85,8 +78,9 @@ public class PictureUCCImpl implements PictureUCC {
   @Override
   public boolean deletePicture(int pictureId) {
     // TODO à tester
-    FurnitureDTO furnitureDTO = this.daoFurniture.selectFurnitureByFavouritePicture(pictureId);
-    if (furnitureDTO == null) {
+    // Récupérer la picture et vérifier qu'elle est pas la favorite de son meuble
+    PictureDTO pictureDTO = null;
+    if (pictureDTO.getFurniture().getFavouritePicture().getId() != pictureId) {
       try {
         this.dalServices.startTransaction();
         if (!this.daoPicture.deletePicture(pictureId)) {

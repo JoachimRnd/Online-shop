@@ -9,7 +9,6 @@ public class TypeImpl implements Type {
 
   @JsonView(Views.Public.class)
   private int id;
-
   @JsonView(Views.Public.class)
   private String name;
 

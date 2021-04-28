@@ -1,6 +1,5 @@
 package be.vinci.pae.utils;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,18 +10,19 @@ public class Upload {
   /**
    * Save uploadedInputStream to uploadedFileLocation.
    *
-   * @param uploadedInputStream  InputStream of file
+   * @param uploadedInputStream InputStream of file
    * @param uploadedFileLocation Location of file
    * @return boolean
    */
   public static boolean saveToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
 
     try {
-      OutputStream out = null;
+      OutputStream out;
+
       int read = 0;
       byte[] bytes = new byte[1024];
 
-      out = new FileOutputStream(new File(uploadedFileLocation));
+      out = new FileOutputStream(uploadedFileLocation);
       while ((read = uploadedInputStream.read(bytes)) != -1) {
         out.write(bytes, 0, read);
       }
@@ -30,9 +30,7 @@ public class Upload {
       out.close();
       return true;
     } catch (IOException e) {
-      e.printStackTrace();
-      return false;
+      throw new FatalException("Error while copying the file on the disk");
     }
-
   }
 }

@@ -13,24 +13,39 @@ import jakarta.inject.Inject;
 
 public class DAOAddressImpl implements DAOAddress {
 
+  private String querySelectAllCommunes;
+  private String querySelectAddressIdWithUnitNumber;
+  private String querySelectAddressIdWithoutUnitNumber;
+  private String queryAddAddressWithUnitNumber;
+  private String queryAddAddressWithoutUnitNumber;
+  private String querySelectAddressById;
+  private String querySelectAddressByUserId;
+
   @Inject
   DalBackendServices dalBackendServices;
 
   @Inject
   AddressFactory addressFactory;
 
-  private String querySelectAllCommunes;
-  private String queryAddAddress;
-  private String querySelectAddressByUserId;
-
   /**
    * constructor of DAOAddressImpl. contains queries.
    */
   public DAOAddressImpl() {
     querySelectAllCommunes = "SELECT DISTINCT a.commune FROM project.addresses a";
-    queryAddAddress = "INSERT INTO project.addresses (address_id, street, "
-        + "building_number, unit_number, postcode, commune, country) "
+    querySelectAddressIdWithUnitNumber =
+        "SELECT a.address_id FROM project.addresses a WHERE a.street = ? AND "
+            + "a.building_number = ? AND a.postcode = ? AND "
+            + "a.commune = ? AND a.country = ? AND a.unit_number = ?";
+    querySelectAddressIdWithoutUnitNumber =
+        "SELECT a.address_id FROM project.addresses a WHERE a.street = ? AND "
+            + "a.building_number = ? AND a.postcode = ? AND a.commune = ? AND a.country = ?";
+    queryAddAddressWithUnitNumber = "INSERT INTO project.addresses (address_id, street, "
+        + "building_number, postcode, commune, country, unit_number) "
         + "VALUES (DEFAULT, ?, ?, ?, ?, ?, ?)";
+    queryAddAddressWithoutUnitNumber = "INSERT INTO project.addresses (address_id, street, "
+        + "building_number, postcode, commune, country) VALUES (DEFAULT, ?, ?, ?, ?, ?)";
+    querySelectAddressById = "SELECT a.address_id, a.street, a.building_number, a.unit_number, "
+        + "a.postcode, a.commune, a.country FROM project.addresses a WHERE a.address_id = ?";
     querySelectAddressByUserId =
         "SELECT a.address_id, a.street, a.building_number, a.unit_number, a.postcode,"
             + " a.commune, a.country FROM project.addresses a, project.users u"
@@ -50,33 +65,79 @@ public class DAOAddressImpl implements DAOAddress {
       }
       return allCommunes;
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException("Database error : getAllCommunes");
     }
   }
 
   @Override
-  public int addAddress(AddressDTO address) {
-    int addressId = -1;
+  public int selectAddressID(AddressDTO addressDTO) {
     try {
-      PreparedStatement insertAddress =
-          this.dalBackendServices.getPreparedStatementAdd(queryAddAddress);
-      insertAddress.setString(1, address.getStreet());
-      insertAddress.setString(2, address.getBuildingNumber());
-      insertAddress.setString(3, address.getUnitNumber());
-      insertAddress.setString(4, address.getPostcode());
-      insertAddress.setString(5, address.getCommune());
-      insertAddress.setString(6, address.getCountry());
-      insertAddress.execute();
-      try (ResultSet rs = insertAddress.getGeneratedKeys()) {
+      PreparedStatement selectAddressId;
+      if (addressDTO.getUnitNumber() != null) {
+        selectAddressId =
+            this.dalBackendServices.getPreparedStatement(querySelectAddressIdWithUnitNumber);
+        selectAddressId.setString(6, addressDTO.getUnitNumber());
+      } else {
+        selectAddressId =
+            this.dalBackendServices.getPreparedStatement(querySelectAddressIdWithoutUnitNumber);
+      }
+      selectAddressId.setString(1, addressDTO.getStreet());
+      selectAddressId.setString(2, addressDTO.getBuildingNumber());
+      selectAddressId.setString(3, addressDTO.getPostcode());
+      selectAddressId.setString(4, addressDTO.getCommune());
+      selectAddressId.setString(5, addressDTO.getCountry());
+      try (ResultSet rs = selectAddressId.executeQuery()) {
         if (rs.next()) {
-          addressId = rs.getInt(1);
+          return rs.getInt("address_id");
         }
-        return addressId;
+        return -1;
       }
     } catch (SQLException e) {
-      e.printStackTrace();
-      throw new FatalException("Data error : insertAddress");
+      throw new FatalException("Database error : addUser get Address");
+    }
+  }
+
+  @Override
+  public int addAddress(AddressDTO addressDTO) {
+    try {
+      PreparedStatement addAddress;
+      if (addressDTO.getUnitNumber() != null) {
+        addAddress = this.dalBackendServices.getPreparedStatementAdd(queryAddAddressWithUnitNumber);
+        addAddress.setString(6, addressDTO.getUnitNumber());
+      } else {
+        addAddress =
+            this.dalBackendServices.getPreparedStatementAdd(queryAddAddressWithoutUnitNumber);
+      }
+      addAddress.setString(1, addressDTO.getStreet());
+      addAddress.setString(2, addressDTO.getBuildingNumber());
+      addAddress.setString(3, addressDTO.getPostcode());
+      addAddress.setString(4, addressDTO.getCommune());
+      addAddress.setString(5, addressDTO.getCountry());
+
+      addAddress.executeUpdate();
+
+      try (ResultSet rs = addAddress.getGeneratedKeys()) {
+        if (rs.next()) {
+          return rs.getInt(1);
+        }
+        return -1;
+      }
+    } catch (SQLException e) {
+      throw new FatalException("Database error : addUser Add Address");
+    }
+  }
+
+  @Override
+  public AddressDTO getAddressById(int id) {
+    try {
+      PreparedStatement selectAddressById =
+          this.dalBackendServices.getPreparedStatement(querySelectAddressById);
+      selectAddressById.setInt(1, id);
+      try (ResultSet rs = selectAddressById.executeQuery()) {
+        return createAddress(rs);
+      }
+    } catch (SQLException e) {
+      throw new FatalException("Database error : getAllCommunes");
     }
   }
 
@@ -90,23 +151,22 @@ public class DAOAddressImpl implements DAOAddress {
         return createAddress(rs);
       }
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException("Database error : getAddressByUserId");
     }
   }
 
   private AddressDTO createAddress(ResultSet rs) throws SQLException {
-    AddressDTO address = null;
+    AddressDTO addressDTO = null;
     if (rs.next()) {
-      address = this.addressFactory.getAddress();
-      address.setId(rs.getInt("address_id"));
-      address.setStreet(rs.getString("street"));
-      address.setBuildingNumber(rs.getString("building_number"));
-      address.setUnitNumber(rs.getString("unit_number"));
-      address.setPostcode(rs.getString("postcode"));
-      address.setCommune(rs.getString("commune"));
-      address.setCountry(rs.getString("country"));
+      addressDTO = addressFactory.getAddress();
+      addressDTO.setId(rs.getInt("address_id"));
+      addressDTO.setStreet(rs.getString("street"));
+      addressDTO.setBuildingNumber(rs.getString("building_number"));
+      addressDTO.setUnitNumber(rs.getString("unit_number"));
+      addressDTO.setPostcode(rs.getString("postcode"));
+      addressDTO.setCommune(rs.getString("commune"));
+      addressDTO.setCountry(rs.getString("country"));
     }
-    return address;
+    return addressDTO;
   }
 }
