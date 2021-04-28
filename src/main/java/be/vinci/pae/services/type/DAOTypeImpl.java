@@ -59,12 +59,6 @@ public class DAOTypeImpl implements DAOType {
   }
 
   @Override
-  public TypeDTO selectTypeByName(String typeName) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
   public TypeDTO selectTypeById(int id) {
     try {
       PreparedStatement selectTypeById = dalServices.getPreparedStatement(querySelectTypeId);
@@ -80,32 +74,20 @@ public class DAOTypeImpl implements DAOType {
 
   @Override
   public int addType(String type) {
-    int typeId = -1;
     try {
       PreparedStatement insertType = this.dalServices.getPreparedStatementAdd(queryInsertType);
       insertType.setString(1, type);
       insertType.execute();
-
       ResultSet rs = insertType.getGeneratedKeys();
       if (rs.next()) {
-        typeId = rs.getInt(1);
+        return rs.getInt(1);
+      } else {
+        return -1;
       }
-
     } catch (SQLException e) {
       e.printStackTrace();
       throw new FatalException("Data error : insertType");
     }
-    return typeId;
-  }
-
-  private TypeDTO createType(ResultSet rs) throws SQLException {
-    TypeDTO type = null;
-    if (rs.next()) {
-      type = typeFactory.getType();
-      type.setId(rs.getInt("type_id"));
-      type.setName(rs.getString("name"));
-    }
-    return type;
   }
 
   @Override
@@ -114,12 +96,11 @@ public class DAOTypeImpl implements DAOType {
       PreparedStatement deleteFurnitureType =
           this.dalServices.getPreparedStatement(queryDeleteType);
       deleteFurnitureType.setInt(1, id);
-      deleteFurnitureType.execute();
+      return deleteFurnitureType.executeUpdate() == 1;
     } catch (SQLException e) {
       e.printStackTrace();
       throw new FatalException("Data error : deleteFurniture");
     }
-    return true;
   }
 
   @Override
@@ -132,12 +113,21 @@ public class DAOTypeImpl implements DAOType {
         while (rs.next()) {
           allTypes.add(rs.getString(1));
         }
+        return allTypes;
       }
-      return allTypes;
     } catch (SQLException e) {
       e.printStackTrace();
       throw new FatalException("Database error : getAllUsers");
     }
   }
 
+  private TypeDTO createType(ResultSet rs) throws SQLException {
+    TypeDTO type = null;
+    if (rs.next()) {
+      type = typeFactory.getType();
+      type.setId(rs.getInt("type_id"));
+      type.setName(rs.getString("name"));
+    }
+    return type;
+  }
 }

@@ -38,11 +38,11 @@ public class AuthorizationRequestFilter implements ContainerRequestFilter {
       DecodedJWT decodedToken = null;
       try {
         decodedToken = this.jwtVerifier.verify(token);
+        requestContext.setProperty("user",
+            this.userUCC.getUserById(decodedToken.getClaim("user").asInt()));
       } catch (Exception e) {
         throw new WebApplicationException("Malformed token", e, Status.UNAUTHORIZED);
       }
-      requestContext.setProperty("user",
-          this.userUCC.getUserById(decodedToken.getClaim("user").asInt()));
     }
   }
 

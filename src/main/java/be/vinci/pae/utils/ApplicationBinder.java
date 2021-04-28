@@ -1,9 +1,7 @@
 package be.vinci.pae.utils;
 
-import be.vinci.pae.domain.address.AddressDTO;
 import be.vinci.pae.domain.address.AddressFactory;
 import be.vinci.pae.domain.address.AddressFactoryImpl;
-import be.vinci.pae.domain.address.AddressImpl;
 import be.vinci.pae.domain.address.AddressUCC;
 import be.vinci.pae.domain.address.AddressUCCImpl;
 import be.vinci.pae.domain.furniture.FurnitureFactory;
@@ -56,45 +54,43 @@ public class ApplicationBinder extends AbstractBinder {
 
   @Override
   protected void configure() {
-    // USER
-    bind(UserFactoryImpl.class).to(UserFactory.class).in(Singleton.class);
-    bind(UserUCCImpl.class).to(UserUCC.class).in(Singleton.class);
-    bind(DAOUserImpl.class).to(DAOUser.class).in(Singleton.class);
-
-    // PICTURE
-    bind(PictureFactoryImpl.class).to(PictureFactory.class).in(Singleton.class);
-    bind(PictureUCCImpl.class).to(PictureUCC.class).in(Singleton.class);
-    bind(DAOPictureImpl.class).to(DAOPicture.class).in(Singleton.class);
-
     // ADDRESS
     bind(AddressFactoryImpl.class).to(AddressFactory.class).in(Singleton.class);
-    bind(AddressImpl.class).to(AddressDTO.class).in(Singleton.class);
     bind(AddressUCCImpl.class).to(AddressUCC.class).in(Singleton.class);
     bind(DAOAddressImpl.class).to(DAOAddress.class).in(Singleton.class);
 
-    // VISIT REQUEST
-    bind(VisitRequestFactoryImpl.class).to(VisitRequestFactory.class).in(Singleton.class);
-    bind(VisitRequestUCCImpl.class).to(VisitRequestUCC.class).in(Singleton.class);
-    bind(DAOVisitRequestImpl.class).to(DAOVisitRequest.class).in(Singleton.class);
-
     // FURNITURE
+    bind(FurnitureFactoryImpl.class).to(FurnitureFactory.class).in(Singleton.class);
     bind(FurnitureUCCImpl.class).to(FurnitureUCC.class).in(Singleton.class);
     bind(DAOFurnitureImpl.class).to(DAOFurniture.class).in(Singleton.class);
-    bind(FurnitureFactoryImpl.class).to(FurnitureFactory.class).in(Singleton.class);
-
-    // TYPE
-    bind(TypeFactoryImpl.class).to(TypeFactory.class).in(Singleton.class);
-    bind(TypeUCCImpl.class).to(TypeUCC.class).in(Singleton.class);
-    bind(DAOTypeImpl.class).to(DAOType.class).in(Singleton.class);
-
-    // DALSERVICES
-    bind(DalServicesImpl.class).to(DalServices.class).to(DalBackendServices.class)
-        .in(Singleton.class);
 
     // OPTION
     bind(OptionFactoryImpl.class).to(OptionFactory.class).in(Singleton.class);
     bind(OptionUCCImpl.class).to(OptionUCC.class).in(Singleton.class);
     bind(DAOOptionImpl.class).to(DAOOption.class).in(Singleton.class);
 
+    // PICTURE
+    bind(PictureFactoryImpl.class).to(PictureFactory.class).in(Singleton.class);
+    bind(PictureUCCImpl.class).to(PictureUCC.class).in(Singleton.class);
+    bind(DAOPictureImpl.class).to(DAOPicture.class).in(Singleton.class);
+
+    // TYPE
+    bind(TypeFactoryImpl.class).to(TypeFactory.class).in(Singleton.class);
+    bind(TypeUCCImpl.class).to(TypeUCC.class).in(Singleton.class);
+    bind(DAOTypeImpl.class).to(DAOType.class).in(Singleton.class);
+
+    // USER
+    bind(UserFactoryImpl.class).to(UserFactory.class).in(Singleton.class);
+    bind(UserUCCImpl.class).to(UserUCC.class).in(Singleton.class);
+    bind(DAOUserImpl.class).to(DAOUser.class).in(Singleton.class);
+
+    // VISIT REQUEST
+    bind(VisitRequestFactoryImpl.class).to(VisitRequestFactory.class).in(Singleton.class);
+    bind(VisitRequestUCCImpl.class).to(VisitRequestUCC.class).in(Singleton.class);
+    bind(DAOVisitRequestImpl.class).to(DAOVisitRequest.class).in(Singleton.class);
+    
+    // DALSERVICES
+    bind(DalServicesImpl.class).to(DalServices.class).to(DalBackendServices.class)
+        .in(Singleton.class);
   }
 }

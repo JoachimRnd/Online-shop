@@ -1,11 +1,5 @@
 package be.vinci.pae.services.option;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 import be.vinci.pae.domain.option.OptionDTO;
 import be.vinci.pae.domain.option.OptionFactory;
 import be.vinci.pae.services.DalBackendServices;
@@ -14,12 +8,17 @@ import be.vinci.pae.services.user.DAOUser;
 import be.vinci.pae.utils.FatalException;
 import be.vinci.pae.utils.ValueLink.OptionStatus;
 import jakarta.inject.Inject;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DAOOptionImpl implements DAOOption {
 
   private String querySelectOptionsOfFurniture;
   private String querySelectOptionByFurnitureId;
-  private String querySelectOptionsOfBuyer;
   private String querySelectOptionsOfBuyerFromFurniture;
   private String queryAddOption;
   private String queryChangeStatusOption;
@@ -40,8 +39,6 @@ public class DAOOptionImpl implements DAOOption {
   public DAOOptionImpl() {
     querySelectOptionsOfFurniture = "SELECT option_id, buyer, furniture, duration, date, "
         + "status FROM project.options WHERE furniture = ?";
-    querySelectOptionsOfBuyer = "SELECT option_id, buyer, furniture, duration, date, "
-        + "status FROM project.options WHERE buyer = ?";
     querySelectOptionsOfBuyerFromFurniture = "SELECT option_id, buyer, furniture, duration, date, "
         + "status FROM project.options WHERE buyer = ? AND furniture = ?";
     queryAddOption = "INSERT INTO project.options (option_id, buyer, furniture, duration, date, "
@@ -111,30 +108,6 @@ public class DAOOptionImpl implements DAOOption {
     } catch (Exception e) {
       e.printStackTrace();
       throw new FatalException("Data error : selectOptionByFurnitureId");
-    }
-  }
-
-
-
-  @Override
-  public List<OptionDTO> selectOptionsOfBuyer(int idBuyer) {
-    try {
-      PreparedStatement selectOptionsOfBuyer =
-          dalServices.getPreparedStatement(querySelectOptionsOfBuyer);
-      selectOptionsOfBuyer.setInt(1, idBuyer);
-      try (ResultSet rs = selectOptionsOfBuyer.executeQuery()) {
-        List<OptionDTO> listOptions = new ArrayList<OptionDTO>();
-        OptionDTO option;
-        do {
-          option = createOption(rs);
-          listOptions.add(option);
-        } while (option != null);
-        listOptions.remove(listOptions.size() - 1);
-        return listOptions;
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new FatalException("Database error : selectOptionsOfBuyer");
     }
   }
 
