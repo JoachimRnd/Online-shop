@@ -1,14 +1,14 @@
 package be.vinci.pae.services.picture;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import be.vinci.pae.domain.picture.PictureDTO;
 import be.vinci.pae.domain.picture.PictureFactory;
 import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.services.furniture.DAOFurniture;
 import be.vinci.pae.utils.FatalException;
 import jakarta.inject.Inject;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class DAOPictureImpl implements DAOPicture {
 
@@ -50,7 +50,7 @@ public class DAOPictureImpl implements DAOPicture {
         return createPicture(rs);
       }
     } catch (Exception e) {
-      throw new FatalException("Data error : selectPictureById");
+      throw new FatalException("Data error : selectPictureById", e);
     }
   }
 
@@ -71,7 +71,7 @@ public class DAOPictureImpl implements DAOPicture {
         return -1;
       }
     } catch (SQLException e) {
-      throw new FatalException("Data error : insertPicture");
+      throw new FatalException("Data error : insertPicture", e);
     }
   }
 
@@ -83,7 +83,7 @@ public class DAOPictureImpl implements DAOPicture {
       deletePictureById.setInt(1, pictureId);
       return deletePictureById.executeUpdate() == 1;
     } catch (SQLException e) {
-      throw new FatalException("Data error : deletePictureById");
+      throw new FatalException("Data error : deletePictureById", e);
     }
   }
 
@@ -98,7 +98,7 @@ public class DAOPictureImpl implements DAOPicture {
       updateScrollingPicture.setInt(2, pictureId);
       return updateScrollingPicture.executeUpdate() == 1;
     } catch (Exception e) {
-      throw new FatalException("Data error : updateScrollingPicture");
+      throw new FatalException("Data error : updateScrollingPicture", e);
     }
   }
 

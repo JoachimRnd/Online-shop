@@ -1,15 +1,15 @@
 package be.vinci.pae.services.type;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import be.vinci.pae.domain.type.TypeDTO;
 import be.vinci.pae.domain.type.TypeFactory;
 import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.utils.FatalException;
 import jakarta.inject.Inject;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DAOTypeImpl implements DAOType {
 
@@ -53,7 +53,7 @@ public class DAOTypeImpl implements DAOType {
         return listTypes;
       }
     } catch (Exception e) {
-      throw new FatalException("Data error : selectAllTypes");
+      throw new FatalException("Data error : selectAllTypes", e);
     }
   }
 
@@ -66,7 +66,7 @@ public class DAOTypeImpl implements DAOType {
         return createType(rs);
       }
     } catch (Exception e) {
-      throw new FatalException("Data error : selectTypeById");
+      throw new FatalException("Data error : selectTypeById", e);
     }
   }
 
@@ -83,7 +83,7 @@ public class DAOTypeImpl implements DAOType {
         return -1;
       }
     } catch (SQLException e) {
-      throw new FatalException("Data error : insertType");
+      throw new FatalException("Data error : insertType", e);
     }
   }
 
@@ -95,7 +95,7 @@ public class DAOTypeImpl implements DAOType {
       deleteFurnitureType.setInt(1, id);
       return deleteFurnitureType.executeUpdate() == 1;
     } catch (SQLException e) {
-      throw new FatalException("Data error : deleteFurniture");
+      throw new FatalException("Data error : deleteFurniture", e);
     }
   }
 
@@ -112,7 +112,7 @@ public class DAOTypeImpl implements DAOType {
         return allTypes;
       }
     } catch (SQLException e) {
-      throw new FatalException("Database error : getAllUsers");
+      throw new FatalException("Database error : getAllUsers", e);
     }
   }
 
