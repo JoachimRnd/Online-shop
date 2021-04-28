@@ -1,13 +1,6 @@
 package be.vinci.pae.services.user;
 
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.user.UserFactory;
 import be.vinci.pae.services.DalBackendServices;
@@ -15,6 +8,13 @@ import be.vinci.pae.services.address.DAOAddress;
 import be.vinci.pae.utils.FatalException;
 import be.vinci.pae.utils.ValueLink.UserType;
 import jakarta.inject.Inject;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class DAOUserImpl implements DAOUser {
 
@@ -99,11 +99,8 @@ public class DAOUserImpl implements DAOUser {
     try {
       PreparedStatement selectUserById =
           this.dalBackendServices.getPreparedStatement(querySelectUserById);
-      System.out.println("1");
       selectUserById.setInt(1, id);
-      System.out.println("2");
       try (ResultSet rs = selectUserById.executeQuery()) {
-        System.out.println("3");
         return createUser(rs);
       }
     } catch (SQLException e) {

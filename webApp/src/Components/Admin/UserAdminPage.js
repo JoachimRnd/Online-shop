@@ -50,7 +50,7 @@ let userAdmin = `
                 </div>
             </div>
         </div>
-        div class="row">
+        <div class="row">
             <div class="col-6">
                 <div class="form-group">
                 <label for="furniture_buyed">Meuble acheté par le client</label>

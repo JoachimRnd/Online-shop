@@ -3,7 +3,7 @@ import Navbar from "../Navbar.js";
 
 let adminPage = `<h4 id="pageTitle">Admin</h4>
     <button class="btn btn-primary" id="validation">Demandes d'inscriptions</button>
-    <button class="btn btn-success" id="">Demandes de visites</button>
+    <button class="btn btn-success" id="visit">Demandes de visites</button>
     <button class="btn btn-success" id="search">Recherche</button>
     <button class="btn btn-dark" id="furnitureType">Ajouter ou supprimer type meuble</button>
 
@@ -20,6 +20,8 @@ const AdministrationPage = () => {
     buttonFurnitureType.addEventListener("click",onFurnitureType);
     let buttonSearch = document.getElementById("search");
     buttonSearch.addEventListener("click",onSearch);
+    let buttonVisit = document.getElementById("visit");
+    buttonVisit.addEventListener("click",onVisit);
 };
 
 const onValidation = () => {
@@ -35,6 +37,11 @@ const onFurnitureType = () => {
 const onSearch = () => {
     Navbar();
     RedirectUrl("/admin/search");
+}
+
+const onVisit = () => {
+    Navbar();
+    RedirectUrl("/admin/visits");
 }
 
 

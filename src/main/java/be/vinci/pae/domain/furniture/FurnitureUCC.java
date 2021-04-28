@@ -45,6 +45,8 @@ public interface FurnitureUCC {
 
   List<FurnitureDTO> getFurnitureSellBy(int id);
 
+  List<FurnitureDTO> selectFurnituresOfVisit(int id);
+
   FurnitureDTO getPersonalFurnitureById(int id, UserDTO user);
 
   boolean modifyFurniture(int furnitureId, FurnitureCondition condition, double sellingPrice,

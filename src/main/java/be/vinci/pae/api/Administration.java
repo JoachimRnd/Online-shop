@@ -1,10 +1,5 @@
 package be.vinci.pae.api;
 
-import java.io.InputStream;
-import java.util.List;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
-import com.fasterxml.jackson.databind.JsonNode;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.api.utils.Json;
 import be.vinci.pae.domain.address.AddressUCC;
@@ -17,7 +12,12 @@ import be.vinci.pae.domain.picture.PictureUCC;
 import be.vinci.pae.domain.type.TypeUCC;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.user.UserUCC;
+import be.vinci.pae.domain.visitrequest.VisitRequestDTO;
+import be.vinci.pae.domain.visitrequest.VisitRequestUCC;
 import be.vinci.pae.utils.ValueLink;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -34,10 +34,16 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import java.io.InputStream;
+import java.util.List;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 @Singleton
 @Path("/admin")
 public class Administration {
+
+  private final ObjectMapper jsonMapper = new ObjectMapper();
 
   @Inject
   private UserUCC userUCC;
@@ -59,6 +65,9 @@ public class Administration {
 
   @Inject
   private PictureUCC pictureUcc;
+
+  @Inject
+  private VisitRequestUCC visitRequestUCC;
 
   /**
    * Validate an user.
@@ -277,9 +286,9 @@ public class Administration {
   /**
    * Receive file from the frontend.
    *
-   * @param enabled FormData
+   * @param enabled             FormData
    * @param uploadedInputStream FormDataFile
-   * @param fileDetail Details of the FormDataFile
+   * @param fileDetail          Details of the FormDataFile
    * @return Status code
    */
   @POST
@@ -307,5 +316,73 @@ public class Administration {
     return picture != null ? Response.ok().build() : Response.serverError().build();
   }
 
+  /**
+   * Get all visit request.
+   *
+   * @return List of VisitRequestDTO
+   */
+  @GET
+  @Path("/allvisitsopenned")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public List<VisitRequestDTO> allVisitsOpenned() {
+    return Json
+        .filterAdminJsonViewAsList(visitRequestUCC.getAllVisitsOpenned(), VisitRequestDTO.class);
+  }
+
+  /**
+   * Get a visit request.
+   *
+   * @return VisitRequestDTO
+   */
+  @GET
+  @Path("/visit/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public VisitRequestDTO getVisitRequest(@PathParam("id") int id) {
+    return Json.filterAdminJsonView(visitRequestUCC.getVisitRequestById(id), VisitRequestDTO.class);
+  }
+
+  /**
+   * Modify a visit request.
+   *
+   * @return VisitRequestDTO
+   */
+  @PUT
+  @Path("/visit/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public Response modifyVisitRequest(@PathParam("id") int id, JsonNode json) {
+    String cancellationReason =
+        json.hasNonNull("cancellationReason") && !json.get("cancellationReason").asText().isEmpty()
+            ? json.get("cancellationReason").asText() : null;
+    String chosenDateTime =
+        json.hasNonNull("chosenDateTime") && !json.get("chosenDateTime").asText().isEmpty() ? json
+            .get("chosenDateTime").asText() : null;
+    if (cancellationReason == null && chosenDateTime == null) {
+      return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs").build();
+    }
+
+    String status = visitRequestUCC.modifyVisitRequest(id, cancellationReason, chosenDateTime);
+    ObjectNode node = jsonMapper.createObjectNode().putPOJO("status", status);
+
+    return node != null ? Response.ok(node, MediaType.APPLICATION_JSON).build()
+        : Response.serverError().build();
+  }
+
+
+  /**
+   * Get all furniture of visit request.
+   *
+   * @return List of FurnitureDTO
+   */
+  @GET
+  @Path("/furnituresvisit/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public List<FurnitureDTO> selectFurnituresOfVisit(@PathParam("id") int id) {
+    return Json
+        .filterAdminJsonViewAsList(furnitureUCC.selectFurnituresOfVisit(id), FurnitureDTO.class);
+  }
 
 }

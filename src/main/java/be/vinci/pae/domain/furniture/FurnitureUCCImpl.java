@@ -268,7 +268,7 @@ public class FurnitureUCCImpl implements FurnitureUCC {
       this.dalServices.startTransaction();
 
       if (!this.daoFurniture
-          .updateWithdrawalDateToCustomer(id, Timestamp.valueOf(time.atTime(LocalTime.MIDNIGHT)))) {
+          .updateWithdrawalDateToCustomer(id, Timestamp.valueOf(time.atTime(LocalTime.NOON)))) {
         this.dalServices.rollbackTransaction();
         throw new BusinessException("Error modify WithdrawalDateToCustomer");
       }
@@ -285,7 +285,7 @@ public class FurnitureUCCImpl implements FurnitureUCC {
       this.dalServices.startTransaction();
 
       if (!this.daoFurniture.updateWithdrawalDateFromCustomer(id,
-          Timestamp.valueOf(time.atTime(LocalTime.MIDNIGHT)))) {
+          Timestamp.valueOf(time.atTime(LocalTime.NOON)))) {
         this.dalServices.rollbackTransaction();
         throw new BusinessException("Error modify WithdrawalDateFromCustomer");
       }
@@ -302,7 +302,7 @@ public class FurnitureUCCImpl implements FurnitureUCC {
       this.dalServices.startTransaction();
 
       if (!this.daoFurniture
-          .updateDeliveryDate(id, Timestamp.valueOf(time.atTime(LocalTime.MIDNIGHT)))) {
+          .updateDeliveryDate(id, Timestamp.valueOf(time.atTime(LocalTime.NOON)))) {
         this.dalServices.rollbackTransaction();
         throw new BusinessException("Error modify delivery date");
       }
@@ -459,6 +459,15 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   public List<FurnitureDTO> getFurnitureSellBy(int id) {
     try {
       return daoFurniture.getFurnitureSoldByUserId(id);
+    } finally {
+      this.dalServices.closeConnection();
+    }
+  }
+
+  @Override
+  public List<FurnitureDTO> selectFurnituresOfVisit(int id) {
+    try {
+      return daoFurniture.selectFurnituresOfVisit(id);
     } finally {
       this.dalServices.closeConnection();
     }

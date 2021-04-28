@@ -43,6 +43,8 @@ public class DAOFurnitureImpl implements DAOFurniture {
   private String queryUpdateBuyer;
   private String queryUpdateFavouritePicture;
   private String queryDeleteBuyer;
+  private String queryUpdateRefuseAllFurnitureByVisitId;
+  private String querySelectFurnituresOfVisit;
 
   @Inject
   private FurnitureFactory furnitureFactory;
@@ -195,6 +197,13 @@ public class DAOFurnitureImpl implements DAOFurniture {
         "UPDATE project.furniture SET favourite_picture = ? WHERE furniture_id = ?";
     queryDeleteBuyer = "UPDATE project.furniture SET buyer = null, unregistered_buyer_email = null "
         + "WHERE furniture_id = ?";
+    queryUpdateRefuseAllFurnitureByVisitId = "UPDATE project.furniture SET condition = ? "
+        + "WHERE visit_request = ?";
+    querySelectFurnituresOfVisit = "SELECT f.furniture_id, f.description, f.type,"
+        + " f.visit_request, f.purchase_price, f.withdrawal_date_from_customer, f.selling_price,"
+        + " f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date,"
+        + " f.withdrawal_date_to_customer, f.buyer,f.condition, f.unregistered_buyer_email,"
+        + " f.favourite_picture FROM project.furniture f WHERE f.visit_request = ?";
   }
 
   @Override
@@ -555,6 +564,40 @@ public class DAOFurnitureImpl implements DAOFurniture {
           && updateWithdrawalDateToCustomer(id, null) && deleteBuyer.executeUpdate() == 1;
     } catch (Exception e) {
       throw new FatalException("Data error : returnToSelling");
+    }
+  }
+
+  @Override
+  public boolean refuseAllFurnitureByVisitId(int id) {
+    try {
+      PreparedStatement updateRefuseAllFurnitureByVisitId = this.dalServices
+          .getPreparedStatement(queryUpdateRefuseAllFurnitureByVisitId);
+      updateRefuseAllFurnitureByVisitId.setInt(1, FurnitureCondition.ne_convient_pas.ordinal());
+      updateRefuseAllFurnitureByVisitId.setInt(2, id);
+      return updateRefuseAllFurnitureByVisitId.executeUpdate() <= 1;
+    } catch (Exception e) {
+      throw new FatalException("Data error : refuseAllFurnitureByVisitId");
+    }
+  }
+
+  @Override
+  public List<FurnitureDTO> selectFurnituresOfVisit(int id) {
+    try {
+      PreparedStatement selectFurnituresOfVisit =
+          dalServices.getPreparedStatement(querySelectFurnituresOfVisit);
+      selectFurnituresOfVisit.setInt(1, id);
+      try (ResultSet rs = selectFurnituresOfVisit.executeQuery()) {
+        List<FurnitureDTO> listFurniture = new ArrayList<>();
+        FurnitureDTO furniture;
+        do {
+          furniture = createFurniture(rs);
+          listFurniture.add(furniture);
+        } while (furniture != null);
+        listFurniture.remove(listFurniture.size() - 1);
+        return listFurniture;
+      }
+    } catch (Exception e) {
+      throw new FatalException("Data error : selectAllFurnitures");
     }
   }
 
