@@ -56,8 +56,8 @@ public class DAOUserImpl implements DAOUser {
     queryValidateUser = "UPDATE project.users " + "SET user_type = ?, valid_registration = ? "
         + "WHERE user_id = ?";
     querySelectUnvalidatedUsers = "SELECT u.user_id, u.username, u.password, u.last_name, "
-        + "u.first_name, u.address, u.email, u.registration_date, u.valid_registration, u.user_type "
-        + "FROM project.users u WHERE u.valid_registration = false";
+        + "u.first_name, u.address, u.email, u.registration_date, u.valid_registration, u.user_type"
+        + " FROM project.users u WHERE u.valid_registration = false";
     querySelectAllUsername = "SELECT DISTINCT u.last_name FROM project.users u";
     querySelectUsersFiltered = "SELECT u.user_id, u.username, u.password, u.last_name, "
         + "u.first_name, u.address, u.email, u.registration_date, u.valid_registration, "
