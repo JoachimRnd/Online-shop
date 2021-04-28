@@ -1,12 +1,12 @@
 package be.vinci.pae.services;
 
-import be.vinci.pae.utils.Config;
-import be.vinci.pae.utils.FatalException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import org.apache.commons.dbcp2.BasicDataSource;
+import be.vinci.pae.utils.Config;
+import be.vinci.pae.utils.FatalException;
 
 public class DalServicesImpl implements DalServices, DalBackendServices {
 
@@ -27,7 +27,7 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
     bds.setUrl(DB_STRING_CONNECTION);
     bds.setUsername(DB_USERNAME);
     bds.setPassword(DB_PASSWORD);
-    //@TODO à chercher utilité
+    // @TODO à chercher utilité
     bds.setMinIdle(DB_MINCONNECTION);
     bds.setMaxIdle(DB_MAXCONNECTION);
     tl = new ThreadLocal<Connection>();
@@ -43,7 +43,6 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
     try {
       preparedStatement = conn.prepareStatement(query);
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException("Data error : getPreparedStatement");
     }
     return preparedStatement;
@@ -58,7 +57,6 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
     try {
       return conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException("Data error : getPreparedStatementAdd");
     }
   }
@@ -68,7 +66,6 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
     try {
       conn = bds.getConnection();
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException("Data error : getConnection");
     }
     tl.set(conn);
@@ -85,7 +82,6 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
       try {
         conn.setAutoCommit(false);
       } catch (SQLException e) {
-        e.printStackTrace();
         throw new FatalException("Data error : startTransaction");
       }
     }
@@ -98,7 +94,6 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
       try {
         conn.commit();
       } catch (SQLException e) {
-        e.printStackTrace();
         throw new FatalException("Data error : commitTransaction");
       }
     }
@@ -111,7 +106,6 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
       try {
         conn.rollback();
       } catch (SQLException e) {
-        e.printStackTrace();
         throw new FatalException("Data error : rollbackTransaction");
       }
     }
@@ -128,7 +122,6 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
       try {
         conn.close();
       } catch (SQLException e) {
-        e.printStackTrace();
         throw new FatalException("Data error : closeConnection");
       }
     }

@@ -4,6 +4,7 @@ import java.util.List;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import be.vinci.pae.utils.FatalException;
 import views.Views;
 
 public class Json {
@@ -29,8 +30,7 @@ public class Json {
       return jsonMapper.readerWithView(Views.Public.class).forType(type)
           .readValue(publicItemListAsString);
     } catch (JsonProcessingException e) {
-      e.printStackTrace();
-      return null;
+      throw new FatalException(e);
     }
   }
 
@@ -52,16 +52,15 @@ public class Json {
       return jsonMapper.readerWithView(Views.Public.class).forType(targetClass)
           .readValue(publicItemAsString);
     } catch (JsonProcessingException e) {
-      e.printStackTrace();
-      return null;
+      throw new FatalException(e);
     }
   }
 
   /**
    * Filter whole custom JSON object with the Admin view.
    *
-   * @param <T>         generic return type
-   * @param item        description
+   * @param <T> generic return type
+   * @param item description
    * @param targetClass name of the targeted class
    * @return a generic object
    */
@@ -75,16 +74,15 @@ public class Json {
       return jsonMapper.readerWithView(Views.Admin.class).forType(targetClass)
           .readValue(adminItemAsString);
     } catch (JsonProcessingException e) {
-      e.printStackTrace();
-      return null;
+      throw new FatalException(e);
     }
   }
 
   /**
    * Filter whole custom JSON object with the Admin view as a list.
    *
-   * @param <T>         generic return type
-   * @param list        list of generic objects
+   * @param <T> generic return type
+   * @param list list of generic objects
    * @param targetClass name of the targeted class
    * @return a list of objects (with generic type)
    */
@@ -99,8 +97,7 @@ public class Json {
       return jsonMapper.readerWithView(Views.Admin.class).forType(type)
           .readValue(publicItemListAsString);
     } catch (JsonProcessingException e) {
-      e.printStackTrace();
-      return null;
+      throw new FatalException(e);
     }
   }
 }
