@@ -135,7 +135,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
         + " f.visit_request, f.purchase_price, f.withdrawal_date_from_customer, f.selling_price,"
         + " f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date,"
         + " f.withdrawal_date_to_customer, f.buyer,f.condition, f.unregistered_buyer_email,"
-        + " f.favourite_picture FROM project.furniture f WHERE f.condition = ? || f.condition = ?";
+        + " f.favourite_picture FROM project.furniture f WHERE f.condition = ? OR f.condition = ?";
     querySelectFurnitureById = "SELECT f.furniture_id, f.description, f.type, f.visit_request,"
         + " f.purchase_price, f.withdrawal_date_from_customer, f.selling_price,"
         + " f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date,"
@@ -222,7 +222,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
         return listFurniture;
       }
     } catch (Exception e) {
-      throw new FatalException("Data error : selectAllFurnitures");
+      throw new FatalException("Data error : selectAllFurnitures", e);
     }
   }
 
@@ -244,7 +244,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
       }
       return list;
     } catch (Exception e) {
-      throw new FatalException("Data error : selectAllFurnituresUser");
+      throw new FatalException("Data error : selectAllFurnituresUser", e);
     }
   }
 
@@ -258,7 +258,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
         return createFurniture(rs);
       }
     } catch (Exception e) {
-      throw new FatalException("Data error : selectFurnitureById");
+      throw new FatalException("Data error : selectFurnitureById", e);
     }
   }
 
@@ -296,7 +296,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
         return furnitureId;
       }
     } catch (SQLException e) {
-      throw new FatalException("Data error : insertFurniture");
+      throw new FatalException("Data error : insertFurniture", e);
     }
   }
 
@@ -309,7 +309,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
       updateSellingDate.setInt(2, id);
       return updateSellingDate.executeUpdate() == 1;
     } catch (SQLException e) {
-      throw new FatalException("Data error : updateSellingDate");
+      throw new FatalException("Data error : updateSellingDate", e);
     }
   }
 
@@ -322,7 +322,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
       updateSellingPrice.setInt(2, id);
       return updateSellingPrice.executeUpdate() == 1;
     } catch (SQLException e) {
-      throw new FatalException("Data error : updateSellingPrice");
+      throw new FatalException("Data error : updateSellingPrice", e);
     }
   }
 
@@ -335,7 +335,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
       updateSpecialSalePrice.setInt(2, id);
       return updateSpecialSalePrice.executeUpdate() == 1;
     } catch (SQLException e) {
-      throw new FatalException("Data error : updateSpecialSalePrice");
+      throw new FatalException("Data error : updateSpecialSalePrice", e);
     }
   }
 
@@ -348,7 +348,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
       updateCondition.setInt(2, id);
       return updateCondition.executeUpdate() == 1;
     } catch (Exception e) {
-      throw new FatalException("Data error : updateCondition");
+      throw new FatalException("Data error : updateCondition", e);
     }
   }
 
@@ -361,7 +361,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
       updateDepositDate.setInt(2, id);
       return updateDepositDate.executeUpdate() == 1;
     } catch (Exception e) {
-      throw new FatalException("Data error : updateDepositDate");
+      throw new FatalException("Data error : updateDepositDate", e);
     }
   }
 
@@ -373,7 +373,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
       updateType.setInt(2, furnitureId);
       return updateType.executeUpdate() == 1;
     } catch (Exception e) {
-      throw new FatalException("Data error : updateType");
+      throw new FatalException("Data error : updateType", e);
     }
   }
 
@@ -386,7 +386,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
       updatePurchasePrice.setInt(2, id);
       return updatePurchasePrice.executeUpdate() == 1;
     } catch (SQLException e) {
-      throw new FatalException("Data error : updatePurchasePrice");
+      throw new FatalException("Data error : updatePurchasePrice", e);
     }
   }
 
@@ -399,7 +399,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
       updateDescription.setInt(2, id);
       return updateDescription.executeUpdate() == 1;
     } catch (SQLException e) {
-      throw new FatalException("Data error : updateDescription");
+      throw new FatalException("Data error : updateDescription", e);
     }
   }
 
@@ -412,7 +412,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
       updateWithdrawalDateToCustomer.setInt(2, id);
       return updateWithdrawalDateToCustomer.executeUpdate() == 1;
     } catch (Exception e) {
-      throw new FatalException("Data error : updateWithdrawalDateToCustomer");
+      throw new FatalException("Data error : updateWithdrawalDateToCustomer", e);
     }
   }
 
@@ -425,7 +425,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
       updateWithdrawalDateFromCustomer.setInt(2, id);
       return updateWithdrawalDateFromCustomer.executeUpdate() == 1;
     } catch (Exception e) {
-      throw new FatalException("Data error : updateWithdrawalDateFromCustomer");
+      throw new FatalException("Data error : updateWithdrawalDateFromCustomer", e);
     }
   }
 
@@ -438,7 +438,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
       updateDeliveryDate.setInt(2, id);
       return updateDeliveryDate.executeUpdate() == 1;
     } catch (Exception e) {
-      throw new FatalException("Data error : updateDeliveryDate");
+      throw new FatalException("Data error : updateDeliveryDate", e);
     }
   }
 
@@ -451,7 +451,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
       updateUnregisteredBuyerEmail.setInt(2, id);
       return updateUnregisteredBuyerEmail.executeUpdate() == 1;
     } catch (Exception e) {
-      throw new FatalException("Data error : updateUnregisteredBuyerEmail");
+      throw new FatalException("Data error : updateUnregisteredBuyerEmail", e);
     }
   }
 
@@ -464,7 +464,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
       updateUnregisteredBuyer.setInt(2, id);
       return updateUnregisteredBuyer.executeUpdate() == 1;
     } catch (Exception e) {
-      throw new FatalException("Data error : updateBuyer");
+      throw new FatalException("Data error : updateBuyer", e);
     }
   }
 
@@ -485,7 +485,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
         return listFurniture;
       }
     } catch (Exception e) {
-      throw new FatalException("Data error : selectSalesFurnitures");
+      throw new FatalException("Data error : selectSalesFurnitures", e);
     }
   }
 
@@ -509,7 +509,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
         return listFurniture;
       }
     } catch (Exception e) {
-      throw new FatalException("Data error : selectFurnituresFiltered");
+      throw new FatalException("Data error : selectFurnituresFiltered", e);
     }
   }
 
@@ -530,7 +530,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
         return listFurniture;
       }
     } catch (Exception e) {
-      throw new FatalException("Data error : getFurnitureBuyBy");
+      throw new FatalException("Data error : getFurnitureBuyBy", e);
     }
   }
 
@@ -551,7 +551,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
         return listFurniture;
       }
     } catch (Exception e) {
-      throw new FatalException("Data error : getFurnitureSellBy");
+      throw new FatalException("Data error : getFurnitureSellBy", e);
     }
   }
 
@@ -563,7 +563,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
       return updateCondition(id, FurnitureCondition.en_vente.ordinal())
           && updateWithdrawalDateToCustomer(id, null) && deleteBuyer.executeUpdate() == 1;
     } catch (Exception e) {
-      throw new FatalException("Data error : returnToSelling");
+      throw new FatalException("Data error : returnToSelling", e);
     }
   }
 
@@ -576,7 +576,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
       updateRefuseAllFurnitureByVisitId.setInt(2, id);
       return updateRefuseAllFurnitureByVisitId.executeUpdate() <= 1;
     } catch (Exception e) {
-      throw new FatalException("Data error : refuseAllFurnitureByVisitId");
+      throw new FatalException("Data error : refuseAllFurnitureByVisitId", e);
     }
   }
 
@@ -597,7 +597,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
         return listFurniture;
       }
     } catch (Exception e) {
-      throw new FatalException("Data error : selectAllFurnitures");
+      throw new FatalException("Data error : selectAllFurnitures", e);
     }
   }
 
@@ -610,7 +610,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
       updateFavouritePicture.setInt(2, id);
       return updateFavouritePicture.executeUpdate() == 1;
     } catch (Exception e) {
-      throw new FatalException("Data error : updateFavouritePicture");
+      throw new FatalException("Data error : updateFavouritePicture", e);
     }
   }
 

@@ -1,15 +1,15 @@
 package be.vinci.pae.services.address;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import be.vinci.pae.domain.address.AddressDTO;
 import be.vinci.pae.domain.address.AddressFactory;
 import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.utils.FatalException;
 import jakarta.inject.Inject;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DAOAddressImpl implements DAOAddress {
 
@@ -65,7 +65,7 @@ public class DAOAddressImpl implements DAOAddress {
       }
       return allCommunes;
     } catch (SQLException e) {
-      throw new FatalException("Database error : getAllCommunes");
+      throw new FatalException("Database error : getAllCommunes", e);
     }
   }
 
@@ -93,7 +93,7 @@ public class DAOAddressImpl implements DAOAddress {
         return -1;
       }
     } catch (SQLException e) {
-      throw new FatalException("Database error : addUser get Address");
+      throw new FatalException("Database error : addUser get Address", e);
     }
   }
 
@@ -123,7 +123,7 @@ public class DAOAddressImpl implements DAOAddress {
         return -1;
       }
     } catch (SQLException e) {
-      throw new FatalException("Database error : addUser Add Address");
+      throw new FatalException("Database error : addUser Add Address", e);
     }
   }
 
@@ -137,7 +137,7 @@ public class DAOAddressImpl implements DAOAddress {
         return createAddress(rs);
       }
     } catch (SQLException e) {
-      throw new FatalException("Database error : getAllCommunes");
+      throw new FatalException("Database error : getAllCommunes", e);
     }
   }
 
@@ -151,7 +151,7 @@ public class DAOAddressImpl implements DAOAddress {
         return createAddress(rs);
       }
     } catch (SQLException e) {
-      throw new FatalException("Database error : getAddressByUserId");
+      throw new FatalException("Database error : getAddressByUserId", e);
     }
   }
 
