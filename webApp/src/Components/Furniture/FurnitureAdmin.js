@@ -520,30 +520,58 @@ const onAddPicture = async (e) => {
   }
 }
 
-const onAddScrollingPicture = (picture) => {
+const onAddScrollingPicture = async() => {
 
+  const user = getUserSessionData();
 
+  let picture = document.querySelector(".carousel-item.active img").src;
+  let pictureId = picture.substring(picture.lastIndexOf('/')+1,picture.lastIndexOf('.'));
 
-  console.log(document.querySelector('div.carousel-item[active]'));
-
-
-
-  /*try {
-    await callAPIWithoutJSONResponse(API_BASE_URL + picture.id + "/scrolling-picture", "PUT", user.token);
-    document.getElementById("toast").innerHTML = `</br><h5 style="color:green">La photo a bien été modifiée</h5>`;
+  try {
+    await callAPIWithoutJSONResponse(API_BASE_URL + pictureId + "/scrolling-picture", "PUT", user.token);
+    document.getElementById("toast").innerHTML = `</br><h5 style="color:green">L'attribut photo défilante de l'image a bien été modifié</h5>`;
   } catch (err) {
     console.error("FurnitureAdmin::Change scrolling picture", err);
     PrintError(err);
-  }*/
-  console.log("AddScrollingPicture");
-  
+  }
 }
 
-const onDeletePicture = () => {
-  console.log("DeletePicture");
+const onDeletePicture = async() => {
+  const user = getUserSessionData();
+
+  let picture = document.querySelector(".carousel-item.active img").src;
+  let pictureId = picture.substring(picture.lastIndexOf('/')+1,picture.lastIndexOf('.'));
+
+  try {
+    await callAPIWithoutJSONResponse(API_BASE_URL + pictureId + "/picture", "DELETE", user.token);
+    document.getElementById("toast").innerHTML = `</br><h5 style="color:green">La photo a bien été supprimée</h5>`;
+  } catch (err) {
+    console.error("FurnitureAdmin::Delete picture", err);
+    PrintError(err);
+  }
+
+  try {
+    const pictures = await callAPI(API_BASE_URL + furniture.id + "/pictures-furniture", "GET", user.token);
+    onPicturesList(pictures);
+  } catch (err) {
+    console.error("FurnitureListPage::onPicturesList", err);
+    PrintError(err);
+  }
 }
 
-const onAddFavouritePicture = () => {
+const onAddFavouritePicture = async() => {
+  const user = getUserSessionData();
+
+  let picture = document.querySelector(".carousel-item.active img").src;
+  let pictureId = picture.substring(picture.lastIndexOf('/')+1,picture.lastIndexOf('.'));
+  console.log(pictureId);
+  try {
+    await callAPIWithoutJSONResponse(API_BASE_URL + pictureId + "/favourite-picture", "PUT", user.token);
+    document.getElementById("toast").innerHTML = `</br><h5 style="color:green">La photo a bien été désignée favorite</h5>`;
+  } catch (err) {
+    console.error("FurnitureAdmin::Change favourite picture", err);
+    PrintError(err);
+  }
   console.log("AddFavouritePicture");
 }
 

@@ -84,7 +84,6 @@ public class PictureUCCImpl implements PictureUCC {
 
   @Override
   public boolean deletePicture(int pictureId) {
-    // TODO à tester
     FurnitureDTO furnitureDTO = this.daoFurniture.selectFurnitureByFavouritePicture(pictureId);
     if (furnitureDTO == null) {
       try {

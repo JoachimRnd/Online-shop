@@ -43,7 +43,7 @@ public interface FurnitureUCC {
 
   boolean modifySpecialSalePrice(int id, double price);
 
-  boolean modifyFavouritePicture(int id, int pictureId);
+  boolean modifyFavouritePicture(int pictureId);
 
 
   List<FurnitureDTO> getFurnituresFiltered(String type, double price, String username);

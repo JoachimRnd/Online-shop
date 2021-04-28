@@ -281,13 +281,10 @@ public class Furniture {
    * @return Response
    */
   @PUT
-  @Path("/{idFurniture}/favourite-picture")
-  @Consumes(MediaType.APPLICATION_JSON)
+  @Path("/{idPicture}/favourite-picture")
   @AuthorizeAdmin
-  public Response modifyFavouritePicture(@PathParam("idFurniture") int idFurniture,
-      @Context ContainerRequest request, JsonNode json) {
-    if (!json.has("idPicture")
-        || !furnitureUCC.modifyFavouritePicture(idFurniture, json.get("picture_id").asInt())) {
+  public Response modifyFavouritePicture(@PathParam("idPicture") int idPicture) {
+    if (!furnitureUCC.modifyFavouritePicture(idPicture)) {
       return Response.status(Status.UNAUTHORIZED).entity("Erreur ajouter photo favorite")
           .type(MediaType.TEXT_PLAIN).build();
     }

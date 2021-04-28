@@ -1,22 +1,24 @@
 package be.vinci.pae.domain.furniture;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import be.vinci.pae.domain.option.OptionDTO;
+import be.vinci.pae.domain.picture.PictureDTO;
 import be.vinci.pae.domain.type.TypeDTO;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.furniture.DAOFurniture;
 import be.vinci.pae.services.option.DAOOption;
+import be.vinci.pae.services.picture.DAOPicture;
 import be.vinci.pae.services.type.DAOType;
 import be.vinci.pae.services.user.DAOUser;
 import be.vinci.pae.services.visitrequest.DAOVisitRequest;
 import be.vinci.pae.utils.BusinessException;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
 import jakarta.inject.Inject;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 public class FurnitureUCCImpl implements FurnitureUCC {
 
@@ -34,6 +36,9 @@ public class FurnitureUCCImpl implements FurnitureUCC {
 
   @Inject
   private DAOOption daoOption;
+
+  @Inject
+  private DAOPicture daoPicture;
 
   @Inject
   private DalServices dalServices;
@@ -428,11 +433,11 @@ public class FurnitureUCCImpl implements FurnitureUCC {
 
 
   @Override
-  public boolean modifyFavouritePicture(int id, int pictureId) {
+  public boolean modifyFavouritePicture(int pictureId) {
+    PictureDTO pictureDTO = this.daoPicture.selectPictureById(pictureId);
     try {
       this.dalServices.startTransaction();
-
-      if (!this.daoFurniture.updateFavouritePicture(id, pictureId)) {
+      if (!this.daoFurniture.updateFavouritePicture(pictureDTO.getFurniture().getId(), pictureId)) {
         this.dalServices.rollbackTransaction();
         throw new BusinessException("Error modify picture");
       }
@@ -450,19 +455,10 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     // TODO Auto-generated method stub
     return null;
     /*
-     * this.dalServices.startTransaction();
-     * List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>();
-     * Type type = (Type) this.daoType.selectTypeByName(typeName);
-     * if (type == null) {
-     *  this.dalServices.rollbackTransaction();
-     * }
-     * else {
-     *  String idType = type.toString();
-     *  listFurniture = this.daoFurniture.selectFurnitureByType(idType);
-     *  this.dalServices.commitTransaction();
-     * }
-     * dalServices.closeConnection();
-     * return listFurniture;
+     * this.dalServices.startTransaction(); List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>(); Type type = (Type)
+     * this.daoType.selectTypeByName(typeName); if (type == null) { this.dalServices.rollbackTransaction(); } else { String idType = type.toString();
+     * listFurniture = this.daoFurniture.selectFurnitureByType(idType); this.dalServices.commitTransaction(); } dalServices.closeConnection(); return
+     * listFurniture;
      */
 
   }
@@ -473,11 +469,8 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     try {
       return null;
       /*
-       * this.dalServices.startTransaction();
-       * List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>();
-       * listFurniture = this.daoFurniture.selectFurnitureByPrice(sellingPrice);
-       * dalServices.closeConnection();
-       * return listFurniture;
+       * this.dalServices.startTransaction(); List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>(); listFurniture =
+       * this.daoFurniture.selectFurnitureByPrice(sellingPrice); dalServices.closeConnection(); return listFurniture;
        */
 
     } finally {
@@ -491,18 +484,10 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     try {
       return null;
       /*
-       * this.dalServices.startTransaction();
-       * List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>();
-       * User user = (User) this.daoUser.getUserByUsername(userName);
-       * if (user == null) {
-       *  this.dalServices.rollbackTransaction();
-       * } else {
-       *  String idUser = String.valueOf(user.getId());
-       *  listFurniture = this.daoFurniture.selectFurnitureByUser(idUser);
-       *  this.dalServices.commitTransaction();
-       * }
-       * dalServices.closeConnection();
-       * return listFurniture;
+       * this.dalServices.startTransaction(); List<FurnitureDTO> listFurniture = new ArrayList<FurnitureDTO>(); User user = (User)
+       * this.daoUser.getUserByUsername(userName); if (user == null) { this.dalServices.rollbackTransaction(); } else { String idUser =
+       * String.valueOf(user.getId()); listFurniture = this.daoFurniture.selectFurnitureByUser(idUser); this.dalServices.commitTransaction(); }
+       * dalServices.closeConnection(); return listFurniture;
        */
 
     } finally {
