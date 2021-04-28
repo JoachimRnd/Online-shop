@@ -1,15 +1,15 @@
 package be.vinci.pae.services.address;
 
-import be.vinci.pae.domain.address.AddressDTO;
-import be.vinci.pae.domain.address.AddressFactory;
-import be.vinci.pae.services.DalBackendServices;
-import be.vinci.pae.utils.FatalException;
-import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import be.vinci.pae.domain.address.AddressDTO;
+import be.vinci.pae.domain.address.AddressFactory;
+import be.vinci.pae.services.DalBackendServices;
+import be.vinci.pae.utils.FatalException;
+import jakarta.inject.Inject;
 
 public class DAOAddressImpl implements DAOAddress {
 
@@ -65,7 +65,6 @@ public class DAOAddressImpl implements DAOAddress {
       }
       return allCommunes;
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException("Database error : getAllCommunes");
     }
   }
@@ -75,12 +74,12 @@ public class DAOAddressImpl implements DAOAddress {
     try {
       PreparedStatement selectAddressId;
       if (addressDTO.getUnitNumber() != null) {
-        selectAddressId = this.dalBackendServices
-            .getPreparedStatement(querySelectAddressIdWithUnitNumber);
+        selectAddressId =
+            this.dalBackendServices.getPreparedStatement(querySelectAddressIdWithUnitNumber);
         selectAddressId.setString(6, addressDTO.getUnitNumber());
       } else {
-        selectAddressId = this.dalBackendServices
-            .getPreparedStatement(querySelectAddressIdWithoutUnitNumber);
+        selectAddressId =
+            this.dalBackendServices.getPreparedStatement(querySelectAddressIdWithoutUnitNumber);
       }
       selectAddressId.setString(1, addressDTO.getStreet());
       selectAddressId.setString(2, addressDTO.getBuildingNumber());
@@ -94,7 +93,6 @@ public class DAOAddressImpl implements DAOAddress {
         return -1;
       }
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException("Database error : addUser get Address");
     }
   }
@@ -107,8 +105,8 @@ public class DAOAddressImpl implements DAOAddress {
         addAddress = this.dalBackendServices.getPreparedStatementAdd(queryAddAddressWithUnitNumber);
         addAddress.setString(6, addressDTO.getUnitNumber());
       } else {
-        addAddress = this.dalBackendServices
-            .getPreparedStatementAdd(queryAddAddressWithoutUnitNumber);
+        addAddress =
+            this.dalBackendServices.getPreparedStatementAdd(queryAddAddressWithoutUnitNumber);
       }
       addAddress.setString(1, addressDTO.getStreet());
       addAddress.setString(2, addressDTO.getBuildingNumber());
@@ -125,7 +123,6 @@ public class DAOAddressImpl implements DAOAddress {
         return -1;
       }
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException("Database error : addUser Add Address");
     }
   }
@@ -133,14 +130,13 @@ public class DAOAddressImpl implements DAOAddress {
   @Override
   public AddressDTO getAddressById(int id) {
     try {
-      PreparedStatement selectAddressById = this.dalBackendServices
-          .getPreparedStatement(querySelectAddressById);
+      PreparedStatement selectAddressById =
+          this.dalBackendServices.getPreparedStatement(querySelectAddressById);
       selectAddressById.setInt(1, id);
       try (ResultSet rs = selectAddressById.executeQuery()) {
         return createAddress(rs);
       }
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException("Database error : getAllCommunes");
     }
   }
@@ -155,7 +151,6 @@ public class DAOAddressImpl implements DAOAddress {
         return createAddress(rs);
       }
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException("Database error : getAddressByUserId");
     }
   }

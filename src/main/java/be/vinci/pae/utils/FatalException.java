@@ -24,7 +24,7 @@ public class FatalException extends WebApplicationException {
 
   public FatalException(String message) {
     super(Response.status(Status.INTERNAL_SERVER_ERROR).entity(message).type("text/plain").build());
-    log.error(message);
+    log.error(message, this);
   }
 
 }

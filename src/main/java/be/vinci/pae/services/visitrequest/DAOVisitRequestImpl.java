@@ -67,7 +67,6 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
         return visitRequestId;
       }
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException("Data error : insertVisitRequest");
     }
   }

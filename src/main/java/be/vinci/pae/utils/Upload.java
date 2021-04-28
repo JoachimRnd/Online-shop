@@ -10,7 +10,7 @@ public class Upload {
   /**
    * Save uploadedInputStream to uploadedFileLocation.
    *
-   * @param uploadedInputStream  InputStream of file
+   * @param uploadedInputStream InputStream of file
    * @param uploadedFileLocation Location of file
    * @return boolean
    */
@@ -30,7 +30,6 @@ public class Upload {
       out.close();
       return true;
     } catch (IOException e) {
-      e.printStackTrace();
       throw new FatalException("Error while copying the file on the disk");
     }
   }

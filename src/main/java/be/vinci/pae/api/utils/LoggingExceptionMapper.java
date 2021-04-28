@@ -17,7 +17,6 @@ public class LoggingExceptionMapper implements ExceptionMapper<Throwable> {
 
   @Override
   public Response toResponse(Throwable exception) {
-    exception.printStackTrace();
     if (Config.getBoolProperty("SendStackTraceToClient")) {
       return Response.status(getStatusCode(exception)).entity(getEntity(exception)).build();
     }

@@ -53,7 +53,6 @@ public class DAOTypeImpl implements DAOType {
         return listTypes;
       }
     } catch (Exception e) {
-      e.printStackTrace();
       throw new FatalException("Data error : selectAllTypes");
     }
   }
@@ -67,7 +66,6 @@ public class DAOTypeImpl implements DAOType {
         return createType(rs);
       }
     } catch (Exception e) {
-      e.printStackTrace();
       throw new FatalException("Data error : selectTypeById");
     }
   }
@@ -85,7 +83,6 @@ public class DAOTypeImpl implements DAOType {
         return -1;
       }
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException("Data error : insertType");
     }
   }
@@ -98,7 +95,6 @@ public class DAOTypeImpl implements DAOType {
       deleteFurnitureType.setInt(1, id);
       return deleteFurnitureType.executeUpdate() == 1;
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException("Data error : deleteFurniture");
     }
   }
@@ -116,7 +112,6 @@ public class DAOTypeImpl implements DAOType {
         return allTypes;
       }
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException("Database error : getAllUsers");
     }
   }

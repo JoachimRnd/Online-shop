@@ -1,5 +1,11 @@
 package be.vinci.pae.services.option;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import be.vinci.pae.domain.option.OptionDTO;
 import be.vinci.pae.domain.option.OptionFactory;
 import be.vinci.pae.services.DalBackendServices;
@@ -8,12 +14,6 @@ import be.vinci.pae.services.user.DAOUser;
 import be.vinci.pae.utils.FatalException;
 import be.vinci.pae.utils.ValueLink.OptionStatus;
 import jakarta.inject.Inject;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DAOOptionImpl implements DAOOption {
 
@@ -69,7 +69,6 @@ public class DAOOptionImpl implements DAOOption {
         return -1;
       }
     } catch (Exception e) {
-      e.printStackTrace();
       throw new FatalException("Database error : addOption");
     }
   }
@@ -91,7 +90,6 @@ public class DAOOptionImpl implements DAOOption {
         return listOptions;
       }
     } catch (Exception e) {
-      e.printStackTrace();
       throw new FatalException("Database error : selectOptionsOfFurniture");
     }
   }
@@ -106,7 +104,6 @@ public class DAOOptionImpl implements DAOOption {
         return createOption(rs);
       }
     } catch (Exception e) {
-      e.printStackTrace();
       throw new FatalException("Data error : selectOptionByFurnitureId");
     }
   }
@@ -127,7 +124,6 @@ public class DAOOptionImpl implements DAOOption {
         return list;
       }
     } catch (Exception e) {
-      e.printStackTrace();
       throw new FatalException("Database error : selectOptionsOfBuyerFromFurniture");
     }
   }
@@ -140,7 +136,6 @@ public class DAOOptionImpl implements DAOOption {
       finishOption.setInt(2, id);
       return finishOption.executeUpdate() == 1;
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException("Database error : finishOption");
     }
   }
@@ -153,7 +148,6 @@ public class DAOOptionImpl implements DAOOption {
       cancelOption.setInt(2, optionToCancel.getId());
       return cancelOption.executeUpdate() == 1;
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException("Database error : cancelOption");
     }
   }
@@ -169,7 +163,6 @@ public class DAOOptionImpl implements DAOOption {
         return createOption(rs);
       }
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException("Database error : getLastOptionOfFurniture");
     }
   }
