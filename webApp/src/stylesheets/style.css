@@ -50,3 +50,5 @@ td button{
 .table{
   table-layout: fixed;
 }
+
+.map { height: 300px; }
