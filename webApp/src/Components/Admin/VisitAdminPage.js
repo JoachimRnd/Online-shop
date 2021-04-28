@@ -31,11 +31,12 @@ let visitAdminPage = `
 const VisitAdminPage = async(f) => {
     let page = document.querySelector("#page");
     page.innerHTML = visitAdminPage;
+    let queryString = window.location.search;
+    let urlParams = new URLSearchParams(queryString);
+    let id = urlParams.get("id");
+    let user = getUserSessionData();
     if(f === undefined || f === null){
         try {
-            let queryString = window.location.search;
-            let urlParams = new URLSearchParams(queryString);
-            let id = urlParams.get("id");
             f = await callAPI(API_BASE_URL_ADMIN + "visit/" + id, "GET", user.token);
         } catch (err) {
             console.error("VisitAdminPage::VisitAdminPage", err);
@@ -47,6 +48,8 @@ const VisitAdminPage = async(f) => {
     onMap(f.address);
     let furnitureList = await callAPI(API_BASE_URL_ADMIN + "furnituresvisit/" + id, "GET", user.token);
     onFurnituresInformation(furnitureList);
+
+
 };
 
 const onVisitInformation = (data) => {
@@ -238,7 +241,7 @@ const onFurnituresInformation = (resultList) => {
         let furnitureElement = document.getElementById("furniture"+element.id);
         furnitureElement.addEventListener("click", (e) => {
             e.preventDefault();
-            RedirectUrl("/furnitureAdmin",element,"?id="+element.id);
+            RedirectUrl("/admin/furniture",element,"?id="+element.id);
         });
     });
 };

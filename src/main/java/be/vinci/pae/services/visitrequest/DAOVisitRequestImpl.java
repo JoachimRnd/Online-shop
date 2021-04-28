@@ -4,7 +4,6 @@ import be.vinci.pae.domain.visitrequest.VisitRequestDTO;
 import be.vinci.pae.domain.visitrequest.VisitRequestFactory;
 import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.services.address.DAOAddress;
-import be.vinci.pae.services.furniture.DAOFurniture;
 import be.vinci.pae.services.user.DAOUser;
 import be.vinci.pae.utils.FatalException;
 import be.vinci.pae.utils.ValueLink.VisitRequestStatus;
@@ -37,9 +36,6 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
 
   @Inject
   private DAOUser daoUser;
-
-  @Inject
-  private DAOFurniture daoFurniture;
 
   /**
    * constructor of DAOVisitRequestImpl. contains queries.

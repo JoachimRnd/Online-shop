@@ -22,6 +22,8 @@ const VisitListAdminPage = async(f) => {
         console.error("FurnitureListPage::onFurnitureList", err);
         PrintError(err);
     }
+
+
 };
 
 const onVisitList = (data) => {
