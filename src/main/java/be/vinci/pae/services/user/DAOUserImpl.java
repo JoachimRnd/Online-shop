@@ -45,7 +45,7 @@ public class DAOUserImpl implements DAOUser {
             + "u.registration_date, u.valid_registration, u.user_type FROM project.users u "
             + "WHERE u.username = ?";
     querySelectUserById = "SELECT u.user_id, u.username, u.password, u.last_name, u.first_name, "
-        + "u.address, a.street, u.email,u.registration_date, u.valid_registration, u.user_type "
+        + "u.address, u.email,u.registration_date, u.valid_registration, u.user_type "
         + "FROM project.users u WHERE u.user_id = ?";
     querySelectUserByEmail = "SELECT u.user_id, u.username, u.password, u.last_name, u.first_name, "
         + "u.address, u.email, u.registration_date, u.valid_registration, u.user_type "
@@ -56,7 +56,7 @@ public class DAOUserImpl implements DAOUser {
     queryValidateUser = "UPDATE project.users " + "SET user_type = ?, valid_registration = ? "
         + "WHERE user_id = ?";
     querySelectUnvalidatedUsers = "SELECT u.user_id, u.username, u.password, u.last_name, "
-        + "u.first_name, u.email, u.registration_date, u.valid_registration, u.user_type "
+        + "u.first_name, u.address, u.email, u.registration_date, u.valid_registration, u.user_type "
         + "FROM project.users u WHERE u.valid_registration = false";
     querySelectAllUsername = "SELECT DISTINCT u.last_name FROM project.users u";
     querySelectUsersFiltered = "SELECT u.user_id, u.username, u.password, u.last_name, "
@@ -76,7 +76,7 @@ public class DAOUserImpl implements DAOUser {
         return createUser(rs);
       }
     } catch (SQLException e) {
-      throw new FatalException("Database error : getUserByUsername");
+      throw new FatalException("Database error : getUserByUsername", e);
     }
   }
 
@@ -90,7 +90,7 @@ public class DAOUserImpl implements DAOUser {
         return createUser(rs);
       }
     } catch (SQLException e) {
-      throw new FatalException("Database error : getUserByEmail");
+      throw new FatalException("Database error : getUserByEmail", e);
     }
   }
 
@@ -99,12 +99,15 @@ public class DAOUserImpl implements DAOUser {
     try {
       PreparedStatement selectUserById =
           this.dalBackendServices.getPreparedStatement(querySelectUserById);
+      System.out.println("1");
       selectUserById.setInt(1, id);
+      System.out.println("2");
       try (ResultSet rs = selectUserById.executeQuery()) {
+        System.out.println("3");
         return createUser(rs);
       }
     } catch (SQLException e) {
-      throw new FatalException("Database error : getUserById");
+      throw new FatalException("Database error : getUserById", e);
     }
   }
 
@@ -118,7 +121,7 @@ public class DAOUserImpl implements DAOUser {
       validateUser.setInt(3, id);
       return validateUser.executeUpdate() == 1;
     } catch (SQLException e) {
-      throw new FatalException("Database error : validateUser");
+      throw new FatalException("Database error : validateUser", e);
     }
   }
 
@@ -138,7 +141,7 @@ public class DAOUserImpl implements DAOUser {
         return unvalidatedUsers;
       }
     } catch (SQLException e) {
-      throw new FatalException("Database error : getUnvalidatedUsers");
+      throw new FatalException("Database error : getUnvalidatedUsers", e);
     }
   }
 
@@ -155,7 +158,7 @@ public class DAOUserImpl implements DAOUser {
         return allUsers;
       }
     } catch (SQLException e) {
-      throw new FatalException("Database error : getAllUsers");
+      throw new FatalException("Database error : getAllUsers", e);
     }
   }
 
@@ -178,7 +181,7 @@ public class DAOUserImpl implements DAOUser {
         return allUsers;
       }
     } catch (SQLException e) {
-      throw new FatalException("Database error : getUsersFiltered");
+      throw new FatalException("Database error : getUsersFiltered", e);
     }
   }
 
@@ -204,7 +207,7 @@ public class DAOUserImpl implements DAOUser {
         return -1;
       }
     } catch (SQLException e) {
-      throw new FatalException("Database error : addUser");
+      throw new FatalException("Database error : addUser", e);
     }
   }
 

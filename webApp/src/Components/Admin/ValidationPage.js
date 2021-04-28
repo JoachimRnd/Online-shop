@@ -1,7 +1,6 @@
 import { getUserSessionData } from "../../utils/session.js";
 import { callAPI,callAPIWithoutJSONResponse } from "../../utils/api.js";
 import PrintError from "../PrintError.js";
-import { get } from "jquery";
 const API_BASE_URL = "/api/admin/";
 const axios = require('axios');
 const leaflet = require('leaflet');
@@ -119,7 +118,6 @@ const getLatLngAndDisplayMap = (params,address) => {
       if(response.data.data.length == 0){
         document.getElementById("mapid"+address.id).innerHTML = `<h3 style="color:red">Adresse introuvable</h3>`;
       } else {
-          console.log(response.data.data);
         const latitude = response.data.data[0].latitude;
         const longitude = response.data.data[0].longitude;
         if(latitude == undefined || longitude == undefined){
