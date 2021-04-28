@@ -12,31 +12,8 @@ let furniture;
 let furniturePage = `
 <h4 id="pageTitle">Furniture User</h4>
 <div class="row">
-    <span id="carousel">
-    </span>
-    </br>
-    <div class="row">
-      <div class="col-6">
-        <form id="uploadForm">
-          <input id="file" type="file"/>
-          <input type="submit" value="Upload"/>
-        </form>
-      </div>
-      <div class="col-3">
-        <button class="btn btn-primary" id="btnAddScrollingPicture">Ajouter ou supprimer photo défilante</button>
-      </div>
-      <div class="col-3">
-        <button class="btn btn-danger" id="btnDeletePicture">Supprimer la photo</button>
-      </div>
-      <div class="col-3">
-        <button class="btn btn-warning" id="btnAddFavouritePicture">Ajouter photo favorite</button>
-      </div>
-      <div class="col-3">
-        <button class="btn btn-secondary" id="btnReturn">Retour</button>
-      </div>
+    <div id="carousel" class="col-6">
     </div>
-  </div>
-
   <div class="col-6">
     <div class="form-group">
       <div class="row">
@@ -54,6 +31,30 @@ let furniturePage = `
         </div>
         <div class="col-6">
           <div class="form-group">
+              <label for="sellerEmail">Email du vendeur</label>
+              <div id="sellerEmail"></div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+              <label for="requestDate">Date de la demande de visite</label>
+              <div id="requestDate"></div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+              <label for="depositDate">Date de dépot en magasin</label>
+              <div id="depositDate"></div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+              <label for="withdrawalDateFromCustomer">Date de retrait</label>
+              <div id="withdrawalDateFromCustomer"></div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
               <label for="prix">Prix de vente</label>
               <div id="prix"></div>
           </div>
@@ -66,8 +67,8 @@ let furniturePage = `
         </div>
         <div class="col-6">
           <div class="form-group">
-              <label for="withdrawalDateFromCustomer">Date de retrait</label>
-              <div id="withdrawalDateFromCustomer"></div>
+            <label for="sellingDate">Date de vente</label>
+            <div id="sellingDate"></div>
           </div>
         </div>
         <div class="col-6">
@@ -113,7 +114,7 @@ let furniturePage = `
   <div id=option></div>
 
   <div id="toast"></div>
-
+  </div>
 </div>
 `;
 
@@ -135,18 +136,6 @@ let noOption =`
 const FurnitureAdmin = async(f) => {
   let page = document.querySelector("#page");
   page.innerHTML = furniturePage;
-
-  let btnAddPicture = document.querySelector("form");
-  btnAddPicture.addEventListener("submit", onAddPicture);
-  let btnAddScrollingPicture = document.querySelector("#btnAddScrollingPicture");
-  btnAddScrollingPicture.addEventListener("click", onAddScrollingPicture);
-  let btnDeletePicture = document.querySelector("#btnDeletePicture");
-  btnDeletePicture.addEventListener("click", onDeletePicture);
-  let btnAddFavouritePicture = document.querySelector("#btnAddFavouritePicture");
-  btnAddFavouritePicture.addEventListener("click", onAddFavouritePicture);
-
-  let btnReturn = document.querySelector("#btnReturn");
-  btnReturn.addEventListener("click", () => RedirectUrl("/search"));
 
   let btnSave = document.querySelector("#btnSave");
   btnSave.addEventListener("click", onSave);
@@ -176,6 +165,7 @@ const FurnitureAdmin = async(f) => {
   }else{
     furniture = f;
   }
+  console.log(furniture);
 
   try {
     const pictures = await callAPI(API_BASE_URL + furniture.id + "/pictures-furniture", "GET", user.token);
@@ -185,13 +175,17 @@ const FurnitureAdmin = async(f) => {
     PrintError(err);
   }
 
-  document.querySelector('#carouselPictures').addEventListener('slid.bs.carousel', (e) => {
-    console.log("switch");
-    var ele = $('#myCarousel .carousel-indicators li.active');
-    console.log('target: ' + ele.data('target') + 
-                ' value: ' + ele.data('value') + 
-                ' slide-to: ' + ele.data('slideTo'));
-})
+  let btnAddPicture = document.querySelector("form");
+  btnAddPicture.addEventListener("submit", onAddPicture);
+  let btnAddScrollingPicture = document.querySelector("#btnAddScrollingPicture");
+  btnAddScrollingPicture.addEventListener("click", onAddScrollingPicture);
+  let btnDeletePicture = document.querySelector("#btnDeletePicture");
+  btnDeletePicture.addEventListener("click", onDeletePicture);
+  let btnAddFavouritePicture = document.querySelector("#btnAddFavouritePicture");
+  btnAddFavouritePicture.addEventListener("click", onAddFavouritePicture);
+
+  let btnReturn = document.querySelector("#btnReturn");
+  btnReturn.addEventListener("click", () => RedirectUrl("/search"));
 
 
 
@@ -237,7 +231,7 @@ document.getElementById("type").innerHTML = typesListPage;
 }
 
 const onPicturesList = (picturesList) => {
-    let carousel = `<div  class="col-6">
+    let carousel = `
     <div id="carouselPictures" class="carousel slide" data-ride="carousel"><ol class="carousel-indicators">`;
     for (let i = 0; i < picturesList.length; i++) {
       if(i== 0){
@@ -251,18 +245,18 @@ const onPicturesList = (picturesList) => {
     picturesList.forEach(picture => {
       if(counter == 0){
         carousel += `<div class="carousel-item active"> 
-        <img src="${IMAGES}${picture.id}.${picture.name.substring(picture.name.lastIndexOf('.')+1)}" class="d-block w-100" alt="${counter}">
+        <img id="carouselFurnitureAdmin" src="${IMAGES}${picture.id}.${picture.name.substring(picture.name.lastIndexOf('.')+1)}" class="d-block w-100" alt="${counter}">
         </div>`;
       }else{
         carousel += `<div class="carousel-item"> 
-        <img src="${IMAGES}${picture.id}.${picture.name.substring(picture.name.lastIndexOf('.')+1)}" class="d-block w-100" alt="${counter}">
+        <img id="carouselFurnitureAdmin" src="${IMAGES}${picture.id}.${picture.name.substring(picture.name.lastIndexOf('.')+1)}" class="d-block w-100" alt="${counter}">
         </div>`;
       }
         counter ++;
     });
   
   carousel += 
-    `</div>
+    `
     <a class="carousel-control-prev" href="#carouselPictures" role="button" data-slide="prev">
       <span class="carousel-control-prev-icon" aria-hidden="true"></span>
       <span class="sr-only">Previous</span>
@@ -271,7 +265,32 @@ const onPicturesList = (picturesList) => {
       <span class="carousel-control-next-icon" aria-hidden="true"></span>
       <span class="sr-only">Next</span>
     </a>
-    </div>`;
+    </div>
+    </div>
+
+    <div mt-2 class="row">
+      <div class="col-4">
+        <button class="btn btn-primary" id="btnAddScrollingPicture">Ajouter ou supprimer photo défilante</button>
+      </div>
+      <div class="col-4">
+        <button class="btn btn-warning" id="btnAddFavouritePicture">Ajouter photo favorite</button>
+      </div>
+      <div class="col-4">
+      <button class="btn btn-danger" id="btnDeletePicture">Supprimer la photo</button>
+      </div>
+      <div class="col-6">
+        <form id="uploadForm">
+          <input id="file" type="file"/>
+          <input type="submit" value="Upload"/>
+        </form>
+      </div>
+ 
+      <div class="col-12">
+        <button class="btn btn-secondary" id="btnReturn">Retour</button>
+      </div>
+    </div>
+    
+    `;
     document.querySelector("#carousel").innerHTML = carousel;
 }
 
@@ -317,6 +336,27 @@ const onFurniture = () => {
     buyerEmail.innerHTML = `<input class="form-control" id="inputBuyerEmail" type="email" value="${furniture.unregisteredBuyerEmail}" readonly/>`;
   else
     buyerEmail.innerHTML = `<input class="form-control" id="inputBuyerEmail" type="email" readonly/>`;
+
+  let requestDate = document.querySelector("#requestDate");
+  if(furniture.visitRequest && furniture.visitRequest.requestDate){
+    requestDate.innerHTML = `<input class="form-control" id="inputRequestDate" type="date" value="${furniture.visitRequest.requestDate}" readonly/>`;
+  }else
+    requestDate.innerHTML = `<input class="form-control" id="inputRequestDate" type="date" readonly/>`;
+  let sellerEmail = document.querySelector("#sellerEmail");
+  if(furniture.visitRequest && furniture.visitRequest.customer.email){
+    sellerEmail.innerHTML = `<input class="form-control" id="inputSellerEmail" type="date" value="${furniture.visitRequest.customer.email}" readonly/>`;
+  }else
+    sellerEmail.innerHTML = `<input class="form-control" id="inputSellerEmail" type="date" readonly/>`;
+  let depositDate = document.querySelector("#depositDate");
+  if(furniture.depositDate){
+    depositDate.innerHTML = `<input class="form-control" id="inputDepositDate" type="date" value="${furniture.depositDate}" readonly/>`;
+  }else
+    depositDate.innerHTML = `<input class="form-control" id="inputDepositDate" type="date" readonly/>`;
+  let sellingDate = document.querySelector("#sellingDate");
+  if(furniture.sellingDate){
+    sellingDate.innerHTML = `<input class="form-control" id="inputSellingDate" type="date" value="${furniture.sellingDate}" readonly/>`;
+  }else
+  sellingDate.innerHTML = `<input class="form-control" id="inputSellingDate" type="date" readonly/>`;
 }
 
 const onSale = () => {
@@ -516,6 +556,14 @@ const onAddPicture = async (e) => {
     );
   } catch (err) {
     console.error("FurnitureAdmin::onAddPicture", err);
+    PrintError(err);
+  }
+
+  try {
+    const pictures = await callAPI(API_BASE_URL + furniture.id + "/pictures-furniture", "GET", user.token);
+    onPicturesList(pictures);
+  } catch (err) {
+    console.error("FurnitureListPage::onPicturesList", err);
     PrintError(err);
   }
 }
