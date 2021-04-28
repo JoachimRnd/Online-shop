@@ -39,6 +39,7 @@ public class Main {
    * @throws IOException throw input output exceptions
    */
   public static void main(String[] args) throws IOException {
+
     // Load properties file
     Config.load("dev.properties");
     // Start the server

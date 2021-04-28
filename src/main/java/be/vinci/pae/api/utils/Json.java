@@ -1,9 +1,9 @@
 package be.vinci.pae.api.utils;
 
+import java.util.List;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
 import views.Views;
 
 public class Json {
@@ -13,8 +13,8 @@ public class Json {
   /**
    * Filter whole custom JSON object with the Public view as a list.
    *
-   * @param <T>         generic return type
-   * @param list        list of generic objects
+   * @param <T> generic return type
+   * @param list list of generic objects
    * @param targetClass name of the targeted class
    * @return a list of objects (with generic type)
    */
@@ -37,8 +37,8 @@ public class Json {
   /**
    * Filter whole custom JSON object with the Public view.
    *
-   * @param <T>         generic return type
-   * @param item        description
+   * @param <T> generic return type
+   * @param item description
    * @param targetClass name of the targeted class
    * @return a generic object
    */
