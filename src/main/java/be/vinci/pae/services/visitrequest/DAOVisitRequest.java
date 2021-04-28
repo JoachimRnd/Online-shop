@@ -1,6 +1,8 @@
 package be.vinci.pae.services.visitrequest;
 
 import be.vinci.pae.domain.visitrequest.VisitRequestDTO;
+import java.sql.Timestamp;
+import java.util.List;
 
 public interface DAOVisitRequest {
 
@@ -8,4 +10,9 @@ public interface DAOVisitRequest {
 
   VisitRequestDTO selectVisitRequestById(int id);
 
+  List<VisitRequestDTO> getAllVisitsOpenned();
+
+  boolean cancelVisitRequest(int id, String cancellationReason);
+
+  boolean chooseDateForVisit(int id, Timestamp chosenDateTime);
 }

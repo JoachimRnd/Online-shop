@@ -52,4 +52,8 @@ public interface DAOFurniture {
   List<FurnitureDTO> getFurnitureSoldByUserId(int id);
 
   boolean returnToSelling(int id);
+
+  boolean refuseAllFurnitureByVisitId(int id);
+
+  List<FurnitureDTO> selectFurnituresOfVisit(int id);
 }

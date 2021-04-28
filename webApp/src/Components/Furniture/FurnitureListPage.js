@@ -27,7 +27,7 @@ const FurnitureListPage = async () => {
       userId = user.user.id;
     }
     try {
-      const furnitures = await callAPI(API_BASE_URL_USER + "/allFurniture", "GET", undefined);
+      const furnitures = await callAPI(API_BASE_URL_USER + "allFurniture", "GET", undefined);
       onFurnitureList(furnitures);
     } catch (err) {
       console.error("FurnitureListPage::onFurnitureList", err);

@@ -1,23 +1,33 @@
 package be.vinci.pae.services.visitrequest;
 
 import be.vinci.pae.domain.visitrequest.VisitRequestDTO;
+import be.vinci.pae.domain.visitrequest.VisitRequestFactory;
 import be.vinci.pae.services.DalBackendServices;
+import be.vinci.pae.services.address.DAOAddress;
+import be.vinci.pae.services.user.DAOUser;
 import be.vinci.pae.utils.FatalException;
+import be.vinci.pae.utils.ValueLink.VisitRequestStatus;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class DAOVisitRequestImpl implements DAOVisitRequest {
 
   private String queryAddVisitRequest;
+  private String querySelectAllVisitsOpenned;
+  private String querySelectVisitRequestById;
+  private String queryUpdateCancelVisitRequest;
+  private String queryUpdateChooseDateForVisit;
 
   @Inject
   private DalBackendServices dalServices;
 
-  /*
   @Inject
   private VisitRequestFactory visitRequestFactory;
 
@@ -26,13 +36,6 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
 
   @Inject
   private DAOUser daoUser;
-  */
-
-  /*
-   * querySelectVisitRequestById = "SELECT v.visit_request_id, v.request_date, v.time_slot, "
-   * + "v.address, v.status, v.chosen_date_time, v.cancellation_reason, v.customer "
-   * + "FROM project.visit_requests v WHERE v.visit_request_id  = ?";
-   */
 
   /**
    * constructor of DAOVisitRequestImpl. contains queries.
@@ -42,6 +45,17 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
         "INSERT INTO project.visit_requests (visit_request_id, request_date, time_slot, address,"
             + " status, chosen_date_time, cancellation_reason, customer) VALUES"
             + " (DEFAULT,?,?,?,?,NULL,NULL,?)";
+    querySelectAllVisitsOpenned = "SELECT v.visit_request_id, v.request_date, v.time_slot, "
+        + "v.address, v.status, v.chosen_date_time, v.cancellation_reason, v.customer "
+        + "FROM project.visit_requests v WHERE v.status  = ? OR (v.status  = ? "
+        + "AND v.chosen_date_time > ?) ORDER BY v.request_date";
+    querySelectVisitRequestById = "SELECT v.visit_request_id, v.request_date, v.time_slot, "
+        + "v.address, v.status, v.chosen_date_time, v.cancellation_reason, v.customer "
+        + "FROM project.visit_requests v WHERE v.visit_request_id  = ?";
+    queryUpdateCancelVisitRequest = "UPDATE project.visit_requests SET status = ?, "
+        + "cancellation_reason = ? WHERE visit_request_id = ?";
+    queryUpdateChooseDateForVisit = "UPDATE project.visit_requests SET status = ?, "
+        + "chosen_date_time = ? WHERE visit_request_id = ?";
   }
 
   @Override
@@ -73,27 +87,69 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
 
   @Override
   public VisitRequestDTO selectVisitRequestById(int id) {
-    // TODO Auto-generated method stub
-    return null;
-
-    /*
-     * VisitRequestDTO visitRequest = null; try { PreparedStatement selectVisitRequestById =
-     * dalServices.getPreparedStatement(querySelectVisitRequestById);
-     * selectVisitRequestById.setInt(1, id); try (ResultSet rs =
-     * selectVisitRequestById.executeQuery()) { visitRequest =
-     * this.visitRequestFactory.getVisitRequest(); while (rs.next()) {
-     * visitRequest.setId(rs.getInt("visit_request_id"));
-     * visitRequest.setRequestDate(rs.getDate("request_date"));
-     * visitRequest.setTimeSlot(rs.getString("time_slot"));
-     * visitRequest.setStatus(String.valueOf(rs.getInt("status")));
-     * visitRequest.setChosenDateTime(rs.getDate("chosen_date_time"));
-     * visitRequest.setCancellationReason(rs.getString("cancellation_reason"));
-     * visitRequest.setCustomer(this.daoUser.getUserById(rs.getInt("customer"))); } return
-     * visitRequest; } } catch (SQLException e) { e.printStackTrace(); throw new
-     * FatalException("Data error : selectTypeById"); }
-     */
+    try {
+      PreparedStatement selectVisitRequestById =
+          dalServices.getPreparedStatement(querySelectVisitRequestById);
+      selectVisitRequestById.setInt(1, id);
+      try (ResultSet rs = selectVisitRequestById.executeQuery()) {
+        return createVisitRequest(rs);
+      }
+    } catch (SQLException e) {
+      throw new FatalException("Data error : selectVisitRequestById");
+    }
   }
-  /*
+
+  @Override
+  public List<VisitRequestDTO> getAllVisitsOpenned() {
+    try {
+      PreparedStatement selectAllVisitsOpenned =
+          dalServices.getPreparedStatement(querySelectAllVisitsOpenned);
+      selectAllVisitsOpenned.setInt(1, VisitRequestStatus.en_attente.ordinal());
+      selectAllVisitsOpenned.setInt(2, VisitRequestStatus.confirmee.ordinal());
+      selectAllVisitsOpenned.setTimestamp(3, Timestamp.from(Instant.now()));
+      List<VisitRequestDTO> list = new ArrayList<VisitRequestDTO>();
+      try (ResultSet rs = selectAllVisitsOpenned.executeQuery()) {
+        VisitRequestDTO visit;
+        do {
+          visit = createVisitRequest(rs);
+          list.add(visit);
+        } while (visit != null);
+        list.remove(list.size() - 1);
+      }
+      return list;
+    } catch (Exception e) {
+      throw new FatalException("Data error : getAllVisitsOpenned");
+    }
+  }
+
+  @Override
+  public boolean cancelVisitRequest(int id, String cancellationReason) {
+    try {
+      PreparedStatement updateCancelVisitRequest =
+          dalServices.getPreparedStatement(queryUpdateCancelVisitRequest);
+      updateCancelVisitRequest.setInt(1, VisitRequestStatus.annulee.ordinal());
+      updateCancelVisitRequest.setString(2, cancellationReason);
+      updateCancelVisitRequest.setInt(3, id);
+      return updateCancelVisitRequest.executeUpdate() == 1;
+    } catch (Exception e) {
+      throw new FatalException("Data error : getAllVisitsOpenned");
+    }
+  }
+
+  @Override
+  public boolean chooseDateForVisit(int id, Timestamp chosenDateTime) {
+    try {
+      PreparedStatement updateChooseDateForVisit =
+          dalServices.getPreparedStatement(queryUpdateChooseDateForVisit);
+      updateChooseDateForVisit.setInt(1, VisitRequestStatus.confirmee.ordinal());
+      updateChooseDateForVisit.setTimestamp(2, chosenDateTime);
+      updateChooseDateForVisit.setInt(3, id);
+      return updateChooseDateForVisit.executeUpdate() == 1;
+    } catch (Exception e) {
+      throw new FatalException("Data error : getAllVisitsOpenned");
+    }
+  }
+
   private VisitRequestDTO createVisitRequest(ResultSet rs) throws SQLException {
     VisitRequestDTO visitRequest = null;
     if (rs.next()) {
@@ -110,5 +166,4 @@ public class DAOVisitRequestImpl implements DAOVisitRequest {
     return visitRequest;
   }
 
- */
 }
