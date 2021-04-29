@@ -327,7 +327,7 @@ const onResultsForFurnitures = (resultList) => {
         let furnitureElement = document.getElementById("furniture"+element.id);
         furnitureElement.addEventListener("click", (e) => {
             e.preventDefault();
-            RedirectUrl("/furnitureAdmin",element,"?id="+element.id);
+            RedirectUrl("/admin/furniture",element,"?id="+element.id);
         });
     });
 };

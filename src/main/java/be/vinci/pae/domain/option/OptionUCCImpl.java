@@ -127,10 +127,10 @@ public class OptionUCCImpl implements OptionUCC {
           daoFurniture.updateCondition(idFurniture, FurnitureCondition.en_vente.ordinal());
       if (canceled && updateFurniture) {
         dalServices.commitTransaction();
-        return false;
+        return true;
       } else {
         dalServices.rollbackTransaction();
-        return true;
+        return false;
       }
     } finally {
       dalServices.closeConnection();
@@ -177,8 +177,8 @@ public class OptionUCCImpl implements OptionUCC {
         throw new BusinessException("Ce meuble n'existe pas");
       }
       OptionDTO option = daoOption.getLastOptionOfFurniture(idFurniture);
-      verifyOptionStatus(option);
-      return option;
+      option = verifyOptionStatus(option);
+      return option == null ? optionFactory.getOption() : option;
     } finally {
       dalServices.closeConnection();
     }
@@ -186,7 +186,7 @@ public class OptionUCCImpl implements OptionUCC {
 
 
   // TODO voir si ce n'est pas automatisable
-  private void verifyOptionStatus(OptionDTO option) {
+  private OptionDTO verifyOptionStatus(OptionDTO option) {
     if (option != null && option.getStatus().equals(
         OptionStatus.en_cours)
         && TimeUnit.DAYS.convert(new Date().getTime() - option.getDate().getTime(),
@@ -198,6 +198,7 @@ public class OptionUCCImpl implements OptionUCC {
             .updateCondition(option.getFurniture().getId(),
                 FurnitureCondition.en_vente.ordinal())) {
           dalServices.commitTransaction();
+          option.setStatus(OptionStatus.finie);
         } else {
           dalServices.rollbackTransaction();
         }
@@ -205,6 +206,7 @@ public class OptionUCCImpl implements OptionUCC {
         dalServices.closeConnection();
       }
     }
+    return option;
   }
 
 

@@ -177,8 +177,9 @@ const onClickOption = async (e) => {
   try {
     let optionChoice = document.getElementById("dureeOption");
     optionChoice = optionChoice.value;
-    let apiOption = await callAPIWithoutJSONResponse(API_BASE_URL + furniture.id + "/option/", "POST", user.token, {duration: optionChoice});
+    await callAPIWithoutJSONResponse(API_BASE_URL + furniture.id + "/option/", "POST", user.token, {duration: optionChoice});
     optionDocument.innerHTML = cancelOption;
+    document.querySelector("#daysOptionLeft").innerHTML = optionChoice;
     let btn = document.querySelector("#btnOption")
     btn.addEventListener("click", onClickCancelOption);
   } catch (e) {

@@ -139,7 +139,7 @@ const onFurnitureBuy = (data) => {
         let furnitureElement = document.getElementById("furnitureBuyed"+element.id);
         furnitureElement.addEventListener("click", (e) => {
             e.preventDefault();
-            RedirectUrl("/furnitureAdmin",element,"?id="+element.id);
+            RedirectUrl("/admin/furniture",element,"?id="+element.id);
         });
     });
 };
