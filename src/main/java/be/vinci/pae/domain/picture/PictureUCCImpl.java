@@ -1,5 +1,7 @@
 package be.vinci.pae.domain.picture;
 
+import java.io.InputStream;
+import java.util.List;
 import be.vinci.pae.domain.furniture.FurnitureDTO;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.furniture.DAOFurniture;
@@ -7,8 +9,6 @@ import be.vinci.pae.services.picture.DAOPicture;
 import be.vinci.pae.utils.BusinessException;
 import be.vinci.pae.utils.Upload;
 import jakarta.inject.Inject;
-import java.io.InputStream;
-import java.util.List;
 
 public class PictureUCCImpl implements PictureUCC {
 
@@ -20,6 +20,16 @@ public class PictureUCCImpl implements PictureUCC {
 
   @Inject
   private DAOPicture daoPicture;
+
+  @Override
+  public List<PictureDTO> getCarouselPictures() {
+    try {
+      return daoPicture.getCarouselPictures();
+    } finally {
+      this.dalServices.closeConnection();
+    }
+  }
+
 
   @Override
   public List<PictureDTO> getPicturesByFurnitureId(int furnitureId) {
@@ -72,11 +82,10 @@ public class PictureUCCImpl implements PictureUCC {
 
   @Override
   public boolean deletePicture(int pictureId) {
-    FurnitureDTO furnitureDTO = this.daoFurniture.selectFurnitureByFavouritePicture(pictureId);
     PictureDTO pictureDTO = this.daoPicture.selectPictureById(pictureId);
     String pictureType = pictureDTO.getName().substring(pictureDTO.getName().lastIndexOf('.') + 1);
     String uploadedFileLocation = ".\\images\\" + pictureId + "." + pictureType;
-    if (furnitureDTO == null) {
+    if (pictureDTO.getFurniture().getFavouritePicture().getId() != pictureId) {
       try {
         this.dalServices.startTransaction();
         if (!this.daoPicture.deletePicture(pictureId) || !Upload.deleteFile(uploadedFileLocation)) {

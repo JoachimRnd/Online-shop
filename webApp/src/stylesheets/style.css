@@ -51,16 +51,11 @@ td button{
   table-layout: fixed;
 }
 
-<<<<<<< HEAD
 
-=======
->>>>>>> master
 #carouselFurnitureAdmin {
   width: 100% !important;
   height: 55vh;
 }
-<<<<<<< HEAD
-=======
 
 #carouselHomePage {
   position: absolute;
@@ -78,6 +73,3 @@ td button{
   filter: invert(1);
 }
 
-#filter_carousel {
-}
->>>>>>> master

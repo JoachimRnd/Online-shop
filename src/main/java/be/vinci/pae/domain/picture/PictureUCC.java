@@ -18,4 +18,6 @@ public interface PictureUCC {
 
   List<PictureDTO> getPublicPicturesByFurnitureId(int furnitureId);
 
+  List<PictureDTO> getCarouselPictures();
+
 }

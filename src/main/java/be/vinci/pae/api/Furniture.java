@@ -31,9 +31,6 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-import java.time.LocalDate;
-import java.util.List;
-import org.glassfish.jersey.server.ContainerRequest;
 
 @Singleton
 @Path("/furniture")
@@ -61,8 +58,7 @@ public class Furniture {
   @Path("allFurniture")
   @Produces(MediaType.APPLICATION_JSON)
   public List<FurnitureDTO> listAllFurniture() {
-    return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureUsers(),
-        FurnitureDTO.class);
+    return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureUsers(), FurnitureDTO.class);
   }
 
   /**
@@ -103,18 +99,6 @@ public class Furniture {
         OptionDTO.class);
   }
 
-  /**
-   * List sales furniture.
-   *
-   * @return List of FurnitureDTO
-   */
-  @GET
-  @Path("sales")
-  @Produces(MediaType.APPLICATION_JSON)
-  public List<FurnitureDTO> listSalesFurniture() {
-    return Json.filterPublicJsonViewAsList(furnitureUCC.getSalesFurnitureAdmin(),
-        FurnitureDTO.class);
-  }
 
   /**
    * Get personal furniture with id.
@@ -165,7 +149,7 @@ public class Furniture {
     }
     return optionUCC.addOption(idFurniture, json.get("duration").asInt(),
         (UserDTO) request.getProperty("user")) ? Response.ok().build()
-        : Response.serverError().build();
+            : Response.serverError().build();
   }
 
   /**
@@ -237,14 +221,14 @@ public class Furniture {
   @PUT
   @Path("/{idPicture}/favourite-picture")
   @AuthorizeAdmin
-  public Response modifyFavouritePicture(@PathParam("idFurniture") int idFurniture, JsonNode json) {
+  public Response modifyFavouritePicture(@PathParam("idPicture") int idPicture, JsonNode json) {
     if (!json.has("idPicture")) {
       return Response.status(Status.UNAUTHORIZED).entity("Veuillez indiquer l'id d'une image")
           .type(MediaType.TEXT_PLAIN).build();
     }
 
-    return furnitureUCC.modifyFavouritePicture(idPicture)
-        ? Response.ok().build() : Response.serverError().build();
+    return furnitureUCC.modifyFavouritePicture(idPicture) ? Response.ok().build()
+        : Response.serverError().build();
   }
 
   /**
@@ -256,11 +240,11 @@ public class Furniture {
   @Path("/{idPicture}/scrolling-picture")
   @AuthorizeAdmin
   public Response modifyScrollingPicture(@PathParam("idPicture") int idPicture) {
-   return pictureUCC.modifyScrollingPicture(idPicture) ? Response.ok().build()
+    return pictureUCC.modifyScrollingPicture(idPicture) ? Response.ok().build()
         : Response.status(Status.UNAUTHORIZED).entity("Erreur ajouter photo défilante")
             .type(MediaType.TEXT_PLAIN).build();
   }
-  }
+
 
 
   /**
@@ -280,8 +264,6 @@ public class Furniture {
   }
 
 
-
-    
 
   /**
    * delete picture with id.
@@ -362,9 +344,8 @@ public class Furniture {
       buyerEmail = json.get("buyerEmail").asText();
     }
 
-    return furnitureUCC
-        .modifyFurniture(id, condition, sellingPrice, specialSalePrice, purchasePrice, type,
-            withdrawalDateFromCustomer, withdrawalDateToCustomer, deliveryDate, buyerEmail,
-            description) ? Response.ok().build() : Response.serverError().build();
+    return furnitureUCC.modifyFurniture(id, condition, sellingPrice, specialSalePrice,
+        purchasePrice, type, withdrawalDateFromCustomer, withdrawalDateToCustomer, deliveryDate,
+        buyerEmail, description) ? Response.ok().build() : Response.serverError().build();
   }
 }
