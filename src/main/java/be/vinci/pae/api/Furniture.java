@@ -320,7 +320,7 @@ public class Furniture {
   @AuthorizeAdmin
   public Response deletePicture(@PathParam("idPicture") int idPicture) {
     if (!pictureUCC.deletePicture(idPicture)) {
-      return Response.status(Status.UNAUTHORIZED).entity("Erreur retirer l'image")
+      return Response.status(Status.UNAUTHORIZED).entity("Erreur supprimer l'image")
           .type(MediaType.TEXT_PLAIN).build();
     }
     return Response.ok().build();

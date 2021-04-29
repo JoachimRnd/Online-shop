@@ -85,10 +85,13 @@ public class PictureUCCImpl implements PictureUCC {
   @Override
   public boolean deletePicture(int pictureId) {
     FurnitureDTO furnitureDTO = this.daoFurniture.selectFurnitureByFavouritePicture(pictureId);
+    PictureDTO pictureDTO = this.daoPicture.selectPictureById(pictureId);
+    String pictureType = pictureDTO.getName().substring(pictureDTO.getName().lastIndexOf('.') + 1);
+    String uploadedFileLocation = ".\\images\\" + pictureId + "." + pictureType;
     if (furnitureDTO == null) {
       try {
         this.dalServices.startTransaction();
-        if (!this.daoPicture.deletePicture(pictureId)) {
+        if (!this.daoPicture.deletePicture(pictureId) || !Upload.deleteFile(uploadedFileLocation)) {
           this.dalServices.rollbackTransaction();
           throw new BusinessException("Error delete picture");
         }
@@ -99,6 +102,7 @@ public class PictureUCCImpl implements PictureUCC {
       }
 
       // TODO remove in server
+
     } else {
       return false;
     }

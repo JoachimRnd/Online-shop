@@ -5,7 +5,6 @@ import PrintError from "../PrintError.js"
 import img1 from "./1.jpg";
 import img2 from "./2.jpg";
 const API_BASE_URL = "/api/furniture/";
-const IMAGES = "../../../../images";
 
 let furniture;
 

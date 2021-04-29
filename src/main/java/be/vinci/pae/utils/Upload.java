@@ -11,7 +11,7 @@ public class Upload {
   /**
    * Save uploadedInputStream to uploadedFileLocation.
    *
-   * @param uploadedInputStream  InputStream of file
+   * @param uploadedInputStream InputStream of file
    * @param uploadedFileLocation Location of file
    * @return boolean
    */
@@ -35,4 +35,17 @@ public class Upload {
     }
 
   }
+
+
+  /**
+   * delete uploadedInputStream from disk.
+   *
+   * @param fileLocation Location of file
+   * @return boolean
+   */
+  public static boolean deleteFile(String fileLocation) {
+    File file = new File(fileLocation);
+    return file.delete();
+  }
+
 }

@@ -175,17 +175,7 @@ const FurnitureAdmin = async(f) => {
     PrintError(err);
   }
 
-  let btnAddPicture = document.querySelector("form");
-  btnAddPicture.addEventListener("submit", onAddPicture);
-  let btnAddScrollingPicture = document.querySelector("#btnAddScrollingPicture");
-  btnAddScrollingPicture.addEventListener("click", onAddScrollingPicture);
-  let btnDeletePicture = document.querySelector("#btnDeletePicture");
-  btnDeletePicture.addEventListener("click", onDeletePicture);
-  let btnAddFavouritePicture = document.querySelector("#btnAddFavouritePicture");
-  btnAddFavouritePicture.addEventListener("click", onAddFavouritePicture);
-
-  let btnReturn = document.querySelector("#btnReturn");
-  btnReturn.addEventListener("click", () => RedirectUrl("/search"));
+  onModifyPicture();
 
 
 
@@ -236,8 +226,9 @@ const onPicturesList = (picturesList) => {
     for (let i = 0; i < picturesList.length; i++) {
       if(i== 0){
         carousel += `<li data-target="#carouselPictures" data-slide-to="${i}" class="active"></li>`
+      }else{
+        carousel += `<li data-target="#carouselPictures" data-slide-to="${i}"></li>`;
       }
-      carousel += `<li data-target="#carouselPictures" data-slide-to="${i}"></li>`;
     }
     carousel += `</ol> <div class="carousel-inner">`;
 
@@ -535,6 +526,20 @@ const onClickCancelOption = async (e) => {
   }
 }
 
+const onModifyPicture = () => {
+  let btnAddPicture = document.querySelector("form");
+  btnAddPicture.addEventListener("submit", onAddPicture);
+  let btnAddScrollingPicture = document.querySelector("#btnAddScrollingPicture");
+  btnAddScrollingPicture.addEventListener("click", onAddScrollingPicture);
+  let btnDeletePicture = document.querySelector("#btnDeletePicture");
+  btnDeletePicture.addEventListener("click", onDeletePicture);
+  let btnAddFavouritePicture = document.querySelector("#btnAddFavouritePicture");
+  btnAddFavouritePicture.addEventListener("click", onAddFavouritePicture);
+
+  let btnReturn = document.querySelector("#btnReturn");
+  btnReturn.addEventListener("click", () => RedirectUrl("/search"));
+}
+
 const onAddPicture = async (e) => {
   e.preventDefault();
   let file = document.getElementById("file").files[0];
@@ -562,6 +567,7 @@ const onAddPicture = async (e) => {
   try {
     const pictures = await callAPI(API_BASE_URL + furniture.id + "/pictures-furniture", "GET", user.token);
     onPicturesList(pictures);
+    onModifyPicture();
   } catch (err) {
     console.error("FurnitureListPage::onPicturesList", err);
     PrintError(err);
@@ -601,6 +607,7 @@ const onDeletePicture = async() => {
   try {
     const pictures = await callAPI(API_BASE_URL + furniture.id + "/pictures-furniture", "GET", user.token);
     onPicturesList(pictures);
+    onModifyPicture();
   } catch (err) {
     console.error("FurnitureListPage::onPicturesList", err);
     PrintError(err);
