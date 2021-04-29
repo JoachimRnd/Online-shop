@@ -16,11 +16,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import be.vinci.pae.domain.address.AddressDTO;
+import be.vinci.pae.domain.address.AddressFactory;
 import be.vinci.pae.domain.user.User;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.user.UserFactory;
 import be.vinci.pae.domain.user.UserUCCImpl;
 import be.vinci.pae.services.DalServices;
+import be.vinci.pae.services.address.DAOAddress;
 import be.vinci.pae.services.type.DAOType;
 import be.vinci.pae.services.user.DAOUser;
 import be.vinci.pae.utils.BusinessException;
@@ -31,7 +34,7 @@ public class UserUCCTest {
 
 
   UserFactory userFact;
-  // TypeFactory typeFact;
+  AddressFactory addressFactory;
 
   @Mock
   DalServices dalServices;
@@ -41,6 +44,8 @@ public class UserUCCTest {
 
   @Mock
   DAOType daoType;
+  @Mock
+  DAOAddress daoAddress;
 
   @InjectMocks
   UserUCCImpl userUCC;
@@ -52,6 +57,7 @@ public class UserUCCTest {
     ServiceLocator locator = ServiceLocatorUtilities.bind(new ApplicationBinder());
     // this.userUCC = locator.getService(UserUCC.class);
     this.userFact = locator.getService(UserFactory.class);
+    this.addressFactory = locator.getService(AddressFactory.class);
 
   }
 
@@ -97,14 +103,18 @@ public class UserUCCTest {
   @DisplayName("test registerUser good parameters")
   @Test
   public void registerUserAllGood() {
+    // TODO ! revoir les tests de register
     UserDTO userAlreadyRegistered = userFact.getUser();
+    AddressDTO address = addressFactory.getAddress();
     userAlreadyRegistered.setUsername("test");
     userAlreadyRegistered.setEmail("test@gmail.com");
     Mockito.when(daoUser.getUserByUsername("test")).thenReturn(userAlreadyRegistered);
-    UserDTO userToRegistered = userFact.getUser();
-    userToRegistered.setUsername("test2");
-    userToRegistered.setEmail("test2@gmail.com");
-    assertTrue(userUCC.register(userToRegistered) != null);
+    UserDTO userToRegister = userFact.getUser();
+    userToRegister.setUsername("test2");
+    userToRegister.setEmail("test2@gmail.com");
+    userToRegister.setAddress(address);
+    Mockito.when(daoAddress.selectAddressID(address)).thenReturn(1);
+    assertTrue(userUCC.register(userToRegister) != null);
 
   }
 

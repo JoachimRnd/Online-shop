@@ -2,6 +2,7 @@ package be.vinci.pae.unit.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ import be.vinci.pae.domain.type.TypeFactory;
 import be.vinci.pae.domain.type.TypeUCCImpl;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.type.DAOType;
+import be.vinci.pae.utils.BusinessException;
 
 public class TypeUCCTest {
 
@@ -48,11 +50,13 @@ public class TypeUCCTest {
     assertNotNull(this.typeUCC);
   }
 
-  @DisplayName("test addType good parameters")
+  @DisplayName("test addType")
   @Test
   public void addTypeTest() {
     Mockito.when(daoType.addType("Test")).thenReturn(1);
     assertEquals(1, typeUCC.addFurnitureType("Test"));
+    Mockito.when(daoType.addType("Test")).thenReturn(-1);
+    assertThrows(BusinessException.class, () -> typeUCC.addFurnitureType("Test"));
   }
 
   @DisplayName("test deleteType")
@@ -60,6 +64,8 @@ public class TypeUCCTest {
   public void deleteTypeTest() {
     Mockito.when(daoType.deleteFurnitureType(1)).thenReturn(true);
     assertTrue(typeUCC.deleteFurnitureType(1));
+    Mockito.when(daoType.deleteFurnitureType(1)).thenReturn(false);
+    assertThrows(BusinessException.class, () -> typeUCC.deleteFurnitureType(1));
   }
 
   @DisplayName("test getFurnitureTypes ")
@@ -76,9 +82,9 @@ public class TypeUCCTest {
     assertEquals(1, typeUCC.getFurnitureTypes().size());
   }
 
-  @DisplayName("test getFurnitureSellBy")
+  @DisplayName("test getAllTypeNames")
   @Test
-  public void getFurnitureSellByTest() {
+  public void getAllTypeNamesTest() {
     List<String> list = new ArrayList<String>();
     assertNotNull(typeUCC.getAllTypeNames());
     assertTrue(typeUCC.getAllTypeNames().isEmpty());

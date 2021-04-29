@@ -1,5 +1,9 @@
 package be.vinci.pae.domain.option;
 
+import java.time.Instant;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import be.vinci.pae.domain.furniture.FurnitureDTO;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.services.DalServices;
@@ -11,15 +15,11 @@ import be.vinci.pae.utils.ValueLink.FurnitureCondition;
 import be.vinci.pae.utils.ValueLink.OptionStatus;
 import be.vinci.pae.utils.ValueLink.UserType;
 import jakarta.inject.Inject;
-import java.time.Instant;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class OptionUCCImpl implements OptionUCC {
 
-  private static final int MAX_DURATION_OPTION = Config.getIntProperty("MaxDurationOption");
-  private static final int MIN_DURATION_OPTION = Config.getIntProperty("MinDurationOption");
+  // private static final int MAX_DURATION_OPTION = Config.getIntProperty("MaxDurationOption");
+  // private static final int MIN_DURATION_OPTION = Config.getIntProperty("MinDurationOption");
 
   @Inject
   private DAOOption daoOption;
@@ -37,7 +37,8 @@ public class OptionUCCImpl implements OptionUCC {
   public boolean addOption(int idFurniture, int duration, UserDTO user) {
     try {
       dalServices.startTransaction();
-      if (duration > MAX_DURATION_OPTION || duration < MIN_DURATION_OPTION) {
+      if (duration > Config.getIntProperty("MaxDurationOption")
+          || duration < Config.getIntProperty("MinDurationOption")) {
         throw new BusinessException("Durée de l'option incorrecte");
       }
       FurnitureDTO furniture = daoFurniture.selectFurnitureById(idFurniture);
@@ -60,7 +61,7 @@ public class OptionUCCImpl implements OptionUCC {
         int totalDuration = duration;
         for (OptionDTO option : listPreviousOptionBuyer) {
           totalDuration += option.getDuration();
-          if (totalDuration > MAX_DURATION_OPTION) {
+          if (totalDuration > Config.getIntProperty("MaxDurationOption")) {
             throw new BusinessException(
                 "La duree cumulee de vos options depasse la duree maximale");
           }
@@ -78,7 +79,7 @@ public class OptionUCCImpl implements OptionUCC {
       for (OptionDTO option : listPreviousOption) {
         if (option.getStatus() == OptionStatus.en_cours
             && TimeUnit.DAYS.convert(newOption.getDate().getTime() - option.getDate().getTime(),
-            TimeUnit.MILLISECONDS) <= option.getDuration()) {
+                TimeUnit.MILLISECONDS) <= option.getDuration()) {
           throw new BusinessException("Il y a deja une option en cours pour ce meuble");
         }
       }
@@ -187,16 +188,13 @@ public class OptionUCCImpl implements OptionUCC {
 
   // TODO voir si ce n'est pas automatisable
   private void verifyOptionStatus(OptionDTO option) {
-    if (option != null && option.getStatus().equals(
-        OptionStatus.en_cours)
+    if (option != null && option.getStatus().equals(OptionStatus.en_cours)
         && TimeUnit.DAYS.convert(new Date().getTime() - option.getDate().getTime(),
-        TimeUnit.MILLISECONDS) > option.getDuration()) {
+            TimeUnit.MILLISECONDS) > option.getDuration()) {
       try {
         dalServices.startTransaction();
-        if (daoOption.finishOption(option.getId())
-            && daoFurniture
-            .updateCondition(option.getFurniture().getId(),
-                FurnitureCondition.en_vente.ordinal())) {
+        if (daoOption.finishOption(option.getId()) && daoFurniture.updateCondition(
+            option.getFurniture().getId(), FurnitureCondition.en_vente.ordinal())) {
           dalServices.commitTransaction();
         } else {
           dalServices.rollbackTransaction();

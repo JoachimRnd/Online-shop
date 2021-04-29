@@ -2,6 +2,7 @@ package be.vinci.pae.unit.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import be.vinci.pae.domain.address.AddressDTO;
 import be.vinci.pae.domain.address.AddressFactory;
 import be.vinci.pae.domain.address.AddressUCCImpl;
 import be.vinci.pae.services.DalServices;
@@ -49,14 +51,26 @@ public class AddressUCCTest {
     assertNotNull(this.addressUCC);
   }
 
-  @DisplayName("test getFurnitureSellBy")
+  @DisplayName("test getAllCommunes")
   @Test
-  public void getFurnitureSellByTest() {
+  public void getAllCommunesTest() {
     List<String> list = new ArrayList<String>();
     assertNotNull(addressUCC.getAllCommunes());
     assertTrue(addressUCC.getAllCommunes().isEmpty());
     Mockito.when(daoAddress.getAllCommunes()).thenReturn(list);
     assertEquals(list, addressUCC.getAllCommunes());
+  }
+
+  @DisplayName("test AddressByUserId")
+  @Test
+  public void getAddressByUserIdTest() {
+    AddressDTO address = addressFactory.getAddress();
+    Mockito.when(daoAddress.getAddressByUserId(1)).thenReturn(address);
+    assertEquals(address, addressUCC.getAddressByUserId(1));
+    Mockito.when(daoAddress.getAddressByUserId(1)).thenReturn(null);
+    assertNull(addressUCC.getAddressByUserId(1));
+
+
   }
 
 

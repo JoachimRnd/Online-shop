@@ -93,9 +93,8 @@ public class OptionUCCTest {
     Mockito.when(daoUser.getUserById(1)).thenReturn(buyer);
     Mockito.when(daoFurniture.selectFurnitureById(1)).thenReturn(furniture);
     Mockito.when(daoOption.addOption(optionToAdd)).thenReturn(1);
-    OptionDTO option = optionUCC.addOption(1, 2, buyer);
 
-    assertEquals(option, optionToAdd);
+    assertTrue(optionUCC.addOption(1, 2, buyer));
   }
 
   @DisplayName("test addOption bad furniture only")
