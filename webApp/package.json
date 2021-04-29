@@ -8,9 +8,11 @@
     "start": "webpack-dev-server --mode development"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "bootstrap": "^4.5.2",
     "customizable-analog-clock": "^1.0.1",
     "jquery": "^3.5.1",
+    "leaflet": "^1.7.1",
     "popper.js": "^1.16.1"
   },
   "devDependencies": {

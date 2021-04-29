@@ -9,7 +9,9 @@ let furnitureBuyByUser, furnitureSellByUser;
 
 let furniturePage = `<h4 id="pageTitle">Mes meubles</h4>
 <div class="form-group">
-<input class="col-auto" type="text" id="type" placeholder="Type">
+<select name="types" id="type-select">
+<option value="0" selected>Choisir un type de meuble</option>
+</select>
 <input class="col-auto" type="number" id="price" placeholder="Prix max">
 <button class="btn btn-success" id="searchBtn" type="submit">Rechercher</button>
 </div>
@@ -38,6 +40,22 @@ const UserFurnitureListPage = async () => {
     furnitureSellByUser = await callAPI(API_BASE_URL + "furnituresellby/" + user.user.id , "GET", user.token);
     onFurnitureSell(furnitureSellByUser);
 
+    let typeSelect = document.getElementById("type-select");
+
+    furnitureBuyByUser.forEach(furniture => {
+        let id = "type-" + furniture.type.id;
+        if(document.getElementById(id) === null) {
+            typeSelect.innerHTML += `<option id="${id}" value="${furniture.type.id}">${furniture.type.name}</option>`;
+        }
+    });
+
+    furnitureSellByUser.forEach(furniture => {
+        let id = "type-" + furniture.type.id;
+        if(document.getElementById(id) === null) {
+            typeSelect.innerHTML += `<option id="${id}" value="${furniture.type.id}">${furniture.type.name}</option>`;
+        }
+    });
+
     let searchBtn = document.querySelector('#searchBtn');
     searchBtn.addEventListener("click", onSubmitSearch);
 };
@@ -53,14 +71,13 @@ const onSubmitSearch = async () => {
 };
 
 const onTypeSearch = (data) => {
-    let typeField = document.querySelector('#type');
-    let typeValue = typeField.value;
-    if(typeValue.length === 0) {
+    let typeSelect = document.getElementById("type-select");
+    let typeValue = typeSelect.value;
+    if(typeValue == 0) {
         return data;
     }
     return data.filter(data => {
-        let regex = new RegExp(`^${typeValue}`, 'gi');
-        return data.type.name.match(regex);
+        return data.type.id == typeValue;
     });
 };
 

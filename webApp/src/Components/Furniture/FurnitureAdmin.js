@@ -295,20 +295,26 @@ const onFurniture = () => {
   purchasePrice.innerHTML = `<input class="form-control" id="inputPurchasePrice" type="number" placeholder"=${furniture.purchasePrice}" readonly />`;
 
   let withdrawalDateFromCustomer = document.querySelector("#withdrawalDateFromCustomer");
-  if(furniture.withdrawalDateFromCustomer)
-    withdrawalDateFromCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateFromCustomer" type="date" value="${furniture.withdrawalDateFromCustomer}" readonly/>`;
+  if(furniture.withdrawalDateFromCustomer){
+    let date = new Date(furniture.withdrawalDateFromCustomer);
+    withdrawalDateFromCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateFromCustomer" type="date" value="${date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()}" readonly/>`;
+  }
   else
     withdrawalDateFromCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateFromCustomer" type="date" readonly/>`;
 
   let deliveryDate = document.querySelector("#deliveryDate");
-  if(furniture.deliveryDate)
-    deliveryDate.innerHTML = `<input class="form-control" id="inputDeliveryDate" type="date" value="${furniture.deliveryDate}" readonly/>`;
+  if(furniture.deliveryDate) {
+    let date = new Date(furniture.deliveryDate);
+    deliveryDate.innerHTML = `<input class="form-control" id="inputDeliveryDate" type="date" value="${date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()}" readonly/>`;
+  }
   else
     deliveryDate.innerHTML = `<input class="form-control" id="inputDeliveryDate" type="date" readonly/>`;
 
   let withdrawalDateToCustomer = document.querySelector("#withdrawalDateToCustomer");
-  if(furniture.withdrawalDateToCustomer)
-    withdrawalDateToCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateToCustomer" type="date" value="${furniture.withdrawalDateToCustomer}" readonly/>`;
+  if(furniture.withdrawalDateToCustomer){
+    let date = new Date(furniture.withdrawalDateToCustomer)
+    withdrawalDateToCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateToCustomer" type="date" value="${date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()}" readonly/>`;
+  }
   else
     withdrawalDateToCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateToCustomer" type="date" readonly/>`;
 
@@ -355,22 +361,28 @@ const onPurchase = () => {
   purchasePrice.innerHTML = `<input class="form-control" id="inputPurchasePrice" type="number" value=${furniture.purchasePrice} />`;
 
   let withdrawalDateFromCustomer = document.querySelector("#withdrawalDateFromCustomer");
-  if(furniture.withdrawalDateFromCustomer)
-    withdrawalDateFromCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateFromCustomer" type="date" value="${furniture.withdrawalDateFromCustomer}"/>`;
+  if(furniture.withdrawalDateFromCustomer) {
+    let date = new Date(furniture.withdrawalDateFromCustomer);
+    withdrawalDateFromCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateFromCustomer" type="date" value="${date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()}"/>`;
+  }
   else
     withdrawalDateFromCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateFromCustomer" type="date"/>`;
 }
 
 const onSold = () => {
   let deliveryDate = document.querySelector("#deliveryDate");
-  if(furniture.deliveryDate)
-    deliveryDate.innerHTML = `<input class="form-control" id="inputDeliveryDate" type="date" value="${furniture.deliveryDate}"/>`;
+  if(furniture.deliveryDate){
+    let date = new Date(furniture.deliveryDate);
+    deliveryDate.innerHTML = `<input class="form-control" id="inputDeliveryDate" type="date" value="${date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()}"/>`;
+  }
   else
     deliveryDate.innerHTML = `<input class="form-control" id="inputDeliveryDate" type="date" />`;
 
   let withdrawalDateToCustomer = document.querySelector("#withdrawalDateToCustomer");
-  if(furniture.withdrawalDateToCustomer)
-    withdrawalDateToCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateToCustomer" type="date" value="${furniture.withdrawalDateToCustomer}" />`;
+  if(furniture.withdrawalDateToCustomer){
+    let date = new Date(furniture.withdrawalDateToCustomer)
+    withdrawalDateToCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateToCustomer" type="date" value="${date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()}" />`;
+  }
   else
     withdrawalDateToCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateToCustomer" type="date"/>`;
 }

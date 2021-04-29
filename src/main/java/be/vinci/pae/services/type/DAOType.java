@@ -7,8 +7,6 @@ public interface DAOType {
 
   List<TypeDTO> selectFurnitureTypes();
 
-  TypeDTO selectTypeByName(String typeName);
-
   TypeDTO selectTypeById(int id);
 
   int addType(String type);

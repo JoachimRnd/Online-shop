@@ -50,7 +50,7 @@ let userAdmin = `
                 </div>
             </div>
         </div>
-        div class="row">
+        <div class="row">
             <div class="col-6">
                 <div class="form-group">
                 <label for="furniture_buyed">Meuble acheté par le client</label>
@@ -139,7 +139,7 @@ const onFurnitureBuy = (data) => {
         let furnitureElement = document.getElementById("furnitureBuyed"+element.id);
         furnitureElement.addEventListener("click", (e) => {
             e.preventDefault();
-            RedirectUrl("/furnitureAdmin",element,"?id="+element.id);
+            RedirectUrl("/admin/furniture",element,"?id="+element.id);
         });
     });
 };
@@ -171,7 +171,7 @@ const onFurnitureSell = (data) => {
         let furnitureElement = document.getElementById("furnitureSelled"+element.id);
         furnitureElement.addEventListener("click", (e) => {
             e.preventDefault();
-            RedirectUrl("/furnitureAdmin",element,"?id="+element.id);
+            RedirectUrl("/admin/furniture",element,"?id="+element.id);
         });
     });
 };

@@ -1,12 +1,12 @@
 package be.vinci.pae.services;
 
+import be.vinci.pae.utils.Config;
+import be.vinci.pae.utils.FatalException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import org.apache.commons.dbcp2.BasicDataSource;
-import be.vinci.pae.utils.Config;
-import be.vinci.pae.utils.FatalException;
 
 public class DalServicesImpl implements DalServices, DalBackendServices {
 
@@ -17,8 +17,7 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
   private static final int DB_MAXCONNECTION = Config.getIntProperty("MaxIdle");
   private BasicDataSource bds;
   private ThreadLocal<Connection> tl;
-
-  // TODO gestion des exceptions
+  private boolean multipleTransaction;
 
   /**
    * Create pool of Connection.
@@ -28,7 +27,7 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
     bds.setUrl(DB_STRING_CONNECTION);
     bds.setUsername(DB_USERNAME);
     bds.setPassword(DB_PASSWORD);
-    // TODO à chercher utilité + passer par fichier de conf.
+    // @TODO à chercher utilité
     bds.setMinIdle(DB_MINCONNECTION);
     bds.setMaxIdle(DB_MAXCONNECTION);
     tl = new ThreadLocal<Connection>();
@@ -44,8 +43,7 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
     try {
       preparedStatement = conn.prepareStatement(query);
     } catch (SQLException e) {
-      e.printStackTrace();
-      throw new FatalException("Data error : getPreparedStatement");
+      throw new FatalException("Data error : getPreparedStatement", e);
     }
     return preparedStatement;
   }
@@ -59,8 +57,7 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
     try {
       return conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
     } catch (SQLException e) {
-      e.printStackTrace();
-      throw new FatalException("Data error : getPreparedStatementAdd");
+      throw new FatalException("Data error : getPreparedStatementAdd", e);
     }
   }
 
@@ -69,8 +66,7 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
     try {
       conn = bds.getConnection();
     } catch (SQLException e) {
-      e.printStackTrace();
-      throw new FatalException("Data error : getConnection");
+      throw new FatalException("Data error : getConnection", e);
     }
     tl.set(conn);
     return conn;
@@ -78,53 +74,75 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
 
   @Override
   public void startTransaction() {
-    Connection conn = tl.get();
-    if (conn == null) {
-      conn = getConnection();
-    }
-    try {
-      conn.setAutoCommit(false);
-    } catch (SQLException e) {
-      e.printStackTrace();
-      throw new FatalException("Data error : startTransaction");
+    if (!multipleTransaction) {
+      Connection conn = tl.get();
+      if (conn == null) {
+        conn = getConnection();
+      }
+      try {
+        conn.setAutoCommit(false);
+      } catch (SQLException e) {
+        throw new FatalException("Data error : startTransaction", e);
+      }
     }
   }
 
   @Override
   public void commitTransaction() {
-    Connection conn = tl.get();
-    try {
-      conn.commit();
-    } catch (SQLException e) {
-      e.printStackTrace();
-      throw new FatalException("Data error : commitTransaction");
+    if (!multipleTransaction) {
+      Connection conn = tl.get();
+      try {
+        conn.commit();
+      } catch (SQLException e) {
+        throw new FatalException("Data error : commitTransaction", e);
+      }
     }
   }
 
   @Override
   public void rollbackTransaction() {
-    Connection conn = tl.get();
-    try {
-      conn.rollback();
-    } catch (SQLException e) {
-      e.printStackTrace();
-      throw new FatalException("Data error : rollbackTransaction");
+    if (!multipleTransaction) {
+      Connection conn = tl.get();
+      try {
+        conn.rollback();
+      } catch (SQLException e) {
+        throw new FatalException("Data error : rollbackTransaction", e);
+      }
     }
   }
 
   @Override
   public void closeConnection() {
-    Connection conn = tl.get();
-    tl.remove();
-    if (conn == null) {
-      return;
+    if (!multipleTransaction) {
+      Connection conn = tl.get();
+      tl.remove();
+      if (conn == null) {
+        return;
+      }
+      try {
+        conn.close();
+      } catch (SQLException e) {
+        throw new FatalException("Data error : closeConnection", e);
+      }
     }
-    try {
-      conn.close();
-    } catch (SQLException e) {
-      e.printStackTrace();
-      throw new FatalException("Data error : closeConnection");
-    }
+  }
+
+  @Override
+  public void rollbackMultipleTransaction() {
+    multipleTransaction = false;
+    rollbackTransaction();
+  }
+
+  @Override
+  public void commitMultipleTransactions() {
+    multipleTransaction = false;
+    commitTransaction();
+  }
+
+  @Override
+  public void startMultipleTransactions() {
+    startTransaction();
+    multipleTransaction = true;
   }
 
 

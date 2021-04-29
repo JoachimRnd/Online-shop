@@ -1,22 +1,22 @@
 package be.vinci.pae.api.utils;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import org.apache.log4j.Logger;
 import be.vinci.pae.utils.BusinessException;
 import be.vinci.pae.utils.Config;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 @Provider
 public class LoggingExceptionMapper implements ExceptionMapper<Throwable> {
 
-  //TODO Ajouter les logs
+  private static final Logger log = Logger.getLogger(ExceptionMapper.class);
 
   @Override
   public Response toResponse(Throwable exception) {
-    exception.printStackTrace();
     if (Config.getBoolProperty("SendStackTraceToClient")) {
       return Response.status(getStatusCode(exception)).entity(getEntity(exception)).build();
     }
@@ -31,11 +31,14 @@ public class LoggingExceptionMapper implements ExceptionMapper<Throwable> {
    */
   private int getStatusCode(Throwable exception) {
     if (exception instanceof BusinessException) {
+      log.warn(exception.getMessage(), exception);
       return Response.Status.UNAUTHORIZED.getStatusCode();
     }
     if (exception instanceof WebApplicationException) {
+      log.warn(exception.getMessage(), exception);
       return ((WebApplicationException) exception).getResponse().getStatus();
     }
+    log.fatal(exception.getMessage(), exception);
     return Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
   }
 

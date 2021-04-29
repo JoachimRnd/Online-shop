@@ -1,19 +1,15 @@
 package be.vinci.pae.api;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import be.vinci.pae.api.utils.Json;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.user.UserUCC;
 import be.vinci.pae.utils.Config;
 import be.vinci.pae.utils.FatalException;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -23,6 +19,10 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 
 @Singleton
 @Path("/auths")
@@ -97,20 +97,17 @@ public class Authentication {
     user.setRegistrationDate(Date.from(Instant.now()));
     user.setValidRegistration(false);
 
-
     // Try to register
     user = userUCC.register(user);
 
     // Create token
     String token = createToken(user);
-    // Build response
 
     // load the user data from a public JSON view to filter out the private info not
     // to be returned by the API (such as password)
     UserDTO publicUser = Json.filterPublicJsonView(user, UserDTO.class);
     ObjectNode node = jsonMapper.createObjectNode().put("token", token).putPOJO("user", publicUser);
-
-
+    // Build response
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
 

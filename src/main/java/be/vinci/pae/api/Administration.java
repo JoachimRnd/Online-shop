@@ -1,10 +1,5 @@
 package be.vinci.pae.api;
 
-import java.io.InputStream;
-import java.util.List;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
-import com.fasterxml.jackson.databind.JsonNode;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.api.utils.Json;
 import be.vinci.pae.domain.address.AddressUCC;
@@ -17,7 +12,12 @@ import be.vinci.pae.domain.picture.PictureUCC;
 import be.vinci.pae.domain.type.TypeUCC;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.user.UserUCC;
+import be.vinci.pae.domain.visitrequest.VisitRequestDTO;
+import be.vinci.pae.domain.visitrequest.VisitRequestUCC;
 import be.vinci.pae.utils.ValueLink;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -34,10 +34,16 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import java.io.InputStream;
+import java.util.List;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 @Singleton
 @Path("/admin")
 public class Administration {
+
+  private final ObjectMapper jsonMapper = new ObjectMapper();
 
   @Inject
   private UserUCC userUCC;
@@ -60,8 +66,11 @@ public class Administration {
   @Inject
   private PictureUCC pictureUcc;
 
+  @Inject
+  private VisitRequestUCC visitRequestUCC;
+
   /**
-   * Valid a user.
+   * Validate an user.
    *
    * @param json json of the user
    * @return http response
@@ -76,17 +85,9 @@ public class Administration {
       return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")
           .type(MediaType.TEXT_PLAIN).build();
     }
-
-    System.out.println("Id : " + json.get("id").asInt());
-    System.out.println("Type : " + json.get("type").asText());
-
-    if (userUCC.validateUser(json.get("id").asInt(),
-        ValueLink.UserType.valueOf(json.get("type").asText()))) {
-      return Response.ok().build();
-    } else {
-      return Response.serverError().build();
-    }
-
+    return userUCC
+        .validateUser(json.get("id").asInt(), ValueLink.UserType.valueOf(json.get("type").asText()))
+        ? Response.ok().build() : Response.serverError().build();
   }
 
   /**
@@ -99,7 +100,7 @@ public class Administration {
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public List<FurnitureDTO> listAllFurniture() {
-    return Json.filterPublicJsonViewAsList(furnitureUCC.getAllFurniture(), FurnitureDTO.class);
+    return Json.filterAdminJsonViewAsList(furnitureUCC.getAllFurniture(), FurnitureDTO.class);
   }
 
   /**
@@ -112,15 +113,15 @@ public class Administration {
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public List<UserDTO> listUnvalidatedUser() {
-    return Json.filterPublicJsonViewAsList(userUCC.getUnvalidatedUsers(), UserDTO.class);
+    return Json.filterAdminJsonViewAsList(userUCC.getUnvalidatedUsers(), UserDTO.class);
   }
 
   @PUT
   @Path("/{id}/cancelOption")
   @AuthorizeAdmin
   public Response cancelOption(@PathParam("id") int id) {
-    optionUCC.cancelOptionByAdmin(id);
-    return Response.ok().build();
+    return optionUCC.cancelOptionByAdmin(id)
+        ? Response.ok().build() : Response.serverError().build();
   }
 
 
@@ -137,11 +138,7 @@ public class Administration {
       throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
           .entity("Lacks of mandatory id info").type("text/plain").build());
     }
-    if (!typeUCC.deleteFurnitureType(id)) {
-      return Response.serverError().build();
-    } else {
-      return Response.ok().build();
-    }
+    return typeUCC.deleteFurnitureType(id) ? Response.ok().build() : Response.serverError().build();
   }
 
 
@@ -160,11 +157,7 @@ public class Administration {
           .type(MediaType.TEXT_PLAIN).build();
     }
     int type = typeUCC.addFurnitureType(json.get("type").asText());
-    if (type == -1) {
-      return Response.serverError().build();
-    } else {
-      return Response.ok(type).build();
-    }
+    return type != -1 ? Response.ok(type).build() : Response.serverError().build();
   }
 
   /**
@@ -177,7 +170,7 @@ public class Administration {
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public List<String> allUsers() {
-    return Json.filterPublicJsonViewAsList(userUCC.getAllLastnames(), String.class);
+    return Json.filterAdminJsonViewAsList(userUCC.getAllLastnames(), String.class);
   }
 
   /**
@@ -190,7 +183,7 @@ public class Administration {
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public List<String> allTypes() {
-    return Json.filterPublicJsonViewAsList(typeUCC.getAllTypeNames(), String.class);
+    return Json.filterAdminJsonViewAsList(typeUCC.getAllTypeNames(), String.class);
   }
 
   /**
@@ -203,7 +196,7 @@ public class Administration {
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public List<String> allCommunes() {
-    return Json.filterPublicJsonViewAsList(addressUCC.getAllCommunes(), String.class);
+    return Json.filterAdminJsonViewAsList(addressUCC.getAllCommunes(), String.class);
   }
 
   /**
@@ -218,7 +211,7 @@ public class Administration {
   public List<UserDTO> usersFiltered(@DefaultValue("") @QueryParam("username") String username,
       @DefaultValue("") @QueryParam("postcode") String postcode,
       @DefaultValue("") @QueryParam("commune") String commune) {
-    return Json.filterPublicJsonViewAsList(userUCC.getUsersFiltered(username, postcode, commune),
+    return Json.filterAdminJsonViewAsList(userUCC.getUsersFiltered(username, postcode, commune),
         UserDTO.class);
   }
 
@@ -234,7 +227,7 @@ public class Administration {
   public List<FurnitureDTO> furnituresFiltered(@DefaultValue("") @QueryParam("type") String type,
       @DefaultValue("" + Double.MAX_VALUE) @QueryParam("price") double price,
       @DefaultValue("") @QueryParam("username") String username) {
-    return Json.filterPublicJsonViewAsList(
+    return Json.filterAdminJsonViewAsList(
         furnitureUCC.getFurnituresFiltered(type, price, username), FurnitureDTO.class);
   }
 
@@ -248,7 +241,7 @@ public class Administration {
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public UserDTO getUser(@PathParam("id") int id) {
-    return Json.filterPublicJsonView(userUCC.getUserById(id), UserDTO.class);
+    return Json.filterAdminJsonView(userUCC.getUserById(id), UserDTO.class);
   }
 
   /**
@@ -287,30 +280,27 @@ public class Administration {
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public FurnitureDTO getFurniture(@PathParam("idFurniture") int idFurniture) {
-    FurnitureDTO furnitureDTO = furnitureUCC.getFurnitureById(idFurniture);
-    if (furnitureDTO == null) {
-      throw new WebApplicationException(
-          "Ressource with id = " + idFurniture + " could not be found", null, Status.NOT_FOUND);
-    }
-    return Json.filterAdminJsonView(furnitureDTO, FurnitureDTO.class);
+    return Json.filterAdminJsonView(furnitureUCC.getFurnitureById(idFurniture), FurnitureDTO.class);
   }
 
   /**
    * Receive file from the frontend.
    *
-   * @param enabled FormData
+   * @param enabled             FormData
    * @param uploadedInputStream FormDataFile
-   * @param fileDetail Details of the FormDataFile
+   * @param fileDetail          Details of the FormDataFile
    * @return Status code
    */
   @POST
-  @Path("picture") // Your Path or URL to call this service
+  @Path("picture")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @AuthorizeAdmin
   public Response uploadFile(@DefaultValue("true") @FormDataParam("enabled") boolean enabled,
       @FormDataParam("furnitureID") int furnitureId,
       @FormDataParam("file") InputStream uploadedInputStream,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
+    //@TODO regarder avec fileDetail.getType() si c'est pas possible d'avoir le MIME TYPE
+    //(Plus officiel)
     String pictureType =
         fileDetail.getFileName().substring(fileDetail.getFileName().lastIndexOf('.') + 1);
     if (!pictureType.equals("jpg") && !pictureType.equals("jpeg") && !pictureType.equals("png")) {
@@ -323,12 +313,76 @@ public class Administration {
     picture.setName(fileDetail.getFileName());
     picture.setVisibleForEveryone(false);
     picture = this.pictureUcc.addPicture(furnitureId, picture, uploadedInputStream, pictureType);
-    if (picture == null) {
-      return Response.serverError().build();
-    } else {
-      return Response.ok().build();
-    }
+    return picture != null ? Response.ok().build() : Response.serverError().build();
   }
 
+  /**
+   * Get all visit request.
+   *
+   * @return List of VisitRequestDTO
+   */
+  @GET
+  @Path("/allvisitsopenned")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public List<VisitRequestDTO> allVisitsOpenned() {
+    return Json
+        .filterAdminJsonViewAsList(visitRequestUCC.getAllVisitsOpenned(), VisitRequestDTO.class);
+  }
+
+  /**
+   * Get a visit request.
+   *
+   * @return VisitRequestDTO
+   */
+  @GET
+  @Path("/visit/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public VisitRequestDTO getVisitRequest(@PathParam("id") int id) {
+    return Json.filterAdminJsonView(visitRequestUCC.getVisitRequestById(id), VisitRequestDTO.class);
+  }
+
+  /**
+   * Modify a visit request.
+   *
+   * @return VisitRequestDTO
+   */
+  @PUT
+  @Path("/visit/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public Response modifyVisitRequest(@PathParam("id") int id, JsonNode json) {
+    String cancellationReason =
+        json.hasNonNull("cancellationReason") && !json.get("cancellationReason").asText().isEmpty()
+            ? json.get("cancellationReason").asText() : null;
+    String chosenDateTime =
+        json.hasNonNull("chosenDateTime") && !json.get("chosenDateTime").asText().isEmpty() ? json
+            .get("chosenDateTime").asText() : null;
+    if (cancellationReason == null && chosenDateTime == null) {
+      return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs").build();
+    }
+
+    String status = visitRequestUCC.modifyVisitRequest(id, cancellationReason, chosenDateTime);
+    ObjectNode node = jsonMapper.createObjectNode().putPOJO("status", status);
+
+    return node != null ? Response.ok(node, MediaType.APPLICATION_JSON).build()
+        : Response.serverError().build();
+  }
+
+
+  /**
+   * Get all furniture of visit request.
+   *
+   * @return List of FurnitureDTO
+   */
+  @GET
+  @Path("/furnituresvisit/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public List<FurnitureDTO> selectFurnituresOfVisit(@PathParam("id") int id) {
+    return Json
+        .filterAdminJsonViewAsList(furnitureUCC.selectFurnituresOfVisit(id), FurnitureDTO.class);
+  }
 
 }

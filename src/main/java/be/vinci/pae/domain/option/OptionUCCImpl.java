@@ -1,9 +1,5 @@
 package be.vinci.pae.domain.option;
 
-import java.time.Instant;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 import be.vinci.pae.domain.furniture.FurnitureDTO;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.services.DalServices;
@@ -15,6 +11,10 @@ import be.vinci.pae.utils.ValueLink.FurnitureCondition;
 import be.vinci.pae.utils.ValueLink.OptionStatus;
 import be.vinci.pae.utils.ValueLink.UserType;
 import jakarta.inject.Inject;
+import java.time.Instant;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class OptionUCCImpl implements OptionUCC {
 
@@ -34,7 +34,7 @@ public class OptionUCCImpl implements OptionUCC {
   private OptionFactory optionFactory;
 
   @Override
-  public OptionDTO addOption(int idFurniture, int duration, UserDTO user) {
+  public boolean addOption(int idFurniture, int duration, UserDTO user) {
     try {
       dalServices.startTransaction();
       if (duration > MAX_DURATION_OPTION || duration < MIN_DURATION_OPTION) {
@@ -52,8 +52,10 @@ public class OptionUCCImpl implements OptionUCC {
         throw new BusinessException(
             "Votre compte n'est pas encore validé ou vous n'êtes pas client");
       }
+
       List<OptionDTO> listPreviousOptionBuyer =
           daoOption.selectOptionsOfBuyerFromFurniture(user.getId(), furniture.getId());
+
       if (listPreviousOptionBuyer != null) {
         int totalDuration = duration;
         for (OptionDTO option : listPreviousOptionBuyer) {
@@ -76,7 +78,7 @@ public class OptionUCCImpl implements OptionUCC {
       for (OptionDTO option : listPreviousOption) {
         if (option.getStatus() == OptionStatus.en_cours
             && TimeUnit.DAYS.convert(newOption.getDate().getTime() - option.getDate().getTime(),
-                TimeUnit.MILLISECONDS) <= option.getDuration()) {
+            TimeUnit.MILLISECONDS) <= option.getDuration()) {
           throw new BusinessException("Il y a deja une option en cours pour ce meuble");
         }
       }
@@ -84,14 +86,14 @@ public class OptionUCCImpl implements OptionUCC {
       int idOption = daoOption.addOption(newOption);
       boolean updateFurniture =
           daoFurniture.updateCondition(idFurniture, FurnitureCondition.en_option.ordinal());
+
       if (idOption == -1 && !updateFurniture) {
         dalServices.rollbackTransaction();
-        return null;
+        return false;
       } else {
         dalServices.commitTransaction();
+        return true;
       }
-      newOption.setId(idOption);
-      return newOption;
     } finally {
       dalServices.closeConnection();
     }
@@ -100,7 +102,7 @@ public class OptionUCCImpl implements OptionUCC {
   }
 
   @Override
-  public void cancelOption(int idFurniture, UserDTO user) {
+  public boolean cancelOption(int idFurniture, UserDTO user) {
     try {
       dalServices.startTransaction();
       List<OptionDTO> list = daoOption.selectOptionsOfFurniture(idFurniture);
@@ -125,8 +127,10 @@ public class OptionUCCImpl implements OptionUCC {
           daoFurniture.updateCondition(idFurniture, FurnitureCondition.en_vente.ordinal());
       if (canceled && updateFurniture) {
         dalServices.commitTransaction();
+        return true;
       } else {
         dalServices.rollbackTransaction();
+        return false;
       }
     } finally {
       dalServices.closeConnection();
@@ -134,7 +138,7 @@ public class OptionUCCImpl implements OptionUCC {
   }
 
   @Override
-  public void cancelOptionByAdmin(int idFurniture) {
+  public boolean cancelOptionByAdmin(int idFurniture) {
     try {
       dalServices.startTransaction();
       List<OptionDTO> list = daoOption.selectOptionsOfFurniture(idFurniture);
@@ -156,8 +160,10 @@ public class OptionUCCImpl implements OptionUCC {
           daoFurniture.updateCondition(idFurniture, FurnitureCondition.en_vente.ordinal());
       if (canceled && updateFurniture) {
         dalServices.commitTransaction();
+        return true;
       } else {
         dalServices.rollbackTransaction();
+        return false;
       }
     } finally {
       dalServices.closeConnection();
@@ -171,17 +177,8 @@ public class OptionUCCImpl implements OptionUCC {
         throw new BusinessException("Ce meuble n'existe pas");
       }
       OptionDTO option = daoOption.getLastOptionOfFurniture(idFurniture);
-      if (!verifyOptionStatus(option)) {
-        dalServices.startTransaction();
-        if (daoOption.finishOption(option.getId())
-            && daoFurniture.updateCondition(idFurniture, FurnitureCondition.en_vente.ordinal())) {
-          dalServices.commitTransaction();
-        } else {
-          dalServices.rollbackTransaction();
-        }
-        option = daoOption.getLastOptionOfFurniture(idFurniture);
-      }
-      return option;
+      option = verifyOptionStatus(option);
+      return option == null ? optionFactory.getOption() : option;
     } finally {
       dalServices.closeConnection();
     }
@@ -189,19 +186,27 @@ public class OptionUCCImpl implements OptionUCC {
 
 
   // TODO voir si ce n'est pas automatisable
-  private boolean verifyOptionStatus(OptionDTO option) {
-    if (option == null) {
-      return true;
+  private OptionDTO verifyOptionStatus(OptionDTO option) {
+    if (option != null && option.getStatus().equals(
+        OptionStatus.en_cours)
+        && TimeUnit.DAYS.convert(new Date().getTime() - option.getDate().getTime(),
+        TimeUnit.MILLISECONDS) > option.getDuration()) {
+      try {
+        dalServices.startTransaction();
+        if (daoOption.finishOption(option.getId())
+            && daoFurniture
+            .updateCondition(option.getFurniture().getId(),
+                FurnitureCondition.en_vente.ordinal())) {
+          dalServices.commitTransaction();
+          option.setStatus(OptionStatus.finie);
+        } else {
+          dalServices.rollbackTransaction();
+        }
+      } finally {
+        dalServices.closeConnection();
+      }
     }
-    if (!option.getStatus().equals(OptionStatus.en_cours)) {
-      return true;
-    }
-    Date now = new Date();
-    if (TimeUnit.DAYS.convert(now.getTime() - option.getDate().getTime(),
-        TimeUnit.MILLISECONDS) <= option.getDuration()) {
-      return true;
-    }
-    return false;
+    return option;
   }
 
 

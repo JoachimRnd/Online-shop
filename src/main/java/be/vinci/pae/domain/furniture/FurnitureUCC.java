@@ -1,23 +1,17 @@
 package be.vinci.pae.domain.furniture;
 
-import java.time.LocalDate;
-import java.util.List;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
+import java.time.LocalDate;
+import java.util.List;
 
 public interface FurnitureUCC {
 
   List<FurnitureDTO> getAllFurniture();
 
-  List<FurnitureDTO> getFurnitureUsers(int idUser);
+  List<FurnitureDTO> getFurnitureUsers();
 
   FurnitureDTO addFurniture(FurnitureDTO furniture);
-
-  List<FurnitureDTO> getFurnitureByTypeName(String typeName);
-
-  List<FurnitureDTO> getFurnitureBySellingPrice(double sellingPrice);
-
-  List<FurnitureDTO> getFurnitureByUserName(String typeName);
 
   boolean modifyCondition(int id, FurnitureCondition condition);
 
@@ -45,12 +39,18 @@ public interface FurnitureUCC {
 
   boolean modifyFavouritePicture(int pictureId);
 
-
   List<FurnitureDTO> getFurnituresFiltered(String type, double price, String username);
 
   List<FurnitureDTO> getFurnitureBuyBy(int id);
 
   List<FurnitureDTO> getFurnitureSellBy(int id);
 
+  List<FurnitureDTO> selectFurnituresOfVisit(int id);
+
   FurnitureDTO getPersonalFurnitureById(int id, UserDTO user);
+
+  boolean modifyFurniture(int furnitureId, FurnitureCondition condition, double sellingPrice,
+      double specialSalePrice, double purchasePrice, int type, LocalDate withdrawalDateFromCustomer,
+      LocalDate withdrawalDateToCustomer, LocalDate deliveryDate,
+      String buyerEmail, String description);
 }

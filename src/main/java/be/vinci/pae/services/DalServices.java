@@ -10,4 +10,9 @@ public interface DalServices {
 
   void closeConnection();
 
+  void rollbackMultipleTransaction();
+
+  void commitMultipleTransactions();
+
+  void startMultipleTransactions();
 }

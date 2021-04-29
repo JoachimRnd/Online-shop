@@ -25,7 +25,7 @@ input:valid {
 
 .title, .link{
   width: 10rem;
-  
+
   word-wrap: break-word;
 
 }
@@ -43,16 +43,41 @@ td a{
 }
 
 td button{
-  
-  width:5rem !important;  
+
+  width:5rem !important;
 }
 
 .table{
   table-layout: fixed;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
 #carouselFurnitureAdmin {
   width: 100% !important;
   height: 55vh;
 }
+<<<<<<< HEAD
+=======
+
+#carouselHomePage {
+  position: absolute;
+  height: 75vh;
+}
+
+#carouselHomePageBlur {
+  width: 100% !important;
+  height: 75vh;
+  filter: blur(8px);
+  -webkit-filter: blur(8px);
+}
+
+.carousel-dark{
+  filter: invert(1);
+}
+
+#filter_carousel {
+}
+>>>>>>> master
