@@ -56,7 +56,7 @@ const onChangeType = () => {
 
 const onPicturesList = (data) => {
   let carousel = `
-    <div id="carouselPictures" class="carousel slide" data-ride="carousel"><ol class="carousel-indicators">`;
+    <div id="carouselPictures" class="carousel slide" data-ride="carousel"><ol class="carousel-indicators carousel-dark">`;
   for (let i = 0; i < data.length; i++) {
     if(i== 0){
       carousel += `<li data-target="#carouselPictures" data-slide-to="${i}" class="active"></li>`
@@ -68,31 +68,33 @@ const onPicturesList = (data) => {
   let counter = 0;
   data.forEach(picture => {
     if(counter == 0){
-      carousel += `<div class="carousel-item active"> 
-        <img id="carouselFurnitureAdmin" src="${IMAGES}${picture.id}.${picture.name.substring(picture.name.lastIndexOf('.')+1)}" class="d-block w-100" alt="${counter}">
-        </div>`;
+      carousel += `<div class="carousel-item active">`;
     }else{
-      carousel += `<div class="carousel-item"> 
-        <img id="carouselFurnitureAdmin" src="${IMAGES}${picture.id}.${picture.name.substring(picture.name.lastIndexOf('.')+1)}" class="d-block w-100" alt="${counter}">
-        </div>`;
+      carousel += `<div class="carousel-item">`;
     }
+    carousel += `
+    <div class="container d-flex justify-content-center">
+        <img id="carouselHomePageBlur" src="${IMAGES}${picture.id}.${picture.name.substring(picture.name.lastIndexOf('.')+1)}" alt="${counter}">
+        <img id="carouselHomePage" src="${IMAGES}${picture.id}.${picture.name.substring(picture.name.lastIndexOf('.')+1)}" alt="${counter}">
+        <div class="carousel-caption">
+            <p class="font-weight-bold carousel-dark">${picture.furniture.description}</p>
+    </div></div></div>
+    `;
     counter ++;
   });
 
   carousel += `
-    <a class="carousel-control-prev" href="#carouselPictures" role="button" data-slide="prev">
+    <a class="carousel-control-prev carousel-dark" href="#carouselPictures" role="button" data-slide="prev">
       <span class="carousel-control-prev-icon" aria-hidden="true"></span>
       <span class="sr-only">Previous</span>
     </a>
-    <a class="carousel-control-next" href="#carouselPictures" role="button" data-slide="next">
+    <a class="carousel-control-next carousel-dark" href="#carouselPictures" role="button" data-slide="next">
       <span class="carousel-control-next-icon" aria-hidden="true"></span>
       <span class="sr-only">Next</span>
     </a>
     </div>
     </div>
     `;
-
-  //@TODO Ajouter la description du meuble sous l'image => data.furniture.description
 
   document.querySelector("#carousel").innerHTML = carousel;
 }
