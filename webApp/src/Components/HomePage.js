@@ -8,8 +8,8 @@ let carouselPictures = [];
 
 let homePage = `
 <h4 id="pageTitle">Home</h4>
-<div id="carousel" class="col-12"></div>
 <div id="filter_carousel" class="float-right"></div>
+<div id="carousel" class="col-12 float-left"></div>
 `;
 
 
