@@ -49,7 +49,8 @@ public class OptionUCCImpl implements OptionUCC {
           && !furniture.getCondition().equals(FurnitureCondition.en_option)) {
         throw new BusinessException("Le meuble n'est pas en vente");
       }
-      if (!user.isValidRegistration() || !user.getUserType().equals(UserType.client)) {
+      if (!user.isValidRegistration() || !user.getUserType().equals(UserType.client)
+          || !user.getUserType().equals(UserType.antiquaire)) {
         throw new BusinessException(
             "Votre compte n'est pas encore validé ou vous n'êtes pas client");
       }

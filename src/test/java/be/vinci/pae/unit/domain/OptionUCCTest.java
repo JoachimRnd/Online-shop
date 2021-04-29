@@ -76,24 +76,19 @@ public class OptionUCCTest {
   @DisplayName("test addOption good parameters")
   @Test
   public void addOptionAllGoodTest() {
-    UserDTO buyer = userFactory.getUser();
-    Mockito.when(daoUser.getUserById(1)).thenReturn(buyer);
-    buyer.setValidRegistration(true);
-    buyer.setId(1);
-    buyer.setUserType(ValueLink.UserType.client);
     FurnitureDTO furniture = furnitureFactory.getFurniture();
-    furniture.setCondition(ValueLink.FurnitureCondition.en_vente);
-    // Mockito.when(daoFurniture.selectFurnitureById(1)).thenReturn(furniture);
-    // furniture.setCondition(ValueLink.FurnitureCondition.en_vente);
-    OptionDTO optionToAdd = optionFactory.getOption();
-    // Mockito.when(daoOption.addOption(optionToAdd)).thenReturn(1);
-    // buyer.setValidRegistration(true);
-    // buyer.setId(1);
-    // buyer.setUserType(ValueLink.UserType.client);
-    Mockito.when(daoUser.getUserById(1)).thenReturn(buyer);
     Mockito.when(daoFurniture.selectFurnitureById(1)).thenReturn(furniture);
+    furniture.setCondition(ValueLink.FurnitureCondition.en_vente);
+    UserDTO buyer = userFactory.getUser();
+    // buyer.setValidRegistration(true);
+    buyer.setUserType(ValueLink.UserType.client);
+    Mockito.when(daoUser.getUserById(1)).thenReturn(buyer);
+    List<OptionDTO> list = new ArrayList<OptionDTO>();
+    Mockito.when(daoOption.selectOptionsOfBuyerFromFurniture(1, 1)).thenReturn(list);
+    OptionDTO optionToAdd = optionFactory.getOption();
     Mockito.when(daoOption.addOption(optionToAdd)).thenReturn(1);
-
+    Mockito.when(daoFurniture.updateCondition(1, ValueLink.FurnitureCondition.en_option.ordinal()))
+        .thenReturn(true);
     assertTrue(optionUCC.addOption(1, 2, buyer));
   }
 
