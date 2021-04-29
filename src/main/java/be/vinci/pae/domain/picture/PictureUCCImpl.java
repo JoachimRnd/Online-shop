@@ -33,6 +33,16 @@ public class PictureUCCImpl implements PictureUCC {
   }
 
   @Override
+  public List<PictureDTO> getPublicPicturesByFurnitureId(int furnitureId) {
+    try {
+      List<PictureDTO> listPicture = this.daoPicture.selectPublicPicturesByFurnitureId(furnitureId);
+      return listPicture;
+    } finally {
+      this.dalServices.closeConnection();
+    }
+  }
+
+  @Override
   public PictureDTO addPicture(int furnitureId, PictureDTO newPicture,
       InputStream uploadedInputStream, String pictureType) {
     Picture picture;

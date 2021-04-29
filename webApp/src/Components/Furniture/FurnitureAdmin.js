@@ -165,17 +165,20 @@ const FurnitureAdmin = async(f) => {
   }else{
     furniture = f;
   }
-  console.log(furniture);
 
   try {
-    const pictures = await callAPI(API_BASE_URL + furniture.id + "/pictures-furniture", "GET", user.token);
-    onPicturesList(pictures);
+    const pictures = await callAPI(API_BASE_URL + furniture.id + "/all-pictures-furniture", "GET", user.token);
+    if(pictures.length == 0){
+      document.querySelector("#carousel").innerHTML = `<div class="alert alert-danger mt-2">Il n'y a pas de photos disponible pour ce meuble.</div>`
+    }else{
+      onPicturesList(pictures);
+      onModifyPicture();
+    }
   } catch (err) {
-    console.error("FurnitureListPage::onPicturesList", err);
+    console.error("AdminFurniture::onPicturesList", err);
     PrintError(err);
   }
 
-  onModifyPicture();
 
   try {
     const types = await callAPI(API_BASE_URL + "allFurnitureTypes", "GET", undefined);
@@ -527,10 +530,14 @@ const onAddPicture = async (e) => {
 
   try {
     const pictures = await callAPI(API_BASE_URL + furniture.id + "/pictures-furniture", "GET", user.token);
-    onPicturesList(pictures);
-    onModifyPicture();
+    if(pictures.length == 0){
+      document.querySelector("#carousel").innerHTML = `<div class="alert alert-danger mt-2">Il n'y a pas de photos disponible pour ce meuble.</div>`
+    }else{
+      onPicturesList(pictures);
+      onModifyPicture();
+    }
   } catch (err) {
-    console.error("FurnitureListPage::onPicturesList", err);
+    console.error("AdminFurniture::onPicturesList", err);
     PrintError(err);
   }
 }
@@ -593,16 +600,20 @@ const onDeletePicture = async() => {
     await callAPIWithoutJSONResponse(API_BASE_URL + pictureId + "/picture", "DELETE", user.token);
     document.getElementById("toast").innerHTML = `</br><h5 style="color:green">La photo a bien été supprimée</h5>`;
   } catch (err) {
-    console.error("FurnitureAdmin::Delete picture", err);
+    console.error("AdminFurniture::Delete picture", err);
     PrintError(err);
   }
 
   try {
     const pictures = await callAPI(API_BASE_URL + furniture.id + "/pictures-furniture", "GET", user.token);
-    onPicturesList(pictures);
-    onModifyPicture();
+    if(pictures.length == 0){
+      document.querySelector("#carousel").innerHTML = `<div class="alert alert-danger mt-2">Il n'y a pas de photos disponible pour ce meuble.</div>`
+    }else{
+      onPicturesList(pictures);
+      onModifyPicture();
+    }
   } catch (err) {
-    console.error("FurnitureListPage::onPicturesList", err);
+    console.error("AdminFurniture::onPicturesList", err);
     PrintError(err);
   }
 }
@@ -645,7 +656,6 @@ const onClickCancelOption = async (e) => {
   } catch (e) {
     console.log(e);
     PrintError(e);
-    //Erreur
   }
 }
 

@@ -1,47 +1,17 @@
 import { RedirectUrl } from "../Router.js";
 import { getUserSessionData } from "../../utils/session.js";
-import {callAPI, callAPIWithoutJSONResponse} from "../../utils/api.js";
+import {callAPI} from "../../utils/api.js";
 import PrintError from "../PrintError.js"
-import img1 from "./1.jpg";
-import img2 from "./2.jpg";
 const API_BASE_URL = "/api/furniture/";
-const IMAGES = "../../../../images";
+const IMAGES = "http://localhost:8080/images/";
 
 let furniture;
 
 let furniturePage = `
 <h4 id="pageTitle">Furniture User</h4>
 <div class="row">
-  <div class="col-6">
-  <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-  <ol class="carousel-indicators">
-    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-  </ol>
-  <div class="carousel-inner">
-    <div class="carousel-item active">
-      <img src="${img1}" class="d-block w-100" alt="1">
+    <div id="carousel" class="col-6">
     </div>
-    <div class="carousel-item">
-      <img src="${img2}" class="d-block w-100" alt="2">
-    </div>
-    <div class="carousel-item">
-      <img src="${img2}" class="d-block w-100" alt="3">
-    </div>
-  </div>
-  <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="sr-only">Previous</span>
-  </a>
-  <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="sr-only">Next</span>
-  </a>
-  </div>
-  </br>
-  <button class="btn btn-secondary" id="btnReturn">Retour</button>
-</div>
 
 <div class="col-6">
   <div class="form-group">
@@ -103,8 +73,7 @@ const UserFurniture = async (data) => {
   page.innerHTML = furniturePage;
   const user = getUserSessionData();
 
-  let btnReturn = document.querySelector("#btnReturn");
-  btnReturn.addEventListener("click", () => RedirectUrl("/myfurnitures"));
+
 
   if(data == null){
     let queryString = window.location.search;
@@ -120,7 +89,18 @@ const UserFurniture = async (data) => {
     furniture = data;
   }
 
-
+  try {
+    const pictures = await callAPI(API_BASE_URL + furniture.id + "/public-pictures-furniture", "GET", user.token);
+    if(pictures.length == 0){
+      document.querySelector("#carousel").innerHTML = `<div class="alert alert-danger mt-2">Il n'y a pas de photos disponible pour ce meuble.</div>`
+    }else{
+      onPicturesList(pictures);
+      onModifyPicture();
+    }
+  } catch (err) {
+    console.error("UserFurniture::onPicturesList", err);
+    PrintError(err);
+  }
 
   onFurniture();
 }
@@ -157,6 +137,57 @@ const onFurniture = () => {
   let condition = document.querySelector("#condition");
   condition.innerHTML = `<input class="form-control" id="condition" type="text" placeholder=${furniture.condition} readonly />`;
   }
+  let btnReturn = document.querySelector("#btnReturn");
+  btnReturn.addEventListener("click", () => RedirectUrl("/myfurnitures"));
+}
+
+
+const onPicturesList = (picturesList) => {
+  let carousel = `
+  <div id="carouselPictures" class="carousel slide" data-ride="carousel"><ol class="carousel-indicators">`;
+  for (let i = 0; i < picturesList.length; i++) {
+    if(i== 0){
+      carousel += `<li data-target="#carouselPictures" data-slide-to="${i}" class="active"></li>`
+    }else{
+      carousel += `<li data-target="#carouselPictures" data-slide-to="${i}"></li>`;
+    }
+  }
+  carousel += `</ol> <div class="carousel-inner">`;
+
+  let counter = 0;
+  picturesList.forEach(picture => {
+    if(counter == 0){
+      carousel += `<div class="carousel-item active"> 
+      <img id="carouselFurnitureAdmin" src="${IMAGES}${picture.id}.${picture.name.substring(picture.name.lastIndexOf('.')+1)}" class="d-block w-100" alt="${counter}">
+      </div>`;
+    }else{
+      carousel += `<div class="carousel-item"> 
+      <img id="carouselFurnitureAdmin" src="${IMAGES}${picture.id}.${picture.name.substring(picture.name.lastIndexOf('.')+1)}" class="d-block w-100" alt="${counter}">
+      </div>`;
+    }
+      counter ++;
+  });
+
+carousel += 
+  `
+  <a class="carousel-control-prev" href="#carouselPictures" role="button" data-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span>
+  </a>
+  <a class="carousel-control-next" href="#carouselPictures" role="button" data-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="sr-only">Next</span>
+  </a>
+  </div>
+  </div>
+  <button class="btn btn-secondary" id="btnReturn">Retour</button>
+  `;
+  document.querySelector("#carousel").innerHTML = carousel;
+}
+
+const onModifyPicture = () => {
+  let btnReturn = document.querySelector("#btnReturn");
+  btnReturn.addEventListener("click", () => RedirectUrl("/search"));
 }
 
 

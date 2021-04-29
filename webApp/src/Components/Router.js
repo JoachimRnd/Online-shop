@@ -4,7 +4,7 @@ import RegisterPage from "./RegisterPage.js";
 import LogoutComponent from "./LogoutComponent.js";
 import ErrorPage from "./ErrorPage.js";
 import VisitPage from "./VisitPage.js";
-import QuidamFurniture from "./Furniture/QuidamFurniture.js";
+import FurnitureForSale from "./Furniture/FurnitureForSale.js";
 import FurnitureAdmin from "./Furniture/FurnitureAdmin";
 import FurnitureListPage from "./Furniture/FurnitureListPage";
 import UserFurnitureListPage from "./Furniture/UserFurnitureListPage";
@@ -24,7 +24,7 @@ const routes = {
   "/logout": LogoutComponent,
   "/error": ErrorPage,
   "/visit": VisitPage,
-  "/furniture": QuidamFurniture,
+  "/furniture": FurnitureForSale,
   "/search": FurnitureListPage,
   "/myfurnitures": UserFurnitureListPage,
   "/myfurniture" : UserFurniture,

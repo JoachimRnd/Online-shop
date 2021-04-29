@@ -266,13 +266,28 @@ public class Furniture {
    * @return List of PictureDTO
    */
   @GET
-  @Path("{idFurniture}/pictures-furniture")
+  @Path("{idFurniture}/all-pictures-furniture")
   @Produces(MediaType.APPLICATION_JSON)
-  @Authorize
-  public List<PictureDTO> getPicturesByFurnitureId(@PathParam("idFurniture") int idFurniture) {
+  @AuthorizeAdmin
+  public List<PictureDTO> getAllPicturesByFurnitureId(@PathParam("idFurniture") int idFurniture) {
     return Json.filterPublicJsonViewAsList(this.pictureUCC.getPicturesByFurnitureId(idFurniture),
         PictureDTO.class);
   }
+
+  /**
+   * List public pictures by furniture ID.
+   *
+   * @return List of PictureDTO
+   */
+  @GET
+  @Path("{idFurniture}/public-pictures-furniture")
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<PictureDTO> getPublicPicturesByFurnitureId(
+      @PathParam("idFurniture") int idFurniture) {
+    return Json.filterPublicJsonViewAsList(this.pictureUCC.getPicturesByFurnitureId(idFurniture),
+        PictureDTO.class);
+  }
+
 
 
   /**

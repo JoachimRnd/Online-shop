@@ -19,6 +19,7 @@ public class DAOPictureImpl implements DAOPicture {
   private String querySelectPictureById;
   private String queryDeletePictureById;
   private String querySelectPicturesByFurnitureId;
+  private String querySelectPublicPicturesByFurnitureId;
   private String queryUpdateVisibleForEveryone;
 
   @Inject
@@ -47,6 +48,9 @@ public class DAOPictureImpl implements DAOPicture {
     querySelectPicturesByFurnitureId =
         "SELECT p.picture_id, p.name, p.visible_for_everyone, p.furniture, p.scrolling_picture "
             + "FROM project.pictures p WHERE p.furniture = ?";
+    querySelectPublicPicturesByFurnitureId =
+        "SELECT p.picture_id, p.name, p.visible_for_everyone, p.furniture, p.scrolling_picture "
+            + "FROM project.pictures p WHERE p.furniture = ? AND p.visible_for_everyone = true";
   }
 
   @Override
@@ -83,6 +87,28 @@ public class DAOPictureImpl implements DAOPicture {
     } catch (Exception e) {
       e.printStackTrace();
       throw new FatalException("Data error : selectPicturesByFurnitureId");
+    }
+  }
+
+  @Override
+  public List<PictureDTO> selectPublicPicturesByFurnitureId(int furnitureId) {
+    try {
+      PreparedStatement selectPublicPicturesByFurnitureId =
+          dalServices.getPreparedStatement(querySelectPublicPicturesByFurnitureId);
+      selectPublicPicturesByFurnitureId.setInt(1, furnitureId);
+      try (ResultSet rs = selectPublicPicturesByFurnitureId.executeQuery()) {
+        List<PictureDTO> listPicture = new ArrayList<>();
+        PictureDTO picture;
+        do {
+          picture = createPicture(rs);
+          listPicture.add(picture);
+        } while (picture != null);
+        listPicture.remove(listPicture.size() - 1);
+        return listPicture;
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : selectPublicPicturesByFurnitureId");
     }
   }
 

@@ -16,4 +16,6 @@ public interface PictureUCC {
 
   boolean modifyVisibleForEveryone(int pictureId);
 
+  List<PictureDTO> getPublicPicturesByFurnitureId(int furnitureId);
+
 }
