@@ -178,7 +178,7 @@ public class OptionUCCImpl implements OptionUCC {
       }
       OptionDTO option = daoOption.getLastOptionOfFurniture(idFurniture);
       verifyOptionStatus(option);
-      return option;
+      return option == null ? optionFactory.getOption() : option;
     } finally {
       dalServices.closeConnection();
     }
