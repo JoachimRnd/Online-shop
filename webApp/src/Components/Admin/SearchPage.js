@@ -7,13 +7,25 @@ const API_BASE_URL = "/api/admin/";
 let lastnameList, typeList, communeList;
 
 let fieldsTypeUser = `
+<div class="dropdown d-inline">
 <input class="col-auto" type="text" id="user" placeholder="Nom">
+<ul id="user-autocomplete" class="dropdown-menu" style="display: none"></ul>
+</div>
 <input class="col-auto" type="text" id="postcode" placeholder="Code Postal">
-<input class="col-auto" type="text" id="commune" placeholder="Commune">`;
+<div class="dropdown d-inline">
+<input class="col-auto" type="text" id="commune" placeholder="Commune">
+<ul id="commune-autocomplete" class="dropdown-menu" style="display: none"></ul>
+</div>`;
 let fieldsTypeFurniture = `
+<div class="dropdown d-inline">
 <input class="col-auto" type="text" id="type" placeholder="Type">
+<ul id="type-autocomplete" class="dropdown-menu" style="display: none"></ul>
+</div>
 <input class="col-auto" type="number" id="price" placeholder="Prix max">
-<input class="col-auto" type="text" id="user" placeholder="Utilisateur">`;
+<div class="dropdown d-inline">
+<input class="col-auto" type="text" id="user" placeholder="Utilisateur">
+<ul id="user-autocomplete" class="dropdown-menu" style="display: none"></ul>
+</div>`;
 let searchPage = `<h4 id="pageTitle">Recherche</h4>
 <div class="row">
 <div class="col-2">
@@ -37,12 +49,12 @@ const SearchPage = async () => {
     let searchType = document.querySelector('#searchType');
     searchType.addEventListener("change", onSearchType);
     let user = getUserSessionData();
-    lastnameList = await callAPI(API_BASE_URL + "alllastnames", "GET", user.token);
-    communeList = await callAPI(API_BASE_URL + "allcommunes", "GET", user.token);
-    typeList = await callAPI(API_BASE_URL + "alltypesnames", "GET", user.token);
     let searchBtn = document.querySelector('#searchBtn');
     searchBtn.addEventListener("click", onSubmitSearch);
     onUserSearchType();
+    lastnameList = await callAPI(API_BASE_URL + "alllastnames", "GET", user.token);
+    communeList = await callAPI(API_BASE_URL + "allcommunes", "GET", user.token);
+    typeList = await callAPI(API_BASE_URL + "alltypesnames", "GET", user.token);
 };
 
 const onSearchType = () => {
@@ -80,14 +92,13 @@ const onFurnitureSearchType = () => {
 
 const onInput = async () => {
     //Fermer l'autocomplete déjà existant
-    let autocomplete = document.querySelector('#autocomplete');
-    autocomplete.innerHTML = "";
+    onCloseAutocomplete();
     //Verifier si valeur déjà ecrite
     let input = document.activeElement;
     //Ajouter listener à chaque nouvelle lettre
     onAutoComplete();
     input.addEventListener('keyup', onAutoComplete);
-    input.addEventListener('blur', onCloseAutocomplete);
+    input.addEventListener('blur', onTimedCloseAutoComplete);
 };
 
 const onAutoComplete = async () => {
@@ -130,36 +141,49 @@ const showAutoCompleteResults = (matches = []) => {
         onCloseAutocomplete();
         return;
     }
-    let results = document.querySelector('#autocomplete')
+    let results;
+    let activeInput;
     if(document.activeElement === document.querySelector('#user')) {
+        activeInput = document.querySelector('#user');
+        results = document.getElementById("user-autocomplete");
         results.innerHTML = matches.map(match => `
-            <div class="card card-body mb-1">
-                <p>${match}</p>
-            </div>
+            <li class="container justify-content-center"><a href="#" id="${match}">${match}</a></li>
         `).join('');
     } else if (document.activeElement === document.querySelector('#commune')) {
+        activeInput = document.querySelector('#commune');
+        results = document.getElementById("commune-autocomplete");
         results.innerHTML = matches.map(match => `
-            <div class="card card-body mb-1">
-                <p>${match}</p>
-            </div>
+            <li class="container justify-content-center"><a href="#" id="${match}">${match}</a></li>
         `).join('');
     } else if (document.activeElement === document.querySelector('#type')) {
+        activeInput = document.querySelector('#type');
+        results = document.getElementById("type-autocomplete");
         results.innerHTML = matches.map(match => `
-            <div class="card card-body mb-1">
-                <p>${match}</p>
-            </div>
+            <li class="container justify-content-center"><a href="#" id="${match}">${match}</a></li>
         `).join('');
     }
-    //TODO gestion du click sur resultat
+    results.setAttribute("style", "display : block");
+    matches.forEach(match => {
+            document.getElementById(match).parentElement.addEventListener("click", (e) => {
+                e.preventDefault();
+                activeInput.value = match;
+                onCloseAutocomplete();
+        });
+    });
     //TODO gestion fleche haut bas
     //TODO gestion enter sur resultat
-    //TODO afficher ça en dropdown
 };
 
 const onCloseAutocomplete = () => {
-    let results = document.querySelector('#autocomplete')
-    results.innerHTML = '';
+    let autocomplete = document.querySelectorAll("ul");
+    for (let i = 0; i < autocomplete.length; i++) {
+        autocomplete[i].setAttribute("style", "display: none");
+    }
 }
+
+const onTimedCloseAutoComplete = () => {
+    setTimeout(onCloseAutocomplete, 100);
+};
 
 const onSubmitSearch = () => {
     clearResults();
