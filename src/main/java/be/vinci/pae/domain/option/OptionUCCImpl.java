@@ -127,10 +127,10 @@ public class OptionUCCImpl implements OptionUCC {
           daoFurniture.updateCondition(idFurniture, FurnitureCondition.en_vente.ordinal());
       if (canceled && updateFurniture) {
         dalServices.commitTransaction();
-        return false;
+        return true;
       } else {
         dalServices.rollbackTransaction();
-        return true;
+        return false;
       }
     } finally {
       dalServices.closeConnection();
