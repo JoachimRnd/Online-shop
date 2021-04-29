@@ -1,6 +1,7 @@
 package be.vinci.pae.services.picture;
 
 import be.vinci.pae.domain.picture.PictureDTO;
+import java.util.List;
 
 public interface DAOPicture {
 
@@ -12,4 +13,5 @@ public interface DAOPicture {
 
   boolean deletePicture(int pictureId);
 
+  List<PictureDTO> getCarouselPictures();
 }
