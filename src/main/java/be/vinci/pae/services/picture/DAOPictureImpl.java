@@ -9,6 +9,8 @@ import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DAOPictureImpl implements DAOPicture {
 
@@ -16,6 +18,7 @@ public class DAOPictureImpl implements DAOPicture {
   private String queryUpdateScrollingPicture;
   private String querySelectPictureById;
   private String queryDeletePictureById;
+  private String querySelectCarouselPictures;
 
   @Inject
   private DalBackendServices dalServices;
@@ -38,6 +41,8 @@ public class DAOPictureImpl implements DAOPicture {
         "SELECT p.picture.id, p.name, p.visible_for_everyone, p.furniture, p.scrolling_picture "
             + "FROM project.pictures p WHERE p.picture_id = ?";
     queryDeletePictureById = "DELETE FROM project.pictures WHERE picture_id = ?";
+    querySelectCarouselPictures = "SELECT picture_id, name, visible_for_everyone, furniture, "
+        + "scrolling_picture FROM project.pictures WHERE scrolling_picture = true";
   }
 
   @Override
@@ -87,6 +92,25 @@ public class DAOPictureImpl implements DAOPicture {
     }
   }
 
+  @Override
+  public List<PictureDTO> getCarouselPictures() {
+    try {
+      PreparedStatement selectCarouselPictures =
+          dalServices.getPreparedStatement(querySelectCarouselPictures);
+      try (ResultSet rs = selectCarouselPictures.executeQuery()) {
+        List<PictureDTO> list = new ArrayList<>();
+        PictureDTO picture;
+        do {
+          picture = createPicture(rs);
+          list.add(picture);
+        } while (picture != null);
+        list.remove(list.size() - 1);
+        return list;
+      }
+    } catch (Exception e) {
+      throw new FatalException("Data error : getCarouselPictures", e);
+    }
+  }
 
   @Override
   public boolean updateScrollingPicture(int pictureId) {

@@ -7,6 +7,7 @@ import be.vinci.pae.domain.furniture.FurnitureDTO;
 import be.vinci.pae.domain.furniture.FurnitureUCC;
 import be.vinci.pae.domain.option.OptionDTO;
 import be.vinci.pae.domain.option.OptionUCC;
+import be.vinci.pae.domain.picture.PictureDTO;
 import be.vinci.pae.domain.picture.PictureUCC;
 import be.vinci.pae.domain.type.TypeDTO;
 import be.vinci.pae.domain.type.TypeUCC;
@@ -235,6 +236,18 @@ public class Furniture {
     return pictureUCC.deletePicture(idPicture) ? Response.ok().build()
         : Response.status(Status.UNAUTHORIZED).entity("Erreur retirer l'image")
             .type(MediaType.TEXT_PLAIN).build();
+  }
+
+  /**
+   * List carousel pictures.
+   *
+   * @return List of PictureDTO
+   */
+  @GET
+  @Path("carousel-pictures")
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<PictureDTO> getCarouselPictures() {
+    return Json.filterPublicJsonViewAsList(pictureUCC.getCarouselPictures(), PictureDTO.class);
   }
 
   /**
