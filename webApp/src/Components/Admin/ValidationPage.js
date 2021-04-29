@@ -25,7 +25,7 @@ const onUnvalidatedUsers = (users) => {
 
     users.forEach((user) => {
         let address = user.address;
-
+        let date = new Date(user.registrationDate);
         validationPage += `
         <div id="user${user.id}">
             <div class="row">
@@ -34,7 +34,7 @@ const onUnvalidatedUsers = (users) => {
                     <p>Nom : ${user.lastName}</p>
                     <p>Prénom : ${user.firstName}</p>
                     <p>Email : ${user.email}</p>
-                    <p>Date d'inscription : </p>
+                    <p>Date d'inscription : ${date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()}</p>
                     <select id="selectUserType${user.id}" class="form-select" aria-label="Default select example">
                         <option selected>Chosir type utilisateur</option>
                         <option value="client">Client</option>
