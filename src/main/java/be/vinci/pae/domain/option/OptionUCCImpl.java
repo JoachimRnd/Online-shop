@@ -39,7 +39,7 @@ public class OptionUCCImpl implements OptionUCC {
       dalServices.startTransaction();
       if (duration > Config.getIntProperty("MaxDurationOption")
           || duration < Config.getIntProperty("MinDurationOption")) {
-        throw new BusinessException("DurÃ©e de l'option incorrecte");
+        throw new BusinessException("Durée de l'option incorrecte");
       }
       FurnitureDTO furniture = daoFurniture.selectFurnitureById(idFurniture);
       if (furniture == null) {
@@ -52,7 +52,7 @@ public class OptionUCCImpl implements OptionUCC {
       if (!user.isValidRegistration() || !user.getUserType().equals(UserType.client)
           || !user.getUserType().equals(UserType.antiquaire)) {
         throw new BusinessException(
-            "Votre compte n'est pas encore validÃ© ou vous n'Ãªtes pas client");
+            "Votre compte n'est pas encore validé ou vous n'êtes pas client");
       }
 
       List<OptionDTO> listPreviousOptionBuyer =
@@ -129,10 +129,10 @@ public class OptionUCCImpl implements OptionUCC {
           daoFurniture.updateCondition(idFurniture, FurnitureCondition.en_vente.ordinal());
       if (canceled && updateFurniture) {
         dalServices.commitTransaction();
-        return false;
+        return true;
       } else {
         dalServices.rollbackTransaction();
-        return true;
+        return false;
       }
     } finally {
       dalServices.closeConnection();
@@ -179,8 +179,8 @@ public class OptionUCCImpl implements OptionUCC {
         throw new BusinessException("Ce meuble n'existe pas");
       }
       OptionDTO option = daoOption.getLastOptionOfFurniture(idFurniture);
-      verifyOptionStatus(option);
-      return option;
+      option = verifyOptionStatus(option);
+      return option == null ? optionFactory.getOption() : option;
     } finally {
       dalServices.closeConnection();
     }
@@ -188,7 +188,7 @@ public class OptionUCCImpl implements OptionUCC {
 
 
   // TODO voir si ce n'est pas automatisable
-  private void verifyOptionStatus(OptionDTO option) {
+  private OptionDTO verifyOptionStatus(OptionDTO option) {
     if (option != null && option.getStatus().equals(OptionStatus.en_cours)
         && TimeUnit.DAYS.convert(new Date().getTime() - option.getDate().getTime(),
             TimeUnit.MILLISECONDS) > option.getDuration()) {
@@ -197,6 +197,7 @@ public class OptionUCCImpl implements OptionUCC {
         if (daoOption.finishOption(option.getId()) && daoFurniture.updateCondition(
             option.getFurniture().getId(), FurnitureCondition.en_vente.ordinal())) {
           dalServices.commitTransaction();
+          option.setStatus(OptionStatus.finie);
         } else {
           dalServices.rollbackTransaction();
         }
@@ -204,6 +205,7 @@ public class OptionUCCImpl implements OptionUCC {
         dalServices.closeConnection();
       }
     }
+    return option;
   }
 
 

@@ -141,6 +141,7 @@ public class DalServicesImpl implements DalServices, DalBackendServices {
 
   @Override
   public void startMultipleTransactions() {
+    startTransaction();
     multipleTransaction = true;
   }
 
