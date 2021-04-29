@@ -4,7 +4,7 @@ import PrintError from "./PrintError.js";
 const API_BASE_URL = "/api/furniture/";
 const IMAGES = "http://localhost:8080/images/";
 
-let carouselPictures = [];
+let carouselPictures;
 
 let homePage = `
 <h4 id="pageTitle">Home</h4>
@@ -29,7 +29,7 @@ const HomePage = async () => {
 const onFilterCarousel = () => {
   document.getElementById("filter_carousel").innerHTML = `
     <select name="types" id="type-select">
-        <option value="" selected disabled>Choisir un type de meuble</option>
+        <option value="0" selected>Choisir un type de meuble</option>
     </select>
   `;
 
@@ -48,6 +48,10 @@ const onFilterCarousel = () => {
 const onChangeType = () => {
   let typeSelect = document.getElementById("type-select");
   let typeValue = typeSelect.value;
+  if(typeValue == 0) {
+    onPicturesList(carouselPictures);
+    return;
+  }
   let picturesOfType = carouselPictures.filter(data => {
     return data.furniture.type.id == typeValue;
   });
