@@ -101,7 +101,6 @@ const FurnitureForSale = async (data) => {
       document.querySelector("#carousel").innerHTML = `<div class="alert alert-danger mt-2">Il n'y a pas de photos disponible pour ce meuble.</div>`
     }else{
       onPicturesList(pictures);
-      onModifyPicture();
     }
   } catch (err) {
     console.error("FurnitureForSale::onPicturesList", err);
@@ -161,6 +160,7 @@ carousel +=
   <button class="btn btn-secondary" id="btnReturn">Retour</button>
   `;
   document.querySelector("#carousel").innerHTML = carousel;
+  onModifyPicture();
 }
 
 const onModifyPicture = () => {

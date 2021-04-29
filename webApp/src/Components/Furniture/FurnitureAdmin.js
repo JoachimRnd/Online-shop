@@ -8,6 +8,7 @@ const API_BASE_URL_ADMIN = "/api/admin/";
 const IMAGES = "http://localhost:8080/images/";
 
 let furniture;
+let pictures;
 
 let furniturePage = `
 <h4 id="pageTitle">Furniture User</h4>
@@ -133,6 +134,17 @@ let noOption =`
   </button>
 </div>`;
 
+let codeModifyPicture = `<div class="row"><div class="btn-group" role="group" aria-label="Basic example">`;
+let codeBtnAddScrollingPicture = `<button class="btn btn-primary" id="btnScrollingPicture">Ajouter la photo sur l'accueil</button>`;
+let codeBtnRemoveScrollingPicture = `<button class="btn btn-primary" id="btnScrollingPicture">Enlever la photo de l'accueil</button>`;
+let codeBtnDeletePicture = `<button class="btn btn-danger" id="btnDeletePicture">Supprimer la photo</button>`;
+let codebtnAddFavouritePicture = `<button class="btn btn-warning" id="btnAddFavouritePicture">Ajouter photo favorite</button>`;
+let codeBtnAddVisibility = `<button type="button" class="btn btn-dark" id="btnVisibleForEveryone">Rendre la photo publique</button>`;
+let codeBtnRemoveVisibility = `<button type="button" class="btn btn-dark" id="btnVisibleForEveryone">Rendre la photo privée</button>`;
+let codeUploadPicture = `<div class="col-6"><form id="uploadForm"><input id="file" type="file"/><input type="submit" value="Upload"/></form></div>`
+let codeReturnButton = `<div class="col-12"><button class="btn btn-secondary" id="btnReturn">Retour</button></div>`;
+codeModifyPicture += `</div></div>`
+
 const FurnitureAdmin = async(f) => {
   let page = document.querySelector("#page");
   page.innerHTML = furniturePage;
@@ -167,12 +179,11 @@ const FurnitureAdmin = async(f) => {
   }
 
   try {
-    const pictures = await callAPI(API_BASE_URL + furniture.id + "/all-pictures-furniture", "GET", user.token);
+    pictures = await callAPI(API_BASE_URL + furniture.id + "/all-pictures-furniture", "GET", user.token);
     if(pictures.length == 0){
       document.querySelector("#carousel").innerHTML = `<div class="alert alert-danger mt-2">Il n'y a pas de photos disponible pour ce meuble.</div>`
     }else{
       onPicturesList(pictures);
-      onModifyPicture();
     }
   } catch (err) {
     console.error("AdminFurniture::onPicturesList", err);
@@ -197,8 +208,6 @@ const FurnitureAdmin = async(f) => {
   if(furniture.condition == "en_vente" || furniture.condition == "en_option"){
     onCheckOption();
   }
-
- // let conditions = document.querySelector("#conditions");
 
 }
 
@@ -259,29 +268,13 @@ const onPicturesList = (picturesList) => {
     </div>
     </div>
 
-    <div class="row">
-      <div class="btn-group" role="group" aria-label="Basic example">
-        <button class="btn btn-primary" id="btnAddScrollingPicture">Ajouter ou supprimer photo défilante</button>
-        <button class="btn btn-warning" id="btnAddFavouritePicture">Ajouter photo favorite</button>
-        <button type="button" class="btn btn-dark" id="btnVisibleForEveryone">Rendre public</button>
-        <button class="btn btn-danger" id="btnDeletePicture">Supprimer la photo</button>
-      </div>
-    </div>
-
-      <div class="col-6">
-        <form id="uploadForm">
-          <input id="file" type="file"/>
-          <input type="submit" value="Upload"/>
-        </form>
-      </div>
- 
-      <div class="col-12">
-        <button class="btn btn-secondary" id="btnReturn">Retour</button>
-      </div>
+    <div id="btnModifyPicture"></div>
     
     
     `;
     document.querySelector("#carousel").innerHTML = carousel;
+    onModifyPicture();
+    $("#carouselPictures").on("slid.bs.carousel",onModifyPicture);
 }
 
 
@@ -489,19 +482,59 @@ const onSave = async() => {
 
 
 const onModifyPicture = () => {
-  let btnAddPicture = document.querySelector("form");
-  btnAddPicture.addEventListener("submit", onAddPicture);
-  let btnAddScrollingPicture = document.querySelector("#btnAddScrollingPicture");
-  btnAddScrollingPicture.addEventListener("click", onAddScrollingPicture);
-  let btnDeletePicture = document.querySelector("#btnDeletePicture");
-  btnDeletePicture.addEventListener("click", onDeletePicture);
-  let btnAddFavouritePicture = document.querySelector("#btnAddFavouritePicture");
-  btnAddFavouritePicture.addEventListener("click", onAddFavouritePicture);
-  let btnVisibleForEveryone = document.querySelector("#btnVisibleForEveryone");
-  btnVisibleForEveryone.addEventListener("click",onVisibleForEveryone);
+    console.log("slide");
+    let btnModifyPicture = document.querySelector("#btnModifyPicture");
+    console.log(btnModifyPicture);
+    btnModifyPicture.innerHTML = "";
+    console.log("reset inner");
+    console.log(btnModifyPicture);
+    let p = document.querySelector(".carousel-item.active img").src;
+    let pictureId = p.substring(p.lastIndexOf('/')+1,p.lastIndexOf('.'));
+    let picture;
+    pictures.forEach(pct => {
+      if(pct.id == pictureId){
+        console.log(pct);
+        picture = pct; 
+        return;
+      }
+    });
+    console.log(picture);
 
-  let btnReturn = document.querySelector("#btnReturn");
-  btnReturn.addEventListener("click", () => RedirectUrl("/search"));
+    if(picture.visibleForEveryone){
+      codeModifyPicture += codeBtnRemoveVisibility;
+    }else{
+      codeModifyPicture += codeBtnAddVisibility;
+    }
+    if(picture.scrollingPicture){
+      codeModifyPicture += codeBtnRemoveScrollingPicture;
+    }else{
+      codeModifyPicture += codeBtnAddScrollingPicture;
+    }
+    if(furniture.favouritePicture != picture.id){
+      codeModifyPicture += codebtnAddFavouritePicture;
+      codeModifyPicture += codeBtnDeletePicture;
+    }
+    codeModifyPicture += codeUploadPicture;
+    codeModifyPicture += codeReturnButton;
+    btnModifyPicture.innerHTML = codeModifyPicture;
+
+    let btnAddPicture = document.querySelector("form");
+    btnAddPicture.addEventListener("submit", onAddPicture);
+    let btnScrollingPicture = document.querySelector("#btnScrollingPicture");
+    btnScrollingPicture.addEventListener("click", onAddScrollingPicture);
+    let btnDeletePicture = document.querySelector("#btnDeletePicture");
+    if(btnDeletePicture != null){
+      btnDeletePicture.addEventListener("click", onDeletePicture);
+    }
+    let btnAddFavouritePicture = document.querySelector("#btnAddFavouritePicture");
+    if(btnAddFavouritePicture != null){
+      btnAddFavouritePicture.addEventListener("click", onAddFavouritePicture);
+    }
+    let btnVisibleForEveryone = document.querySelector("#btnVisibleForEveryone");
+    btnVisibleForEveryone.addEventListener("click",onVisibleForEveryone);
+
+    let btnReturn = document.querySelector("#btnReturn");
+    btnReturn.addEventListener("click", () => RedirectUrl("/search"));
 }
 
 const onAddPicture = async (e) => {
@@ -529,12 +562,11 @@ const onAddPicture = async (e) => {
   }
 
   try {
-    const pictures = await callAPI(API_BASE_URL + furniture.id + "/pictures-furniture", "GET", user.token);
+    pictures = await callAPI(API_BASE_URL + furniture.id + "/pictures-furniture", "GET", user.token);
     if(pictures.length == 0){
       document.querySelector("#carousel").innerHTML = `<div class="alert alert-danger mt-2">Il n'y a pas de photos disponible pour ce meuble.</div>`
     }else{
       onPicturesList(pictures);
-      onModifyPicture();
     }
   } catch (err) {
     console.error("AdminFurniture::onPicturesList", err);
@@ -556,6 +588,7 @@ const onAddScrollingPicture = async() => {
     console.error("FurnitureAdmin::Change scrolling picture", err);
     PrintError(err);
   }
+  onModifyPicture();
 }
 
 const onAddFavouritePicture = async() => {
@@ -571,7 +604,7 @@ const onAddFavouritePicture = async() => {
     console.error("FurnitureAdmin::Change favourite picture", err);
     PrintError(err);
   }
-  console.log("AddFavouritePicture");
+  onModifyPicture();
 }
 
 const onVisibleForEveryone = async() => {
@@ -587,6 +620,7 @@ const onVisibleForEveryone = async() => {
     console.error("FurnitureAdmin::Change visible for everyone", err);
     PrintError(err);
   }
+  onModifyPicture();
 }
 
 
@@ -605,12 +639,11 @@ const onDeletePicture = async() => {
   }
 
   try {
-    const pictures = await callAPI(API_BASE_URL + furniture.id + "/pictures-furniture", "GET", user.token);
+    pictures = await callAPI(API_BASE_URL + furniture.id + "/pictures-furniture", "GET", user.token);
     if(pictures.length == 0){
       document.querySelector("#carousel").innerHTML = `<div class="alert alert-danger mt-2">Il n'y a pas de photos disponible pour ce meuble.</div>`
     }else{
       onPicturesList(pictures);
-      onModifyPicture();
     }
   } catch (err) {
     console.error("AdminFurniture::onPicturesList", err);
