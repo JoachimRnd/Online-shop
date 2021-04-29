@@ -303,11 +303,29 @@ public class Furniture {
   @AuthorizeAdmin
   public Response modifyScrollingPicture(@PathParam("idPicture") int idPicture) {
     if (!pictureUCC.modifyScrollingPicture(idPicture)) {
-      return Response.status(Status.UNAUTHORIZED).entity("Erreur ajouter photo défilante")
+      return Response.status(Status.UNAUTHORIZED).entity("Erreur modifier/retirer photo défilante")
           .type(MediaType.TEXT_PLAIN).build();
     }
     return Response.ok().build();
   }
+
+
+  /**
+   * update visible for everyone or not on the picture with id.
+   *
+   * @return Response
+   */
+  @PUT
+  @Path("/{idPicture}/visible")
+  @AuthorizeAdmin
+  public Response modifyVisibleForEveryone(@PathParam("idPicture") int idPicture) {
+    if (!pictureUCC.modifyVisibleForEveryone(idPicture)) {
+      return Response.status(Status.UNAUTHORIZED).entity("Erreur rendre public ou privé.")
+          .type(MediaType.TEXT_PLAIN).build();
+    }
+    return Response.ok().build();
+  }
+
 
 
   /**

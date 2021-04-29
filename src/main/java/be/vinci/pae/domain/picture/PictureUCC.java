@@ -14,4 +14,6 @@ public interface PictureUCC {
 
   boolean deletePicture(int pictureId);
 
+  boolean modifyVisibleForEveryone(int pictureId);
+
 }

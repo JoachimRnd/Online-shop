@@ -68,21 +68,6 @@ public class PictureUCCImpl implements PictureUCC {
   }
 
   @Override
-  public boolean modifyScrollingPicture(int pictureId) {
-    try {
-      this.dalServices.startTransaction();
-      if (!this.daoPicture.updateScrollingPicture(pictureId)) {
-        this.dalServices.rollbackTransaction();
-        throw new BusinessException("Error modify scrolling picture");
-      }
-      this.dalServices.commitTransaction();
-      return true;
-    } finally {
-      this.dalServices.closeConnection();
-    }
-  }
-
-  @Override
   public boolean deletePicture(int pictureId) {
     FurnitureDTO furnitureDTO = this.daoFurniture.selectFurnitureByFavouritePicture(pictureId);
     PictureDTO pictureDTO = this.daoPicture.selectPictureById(pictureId);
@@ -101,11 +86,41 @@ public class PictureUCCImpl implements PictureUCC {
         this.dalServices.closeConnection();
       }
 
-      // TODO remove in server
-
     } else {
       return false;
     }
 
   }
+
+  @Override
+  public boolean modifyScrollingPicture(int pictureId) {
+    try {
+      this.dalServices.startTransaction();
+      if (!this.daoPicture.updateScrollingPicture(pictureId)) {
+        this.dalServices.rollbackTransaction();
+        throw new BusinessException("Error modify scrolling picture");
+      }
+      this.dalServices.commitTransaction();
+      return true;
+    } finally {
+      this.dalServices.closeConnection();
+    }
+  }
+
+  @Override
+  public boolean modifyVisibleForEveryone(int pictureId) {
+    try {
+      this.dalServices.startTransaction();
+      if (!this.daoPicture.updateVisibleForEveryone(pictureId)) {
+        this.dalServices.rollbackTransaction();
+        throw new BusinessException("Error modify visible for everyone");
+      }
+      this.dalServices.commitTransaction();
+      return true;
+    } finally {
+      this.dalServices.closeConnection();
+    }
+  }
+
+
 }

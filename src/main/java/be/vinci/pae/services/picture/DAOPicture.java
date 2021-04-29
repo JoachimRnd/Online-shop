@@ -15,4 +15,6 @@ public interface DAOPicture {
 
   List<PictureDTO> selectPicturesByFurnitureId(int furnitureId);
 
+  boolean updateVisibleForEveryone(int pictureId);
+
 }

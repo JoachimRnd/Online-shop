@@ -19,6 +19,7 @@ public class DAOPictureImpl implements DAOPicture {
   private String querySelectPictureById;
   private String queryDeletePictureById;
   private String querySelectPicturesByFurnitureId;
+  private String queryUpdateVisibleForEveryone;
 
   @Inject
   private DalBackendServices dalServices;
@@ -37,6 +38,8 @@ public class DAOPictureImpl implements DAOPicture {
         + "furniture,scrolling_picture) VALUES (DEFAULT,?,?,?,?)";
     queryUpdateScrollingPicture =
         "UPDATE project.pictures SET scrolling_picture = ? WHERE picture_id = ?";
+    queryUpdateVisibleForEveryone =
+        "UPDATE project.pictures SET visible_for_everyone = ? WHERE picture_id = ?";
     querySelectPictureById =
         "SELECT p.picture_id, p.name, p.visible_for_everyone, p.furniture, p.scrolling_picture "
             + "FROM project.pictures p WHERE p.picture_id = ?";
@@ -148,6 +151,21 @@ public class DAOPictureImpl implements DAOPicture {
     } catch (Exception e) {
       e.printStackTrace();
       throw new FatalException("Data error : updateScrollingPicture");
+    }
+  }
+
+  @Override
+  public boolean updateVisibleForEveryone(int pictureId) {
+    try {
+      PreparedStatement updateVisibleForEveryone =
+          this.dalServices.getPreparedStatement(queryUpdateVisibleForEveryone);
+      PictureDTO pictureDTO = selectPictureById(pictureId);
+      updateVisibleForEveryone.setBoolean(1, !pictureDTO.isVisibleForEveryone());
+      updateVisibleForEveryone.setInt(2, pictureId);
+      return updateVisibleForEveryone.executeUpdate() == 1;
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new FatalException("Data error : updateVisibleForEveryone");
     }
   }
 

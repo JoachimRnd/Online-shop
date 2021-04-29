@@ -104,7 +104,7 @@ let cancelOption = `
 </div>`;
 
 
-const FurnitureUser = async (data) => {
+const QuidamFurniture = async (data) => {
   let page = document.querySelector("#page");
   page.innerHTML = furniturePage;
 
@@ -118,7 +118,7 @@ const FurnitureUser = async (data) => {
     try {
       furniture = await callAPI(API_BASE_URL + id , "GET",undefined);
     } catch (err) {
-      console.error("FurnitureUser::GetFurnitureByID", err);
+      console.error("QuidamFurniture::GetFurnitureByID", err);
       PrintError(err);
     }
   }else{
@@ -206,7 +206,7 @@ const onClickCancelOption = async (e) => {
 }
 
 
-export default FurnitureUser;
+export default QuidamFurniture;
 
 
 

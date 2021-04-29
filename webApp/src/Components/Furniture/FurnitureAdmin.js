@@ -177,9 +177,6 @@ const FurnitureAdmin = async(f) => {
 
   onModifyPicture();
 
-
-
-
   try {
     const types = await callAPI(API_BASE_URL + "allFurnitureTypes", "GET", undefined);
     onTypesList(types);
@@ -259,16 +256,15 @@ const onPicturesList = (picturesList) => {
     </div>
     </div>
 
-    <div mt-2 class="row">
-      <div class="col-4">
+    <div class="row">
+      <div class="btn-group" role="group" aria-label="Basic example">
         <button class="btn btn-primary" id="btnAddScrollingPicture">Ajouter ou supprimer photo défilante</button>
-      </div>
-      <div class="col-4">
         <button class="btn btn-warning" id="btnAddFavouritePicture">Ajouter photo favorite</button>
+        <button type="button" class="btn btn-dark" id="btnVisibleForEveryone">Rendre public</button>
+        <button class="btn btn-danger" id="btnDeletePicture">Supprimer la photo</button>
       </div>
-      <div class="col-4">
-      <button class="btn btn-danger" id="btnDeletePicture">Supprimer la photo</button>
-      </div>
+    </div>
+
       <div class="col-6">
         <form id="uploadForm">
           <input id="file" type="file"/>
@@ -279,7 +275,7 @@ const onPicturesList = (picturesList) => {
       <div class="col-12">
         <button class="btn btn-secondary" id="btnReturn">Retour</button>
       </div>
-    </div>
+    
     
     `;
     document.querySelector("#carousel").innerHTML = carousel;
@@ -487,44 +483,7 @@ const onSave = async() => {
     }
 }
 
-const onCheckOption = async() => {
 
-  let option = await callAPI(API_BASE_URL + furniture.id + "/option", "GET");
-  let optionDocument = document.querySelector("#option");
-  if(option.status != undefined && option.status == "en_cours") {
-    optionDocument.innerHTML = isOption;
-    let userOption = document.querySelector("#userOption");
-    userOption.innerHTML = option.buyer.email;
-    let btn = document.querySelector("#btnOption")
-    btn.addEventListener("click", onClickCancelOption);
-  }else{
-    optionDocument.innerHTML = noOption;
-  }
-
-
-}
-
-const onClickCancelOption = async (e) => {
-  e.preventDefault();
-  let optionDocument = document.querySelector("#option");
-  try {
-    let user = getUserSessionData();
-    await callAPIWithoutJSONResponse(API_BASE_URL_ADMIN + furniture.id + "/cancelOption", "PUT",user.token);
-    optionDocument.innerHTML = noOption;
-    try {
-      furniture = await callAPI(API_BASE_URL + furniture.id , "GET",undefined);
-    } catch (err) {
-      console.error("FurnitureAdmin::GetFurnitureByID", err);
-      PrintError(err);
-    }
-    let optionCondition = document.querySelector("#"+furniture.condition);
-    optionCondition.setAttribute("selected","");
-  } catch (e) {
-    console.log(e);
-    PrintError(e);
-    //Erreur
-  }
-}
 
 const onModifyPicture = () => {
   let btnAddPicture = document.querySelector("form");
@@ -535,6 +494,8 @@ const onModifyPicture = () => {
   btnDeletePicture.addEventListener("click", onDeletePicture);
   let btnAddFavouritePicture = document.querySelector("#btnAddFavouritePicture");
   btnAddFavouritePicture.addEventListener("click", onAddFavouritePicture);
+  let btnVisibleForEveryone = document.querySelector("#btnVisibleForEveryone");
+  btnVisibleForEveryone.addEventListener("click",onVisibleForEveryone);
 
   let btnReturn = document.querySelector("#btnReturn");
   btnReturn.addEventListener("click", () => RedirectUrl("/search"));
@@ -590,6 +551,38 @@ const onAddScrollingPicture = async() => {
   }
 }
 
+const onAddFavouritePicture = async() => {
+  const user = getUserSessionData();
+
+  let picture = document.querySelector(".carousel-item.active img").src;
+  let pictureId = picture.substring(picture.lastIndexOf('/')+1,picture.lastIndexOf('.'));
+  console.log(pictureId);
+  try {
+    await callAPIWithoutJSONResponse(API_BASE_URL + pictureId + "/favourite-picture", "PUT", user.token);
+    document.getElementById("toast").innerHTML = `</br><h5 style="color:green">La photo a bien été désignée favorite</h5>`;
+  } catch (err) {
+    console.error("FurnitureAdmin::Change favourite picture", err);
+    PrintError(err);
+  }
+  console.log("AddFavouritePicture");
+}
+
+const onVisibleForEveryone = async() => {
+  const user = getUserSessionData();
+
+  let picture = document.querySelector(".carousel-item.active img").src;
+  let pictureId = picture.substring(picture.lastIndexOf('/')+1,picture.lastIndexOf('.'));
+
+  try {
+    await callAPIWithoutJSONResponse(API_BASE_URL + pictureId + "/visible", "PUT", user.token);
+    document.getElementById("toast").innerHTML = `</br><h5 style="color:green">La photo a bien été modifiée.</h5>`;
+  } catch (err) {
+    console.error("FurnitureAdmin::Change visible for everyone", err);
+    PrintError(err);
+  }
+}
+
+
 const onDeletePicture = async() => {
   const user = getUserSessionData();
 
@@ -614,21 +607,49 @@ const onDeletePicture = async() => {
   }
 }
 
-const onAddFavouritePicture = async() => {
-  const user = getUserSessionData();
 
-  let picture = document.querySelector(".carousel-item.active img").src;
-  let pictureId = picture.substring(picture.lastIndexOf('/')+1,picture.lastIndexOf('.'));
-  console.log(pictureId);
-  try {
-    await callAPIWithoutJSONResponse(API_BASE_URL + pictureId + "/favourite-picture", "PUT", user.token);
-    document.getElementById("toast").innerHTML = `</br><h5 style="color:green">La photo a bien été désignée favorite</h5>`;
-  } catch (err) {
-    console.error("FurnitureAdmin::Change favourite picture", err);
-    PrintError(err);
+
+
+const onCheckOption = async() => {
+
+  let option = await callAPI(API_BASE_URL + furniture.id + "/option", "GET");
+  let optionDocument = document.querySelector("#option");
+  if(option.status != undefined && option.status == "en_cours") {
+    optionDocument.innerHTML = isOption;
+    let userOption = document.querySelector("#userOption");
+    userOption.innerHTML = option.buyer.email;
+    let btn = document.querySelector("#btnOption")
+    btn.addEventListener("click", onClickCancelOption);
+  }else{
+    optionDocument.innerHTML = noOption;
   }
-  console.log("AddFavouritePicture");
+
+
 }
+
+const onClickCancelOption = async (e) => {
+  e.preventDefault();
+  let optionDocument = document.querySelector("#option");
+  try {
+    let user = getUserSessionData();
+    await callAPIWithoutJSONResponse(API_BASE_URL_ADMIN + furniture.id + "/cancelOption", "PUT",user.token);
+    optionDocument.innerHTML = noOption;
+    try {
+      furniture = await callAPI(API_BASE_URL + furniture.id , "GET",undefined);
+    } catch (err) {
+      console.error("FurnitureAdmin::GetFurnitureByID", err);
+      PrintError(err);
+    }
+    let optionCondition = document.querySelector("#"+furniture.condition);
+    optionCondition.setAttribute("selected","");
+  } catch (e) {
+    console.log(e);
+    PrintError(e);
+    //Erreur
+  }
+}
+
+
 
 const onCheckConditions = () =>{
   let propose = `<option id="propose" value="propose">Proposé</option>`;
