@@ -51,9 +51,9 @@ public class VisitRequest {
   AddressUCC addressUcc;
 
   /**
-   * List furniture with id.
+   * Get Address from userId.
    *
-   * @return FurnitureDTO
+   * @return AddressDTO
    */
   @GET
   @Path("/address/{userId}")
@@ -76,7 +76,7 @@ public class VisitRequest {
   @Path("/add") // Your Path or URL to call this service
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Authorize
-  public Response uploadFile(FormDataMultiPart formDataMultiPart,
+  public Response addVisitRequest(FormDataMultiPart formDataMultiPart,
       @FormDataParam("file") InputStream uploadedInputStream, @Context ContainerRequest request) {
     formDataMultiPart.getField("json").setMediaType(MediaType.APPLICATION_JSON_TYPE);
     VisitRequestDTO visitRequest =
@@ -154,4 +154,40 @@ public class VisitRequest {
       return Response.ok().build();
     }
   }
+
+  /**
+   * List furniture with id.
+   *
+   * @return FurnitureDTO
+   */
+  @GET
+  @Path("/user/{userId}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Authorize
+  public List<VisitRequestDTO> get(@PathParam("userId") int userId) {
+    List<VisitRequestDTO> visitRequestDTOList =
+        this.visitRequestUcc.getVisitRequestsByUserId(userId);
+    if (visitRequestDTOList == null) {
+      throw new WebApplicationException("Ressource with id = " + userId + " could not be found",
+          null, Status.NOT_FOUND);
+    }
+    return Json.filterPublicJsonViewAsList(visitRequestDTOList, VisitRequestDTO.class);
+  }
+
+  /**
+   * Get a visit request.
+   *
+   * @return VisitRequestDTO
+   */
+  @GET
+  @Path("/visit/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Authorize
+  public VisitRequestDTO getVisitRequest(@PathParam("id") int id,
+      @Context ContainerRequest request) {
+    UserDTO currentUser = (UserDTO) request.getProperty("user");
+    return Json.filterPublicJsonView(
+        visitRequestUcc.getVisitRequestByIdForUser(id, currentUser.getId()), VisitRequestDTO.class);
+  }
+
 }

@@ -101,7 +101,6 @@ public class VisitRequestUCCImpl implements VisitRequestUCC {
 
         }
       }
-
       this.dalServices.commitTransaction();
       return visitRequest;
     } finally {
@@ -122,6 +121,28 @@ public class VisitRequestUCCImpl implements VisitRequestUCC {
   public VisitRequestDTO getVisitRequestById(int id) {
     try {
       return daoVisitRequest.selectVisitRequestById(id);
+    } finally {
+      dalServices.closeConnection();
+    }
+  }
+
+  @Override
+  public VisitRequestDTO getVisitRequestByIdForUser(int id, int userId) {
+    try {
+      VisitRequestDTO visitRequest = daoVisitRequest.selectVisitRequestById(id);
+      if (visitRequest.getCustomer().getId() != userId) {
+        return null;
+      }
+      return visitRequest;
+    } finally {
+      dalServices.closeConnection();
+    }
+  }
+
+  @Override
+  public List<VisitRequestDTO> getVisitRequestsByUserId(int userId) {
+    try {
+      return daoVisitRequest.selectVisitRequestByUserId(userId);
     } finally {
       dalServices.closeConnection();
     }
