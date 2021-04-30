@@ -11,98 +11,89 @@ let picturesList = [];
 let fd = new FormData();
 
 let addressForm = `
-        <div class="row">
-            <p>Adresse du lieu</p>
-        </div>
-        <div class="row">
-            <div class="col-6">
-                <small>(Veuillez entrer votre adresse complète)</small>
-            </div>
-            <div class="col-6">
-                <small>champs obligatoires : *</small>
-            </div>
-        </div>
-            <div class="row">
-                <div class="form-group">
-                    <label for="street">Rue*</label>
-                    <input class="form-control" id="street" type="text" placeholder="Entrez votre rue" required="" />
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group">
-                    <label for="buildingnumber">Numéro*</label>
-                    <input class="form-control" id="buildingnumber" type="text" placeholder="Entrez votre numéro" required="" />
-                </div>
-                <div class="form-group">
-                    <label for="unitnumber">Boite</label>
-                    <input class="form-control" id="unitnumber" type="text" placeholder="Entrez votre boite" />
-                </div>
-                <div class="form-group">
-                    <label for="postcode">Code postal*</label>
-                    <input class="form-control" id="postcode" type="text" placeholder="Entrez votre code postal" required="" />
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group">
-                    <label for="commune">Commune*</label>
-                    <input class="form-control" id="commune" type="text" placeholder="Entrez votre commune" required="" />
-                </div>
-                <div class="form-group">
-                    <label for="country">Pays*</label>
-                    <input class="form-control" id="country" type="text" placeholder="Entrez votre pays" required="" />
-                </div>
-            </div>
-</div>`;
+<div class="row">
+    <h5 class="col text-center">Adresse du lieu</h5>
+</div>
+<div class="row">
+    <small class="col-sm-8">(Veuillez entrer votre adresse complète)</small>
+    <small class="col-sm-4 text-right">*champs obligatoires</small>
+</div>
+<div class="row">
+    <div class="form-group col">
+        <label for="street">Rue*</label>
+        <input class="form-control" id="street" type="text" placeholder="Entrez votre rue" required="" />
+    </div>
+</div>
+<div class="row">
+    <div class="form-group col-sm-12 col-md-6 col-lg-4">
+        <label for="buildingnumber">Numéro*</label>
+        <input class="form-control" id="buildingnumber" type="text" placeholder="Entrez votre numéro" required="" />
+    </div>
+    <div class="form-group col-sm-12 col-md-6 col-lg-4">
+        <label for="unitnumber">Boite</label>
+        <input class="form-control" id="unitnumber" type="text" placeholder="Entrez votre boite" />
+    </div>
+    <div class="form-group col-sm-12 col-md-6 col-lg-4">
+        <label for="postcode">Code postal*</label>
+        <input class="form-control" id="postcode" type="text" placeholder="Entrez votre code postal" required="" />
+    </div>
+</div>
+<div class="row">
+    <div class="form-group col-sm-12 col-md-6">
+        <label for="commune">Commune*</label>
+        <input class="form-control" id="commune" type="text" placeholder="Entrez votre commune" required="" />
+    </div>
+    <div class="form-group col-sm-12 col-md-6">
+        <label for="country">Pays*</label>
+        <input class="form-control" id="country" type="text" placeholder="Entrez votre pays" required="" />
+    </div>
+</div>
+`;
 
 let visitPage = `
 <h4 id="pageTitle">Ajouter Demande visite</h4>
-<div class="row">        
-<form id="visitRequestForm">
-        <div id="admin" class="col-6"></div>
-        <div id="addressForm"></div>
-    <div class="col-6">
-            <div class="row">
-                <div class="col-12">
-                    <div class="form-group">
-                        <label for="timeslot">Plage horaire*</label>
-                        <textarea class="form-control" id="timeslot" rows="3"></textarea>
-                    </div>
-                </div>
+<div class="row">
+    <div class="col">
+        <form id="visitRequestForm">
+            <div id="admin" class="form-group"></div>
+            <div id="addressForm"></div>
+            <div class="form-group">
+                <label for="timeslot">Plage horaire*</label>
+                <textarea class="form-control" id="timeslot" rows="3"></textarea>
             </div>
-            <div class="row">
-                <button class="btn btn-primary" id="btnVisitRequest" type="submit">Introduire ma demande</button>
-            </div>
+            <button class="btn btn-primary col-6" id="btnVisitRequest" type="submit">Introduire ma demande</button>
         </form>
-            <p>Liste meubles :</p>
-            <div id="furnitureListDiv"></div>
     </div>
-    <div class="col-6">
+    <div class="col">
         <form id="furnitureForm">
             <div class="row">
-                <div class="col-12">
-                    <div class="form-group">
-                        <label for="furnituredescription">Description du meuble*</label>
-                        <textarea class="form-control" id="furnituredescription" rows="6"></textarea>
-                    </div>
+                <div class="form-group col">
+                    <label for="furnituredescription">Description du meuble*</label>
+                    <textarea class="form-control" id="furnituredescription" rows="6"></textarea>
                 </div>
             </div>
-            <div id="typesList"></div>
-            <div class="row">
-                <button class="btn btn-primary" id="btnaddfurniture" type="submit">Ajouter le meuble</button>
-            </div>
+            <div id="typesList" class="row"></div>
+            <button class="btn btn-primary col-6" id="btnaddfurniture" type="submit">Ajouter le meuble</button>
         </form>
         <form id="pictureForm">
             <div class="row">
-                <div class="form-group">
+                <div class="form-group col">
                     <label for="file">Vous devez choisir au moins une photo de votre meuble*</label>
-                    <input class="form-control" id="file" type="file" multiple />
-                    <button class="btn btn-primary" id="btnaddpicture" type="submit">Ajouter la photo</button>
+                    <input class="form-control-file" id="file" type="file" multiple />
                 </div>
             </div>
+            <button class="btn btn-primary col-6" id="btnaddpicture" type="submit">Ajouter la photo</button>
         </form>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <p>Liste meubles :</p>
+        <div id="furnitureListDiv"></div>
+    </div>
+    <div class="col">
         <p>Liste photos :</p>
         <div id="picturesListDiv"></div>
-
     </div>
 </div>
 `;
@@ -123,7 +114,7 @@ const VisitPage = async () => {
     if(user.user.userType === "admin") {
         let userDiv = document.getElementById("admin");
         userDiv.innerHTML = `<input class="form-control" id="email" type="text" placeholder="Entrez l'email de l'utilisateur" required="" />
-                             <input type="checkbox" id="home_visit" name="home_visit"><label for="home_visit">Visite chez le client</label>`;
+                             <input class="form-check-inline" type="checkbox" id="home_visit" name="home_visit"><label class="form-check-label" for="home_visit">Visite chez le client</label>`;
         document.getElementById("home_visit").addEventListener("change", onChangeCheckbox);
     } else {
         try {
@@ -166,7 +157,7 @@ const onAddress = (address) => {
 
 const onTypesList = (typesList) => {
     let typesListPage = `
-    <div class="row">
+    <div class="form-group col">
     <label for="furnituretype">Sélectionner type de meuble*</label>
     <select class="form-control" id="furnituretype">`;
       typesList.forEach(type => {
