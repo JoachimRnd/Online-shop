@@ -4,10 +4,10 @@ import RegisterPage from "./RegisterPage.js";
 import LogoutComponent from "./LogoutComponent.js";
 import ErrorPage from "./ErrorPage.js";
 import VisitPage from "./VisitPage.js";
-import FurnitureUser from "./Furniture/FurnitureUser.js";
+import FurnitureForSale from "./Furniture/FurnitureForSale.js";
 import FurnitureAdmin from "./Furniture/FurnitureAdmin";
 import FurnitureListPage from "./Furniture/FurnitureListPage";
-import FurnitureUserListPage from "./Furniture/FurnitureUserListPage";
+import UserFurnitureListPage from "./Furniture/UserFurnitureListPage";
 import UserFurniture from "./Furniture/UserFurniture";
 import AdministrationPage from "./Admin/AdministrationPage.js";
 import ValidationPage from "./Admin/ValidationPage.js";
@@ -26,9 +26,9 @@ const routes = {
   "/logout": LogoutComponent,
   "/error": ErrorPage,
   "/visit": VisitPage,
-  "/furniture": FurnitureUser,
+  "/furniture": FurnitureForSale,
   "/search": FurnitureListPage,
-  "/myfurnitures": FurnitureUserListPage,
+  "/myfurnitures": UserFurnitureListPage,
   "/myfurniture" : UserFurniture,
   "/admin": AdministrationPage,
   "/admin/validation": ValidationPage,

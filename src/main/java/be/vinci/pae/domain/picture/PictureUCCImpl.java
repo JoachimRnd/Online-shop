@@ -1,5 +1,7 @@
 package be.vinci.pae.domain.picture;
 
+import java.io.InputStream;
+import java.util.List;
 import be.vinci.pae.domain.furniture.FurnitureDTO;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.furniture.DAOFurniture;
@@ -7,8 +9,6 @@ import be.vinci.pae.services.picture.DAOPicture;
 import be.vinci.pae.utils.BusinessException;
 import be.vinci.pae.utils.Upload;
 import jakarta.inject.Inject;
-import java.io.InputStream;
-import java.util.List;
 
 public class PictureUCCImpl implements PictureUCC {
 
@@ -25,6 +25,27 @@ public class PictureUCCImpl implements PictureUCC {
   public List<PictureDTO> getCarouselPictures() {
     try {
       return daoPicture.getCarouselPictures();
+    } finally {
+      this.dalServices.closeConnection();
+    }
+  }
+
+
+  @Override
+  public List<PictureDTO> getPicturesByFurnitureId(int furnitureId) {
+    try {
+      List<PictureDTO> listPicture = this.daoPicture.selectPicturesByFurnitureId(furnitureId);
+      return listPicture;
+    } finally {
+      this.dalServices.closeConnection();
+    }
+  }
+
+  @Override
+  public List<PictureDTO> getPublicPicturesByFurnitureId(int furnitureId) {
+    try {
+      List<PictureDTO> listPicture = this.daoPicture.selectPublicPicturesByFurnitureId(furnitureId);
+      return listPicture;
     } finally {
       this.dalServices.closeConnection();
     }
@@ -60,6 +81,30 @@ public class PictureUCCImpl implements PictureUCC {
   }
 
   @Override
+  public boolean deletePicture(int pictureId) {
+    PictureDTO pictureDTO = this.daoPicture.selectPictureById(pictureId);
+    String pictureType = pictureDTO.getName().substring(pictureDTO.getName().lastIndexOf('.') + 1);
+    String uploadedFileLocation = ".\\images\\" + pictureId + "." + pictureType;
+    if (pictureDTO.getFurniture().getFavouritePicture() != pictureId) {
+      try {
+        this.dalServices.startTransaction();
+        if (!this.daoPicture.deletePicture(pictureId) || !Upload.deleteFile(uploadedFileLocation)) {
+          this.dalServices.rollbackTransaction();
+          throw new BusinessException("Error delete picture");
+        }
+        this.dalServices.commitTransaction();
+        return true;
+      } finally {
+        this.dalServices.closeConnection();
+      }
+
+    } else {
+      return false;
+    }
+
+  }
+
+  @Override
   public boolean modifyScrollingPicture(int pictureId) {
     try {
       this.dalServices.startTransaction();
@@ -75,27 +120,19 @@ public class PictureUCCImpl implements PictureUCC {
   }
 
   @Override
-  public boolean deletePicture(int pictureId) {
-    // TODO à tester
-    // Récupérer la picture et vérifier qu'elle est pas la favorite de son meuble
-    PictureDTO pictureDTO = null;
-    if (pictureDTO.getFurniture().getFavouritePicture().getId() != pictureId) {
-      try {
-        this.dalServices.startTransaction();
-        if (!this.daoPicture.deletePicture(pictureId)) {
-          this.dalServices.rollbackTransaction();
-          throw new BusinessException("Error delete picture");
-        }
-        this.dalServices.commitTransaction();
-        return true;
-      } finally {
-        this.dalServices.closeConnection();
+  public boolean modifyVisibleForEveryone(int pictureId) {
+    try {
+      this.dalServices.startTransaction();
+      if (!this.daoPicture.updateVisibleForEveryone(pictureId)) {
+        this.dalServices.rollbackTransaction();
+        throw new BusinessException("Error modify visible for everyone");
       }
-
-      // TODO remove in server
-    } else {
-      return false;
+      this.dalServices.commitTransaction();
+      return true;
+    } finally {
+      this.dalServices.closeConnection();
     }
-
   }
+
+
 }

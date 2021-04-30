@@ -13,5 +13,11 @@ public interface DAOPicture {
 
   boolean deletePicture(int pictureId);
 
+  List<PictureDTO> selectPicturesByFurnitureId(int furnitureId);
+
+  boolean updateVisibleForEveryone(int pictureId);
+
+  List<PictureDTO> selectPublicPicturesByFurnitureId(int furnitureId);
+
   List<PictureDTO> getCarouselPictures();
 }
