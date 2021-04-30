@@ -79,6 +79,7 @@ public class VisitRequest {
   @AuthorizeAdmin
   public Response uploadFileForOther(FormDataMultiPart formDataMultiPart,
       @FormDataParam("file") InputStream uploadedInputStream) {
+    formDataMultiPart.getField("json").setMediaType(MediaType.APPLICATION_JSON_TYPE);
     String email = formDataMultiPart.getField("email").getValueAs(String.class);
     email = email.substring(1, email.length() - 1);
     if (email.equals("")) {

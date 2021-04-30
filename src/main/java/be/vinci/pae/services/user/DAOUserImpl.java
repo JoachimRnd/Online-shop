@@ -26,7 +26,6 @@ public class DAOUserImpl implements DAOUser {
   private String querySelectUnvalidatedUsers;
   private String querySelectAllUsername;
   private String querySelectUsersFiltered;
-  private String querySelectUserByLastname;
 
   @Inject
   private UserFactory userFactory;
@@ -45,9 +44,6 @@ public class DAOUserImpl implements DAOUser {
         "SELECT u.user_id, u.username, u.password, u.last_name, u.first_name, u.address, u.email, "
             + "u.registration_date, u.valid_registration, u.user_type FROM project.users u "
             + "WHERE u.username = ?";
-    querySelectUserByLastname = "SELECT u.user_id, u.username, u.password, u.last_name, "
-        + "u.first_name, u.address, u.email, u.registration_date, u.valid_registration, u.user_type"
-        + " FROM project.users u WHERE u.last_name = ?";
     querySelectUserById = "SELECT u.user_id, u.username, u.password, u.last_name, u.first_name, "
         + "u.address, u.email,u.registration_date, u.valid_registration, u.user_type "
         + "FROM project.users u WHERE u.user_id = ?";
@@ -183,27 +179,6 @@ public class DAOUserImpl implements DAOUser {
       }
     } catch (SQLException e) {
       throw new FatalException("Database error : getUsersFiltered", e);
-    }
-  }
-
-  @Override
-  public List<UserDTO> getUserByLastname(String lastname) {
-    try {
-      PreparedStatement selectUserByLastname =
-          this.dalBackendServices.getPreparedStatement(querySelectUserByLastname);
-      selectUserByLastname.setString(1, lastname);
-      List<UserDTO> allUsers = new ArrayList<>();
-      try (ResultSet rs = selectUserByLastname.executeQuery()) {
-        UserDTO user;
-        do {
-          user = createUser(rs);
-          allUsers.add(user);
-        } while (user != null);
-        allUsers.remove(allUsers.size() - 1);
-        return allUsers;
-      }
-    } catch (SQLException e) {
-      throw new FatalException("Database error : getUserByUsername", e);
     }
   }
 

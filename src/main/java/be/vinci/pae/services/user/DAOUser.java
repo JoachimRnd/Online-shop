@@ -20,6 +20,4 @@ public interface DAOUser {
   List<String> getAllLastnames();
 
   List<UserDTO> getUsersFiltered(String username, String postcode, String commune);
-
-  List<UserDTO> getUserByLastname(String lastname);
 }
