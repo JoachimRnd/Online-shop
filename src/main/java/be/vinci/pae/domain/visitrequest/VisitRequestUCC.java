@@ -13,5 +13,9 @@ public interface VisitRequestUCC {
 
   VisitRequestDTO getVisitRequestById(int id);
 
+  VisitRequestDTO getVisitRequestByIdForUser(int id, int userId);
+
+  List<VisitRequestDTO> getVisitRequestsByUserId(int userId);
+
   String modifyVisitRequest(int id, String cancellationReason, String chosenDateTime);
 }

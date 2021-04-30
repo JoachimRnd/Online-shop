@@ -197,12 +197,12 @@ const FurnitureAdmin = async(f) => {
     PrintError(err);
   }
 
+  onFurniture();
   onCheckConditions();
   let optionCondition = document.querySelector("#"+furniture.condition);
   optionCondition.setAttribute("selected","");
   
 
-  onFurniture();
   if(furniture.condition == "en_vente" || furniture.condition == "en_option"){
     onCheckOption();
   }
@@ -280,6 +280,7 @@ const onPicturesList = (picturesList) => {
 
 
 const onFurniture = () => {
+  console.log(furniture);
   let prix = document.querySelector("#prix");
   prix.innerHTML = `<input class="form-control" id="inputSellingPrice" type="number" placeholder=${furniture.sellingPrice} readonly />`;
 
@@ -295,7 +296,7 @@ const onFurniture = () => {
   let withdrawalDateFromCustomer = document.querySelector("#withdrawalDateFromCustomer");
   if(furniture.withdrawalDateFromCustomer){
     let date = new Date(furniture.withdrawalDateFromCustomer);
-    withdrawalDateFromCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateFromCustomer" type="date" value="${date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()}" readonly/>`;
+    withdrawalDateFromCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateFromCustomer" type="date" value="${date.getFullYear() + "-"+ ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2)}" readonly/>`;
   }
   else
     withdrawalDateFromCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateFromCustomer" type="date" readonly/>`;
@@ -303,7 +304,7 @@ const onFurniture = () => {
   let deliveryDate = document.querySelector("#deliveryDate");
   if(furniture.deliveryDate) {
     let date = new Date(furniture.deliveryDate);
-    deliveryDate.innerHTML = `<input class="form-control" id="inputDeliveryDate" type="date" value="${date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()}" readonly/>`;
+    deliveryDate.innerHTML = `<input class="form-control" id="inputDeliveryDate" type="date" value="${date.getFullYear() + "-"+ ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2)}" readonly/>`;
   }
   else
     deliveryDate.innerHTML = `<input class="form-control" id="inputDeliveryDate" type="date" readonly/>`;
@@ -311,7 +312,7 @@ const onFurniture = () => {
   let withdrawalDateToCustomer = document.querySelector("#withdrawalDateToCustomer");
   if(furniture.withdrawalDateToCustomer){
     let date = new Date(furniture.withdrawalDateToCustomer)
-    withdrawalDateToCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateToCustomer" type="date" value="${date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()}" readonly/>`;
+    withdrawalDateToCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateToCustomer" type="date" value="${date.getFullYear() + "-"+ ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2)}" readonly/>`;
   }
   else
     withdrawalDateToCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateToCustomer" type="date" readonly/>`;
@@ -326,22 +327,27 @@ const onFurniture = () => {
 
   let requestDate = document.querySelector("#requestDate");
   if(furniture.visitRequest && furniture.visitRequest.requestDate){
-    requestDate.innerHTML = `<input class="form-control" id="inputRequestDate" type="date" value="${furniture.visitRequest.requestDate}" readonly/>`;
+    let date = new Date(furniture.visitRequest.requestDate);
+    requestDate.innerHTML = `<input class="form-control" id="inputRequestDate" type="date" value="${date.getFullYear() + "-"+ ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2)}" readonly/>`;
   }else
     requestDate.innerHTML = `<input class="form-control" id="inputRequestDate" type="date" readonly/>`;
   let sellerEmail = document.querySelector("#sellerEmail");
   if(furniture.visitRequest && furniture.visitRequest.customer.email){
-    sellerEmail.innerHTML = `<input class="form-control" id="inputSellerEmail" type="date" value="${furniture.visitRequest.customer.email}" readonly/>`;
+    sellerEmail.innerHTML = `<input class="form-control" id="inputSellerEmail" type="text" value="${furniture.visitRequest.customer.email}" readonly/>`;
   }else
-    sellerEmail.innerHTML = `<input class="form-control" id="inputSellerEmail" type="date" readonly/>`;
+    sellerEmail.innerHTML = `<input class="form-control" id="inputSellerEmail" type="text" readonly/>`;
+    
   let depositDate = document.querySelector("#depositDate");
   if(furniture.depositDate){
-    depositDate.innerHTML = `<input class="form-control" id="inputDepositDate" type="date" value="${furniture.depositDate}" readonly/>`;
+    let date = new Date(furniture.depositDate);
+    depositDate.innerHTML = `<input class="form-control" id="inputDepositDate" type="date" value="${date.getFullYear() + "-"+ ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2)}" readonly/>`;
   }else
     depositDate.innerHTML = `<input class="form-control" id="inputDepositDate" type="date" readonly/>`;
+
   let sellingDate = document.querySelector("#sellingDate");
   if(furniture.sellingDate){
-    sellingDate.innerHTML = `<input class="form-control" id="inputSellingDate" type="date" value="${furniture.sellingDate}" readonly/>`;
+    let date = new Date(furniture.sellingDate);
+    sellingDate.innerHTML = `<input class="form-control" id="inputSellingDate" type="date" value="${date.getFullYear() + "-"+ ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2)}" readonly/>`;
   }else
   sellingDate.innerHTML = `<input class="form-control" id="inputSellingDate" type="date" readonly/>`;
 }
@@ -361,7 +367,7 @@ const onPurchase = () => {
   let withdrawalDateFromCustomer = document.querySelector("#withdrawalDateFromCustomer");
   if(furniture.withdrawalDateFromCustomer) {
     let date = new Date(furniture.withdrawalDateFromCustomer);
-    withdrawalDateFromCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateFromCustomer" type="date" value="${date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()}"/>`;
+    withdrawalDateFromCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateFromCustomer" type="date" value="${date.getFullYear() + "-"+ ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2)}"/>`;
   }
   else
     withdrawalDateFromCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateFromCustomer" type="date"/>`;
@@ -371,7 +377,7 @@ const onSold = () => {
   let deliveryDate = document.querySelector("#deliveryDate");
   if(furniture.deliveryDate){
     let date = new Date(furniture.deliveryDate);
-    deliveryDate.innerHTML = `<input class="form-control" id="inputDeliveryDate" type="date" value="${date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()}"/>`;
+    deliveryDate.innerHTML = `<input class="form-control" id="inputDeliveryDate" type="date" value="${date.getFullYear() + "-"+ ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2)}"/>`;
   }
   else
     deliveryDate.innerHTML = `<input class="form-control" id="inputDeliveryDate" type="date" />`;
@@ -379,7 +385,7 @@ const onSold = () => {
   let withdrawalDateToCustomer = document.querySelector("#withdrawalDateToCustomer");
   if(furniture.withdrawalDateToCustomer){
     let date = new Date(furniture.withdrawalDateToCustomer)
-    withdrawalDateToCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateToCustomer" type="date" value="${date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()}" />`;
+    withdrawalDateToCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateToCustomer" type="date" value="${date.getFullYear() + "-"+ ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2)}" />`;
   }
   else
     withdrawalDateToCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateToCustomer" type="date"/>`;

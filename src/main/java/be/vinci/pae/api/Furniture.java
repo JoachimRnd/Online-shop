@@ -319,23 +319,25 @@ public class Furniture {
       purchasePrice = json.get("purchasePrice").asDouble();
     }
     String description = null;
-    if (json.hasNonNull("description")) {
+    if (json.hasNonNull("description") && !json.get("description").asText().isEmpty()) {
       description = json.get("description").asText();
     }
     LocalDate withdrawalDateFromCustomer = null;
-    if (json.hasNonNull("withdrawalDateFromCustomer")) {
+    if (json.hasNonNull("withdrawalDateFromCustomer")
+        && !json.get("withdrawalDateFromCustomer").asText().isEmpty()) {
       withdrawalDateFromCustomer = LocalDate.parse(json.get("withdrawalDateFromCustomer").asText());
     }
     LocalDate withdrawalDateToCustomer = null;
-    if (json.hasNonNull("withdrawalDateToCustomer")) {
+    if (json.hasNonNull("withdrawalDateToCustomer")
+        && !json.get("withdrawalDateToCustomer").asText().isEmpty()) {
       withdrawalDateToCustomer = LocalDate.parse(json.get("withdrawalDateToCustomer").asText());
     }
     LocalDate deliveryDate = null;
-    if (json.hasNonNull("deliveryDate")) {
+    if (json.hasNonNull("deliveryDate") && !json.get("deliveryDate").asText().isEmpty()) {
       deliveryDate = LocalDate.parse(json.get("deliveryDate").asText());
     }
     String buyerEmail = null;
-    if (json.hasNonNull("buyerEmail")) {
+    if (json.hasNonNull("buyerEmail") && !json.get("buyerEmail").asText().isEmpty()) {
       buyerEmail = json.get("buyerEmail").asText();
     }
 
