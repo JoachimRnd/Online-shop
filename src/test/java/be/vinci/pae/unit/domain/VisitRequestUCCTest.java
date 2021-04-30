@@ -73,7 +73,7 @@ public class VisitRequestUCCTest {
 
   @DisplayName("test if VR is null")
   @Test
-  public void VRUCCNotNullTest() {
+  public void vruccNotNullTest() {
     assertNotNull(this.vrUCC);
   }
 
@@ -84,13 +84,13 @@ public class VisitRequestUCCTest {
     AddressDTO address = addressFactory.getAddress();
     VisitRequestDTO vr = vrFactory.getVisitRequest();
     vr.setAddress(address);
-    PictureDTO picture = pictureFactory.getPicture();
     List<FurnitureDTO> list = new ArrayList<FurnitureDTO>();
     vr.setFurnitureList(list);
     Mockito.when(daoAddress.addAddress(address)).thenReturn(1);
     Mockito.when(daoVR.addVisitRequest(vr)).thenReturn(1);
     FurnitureDTO furniture = furnitureFactory.getFurniture();
     Mockito.when(daoFurniture.insertFurniture(furniture)).thenReturn(1);
+    PictureDTO picture = pictureFactory.getPicture();
     Mockito.when(daoPicture.addPicture(picture)).thenReturn(1);
     List<InputStream> inputStreamList = null;
     UserDTO user = userFactory.getUser();

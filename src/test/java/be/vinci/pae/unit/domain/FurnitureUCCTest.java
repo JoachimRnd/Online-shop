@@ -331,8 +331,7 @@ public class FurnitureUCCTest {
   public void modifyFurnitureTest() {
     FurnitureCondition condition = null;
     condition = null;
-    LocalDate date = LocalDate.now();
-    LocalDate dateFalse = LocalDate.of(2000, 10, 15);
+
     FurnitureDTO furnitureToAdd = furnitureFactory.getFurniture();
     Mockito.when(daoFurniture.selectFurnitureById(1)).thenReturn(furnitureToAdd);
 
@@ -356,6 +355,7 @@ public class FurnitureUCCTest {
     assertTrue(
         furnitureUCC.modifyFurniture(1, condition, -1, -1, -1, 1, null, null, null, null, null));
 
+    LocalDate date = LocalDate.now();
     Mockito.when(daoFurniture.updateWithdrawalDateFromCustomer(1,
         Timestamp.valueOf(date.atTime(LocalTime.NOON)))).thenReturn(true);
     assertTrue(
@@ -390,6 +390,7 @@ public class FurnitureUCCTest {
     assertTrue(furnitureUCC.modifyFurniture(1, condition, 200.00, 180.00, 100.00, 1, date, date,
         date, "test@test.be", "test"));
 
+    LocalDate dateFalse = LocalDate.of(2000, 10, 15);
     assertThrows(BusinessException.class, () -> furnitureUCC.modifyFurniture(0, null, 120.00,
         100.00, 60.00, 2, dateFalse, dateFalse, dateFalse, "testFalse@testFalse.be", "testFalse"));
   }
