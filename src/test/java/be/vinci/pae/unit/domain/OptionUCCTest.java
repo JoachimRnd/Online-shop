@@ -72,7 +72,7 @@ public class OptionUCCTest {
 	@DisplayName("test addOption good parameters")
 	@Test
 	public void addOptionAllGoodTest() {
-		//TODO
+		// TODO
 		FurnitureDTO furniture = furnitureFactory.getFurniture();
 		Mockito.when(daoFurniture.selectFurnitureById(1)).thenReturn(furniture);
 		furniture.setCondition(ValueLink.FurnitureCondition.en_vente);
@@ -87,12 +87,13 @@ public class OptionUCCTest {
 		Mockito.when(daoOption.selectOptionsOfFurniture(1)).thenReturn(list);
 		OptionDTO optionToAdd = optionFactory.getOption();
 		Mockito.when(daoOption.addOption(optionToAdd)).thenReturn(1);
-		Mockito.when(daoFurniture.updateCondition(1, 
-				ValueLink.FurnitureCondition.en_option.ordinal())).thenReturn(true);
+		Mockito.when(
+				daoFurniture.updateCondition(1, ValueLink.FurnitureCondition.en_option.ordinal()))
+				.thenReturn(true);
 		// optionToAdd.setBuyer(buyer);
 		// assertTrue(buyer.isValidRegistration());
 		// assertEquals(ValueLink.UserType.client, buyer.getUserType());
-		//assertTrue(optionUCC.addOption(1, 2, buyer));
+		// assertTrue(optionUCC.addOption(1, 2, buyer));
 	}
 
 	@DisplayName("test addOption bad furniture only")
@@ -129,7 +130,7 @@ public class OptionUCCTest {
 	@DisplayName("test addOption bad duration only")
 	@Test
 	public void addOptionBadDurationTest() {
-		//TODO
+		// TODO
 		UserDTO buyer = userFactory.getUser();
 		FurnitureDTO furniture = furnitureFactory.getFurniture();
 		Mockito.when(daoFurniture.selectFurnitureById(1)).thenReturn(furniture);
@@ -143,7 +144,8 @@ public class OptionUCCTest {
 		Mockito.when(daoOption.addOption(optionToAdd)).thenReturn(1);
 		optionToAdd.setStatus(ValueLink.OptionStatus.en_cours);
 		optionToAdd.setDuration(5);
-		//assertThrows(BusinessException.class, () -> optionUCC.addOption(1, 1, buyer));
+		// assertThrows(BusinessException.class, () -> optionUCC.addOption(1, 1,
+		// buyer));
 	}
 
 	@DisplayName("test cancelOption good parameters")

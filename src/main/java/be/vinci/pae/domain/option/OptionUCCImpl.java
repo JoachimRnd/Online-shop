@@ -37,7 +37,8 @@ public class OptionUCCImpl implements OptionUCC {
   public boolean addOption(int idFurniture, int duration, UserDTO user) {
     try {
       dalServices.startTransaction();
-      if (duration > Config.getIntProperty("MaxDurationOption") || duration < Config.getIntProperty("MinDurationOption")) {
+      if (duration > Config.getIntProperty("MaxDurationOption") 
+    		  || duration < Config.getIntProperty("MinDurationOption")) {
         throw new BusinessException("Durée de l'option incorrecte");
       }
       FurnitureDTO furniture = daoFurniture.selectFurnitureById(idFurniture);

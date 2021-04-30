@@ -81,19 +81,19 @@ public class VisitRequestUCCTest {
 	@Test
 	public void addVisitRequestTest() {
 		// TODO
-		UserDTO user = userFactory.getUser();
 		AddressDTO address = addressFactory.getAddress();
 		VisitRequestDTO vr = vrFactory.getVisitRequest();
 		vr.setAddress(address);
-		FurnitureDTO furniture = furnitureFactory.getFurniture();
 		PictureDTO picture = pictureFactory.getPicture();
 		List<FurnitureDTO> list = new ArrayList<FurnitureDTO>();
 		vr.setFurnitureList(list);
 		Mockito.when(daoAddress.addAddress(address)).thenReturn(1);
 		Mockito.when(daoVR.addVisitRequest(vr)).thenReturn(1);
+		FurnitureDTO furniture = furnitureFactory.getFurniture();
 		Mockito.when(daoFurniture.insertFurniture(furniture)).thenReturn(1);
 		Mockito.when(daoPicture.addPicture(picture)).thenReturn(1);
 		List<InputStream> inputStreamList = null;
+		UserDTO user = userFactory.getUser();
 		assertEquals(vr, vrUCC.addVisitRequest(vr, user, inputStreamList));
 		Mockito.when(daoAddress.addAddress(address)).thenReturn(-1);
 		assertNull(vrUCC.addVisitRequest(vr, user, inputStreamList));
@@ -131,27 +131,27 @@ public class VisitRequestUCCTest {
 	@DisplayName("test modifyVisitRequest")
 	@Test
 	public void modifyVisitRequestTest() {
-		//TODO parser les dates
-		VisitRequestDTO vr = vrFactory.getVisitRequest();
+		// TODO parser les dates
+		// VisitRequestDTO vr = vrFactory.getVisitRequest();
 		Mockito.when(daoVR.cancelVisitRequest(1, "test")).thenReturn(true);
 		Mockito.when(daoFurniture.refuseAllFurnitureByVisitId(1)).thenReturn(true);
-		//assertEquals("annulee", vrUCC.modifyVisitRequest(1, "test", "2021-04-01"));
+		// assertEquals("annulee", vrUCC.modifyVisitRequest(1, "test", "2021-04-01"));
 		Mockito.when(daoVR.cancelVisitRequest(1, "test")).thenReturn(false);
 		Mockito.when(daoFurniture.refuseAllFurnitureByVisitId(1)).thenReturn(false);
-		//assertEquals(null, vrUCC.modifyVisitRequest(1, "test", "2021-04-01"));
-		Mockito.when(
-				daoVR.chooseDateForVisit(1, Timestamp.valueOf(
-						LocalDate.parse("2021-04-01").atTime(LocalTime.NOON)))).thenReturn(true);
-		//assertEquals("confirmee", vrUCC.modifyVisitRequest(1, "test", "2021-04-01"));
-		Mockito.when(
-				daoVR.chooseDateForVisit(1, Timestamp.valueOf(LocalDate.parse("2021-04-01")
-						.atTime(LocalTime.NOON)))).thenReturn(false);
-		//assertEquals(null, vrUCC.modifyVisitRequest(1, "test", "2021-04-01"));
+		// assertEquals(null, vrUCC.modifyVisitRequest(1, "test", "2021-04-01"));
+		Mockito.when(daoVR.chooseDateForVisit(1,
+				Timestamp.valueOf(LocalDate.parse("2021-04-01").atTime(LocalTime.NOON))))
+				.thenReturn(true);
+		// assertEquals("confirmee", vrUCC.modifyVisitRequest(1, "test", "2021-04-01"));
+		Mockito.when(daoVR.chooseDateForVisit(1,
+				Timestamp.valueOf(LocalDate.parse("2021-04-01").atTime(LocalTime.NOON))))
+				.thenReturn(false);
+		// assertEquals(null, vrUCC.modifyVisitRequest(1, "test", "2021-04-01"));
 		Mockito.when(daoVR.cancelVisitRequest(1, "test")).thenReturn(true);
 		Mockito.when(daoFurniture.refuseAllFurnitureByVisitId(1)).thenReturn(true);
-		Mockito.when(
-				daoVR.chooseDateForVisit(1, Timestamp.valueOf(
-						LocalDate.parse("2021-04-01").atTime(LocalTime.NOON)))).thenReturn(true);
-		//assertEquals(null, vrUCC.modifyVisitRequest(1, null, null));
+		Mockito.when(daoVR.chooseDateForVisit(1,
+				Timestamp.valueOf(LocalDate.parse("2021-04-01").atTime(LocalTime.NOON))))
+				.thenReturn(true);
+		// assertEquals(null, vrUCC.modifyVisitRequest(1, null, null));
 	}
 }

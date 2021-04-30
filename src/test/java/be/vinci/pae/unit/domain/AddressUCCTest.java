@@ -22,14 +22,11 @@ import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.address.DAOAddress;
 
 public class AddressUCCTest {
-
 	AddressFactory addressFactory;
-
 	@Mock
 	DalServices dalServices;
 	@Mock
 	DAOAddress daoAddress;
-
 	@InjectMocks
 	AddressUCCImpl addressUCC;
 
@@ -38,7 +35,6 @@ public class AddressUCCTest {
 		MockitoAnnotations.initMocks(this);
 		ServiceLocator locator = ServiceLocatorUtilities.bind(new ApplicationBinder());
 		this.addressFactory = locator.getService(AddressFactory.class);
-
 	}
 
 	@DisplayName("test if option is null")
@@ -65,7 +61,6 @@ public class AddressUCCTest {
 		assertEquals(address, addressUCC.getAddressByUserId(1));
 		Mockito.when(daoAddress.getAddressByUserId(1)).thenReturn(null);
 		assertNull(addressUCC.getAddressByUserId(1));
-
 	}
 
 }

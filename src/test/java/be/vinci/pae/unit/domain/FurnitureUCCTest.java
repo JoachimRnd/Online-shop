@@ -48,20 +48,13 @@ import be.vinci.pae.utils.ValueLink.FurnitureCondition;
 public class FurnitureUCCTest {
 
 	FurnitureFactory furnitureFactory;
-
 	UserFactory userFactory;
-
 	TypeFactory typeFactory;
-
 	PictureFactory pictureFactory;
-
 	VisitRequestFactory vrFactory;
-
 	OptionFactory optionFactory;
-
 	@Mock
 	DalServices dalServices;
-
 	@Mock
 	DAOFurniture daoFurniture;
 	@Mock
@@ -74,7 +67,6 @@ public class FurnitureUCCTest {
 	DAOPicture daoPicture;
 	@Mock
 	DAOOption daoOption;
-
 	@InjectMocks
 	FurnitureUCCImpl furnitureUCC;
 
@@ -148,17 +140,18 @@ public class FurnitureUCCTest {
 	@DisplayName("test modifyCondition")
 	@Test
 	public void modifyConditionTest() {
-		FurnitureCondition condition = null;
+
 		FurnitureDTO furniture = furnitureFactory.getFurniture();
 		OptionDTO option = optionFactory.getOption();
 		Mockito.when(daoFurniture.selectFurnitureById(1)).thenReturn(furniture);
 		Mockito.when(daoOption.selectOptionByFurnitureId(1)).thenReturn(option);
 
-		// TODO mis à false purtant ne lance pas de businessException
-		assertThrows(NullPointerException.class,
-				() -> furnitureUCC.modifyCondition(0, ValueLink.FurnitureCondition.ne_convient_pas));
+		// TODO mis à false pourtant ne lance pas de businessException
+		assertThrows(NullPointerException.class, () -> furnitureUCC.modifyCondition(0,
+				ValueLink.FurnitureCondition.ne_convient_pas));
 		assertThrows(NullPointerException.class, () -> furnitureUCC.modifyCondition(1, null));
 
+		FurnitureCondition condition = null;
 		condition = ValueLink.FurnitureCondition.ne_convient_pas;
 		Mockito.when(daoFurniture.updateCondition(1, condition.ordinal())).thenReturn(true);
 		assertTrue(furnitureUCC.modifyCondition(1, condition));
@@ -258,7 +251,7 @@ public class FurnitureUCCTest {
 		assertTrue(furnitureUCC.modifyWithdrawalDateToCustomer(1, LocalDate.now()));
 		Mockito.when(daoFurniture.updateWithdrawalDateToCustomer(1,
 				Timestamp.valueOf(LocalDate.now().atTime(LocalTime.NOON)))).thenReturn(false);
-		assertThrows(BusinessException.class, 
+		assertThrows(BusinessException.class,
 				() -> furnitureUCC.modifyWithdrawalDateToCustomer(1, LocalDate.now()));
 	}
 
@@ -270,19 +263,19 @@ public class FurnitureUCCTest {
 		assertTrue(furnitureUCC.modifyWithdrawalDateFromCustomer(1, LocalDate.now()));
 		Mockito.when(daoFurniture.updateWithdrawalDateFromCustomer(1,
 				Timestamp.valueOf(LocalDate.now().atTime(LocalTime.NOON)))).thenReturn(false);
-		assertThrows(BusinessException.class, 
+		assertThrows(BusinessException.class,
 				() -> furnitureUCC.modifyWithdrawalDateFromCustomer(1, LocalDate.now()));
 	}
 
 	@DisplayName("test modifyDeliveryDate")
 	@Test
 	public void modifyDeliveryDateTest() {
-		Mockito.when(daoFurniture.updateDeliveryDate(1, 
+		Mockito.when(daoFurniture.updateDeliveryDate(1,
 				Timestamp.valueOf(LocalDate.now().atTime(LocalTime.NOON)))).thenReturn(true);
 		assertTrue(furnitureUCC.modifyDeliveryDate(1, LocalDate.now()));
-		Mockito.when(daoFurniture.updateDeliveryDate(1, 
+		Mockito.when(daoFurniture.updateDeliveryDate(1,
 				Timestamp.valueOf(LocalDate.now().atTime(LocalTime.NOON)))).thenReturn(false);
-		assertThrows(BusinessException.class, 
+		assertThrows(BusinessException.class,
 				() -> furnitureUCC.modifyDeliveryDate(1, LocalDate.now()));
 	}
 
@@ -295,12 +288,12 @@ public class FurnitureUCCTest {
 		Mockito.when(daoUser.getUserByEmail("test@test.com")).thenReturn(buyer);
 		Mockito.when(daoFurniture.updateBuyer(1, 1)).thenReturn(true);
 		Mockito.when(daoFurniture.updateUnregisteredBuyerEmail(1, "test@test.com"))
-			.thenReturn(true);
+				.thenReturn(true);
 		assertTrue(furnitureUCC.modifyBuyerEmail(1, "test@test.com"));
 
 		Mockito.when(daoUser.getUserByEmail("test@test.com")).thenReturn(null);
 		Mockito.when(daoFurniture.updateUnregisteredBuyerEmail(1, "test@test.com"))
-			.thenReturn(false);
+				.thenReturn(false);
 		assertFalse(furnitureUCC.modifyBuyerEmail(1, "test@test.com"));
 		Mockito.when(daoUser.getUserByEmail("test@test.com")).thenReturn(buyer);
 		Mockito.when(daoFurniture.updateBuyer(1, 1)).thenReturn(false);
@@ -319,19 +312,19 @@ public class FurnitureUCCTest {
 	@DisplayName("test getPersonalFurnitureById")
 	@Test
 	public void getPersonalFurnitureByIdTest() {
-		FurnitureDTO furniture = furnitureFactory.getFurniture();
 		UserDTO buyer = userFactory.getUser();
-		VisitRequestDTO vr = vrFactory.getVisitRequest();
-		assertThrows(NullPointerException.class, 
+		assertThrows(NullPointerException.class,
 				() -> furnitureUCC.getPersonalFurnitureById(1, buyer));
+		FurnitureDTO furniture = furnitureFactory.getFurniture();
 		Mockito.when(daoFurniture.selectFurnitureById(1)).thenReturn(furniture);
-		assertThrows(NullPointerException.class, 
+		assertThrows(NullPointerException.class,
 				() -> furnitureUCC.getPersonalFurnitureById(1, buyer));
 		Mockito.when(daoUser.getUserById(1)).thenReturn(buyer);
 		buyer.setId(1);
 		furniture.setBuyer(buyer);
 		assertEquals(furniture, furnitureUCC.getPersonalFurnitureById(1, buyer));
 		furniture.setBuyer(null);
+		VisitRequestDTO vr = vrFactory.getVisitRequest();
 		furniture.setVisitRequest(vr);
 		vr.setCustomer(buyer);
 		assertEquals(furniture, furnitureUCC.getPersonalFurnitureById(1, buyer));
@@ -341,73 +334,71 @@ public class FurnitureUCCTest {
 	@Test
 	public void modifyFurnitureTest() {
 		FurnitureCondition condition = null;
-		condition = ValueLink.FurnitureCondition.en_vente;
-		FurnitureDTO furnitureToAdd = furnitureFactory.getFurniture();
-		TypeDTO type = typeFactory.getType();
-		UserDTO user = userFactory.getUser();
 		condition = null;
 		LocalDate date = LocalDate.now();
 		LocalDate dateFalse = LocalDate.of(2000, 10, 15);
+		FurnitureDTO furnitureToAdd = furnitureFactory.getFurniture();
 		Mockito.when(daoFurniture.selectFurnitureById(1)).thenReturn(furnitureToAdd);
 
-		assertTrue(furnitureUCC.modifyFurniture(0, 
-				null, -1, -1, -1, -1, null, null, null, null, null));
+		assertTrue(furnitureUCC.modifyFurniture(0, null, -1, -1, -1, -1, null, null, null, null,
+				null));
 
 		Mockito.when(daoFurniture.updateSellingPrice(1, 200.000)).thenReturn(true);
-		assertTrue(furnitureUCC.modifyFurniture(1, 
-				condition, 200.00, -1, -1, -1, null, null, null, null, null));
+		assertTrue(furnitureUCC.modifyFurniture(1, condition, 200.00, -1, -1, -1, null, null, null,
+				null, null));
 
 		Mockito.when(daoFurniture.updateSpecialSalePrice(1, 180.000)).thenReturn(true);
-		assertTrue(furnitureUCC.modifyFurniture(1, 
-				condition, -1, 180.00, -1, -1, null, null, null, null, null));
+		assertTrue(furnitureUCC.modifyFurniture(1, condition, -1, 180.00, -1, -1, null, null, null,
+				null, null));
 
 		Mockito.when(daoFurniture.updatePurchasePrice(1, 100.00)).thenReturn(true);
-		assertTrue(furnitureUCC.modifyFurniture(1, 
-				condition, -1, -1, 100.00, -1, null, null, null, null, null));
+		assertTrue(furnitureUCC.modifyFurniture(1, condition, -1, -1, 100.00, -1, null, null, null,
+				null, null));
 
+		TypeDTO type = typeFactory.getType();
 		Mockito.when(daoFurniture.updateType(1, 1)).thenReturn(true);
 		Mockito.when(daoType.selectTypeById(1)).thenReturn(type);
-		assertTrue(furnitureUCC.modifyFurniture(1, 
-				condition, -1, -1, -1, 1, null, null, null, null, null));
+		assertTrue(furnitureUCC.modifyFurniture(1, condition, -1, -1, -1, 1, null, null, null, null,
+				null));
 
-		Mockito.when(daoFurniture.updateWithdrawalDateFromCustomer(1, 
+		Mockito.when(daoFurniture.updateWithdrawalDateFromCustomer(1,
 				Timestamp.valueOf(date.atTime(LocalTime.NOON)))).thenReturn(true);
-		assertTrue(furnitureUCC.modifyFurniture(1, 
-				condition, -1, -1, -1, -1, date, null, null, null, null));
+		assertTrue(furnitureUCC.modifyFurniture(1, condition, -1, -1, -1, -1, date, null, null,
+				null, null));
 
-		Mockito.when(daoFurniture.updateWithdrawalDateToCustomer(1, 
+		Mockito.when(daoFurniture.updateWithdrawalDateToCustomer(1,
 				Timestamp.valueOf(date.atTime(LocalTime.NOON)))).thenReturn(true);
-		assertTrue(furnitureUCC.modifyFurniture(1, 
-				condition, -1, -1, -1, -1, null, date, null, null, null));
+		assertTrue(furnitureUCC.modifyFurniture(1, condition, -1, -1, -1, -1, null, date, null,
+				null, null));
 
-		Mockito.when(daoFurniture.updateDeliveryDate(1,
-				Timestamp.valueOf(date.atTime(LocalTime.NOON)))).thenReturn(true);
-		assertTrue(furnitureUCC.modifyFurniture(1, 
-				condition, -1, -1, -1, -1, null, null, date, null, null));
+		Mockito.when(
+				daoFurniture.updateDeliveryDate(1, Timestamp.valueOf(date.atTime(LocalTime.NOON))))
+				.thenReturn(true);
+		assertTrue(furnitureUCC.modifyFurniture(1, condition, -1, -1, -1, -1, null, null, date,
+				null, null));
 
-		Mockito.when(daoFurniture.updateUnregisteredBuyerEmail(1, "test@test.be"))
-		.thenReturn(true);
-		assertTrue(furnitureUCC.modifyFurniture(1, 
-				condition, -1, -1, -1, -1, null, null, null, "test@test.be", null));
+		Mockito.when(daoFurniture.updateUnregisteredBuyerEmail(1, "test@test.be")).thenReturn(true);
+		assertTrue(furnitureUCC.modifyFurniture(1, condition, -1, -1, -1, -1, null, null, null,
+				"test@test.be", null));
+		UserDTO user = userFactory.getUser();
 		Mockito.when(daoUser.getUserByEmail("test@test.be")).thenReturn(user);
 		user.setEmail("test@test.be");
 		Mockito.when(daoUser.getUserByEmail("test@test.be")).thenReturn(null);
 		Mockito.when(daoFurniture.updateBuyer(1, 1)).thenReturn(true);
-		assertTrue(furnitureUCC.modifyFurniture(1, 
-				condition, -1, -1, -1, -1, null, null, null, "test@test.be", null));
+		assertTrue(furnitureUCC.modifyFurniture(1, condition, -1, -1, -1, -1, null, null, null,
+				"test@test.be", null));
 
 		Mockito.when(daoFurniture.updateDescription(1, "test")).thenReturn(true);
-		assertTrue(furnitureUCC.modifyFurniture(1, 
-				condition, -1, -1, -1, -1, null, null, null, null, "test"));
+		assertTrue(furnitureUCC.modifyFurniture(1, condition, -1, -1, -1, -1, null, null, null,
+				null, "test"));
 
 		condition = ValueLink.FurnitureCondition.en_magasin;
-		assertTrue(furnitureUCC.modifyFurniture(1, 
-				condition, 200.00, 180.00, 100.00, 1, date, date, date,
-				"test@test.be", "test"));
+		assertTrue(furnitureUCC.modifyFurniture(1, condition, 200.00, 180.00, 100.00, 1, date, date,
+				date, "test@test.be", "test"));
 
-		assertThrows(BusinessException.class, 
-				() -> furnitureUCC.modifyFurniture(0, null, 120.00, 100.00, 60.00, 2,
-				dateFalse, dateFalse, dateFalse, "testFalse@testFalse.be", "testFalse"));
+		assertThrows(BusinessException.class,
+				() -> furnitureUCC.modifyFurniture(0, null, 120.00, 100.00, 60.00, 2, dateFalse,
+						dateFalse, dateFalse, "testFalse@testFalse.be", "testFalse"));
 	}
 
 	@DisplayName("test modifyFavouritePicture")
@@ -444,11 +435,11 @@ public class FurnitureUCCTest {
 	@DisplayName("test getFurnituresFiltered")
 	@Test
 	public void getFurnituresFilteredTest() {
-		List<FurnitureDTO> list = new ArrayList<FurnitureDTO>();
 		assertNotNull(furnitureUCC.getFurnituresFiltered("test", 200.00, "usernameTest"));
 		assertTrue(furnitureUCC.getFurnituresFiltered("test", 200.00, "usernameTest").isEmpty());
-		Mockito.when(daoFurniture.selectFurnituresFiltered("test", 
-				200.00, "usernameTest")).thenReturn(list);
+		List<FurnitureDTO> list = new ArrayList<FurnitureDTO>();
+		Mockito.when(daoFurniture.selectFurnituresFiltered("test", 200.00, "usernameTest"))
+				.thenReturn(list);
 		assertEquals(list, furnitureUCC.getFurnituresFiltered("test", 200.00, "usernameTest"));
 	}
 

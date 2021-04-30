@@ -103,13 +103,13 @@ public class UserUCCTest {
 	public void registerUserAllGood() {
 		// TODO ! revoir les tests de register
 		UserDTO userAlreadyRegistered = userFact.getUser();
-		AddressDTO address = addressFactory.getAddress();
 		userAlreadyRegistered.setUsername("test");
 		userAlreadyRegistered.setEmail("test@gmail.com");
 		Mockito.when(daoUser.getUserByUsername("test")).thenReturn(userAlreadyRegistered);
 		UserDTO userToRegister = userFact.getUser();
 		userToRegister.setUsername("test2");
 		userToRegister.setEmail("test2@gmail.com");
+		AddressDTO address = addressFactory.getAddress();
 		userToRegister.setAddress(address);
 		Mockito.when(daoAddress.selectAddressID(address)).thenReturn(1);
 		assertTrue(userUCC.register(userToRegister) != null);
@@ -142,13 +142,13 @@ public class UserUCCTest {
 	@DisplayName("test validateUser with good parameters")
 	@Test
 	public void validateUserAllGood() {
-		UserType client = ValueLink.UserType.client;
-		UserType admin = ValueLink.UserType.admin;
 		UserDTO userToValidate = userFact.getUser();
 		userToValidate.setId(1);
 		Mockito.when(daoUser.getUserById(1)).thenReturn(userToValidate);
+		UserType client = ValueLink.UserType.client;
+		UserType admin = ValueLink.UserType.admin;
 		Mockito.when(daoUser.validateUser(userToValidate.getId(), client.ordinal()))
-		.thenReturn(true);
+				.thenReturn(true);
 		assertTrue(userUCC.validateUser(userToValidate.getId(), client));
 		assertFalse(userUCC.validateUser(userToValidate.getId(), admin));
 		assertFalse(daoUser.getUnvalidatedUsers().contains(userToValidate));
@@ -157,11 +157,10 @@ public class UserUCCTest {
 	@DisplayName("test validateUser with bad user")
 	@Test
 	public void validateUserBadUser() {
-		UserType client = ValueLink.UserType.client;
-		UserType admin = ValueLink.UserType.admin;
 		UserDTO userToValidate = userFact.getUser();
 		// user n'existe pas encore
-		assertThrows(BusinessException.class, 
+		UserType client = ValueLink.UserType.client;
+		assertThrows(BusinessException.class,
 				() -> userUCC.validateUser(userToValidate.getId(), client));
 		assertFalse(daoUser.getUnvalidatedUsers().contains(userToValidate));
 		Mockito.when(daoUser.getUserById(1)).thenReturn(userToValidate);
@@ -169,6 +168,7 @@ public class UserUCCTest {
 		userToValidate.setValidRegistration(true);
 		userToValidate.setUserType(client);
 		assertTrue(userToValidate.isValidRegistration());
+		UserType admin = ValueLink.UserType.admin;
 		assertThrows(BusinessException.class, () -> userUCC.validateUser(1, client));
 		assertThrows(BusinessException.class, () -> userUCC.validateUser(1, admin));
 		// test if some error occured during process
