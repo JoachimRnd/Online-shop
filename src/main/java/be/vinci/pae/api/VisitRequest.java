@@ -33,7 +33,6 @@ import java.util.Date;
 import java.util.List;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.server.ContainerRequest;
 
 @Singleton
@@ -81,17 +80,17 @@ public class VisitRequest {
   @Path("/addforother") // Your Path or URL to call this service
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @AuthorizeAdmin
-  public Response uploadFileForOther(FormDataMultiPart formDataMultiPart,
-      @FormDataParam("file") InputStream uploadedInputStream) {
-    formDataMultiPart.getField("email").setMediaType(MediaType.APPLICATION_JSON_TYPE);
+  public Response uploadFileForOther(FormDataMultiPart formDataMultiPart) {
     String email = formDataMultiPart.getField("email").getValueAs(String.class);
-    System.out.println(email);
-    email = email.substring(1, email.length() - 1);
     if (email.equals("")) {
       return Response.status(Status.UNAUTHORIZED).entity("Veuillez mettre l'email du client")
           .type(MediaType.TEXT_PLAIN).build();
     }
     UserDTO user = userUCC.getUserByEmail(email);
+    if (user == null) {
+      return Response.status(Status.UNAUTHORIZED).entity("Cet utilisateur n'existe pas")
+          .type(MediaType.TEXT_PLAIN).build();
+    }
     return verifyFormData(formDataMultiPart, true, user);
   }
 
@@ -105,7 +104,7 @@ public class VisitRequest {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Authorize
   public Response addVisitRequest(FormDataMultiPart formDataMultiPart,
-      @FormDataParam("file") InputStream uploadedInputStream, @Context ContainerRequest request) {
+      @Context ContainerRequest request) {
     UserDTO currentUser = (UserDTO) request.getProperty("user");
     return verifyFormData(formDataMultiPart, false, currentUser);
   }

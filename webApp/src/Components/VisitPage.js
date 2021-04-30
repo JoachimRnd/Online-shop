@@ -186,7 +186,9 @@ const onVisitRequest = async (e) => {
     let address;
     if(user.user.userType === "admin"){
         let email = document.getElementById("email").value;
-        fd.append("email", JSON.stringify(email));
+        console.log(email);
+        console.log(JSON.stringify(email));
+        fd.append("email", email);
         fd.append("home_visit", JSON.stringify(document.getElementById("home_visit").checked));
         if(!document.getElementById("home_visit").checked) {
             let unitNumber = null;
