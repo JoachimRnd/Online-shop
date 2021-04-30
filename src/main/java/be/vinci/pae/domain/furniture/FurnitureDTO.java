@@ -76,8 +76,8 @@ public interface FurnitureDTO {
 
   void setUnregisteredBuyerEmail(String unregisteredBuyerEmail);
 
-  PictureDTO getFavouritePicture();
+  int getFavouritePicture();
 
-  void setFavouritePicture(PictureDTO favouritePicture);
+  void setFavouritePicture(int favouritePicture);
 
 }

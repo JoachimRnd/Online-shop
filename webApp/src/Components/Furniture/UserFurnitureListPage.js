@@ -30,7 +30,7 @@ let furniturePage = `<h4 id="pageTitle">Mes meubles</h4>
     </div>
 </div>`;
 
-const FurnitureUserListPage = async () => {
+const UserFurnitureListPage = async () => {
     let page = document.querySelector("#page");
     page.innerHTML = furniturePage;
 
@@ -155,4 +155,4 @@ const onFurnitureSell = (data) => {
 };
 
 
-export default FurnitureUserListPage;
+export default UserFurnitureListPage;

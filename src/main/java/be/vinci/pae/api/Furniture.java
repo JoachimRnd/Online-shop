@@ -1,5 +1,9 @@
 package be.vinci.pae.api;
 
+import java.time.LocalDate;
+import java.util.List;
+import org.glassfish.jersey.server.ContainerRequest;
+import com.fasterxml.jackson.databind.JsonNode;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.api.utils.Json;
@@ -13,7 +17,6 @@ import be.vinci.pae.domain.type.TypeDTO;
 import be.vinci.pae.domain.type.TypeUCC;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
-import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -28,9 +31,6 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-import java.time.LocalDate;
-import java.util.List;
-import org.glassfish.jersey.server.ContainerRequest;
 
 @Singleton
 @Path("/furniture")
@@ -58,8 +58,7 @@ public class Furniture {
   @Path("allFurniture")
   @Produces(MediaType.APPLICATION_JSON)
   public List<FurnitureDTO> listAllFurniture() {
-    return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureUsers(),
-        FurnitureDTO.class);
+    return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureUsers(), FurnitureDTO.class);
   }
 
   /**
@@ -100,18 +99,6 @@ public class Furniture {
         OptionDTO.class);
   }
 
-  /**
-   * List sales furniture.
-   *
-   * @return List of FurnitureDTO
-   */
-  @GET
-  @Path("sales")
-  @Produces(MediaType.APPLICATION_JSON)
-  public List<FurnitureDTO> listSalesFurniture() {
-    return Json.filterPublicJsonViewAsList(furnitureUCC.getSalesFurnitureAdmin(),
-        FurnitureDTO.class);
-  }
 
   /**
    * Get personal furniture with id.
@@ -162,7 +149,7 @@ public class Furniture {
     }
     return optionUCC.addOption(idFurniture, json.get("duration").asInt(),
         (UserDTO) request.getProperty("user")) ? Response.ok().build()
-        : Response.serverError().build();
+            : Response.serverError().build();
   }
 
   /**
@@ -186,6 +173,41 @@ public class Furniture {
   @GET
   @Path("/furnituresellby/{id}")
   @Produces(MediaType.APPLICATION_JSON)
+  public List<FurnitureDTO> listSalesFurniture() {
+    return Json.filterPublicJsonViewAsList(furnitureUCC.getSalesFurnitureAdmin(),
+        FurnitureDTO.class);
+  }
+
+  /**
+   * List all pictures by furniture ID.
+   *
+   * @return List of PictureDTO
+   */
+  @GET
+  @Path("{idFurniture}/all-pictures-furniture")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public List<PictureDTO> getAllPicturesByFurnitureId(@PathParam("idFurniture") int idFurniture) {
+    return Json.filterPublicJsonViewAsList(this.pictureUCC.getPicturesByFurnitureId(idFurniture),
+        PictureDTO.class);
+  }
+
+  /**
+   * List public pictures by furniture ID.
+   *
+   * @return List of PictureDTO
+   */
+  @GET
+  @Path("{idFurniture}/public-pictures-furniture")
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<PictureDTO> getPublicPicturesByFurnitureId(
+      @PathParam("idFurniture") int idFurniture) {
+    return Json.filterPublicJsonViewAsList(this.pictureUCC.getPicturesByFurnitureId(idFurniture),
+        PictureDTO.class);
+  }
+
+
+
   @Authorize
   public List<FurnitureDTO> getFurnitureSellBy(@PathParam("id") int id) {
     return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureSellBy(id), FurnitureDTO.class);
@@ -197,17 +219,11 @@ public class Furniture {
    * @return Response
    */
   @PUT
-  @Path("/{idFurniture}/favourite-picture")
-  @Consumes(MediaType.APPLICATION_JSON)
+  @Path("/{idPicture}/favourite-picture")
   @AuthorizeAdmin
-  public Response modifyFavouritePicture(@PathParam("idFurniture") int idFurniture, JsonNode json) {
-    if (!json.has("idPicture")) {
-      return Response.status(Status.UNAUTHORIZED).entity("Veuillez indiquer l'id d'une image")
-          .type(MediaType.TEXT_PLAIN).build();
-    }
-
-    return furnitureUCC.modifyFavouritePicture(idFurniture, json.get("idPicture").asInt())
-        ? Response.ok().build() : Response.serverError().build();
+  public Response modifyFavouritePicture(@PathParam("idPicture") int idPicture) {
+    return furnitureUCC.modifyFavouritePicture(idPicture) ? Response.ok().build()
+        : Response.serverError().build();
   }
 
   /**
@@ -223,6 +239,26 @@ public class Furniture {
         : Response.status(Status.UNAUTHORIZED).entity("Erreur ajouter photo défilante")
             .type(MediaType.TEXT_PLAIN).build();
   }
+
+
+
+  /**
+   * update visible for everyone or not on the picture with id.
+   *
+   * @return Response
+   */
+  @PUT
+  @Path("/{idPicture}/visible")
+  @AuthorizeAdmin
+  public Response modifyVisibleForEveryone(@PathParam("idPicture") int idPicture) {
+    if (!pictureUCC.modifyVisibleForEveryone(idPicture)) {
+      return Response.status(Status.UNAUTHORIZED).entity("Erreur rendre public ou privé.")
+          .type(MediaType.TEXT_PLAIN).build();
+    }
+    return Response.ok().build();
+  }
+
+
 
   /**
    * delete picture with id.
@@ -303,9 +339,8 @@ public class Furniture {
       buyerEmail = json.get("buyerEmail").asText();
     }
 
-    return furnitureUCC
-        .modifyFurniture(id, condition, sellingPrice, specialSalePrice, purchasePrice, type,
-            withdrawalDateFromCustomer, withdrawalDateToCustomer, deliveryDate, buyerEmail,
-            description) ? Response.ok().build() : Response.serverError().build();
+    return furnitureUCC.modifyFurniture(id, condition, sellingPrice, specialSalePrice,
+        purchasePrice, type, withdrawalDateFromCustomer, withdrawalDateToCustomer, deliveryDate,
+        buyerEmail, description) ? Response.ok().build() : Response.serverError().build();
   }
 }

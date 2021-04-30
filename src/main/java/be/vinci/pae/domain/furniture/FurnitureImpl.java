@@ -1,6 +1,7 @@
 package be.vinci.pae.domain.furniture;
 
 import java.util.Date;
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import be.vinci.pae.domain.picture.PictureDTO;
@@ -8,7 +9,6 @@ import be.vinci.pae.domain.type.TypeDTO;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.visitrequest.VisitRequestDTO;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
-import java.util.List;
 import views.Views;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -49,7 +49,7 @@ class FurnitureImpl implements Furniture {
   @JsonView(Views.Admin.class)
   private String unregisteredBuyerEmail;
   @JsonView(Views.Admin.class)
-  private PictureDTO favouritePicture;
+  private int favouritePicture;
 
   @Override
   public int getId() {
@@ -212,12 +212,12 @@ class FurnitureImpl implements Furniture {
   }
 
   @Override
-  public PictureDTO getFavouritePicture() {
+  public int getFavouritePicture() {
     return favouritePicture;
   }
 
   @Override
-  public void setFavouritePicture(PictureDTO favouritePicture) {
+  public void setFavouritePicture(int favouritePicture) {
     this.favouritePicture = favouritePicture;
   }
 
