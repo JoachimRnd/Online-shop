@@ -38,123 +38,119 @@ import be.vinci.pae.services.visitrequest.DAOVisitRequest;
 
 public class VisitRequestUCCTest {
 
-  VisitRequestFactory vrFactory;
-  AddressFactory addressFactory;
-  PictureFactory pictureFactory;
-  FurnitureFactory furnitureFactory;
-  UserFactory userFactory;
+	VisitRequestFactory vrFactory;
+	AddressFactory addressFactory;
+	PictureFactory pictureFactory;
+	FurnitureFactory furnitureFactory;
+	UserFactory userFactory;
 
-  @Mock
-  DalServices dalServices;
+	@Mock
+	DalServices dalServices;
 
-  @Mock
-  DAOVisitRequest daoVR;
-  @Mock
-  DAOFurniture daoFurniture;
-  @Mock
-  DAOAddress daoAddress;
-  @Mock
-  DAOPicture daoPicture;
+	@Mock
+	DAOVisitRequest daoVR;
+	@Mock
+	DAOFurniture daoFurniture;
+	@Mock
+	DAOAddress daoAddress;
+	@Mock
+	DAOPicture daoPicture;
 
-  @InjectMocks
-  VisitRequestUCCImpl vrUCC;
+	@InjectMocks
+	VisitRequestUCCImpl vrUCC;
 
+	@BeforeEach
+	void initAll() {
+		MockitoAnnotations.initMocks(this);
+		ServiceLocator locator = ServiceLocatorUtilities.bind(new ApplicationBinder());
+		this.vrFactory = locator.getService(VisitRequestFactory.class);
+		this.addressFactory = locator.getService(AddressFactory.class);
+		this.pictureFactory = locator.getService(PictureFactory.class);
+		this.furnitureFactory = locator.getService(FurnitureFactory.class);
+		this.userFactory = locator.getService(UserFactory.class);
 
-  @BeforeEach
-  void initAll() {
-    MockitoAnnotations.initMocks(this);
-    ServiceLocator locator = ServiceLocatorUtilities.bind(new ApplicationBinder());
-    this.vrFactory = locator.getService(VisitRequestFactory.class);
-    this.addressFactory = locator.getService(AddressFactory.class);
-    this.pictureFactory = locator.getService(PictureFactory.class);
-    this.furnitureFactory = locator.getService(FurnitureFactory.class);
-    this.userFactory = locator.getService(UserFactory.class);
+	}
 
-  }
+	@DisplayName("test if VR is null")
+	@Test
+	public void VRUCCNotNullTest() {
+		assertNotNull(this.vrUCC);
+	}
 
-  @DisplayName("test if VR is null")
-  @Test
-  public void VRUCCNotNullTest() {
-    assertNotNull(this.vrUCC);
-  }
+	@DisplayName("test addVisitRequest")
+	@Test
+	public void addVisitRequestTest() {
+		// TODO
+		UserDTO user = userFactory.getUser();
+		AddressDTO address = addressFactory.getAddress();
+		VisitRequestDTO vr = vrFactory.getVisitRequest();
+		vr.setAddress(address);
+		FurnitureDTO furniture = furnitureFactory.getFurniture();
+		PictureDTO picture = pictureFactory.getPicture();
+		List<FurnitureDTO> list = new ArrayList<FurnitureDTO>();
+		vr.setFurnitureList(list);
+		Mockito.when(daoAddress.addAddress(address)).thenReturn(1);
+		Mockito.when(daoVR.addVisitRequest(vr)).thenReturn(1);
+		Mockito.when(daoFurniture.insertFurniture(furniture)).thenReturn(1);
+		Mockito.when(daoPicture.addPicture(picture)).thenReturn(1);
+		List<InputStream> inputStreamList = null;
+		assertEquals(vr, vrUCC.addVisitRequest(vr, user, inputStreamList));
+		Mockito.when(daoAddress.addAddress(address)).thenReturn(-1);
+		assertNull(vrUCC.addVisitRequest(vr, user, inputStreamList));
+		Mockito.when(daoAddress.addAddress(address)).thenReturn(1);
+		Mockito.when(daoVR.addVisitRequest(vr)).thenReturn(-1);
+		assertNull(vrUCC.addVisitRequest(vr, user, inputStreamList));
+		Mockito.when(daoFurniture.insertFurniture(furniture)).thenReturn(-1);
+		assertNull(vrUCC.addVisitRequest(vr, user, inputStreamList));
+		Mockito.when(daoFurniture.insertFurniture(furniture)).thenReturn(1);
+		Mockito.when(daoPicture.addPicture(picture)).thenReturn(-1);
+		assertNull(vrUCC.addVisitRequest(vr, user, inputStreamList));
 
-  @DisplayName("test addVisitRequest")
-  @Test
-  public void addVisitRequestTest() {
-    // TODO
-    UserDTO user = userFactory.getUser();
-    AddressDTO address = addressFactory.getAddress();
-    VisitRequestDTO vr = vrFactory.getVisitRequest();
-    vr.setAddress(address);
-    FurnitureDTO furniture = furnitureFactory.getFurniture();
-    PictureDTO picture = pictureFactory.getPicture();
-    List<FurnitureDTO> list = new ArrayList<FurnitureDTO>();
-    vr.setFurnitureList(list);
-    Mockito.when(daoAddress.addAddress(address)).thenReturn(1);
-    Mockito.when(daoVR.addVisitRequest(vr)).thenReturn(1);
-    Mockito.when(daoFurniture.insertFurniture(furniture)).thenReturn(1);
-    Mockito.when(daoPicture.addPicture(picture)).thenReturn(1);
-    List<InputStream> inputStreamList = null;
-    assertEquals(vr, vrUCC.addVisitRequest(vr, user, inputStreamList));
-    Mockito.when(daoAddress.addAddress(address)).thenReturn(-1);
-    assertNull(vrUCC.addVisitRequest(vr, user, inputStreamList));
-    Mockito.when(daoAddress.addAddress(address)).thenReturn(1);
-    Mockito.when(daoVR.addVisitRequest(vr)).thenReturn(-1);
-    assertNull(vrUCC.addVisitRequest(vr, user, inputStreamList));
-    Mockito.when(daoFurniture.insertFurniture(furniture)).thenReturn(-1);
-    assertNull(vrUCC.addVisitRequest(vr, user, inputStreamList));
-    Mockito.when(daoFurniture.insertFurniture(furniture)).thenReturn(1);
-    Mockito.when(daoPicture.addPicture(picture)).thenReturn(-1);
-    assertNull(vrUCC.addVisitRequest(vr, user, inputStreamList));
+	}
 
-  }
+	@DisplayName("test getAllVisitsOpenned")
+	@Test
+	public void getAllVisitsOpennedTest() {
+		List<VisitRequestDTO> list = new ArrayList<VisitRequestDTO>();
+		assertNotNull(vrUCC.getAllVisitsOpenned());
+		assertTrue(vrUCC.getAllVisitsOpenned().isEmpty());
+		Mockito.when(daoVR.getAllVisitsOpenned()).thenReturn(list);
+		assertEquals(list, vrUCC.getAllVisitsOpenned());
+	}
 
-  @DisplayName("test getAllVisitsOpenned")
-  @Test
-  public void getAllVisitsOpennedTest() {
-    List<VisitRequestDTO> list = new ArrayList<VisitRequestDTO>();
-    assertNotNull(vrUCC.getAllVisitsOpenned());
-    assertTrue(vrUCC.getAllVisitsOpenned().isEmpty());
-    Mockito.when(daoVR.getAllVisitsOpenned()).thenReturn(list);
-    assertEquals(list, vrUCC.getAllVisitsOpenned());
-  }
+	@DisplayName("test getVisitRequestById")
+	@Test
+	public void getVisitRequestByIdTest() {
+		VisitRequestDTO vr = vrFactory.getVisitRequest();
+		Mockito.when(daoVR.selectVisitRequestById(1)).thenReturn(vr);
+		assertEquals(vr, vrUCC.getVisitRequestById(1));
+		Mockito.when(daoVR.selectVisitRequestById(1)).thenReturn(null);
+		assertNull(vrUCC.getVisitRequestById(1));
+	}
 
-  @DisplayName("test getVisitRequestById")
-  @Test
-  public void getVisitRequestByIdTest() {
-    VisitRequestDTO vr = vrFactory.getVisitRequest();
-    Mockito.when(daoVR.selectVisitRequestById(1)).thenReturn(vr);
-    assertEquals(vr, vrUCC.getVisitRequestById(1));
-    Mockito.when(daoVR.selectVisitRequestById(1)).thenReturn(null);
-    assertNull(vrUCC.getVisitRequestById(1));
-  }
-
-  @DisplayName("test modifyVisitRequest")
-  @Test
-  public void modifyVisitRequestTest() {
-    VisitRequestDTO vr = vrFactory.getVisitRequest();
-    Mockito.when(daoVR.cancelVisitRequest(1, "test")).thenReturn(true);
-    Mockito.when(daoFurniture.refuseAllFurnitureByVisitId(1)).thenReturn(true);
-    assertEquals("annulee", vrUCC.modifyVisitRequest(1, "test", "2021-04-01"));
-    Mockito.when(daoVR.cancelVisitRequest(1, "test")).thenReturn(false);
-    Mockito.when(daoFurniture.refuseAllFurnitureByVisitId(1)).thenReturn(false);
-    assertEquals(null, vrUCC.modifyVisitRequest(1, "test", "2021-04-01"));
-    Mockito
-        .when(daoVR.chooseDateForVisit(1,
-            Timestamp.valueOf(LocalDate.parse("2021-04-01").atTime(LocalTime.NOON))))
-        .thenReturn(true);
-    assertEquals("confirmee", vrUCC.modifyVisitRequest(1, "test", "2021-04-01"));
-    Mockito
-        .when(daoVR.chooseDateForVisit(1,
-            Timestamp.valueOf(LocalDate.parse("2021-04-01").atTime(LocalTime.NOON))))
-        .thenReturn(false);
-    assertEquals(null, vrUCC.modifyVisitRequest(1, "test", "2021-04-01"));
-    Mockito.when(daoVR.cancelVisitRequest(1, "test")).thenReturn(true);
-    Mockito.when(daoFurniture.refuseAllFurnitureByVisitId(1)).thenReturn(true);
-    Mockito
-        .when(daoVR.chooseDateForVisit(1,
-            Timestamp.valueOf(LocalDate.parse("2021-04-01").atTime(LocalTime.NOON))))
-        .thenReturn(true);
-    assertEquals(null, vrUCC.modifyVisitRequest(1, null, null));
-  }
+	@DisplayName("test modifyVisitRequest")
+	@Test
+	public void modifyVisitRequestTest() {
+		VisitRequestDTO vr = vrFactory.getVisitRequest();
+		Mockito.when(daoVR.cancelVisitRequest(1, "test")).thenReturn(true);
+		Mockito.when(daoFurniture.refuseAllFurnitureByVisitId(1)).thenReturn(true);
+		assertEquals("annulee", vrUCC.modifyVisitRequest(1, "test", "2021-04-01"));
+		Mockito.when(daoVR.cancelVisitRequest(1, "test")).thenReturn(false);
+		Mockito.when(daoFurniture.refuseAllFurnitureByVisitId(1)).thenReturn(false);
+		assertEquals(null, vrUCC.modifyVisitRequest(1, "test", "2021-04-01"));
+		Mockito.when(
+				daoVR.chooseDateForVisit(1, Timestamp.valueOf(
+						LocalDate.parse("2021-04-01").atTime(LocalTime.NOON)))).thenReturn(true);
+		assertEquals("confirmee", vrUCC.modifyVisitRequest(1, "test", "2021-04-01"));
+		Mockito.when(
+				daoVR.chooseDateForVisit(1, Timestamp.valueOf(LocalDate.parse("2021-04-01")
+						.atTime(LocalTime.NOON)))).thenReturn(false);
+		assertEquals(null, vrUCC.modifyVisitRequest(1, "test", "2021-04-01"));
+		Mockito.when(daoVR.cancelVisitRequest(1, "test")).thenReturn(true);
+		Mockito.when(daoFurniture.refuseAllFurnitureByVisitId(1)).thenReturn(true);
+		Mockito.when(
+				daoVR.chooseDateForVisit(1, Timestamp.valueOf(
+						LocalDate.parse("2021-04-01").atTime(LocalTime.NOON)))).thenReturn(true);
+		assertEquals(null, vrUCC.modifyVisitRequest(1, null, null));
+	}
 }
