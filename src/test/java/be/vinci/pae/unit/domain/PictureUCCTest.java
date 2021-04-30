@@ -67,6 +67,26 @@ public class PictureUCCTest {
     Mockito.when(daoPicture.getCarouselPictures()).thenReturn(list);
     assertEquals(list, pictureUCC.getCarouselPictures());
   }
+  
+  @DisplayName("test getPicturesByFurnitureId")
+  @Test
+  public void getPicturesByFurnitureIdTest() {
+    List<PictureDTO> list = new ArrayList<PictureDTO>();
+    assertNotNull(pictureUCC.getPicturesByFurnitureId(1));
+    assertTrue(pictureUCC.getPicturesByFurnitureId(1).isEmpty());
+    Mockito.when(daoPicture.selectPicturesByFurnitureId(1)).thenReturn(list);
+    assertEquals(list, pictureUCC.getPicturesByFurnitureId(1));
+  }
+  
+  @DisplayName("test getPublicPicturesByFurnitureId")
+  @Test
+  public void getPublicPicturesByFurnitureIdTest() {
+    List<PictureDTO> list = new ArrayList<PictureDTO>();
+    assertNotNull(pictureUCC.getPublicPicturesByFurnitureId(1));
+    assertTrue(pictureUCC.getPublicPicturesByFurnitureId(1).isEmpty());
+    Mockito.when(daoPicture.selectPublicPicturesByFurnitureId(1)).thenReturn(list);
+    assertEquals(list, pictureUCC.getPublicPicturesByFurnitureId(1));
+  }
 
   @DisplayName("test addPicture")
   @Test
@@ -96,7 +116,7 @@ public class PictureUCCTest {
     FurnitureDTO furniture = furnitureFactory.getFurniture();
     furniture.setId(1);
     
-    furniture.setFavouritePicture(picture);
+    //furniture.setFavouritePicture(picture);
     picture.setFurniture(furniture);
     
     
@@ -105,6 +125,15 @@ public class PictureUCCTest {
     assertTrue(pictureUCC.deletePicture(1));
     Mockito.when(daoPicture.deletePicture(1)).thenReturn(false);
     assertThrows(BusinessException.class, () -> pictureUCC.deletePicture(1));
+  }
+  
+  @DisplayName("test modifyVisibleForEveryone")
+  @Test
+  public void modifyVisibleForEveryoneTest() {
+    Mockito.when(daoPicture.updateVisibleForEveryone(1)).thenReturn(true);
+    assertTrue(pictureUCC.modifyVisibleForEveryone(1));
+    Mockito.when(daoPicture.updateVisibleForEveryone(1)).thenReturn(false);
+    assertThrows(BusinessException.class, () -> pictureUCC.modifyVisibleForEveryone(1));
   }
 
 }
