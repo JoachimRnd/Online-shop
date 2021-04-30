@@ -72,5 +72,7 @@ td button{
   filter: invert(1);
 }
 
+.map { height: 180px; }
+
 #filter_carousel {
 }
