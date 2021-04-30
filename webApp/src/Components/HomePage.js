@@ -64,8 +64,9 @@ const onPicturesList = (data) => {
   for (let i = 0; i < data.length; i++) {
     if(i== 0){
       carousel += `<li data-target="#carouselPictures" data-slide-to="${i}" class="active"></li>`
+    }else{
+      carousel += `<li data-target="#carouselPictures" data-slide-to="${i}"></li>`;
     }
-    carousel += `<li data-target="#carouselPictures" data-slide-to="${i}"></li>`;
   }
   carousel += `</ol> <div class="carousel-inner">`;
 

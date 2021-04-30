@@ -1,5 +1,6 @@
 package be.vinci.pae.utils;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,4 +34,17 @@ public class Upload {
       throw new FatalException("Error while copying the file on the disk");
     }
   }
+
+
+  /**
+   * delete uploadedInputStream from disk.
+   *
+   * @param fileLocation Location of file
+   * @return boolean
+   */
+  public static boolean deleteFile(String fileLocation) {
+    File file = new File(fileLocation);
+    return file.delete();
+  }
+
 }

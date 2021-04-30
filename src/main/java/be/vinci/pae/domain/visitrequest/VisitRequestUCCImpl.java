@@ -2,8 +2,7 @@ package be.vinci.pae.domain.visitrequest;
 
 import java.io.InputStream;
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.apache.commons.text.StringEscapeUtils;
 import be.vinci.pae.domain.address.AddressDTO;
@@ -158,7 +157,7 @@ public class VisitRequestUCCImpl implements VisitRequestUCC {
         dalServices.commitTransaction();
         return VisitRequestStatus.annulee.name();
       } else if (chosenDateTime != null && daoVisitRequest.chooseDateForVisit(id,
-          Timestamp.valueOf(LocalDate.parse(chosenDateTime).atTime(LocalTime.NOON)))) {
+          Timestamp.valueOf(LocalDateTime.parse(chosenDateTime)))) {
         dalServices.commitTransaction();
         return VisitRequestStatus.confirmee.name();
       }

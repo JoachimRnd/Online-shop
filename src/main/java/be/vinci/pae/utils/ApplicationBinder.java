@@ -1,5 +1,6 @@
 package be.vinci.pae.utils;
 
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import be.vinci.pae.domain.address.AddressFactory;
 import be.vinci.pae.domain.address.AddressFactoryImpl;
 import be.vinci.pae.domain.address.AddressUCC;
@@ -47,7 +48,6 @@ import be.vinci.pae.services.visitrequest.DAOVisitRequest;
 import be.vinci.pae.services.visitrequest.DAOVisitRequestImpl;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.ext.Provider;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 @Provider
 public class ApplicationBinder extends AbstractBinder {
@@ -88,7 +88,7 @@ public class ApplicationBinder extends AbstractBinder {
     bind(VisitRequestFactoryImpl.class).to(VisitRequestFactory.class).in(Singleton.class);
     bind(VisitRequestUCCImpl.class).to(VisitRequestUCC.class).in(Singleton.class);
     bind(DAOVisitRequestImpl.class).to(DAOVisitRequest.class).in(Singleton.class);
-    
+
     // DALSERVICES
     bind(DalServicesImpl.class).to(DalServices.class).to(DalBackendServices.class)
         .in(Singleton.class);
