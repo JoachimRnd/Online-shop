@@ -188,7 +188,8 @@ public class OptionUCCImpl implements OptionUCC {
 
   // TODO voir si ce n'est pas automatisable
   private OptionDTO verifyOptionStatus(OptionDTO option) {
-    if (option != null && option.getStatus().equals(OptionStatus.en_cours)
+    if (option != null && option.getStatus().equals(
+        OptionStatus.en_cours)
         && TimeUnit.DAYS.convert(new Date().getTime() - option.getDate().getTime(),
             TimeUnit.MILLISECONDS) > option.getDuration()) {
       try {
