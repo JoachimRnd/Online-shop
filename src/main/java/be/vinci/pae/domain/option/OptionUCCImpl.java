@@ -18,8 +18,8 @@ import java.util.concurrent.TimeUnit;
 
 public class OptionUCCImpl implements OptionUCC {
 
-  private static final int MAX_DURATION_OPTION = Config.getIntProperty("MaxDurationOption");
-  private static final int MIN_DURATION_OPTION = Config.getIntProperty("MinDurationOption");
+  //private static final int MAX_DURATION_OPTION = Config.getIntProperty("MaxDurationOption");
+  //private static final int MIN_DURATION_OPTION = Config.getIntProperty("MinDurationOption");
 
   @Inject
   private DAOOption daoOption;
@@ -37,7 +37,7 @@ public class OptionUCCImpl implements OptionUCC {
   public boolean addOption(int idFurniture, int duration, UserDTO user) {
     try {
       dalServices.startTransaction();
-      if (duration > MAX_DURATION_OPTION || duration < MIN_DURATION_OPTION) {
+      if (duration > Config.getIntProperty("MaxDurationOption") || duration < Config.getIntProperty("MinDurationOption")) {
         throw new BusinessException("Durée de l'option incorrecte");
       }
       FurnitureDTO furniture = daoFurniture.selectFurnitureById(idFurniture);
@@ -60,7 +60,7 @@ public class OptionUCCImpl implements OptionUCC {
         int totalDuration = duration;
         for (OptionDTO option : listPreviousOptionBuyer) {
           totalDuration += option.getDuration();
-          if (totalDuration > MAX_DURATION_OPTION) {
+          if (totalDuration > Config.getIntProperty("MaxDurationOption")) {
             throw new BusinessException(
                 "La duree cumulee de vos options depasse la duree maximale");
           }
