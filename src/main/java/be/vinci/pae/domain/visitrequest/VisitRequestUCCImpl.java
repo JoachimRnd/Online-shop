@@ -8,7 +8,6 @@ import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.address.DAOAddress;
 import be.vinci.pae.services.furniture.DAOFurniture;
 import be.vinci.pae.services.picture.DAOPicture;
-import be.vinci.pae.services.user.DAOUser;
 import be.vinci.pae.services.visitrequest.DAOVisitRequest;
 import be.vinci.pae.utils.Upload;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
@@ -30,9 +29,6 @@ public class VisitRequestUCCImpl implements VisitRequestUCC {
 
   @Inject
   private DAOAddress daoAddress;
-
-  @Inject
-  private DAOUser daoUser;
 
   @Inject
   private DAOVisitRequest daoVisitRequest;
