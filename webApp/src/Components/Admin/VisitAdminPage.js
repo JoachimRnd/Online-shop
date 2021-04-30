@@ -90,7 +90,6 @@ const onVisitInformation = (data) => {
         var date = today.getFullYear()+'-'+("0" + (today.getMonth() + 1)).slice(-2)+'-'+("0" + today.getDate()).slice(-2);
         var time = ("0" + today.getHours()).slice(-2) + ":" +  ("0" + today.getMinutes()).slice(-2);
         var dateTime = date+'T'+time;
-        console.log(dateTime);
         visitInformation += `    <label for="chosen_date_time">Date de la visite</label>
                                  <input type="datetime-local" class="form-control" id="chosen_date_time" placeholder="Choisir une date" min="${dateTime}">
                                  <button class="btn btn-success" id="chosen_date_time_btn">Demandes de visites</button></div>
