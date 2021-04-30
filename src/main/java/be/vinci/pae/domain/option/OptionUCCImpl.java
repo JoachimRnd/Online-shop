@@ -18,8 +18,8 @@ import java.util.concurrent.TimeUnit;
 
 public class OptionUCCImpl implements OptionUCC {
 
-  //private static final int MAX_DURATION_OPTION = Config.getIntProperty("MaxDurationOption");
-  //private static final int MIN_DURATION_OPTION = Config.getIntProperty("MinDurationOption");
+  // private static final int MAX_DURATION_OPTION = Config.getIntProperty("MaxDurationOption");
+  // private static final int MIN_DURATION_OPTION = Config.getIntProperty("MinDurationOption");
 
   @Inject
   private DAOOption daoOption;
@@ -37,8 +37,8 @@ public class OptionUCCImpl implements OptionUCC {
   public boolean addOption(int idFurniture, int duration, UserDTO user) {
     try {
       dalServices.startTransaction();
-      if (duration > Config.getIntProperty("MaxDurationOption") 
-    		  || duration < Config.getIntProperty("MinDurationOption")) {
+      if (duration > Config.getIntProperty("MaxDurationOption")
+          || duration < Config.getIntProperty("MinDurationOption")) {
         throw new BusinessException("Durée de l'option incorrecte");
       }
       FurnitureDTO furniture = daoFurniture.selectFurnitureById(idFurniture);
@@ -79,7 +79,7 @@ public class OptionUCCImpl implements OptionUCC {
       for (OptionDTO option : listPreviousOption) {
         if (option.getStatus() == OptionStatus.en_cours
             && TimeUnit.DAYS.convert(newOption.getDate().getTime() - option.getDate().getTime(),
-            TimeUnit.MILLISECONDS) <= option.getDuration()) {
+                TimeUnit.MILLISECONDS) <= option.getDuration()) {
           throw new BusinessException("Il y a deja une option en cours pour ce meuble");
         }
       }
@@ -188,16 +188,13 @@ public class OptionUCCImpl implements OptionUCC {
 
   // TODO voir si ce n'est pas automatisable
   private OptionDTO verifyOptionStatus(OptionDTO option) {
-    if (option != null && option.getStatus().equals(
-        OptionStatus.en_cours)
+    if (option != null && option.getStatus().equals(OptionStatus.en_cours)
         && TimeUnit.DAYS.convert(new Date().getTime() - option.getDate().getTime(),
-        TimeUnit.MILLISECONDS) > option.getDuration()) {
+            TimeUnit.MILLISECONDS) > option.getDuration()) {
       try {
         dalServices.startTransaction();
-        if (daoOption.finishOption(option.getId())
-            && daoFurniture
-            .updateCondition(option.getFurniture().getId(),
-                FurnitureCondition.en_vente.ordinal())) {
+        if (daoOption.finishOption(option.getId()) && daoFurniture.updateCondition(
+            option.getFurniture().getId(), FurnitureCondition.en_vente.ordinal())) {
           dalServices.commitTransaction();
           option.setStatus(OptionStatus.finie);
         } else {

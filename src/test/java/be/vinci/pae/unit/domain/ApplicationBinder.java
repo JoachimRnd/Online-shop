@@ -21,15 +21,15 @@ import jakarta.ws.rs.ext.Provider;
 @Provider
 public class ApplicationBinder extends AbstractBinder {
 
-	@Override
-	protected void configure() {
-		bind(UserFactoryImpl.class).to(UserFactory.class).in(Singleton.class);
-		bind(OptionFactoryImpl.class).to(OptionFactory.class).in(Singleton.class);
-		bind(FurnitureFactoryImpl.class).to(FurnitureFactory.class).in(Singleton.class);
-		bind(TypeFactoryImpl.class).to(TypeFactory.class).in(Singleton.class);
-		bind(VisitRequestFactoryImpl.class).to(VisitRequestFactory.class).in(Singleton.class);
-		bind(PictureFactoryImpl.class).to(PictureFactory.class).in(Singleton.class);
-		bind(AddressFactoryImpl.class).to(AddressFactory.class).in(Singleton.class);
+  @Override
+  protected void configure() {
+    bind(UserFactoryImpl.class).to(UserFactory.class).in(Singleton.class);
+    bind(OptionFactoryImpl.class).to(OptionFactory.class).in(Singleton.class);
+    bind(FurnitureFactoryImpl.class).to(FurnitureFactory.class).in(Singleton.class);
+    bind(TypeFactoryImpl.class).to(TypeFactory.class).in(Singleton.class);
+    bind(VisitRequestFactoryImpl.class).to(VisitRequestFactory.class).in(Singleton.class);
+    bind(PictureFactoryImpl.class).to(PictureFactory.class).in(Singleton.class);
+    bind(AddressFactoryImpl.class).to(AddressFactory.class).in(Singleton.class);
 
-	}
+  }
 }

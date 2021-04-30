@@ -24,71 +24,71 @@ import be.vinci.pae.utils.BusinessException;
 
 public class TypeUCCTest {
 
-	TypeFactory typeFactory;
+  TypeFactory typeFactory;
 
-	@Mock
-	DalServices dalServices;
+  @Mock
+  DalServices dalServices;
 
-	@Mock
-	DAOType daoType;
+  @Mock
+  DAOType daoType;
 
-	@InjectMocks
-	TypeUCCImpl typeUCC;
+  @InjectMocks
+  TypeUCCImpl typeUCC;
 
-	@BeforeEach
-	void initAll() {
-		MockitoAnnotations.initMocks(this);
-		ServiceLocator locator = ServiceLocatorUtilities.bind(new ApplicationBinder());
-		this.typeFactory = locator.getService(TypeFactory.class);
+  @BeforeEach
+  void initAll() {
+    MockitoAnnotations.initMocks(this);
+    ServiceLocator locator = ServiceLocatorUtilities.bind(new ApplicationBinder());
+    this.typeFactory = locator.getService(TypeFactory.class);
 
-	}
+  }
 
-	@DisplayName("test if type is null")
-	@Test
-	public void typeUCCNotNullTest() {
-		assertNotNull(this.typeUCC);
-	}
+  @DisplayName("test if type is null")
+  @Test
+  public void typeUCCNotNullTest() {
+    assertNotNull(this.typeUCC);
+  }
 
-	@DisplayName("test addType")
-	@Test
-	public void addTypeTest() {
-		Mockito.when(daoType.addType("Test")).thenReturn(1);
-		assertEquals(1, typeUCC.addFurnitureType("Test"));
-		Mockito.when(daoType.addType("Test")).thenReturn(-1);
-		assertThrows(BusinessException.class, () -> typeUCC.addFurnitureType("Test"));
-	}
+  @DisplayName("test addType")
+  @Test
+  public void addTypeTest() {
+    Mockito.when(daoType.addType("Test")).thenReturn(1);
+    assertEquals(1, typeUCC.addFurnitureType("Test"));
+    Mockito.when(daoType.addType("Test")).thenReturn(-1);
+    assertThrows(BusinessException.class, () -> typeUCC.addFurnitureType("Test"));
+  }
 
-	@DisplayName("test deleteType")
-	@Test
-	public void deleteTypeTest() {
-		Mockito.when(daoType.deleteFurnitureType(1)).thenReturn(true);
-		assertTrue(typeUCC.deleteFurnitureType(1));
-		Mockito.when(daoType.deleteFurnitureType(1)).thenReturn(false);
-		assertThrows(BusinessException.class, () -> typeUCC.deleteFurnitureType(1));
-	}
+  @DisplayName("test deleteType")
+  @Test
+  public void deleteTypeTest() {
+    Mockito.when(daoType.deleteFurnitureType(1)).thenReturn(true);
+    assertTrue(typeUCC.deleteFurnitureType(1));
+    Mockito.when(daoType.deleteFurnitureType(1)).thenReturn(false);
+    assertThrows(BusinessException.class, () -> typeUCC.deleteFurnitureType(1));
+  }
 
-	@DisplayName("test getFurnitureTypes ")
-	@Test
-	public void getFurnitureTypesTest() {
-		List<TypeDTO> list = new ArrayList<TypeDTO>();
-		assertNotNull(typeUCC.getFurnitureTypes());
-		assertTrue(typeUCC.getFurnitureTypes().isEmpty());
-		TypeDTO furniture = typeFactory.getType();
-		list.add(furniture);
-		Mockito.when(daoType.selectFurnitureTypes()).thenReturn(list);
-		assertEquals(list, typeUCC.getFurnitureTypes());
-		assertTrue(typeUCC.getFurnitureTypes().contains(furniture));
-		assertEquals(1, typeUCC.getFurnitureTypes().size());
-	}
+  @DisplayName("test getFurnitureTypes ")
+  @Test
+  public void getFurnitureTypesTest() {
+    List<TypeDTO> list = new ArrayList<TypeDTO>();
+    assertNotNull(typeUCC.getFurnitureTypes());
+    assertTrue(typeUCC.getFurnitureTypes().isEmpty());
+    TypeDTO furniture = typeFactory.getType();
+    list.add(furniture);
+    Mockito.when(daoType.selectFurnitureTypes()).thenReturn(list);
+    assertEquals(list, typeUCC.getFurnitureTypes());
+    assertTrue(typeUCC.getFurnitureTypes().contains(furniture));
+    assertEquals(1, typeUCC.getFurnitureTypes().size());
+  }
 
-	@DisplayName("test getAllTypeNames")
-	@Test
-	public void getAllTypeNamesTest() {
-		List<String> list = new ArrayList<String>();
-		assertNotNull(typeUCC.getAllTypeNames());
-		assertTrue(typeUCC.getAllTypeNames().isEmpty());
-		Mockito.when(daoType.getAllTypesNames()).thenReturn(list);
-		assertEquals(list, typeUCC.getAllTypeNames());
-	}
+  @DisplayName("test getAllTypeNames")
+  @Test
+  public void getAllTypeNamesTest() {
+    List<String> list = new ArrayList<String>();
+    assertNotNull(typeUCC.getAllTypeNames());
+    assertTrue(typeUCC.getAllTypeNames().isEmpty());
+    Mockito.when(daoType.getAllTypesNames()).thenReturn(list);
+    assertEquals(list, typeUCC.getAllTypeNames());
+  }
 
 }
