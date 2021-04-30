@@ -1,10 +1,5 @@
 package be.vinci.pae.domain.visitrequest;
 
-import java.io.InputStream;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.List;
-import org.apache.commons.text.StringEscapeUtils;
 import be.vinci.pae.domain.address.AddressDTO;
 import be.vinci.pae.domain.furniture.FurnitureDTO;
 import be.vinci.pae.domain.picture.PictureDTO;
@@ -18,6 +13,11 @@ import be.vinci.pae.utils.Upload;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
 import be.vinci.pae.utils.ValueLink.VisitRequestStatus;
 import jakarta.inject.Inject;
+import java.io.InputStream;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.List;
+import org.apache.commons.text.StringEscapeUtils;
 
 public class VisitRequestUCCImpl implements VisitRequestUCC {
 
