@@ -61,6 +61,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
   @Inject
   private DAOUser daoUser;
 
+
   /**
    * Contructor of DAOFurnitureImpl. Contain queries.
    */
@@ -569,8 +570,8 @@ public class DAOFurnitureImpl implements DAOFurniture {
       furniture.setBuyer(this.daoUser.getUserById(rs.getInt("buyer")));
       furniture.setCondition(FurnitureCondition.values()[rs.getInt("condition")]);
       furniture.setUnregisteredBuyerEmail(rs.getString("unregistered_buyer_email"));
-      // @TODO Rajouter la liste de Picture
       furniture.setPicturesList(new ArrayList<PictureDTO>());
+      furniture.setFavouritePicture(rs.getInt("favourite_picture"));
     }
     return furniture;
   }

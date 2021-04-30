@@ -221,12 +221,7 @@ public class Furniture {
   @PUT
   @Path("/{idPicture}/favourite-picture")
   @AuthorizeAdmin
-  public Response modifyFavouritePicture(@PathParam("idPicture") int idPicture, JsonNode json) {
-    if (!json.has("idPicture")) {
-      return Response.status(Status.UNAUTHORIZED).entity("Veuillez indiquer l'id d'une image")
-          .type(MediaType.TEXT_PLAIN).build();
-    }
-
+  public Response modifyFavouritePicture(@PathParam("idPicture") int idPicture) {
     return furnitureUCC.modifyFavouritePicture(idPicture) ? Response.ok().build()
         : Response.serverError().build();
   }

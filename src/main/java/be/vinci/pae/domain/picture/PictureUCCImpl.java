@@ -85,7 +85,7 @@ public class PictureUCCImpl implements PictureUCC {
     PictureDTO pictureDTO = this.daoPicture.selectPictureById(pictureId);
     String pictureType = pictureDTO.getName().substring(pictureDTO.getName().lastIndexOf('.') + 1);
     String uploadedFileLocation = ".\\images\\" + pictureId + "." + pictureType;
-    if (pictureDTO.getFurniture().getFavouritePicture().getId() != pictureId) {
+    if (pictureDTO.getFurniture().getFavouritePicture() != pictureId) {
       try {
         this.dalServices.startTransaction();
         if (!this.daoPicture.deletePicture(pictureId) || !Upload.deleteFile(uploadedFileLocation)) {

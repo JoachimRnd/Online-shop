@@ -134,7 +134,6 @@ let noOption =`
   </button>
 </div>`;
 
-let codeModifyPicture = `<div class="row"><div class="btn-group" role="group" aria-label="Basic example">`;
 let codeBtnAddScrollingPicture = `<button class="btn btn-primary" id="btnScrollingPicture">Ajouter la photo sur l'accueil</button>`;
 let codeBtnRemoveScrollingPicture = `<button class="btn btn-primary" id="btnScrollingPicture">Enlever la photo de l'accueil</button>`;
 let codeBtnDeletePicture = `<button class="btn btn-danger" id="btnDeletePicture">Supprimer la photo</button>`;
@@ -143,7 +142,6 @@ let codeBtnAddVisibility = `<button type="button" class="btn btn-dark" id="btnVi
 let codeBtnRemoveVisibility = `<button type="button" class="btn btn-dark" id="btnVisibleForEveryone">Rendre la photo privée</button>`;
 let codeUploadPicture = `<div class="col-6"><form id="uploadForm"><input id="file" type="file"/><input type="submit" value="Upload"/></form></div>`
 let codeReturnButton = `<div class="col-12"><button class="btn btn-secondary" id="btnReturn">Retour</button></div>`;
-codeModifyPicture += `</div></div>`
 
 const FurnitureAdmin = async(f) => {
   let page = document.querySelector("#page");
@@ -494,12 +492,8 @@ const onSave = async() => {
 
 
 const onModifyPicture = () => {
-    console.log("slide");
     let btnModifyPicture = document.querySelector("#btnModifyPicture");
-    console.log(btnModifyPicture);
-    btnModifyPicture.innerHTML = "";
-    console.log("reset inner");
-    console.log(btnModifyPicture);
+    let codeModifyPicture = `<div class="row"><div class="btn-group" role="group" aria-label="Basic example">`;
     let p = document.querySelector(".carousel-item.active img").src;
     let pictureId = p.substring(p.lastIndexOf('/')+1,p.lastIndexOf('.'));
     let picture;
@@ -510,7 +504,6 @@ const onModifyPicture = () => {
         return;
       }
     });
-    console.log(picture);
 
     if(picture.visibleForEveryone){
       codeModifyPicture += codeBtnRemoveVisibility;
@@ -526,6 +519,7 @@ const onModifyPicture = () => {
       codeModifyPicture += codebtnAddFavouritePicture;
       codeModifyPicture += codeBtnDeletePicture;
     }
+    codeModifyPicture += `</div>`;
     codeModifyPicture += codeUploadPicture;
     codeModifyPicture += codeReturnButton;
     btnModifyPicture.innerHTML = codeModifyPicture;
@@ -547,6 +541,8 @@ const onModifyPicture = () => {
 
     let btnReturn = document.querySelector("#btnReturn");
     btnReturn.addEventListener("click", () => RedirectUrl("/search"));
+    codeModifyPicture += `</div></div>`
+
 }
 
 const onAddPicture = async (e) => {
@@ -596,11 +592,19 @@ const onAddScrollingPicture = async() => {
   try {
     await callAPIWithoutJSONResponse(API_BASE_URL + pictureId + "/scrolling-picture", "PUT", user.token);
     document.getElementById("toast").innerHTML = `</br><h5 style="color:green">L'attribut photo défilante de l'image a bien été modifié</h5>`;
+    pictures.forEach(pct => {
+      if(pct.id == pictureId){
+        pct.scrollingPicture = !pct.scrollingPicture; 
+        return;
+      }
+    });
+    onModifyPicture();
   } catch (err) {
     console.error("FurnitureAdmin::Change scrolling picture", err);
     PrintError(err);
   }
-  onModifyPicture();
+
+  
 }
 
 const onAddFavouritePicture = async() => {
@@ -608,15 +612,20 @@ const onAddFavouritePicture = async() => {
 
   let picture = document.querySelector(".carousel-item.active img").src;
   let pictureId = picture.substring(picture.lastIndexOf('/')+1,picture.lastIndexOf('.'));
-  console.log(pictureId);
   try {
     await callAPIWithoutJSONResponse(API_BASE_URL + pictureId + "/favourite-picture", "PUT", user.token);
     document.getElementById("toast").innerHTML = `</br><h5 style="color:green">La photo a bien été désignée favorite</h5>`;
+    pictures.forEach(pct => {
+      if(pct.id == pictureId){
+        furniture.favouritePicture = pct.id;
+        return;
+      }
+    });
+    onModifyPicture();
   } catch (err) {
     console.error("FurnitureAdmin::Change favourite picture", err);
     PrintError(err);
   }
-  onModifyPicture();
 }
 
 const onVisibleForEveryone = async() => {
@@ -628,11 +637,19 @@ const onVisibleForEveryone = async() => {
   try {
     await callAPIWithoutJSONResponse(API_BASE_URL + pictureId + "/visible", "PUT", user.token);
     document.getElementById("toast").innerHTML = `</br><h5 style="color:green">La photo a bien été modifiée.</h5>`;
+    pictures.forEach(pct => {
+      if(pct.id == pictureId){
+        pct.visibleForEveryone = !pct.visibleForEveryone; 
+        return;
+      }
+    });
+    onModifyPicture();
   } catch (err) {
     console.error("FurnitureAdmin::Change visible for everyone", err);
     PrintError(err);
   }
-  onModifyPicture();
+  
+  
 }
 
 
