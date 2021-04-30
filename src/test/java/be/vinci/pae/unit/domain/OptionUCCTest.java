@@ -63,7 +63,7 @@ public class OptionUCCTest {
     this.optionFactory = locator.getService(OptionFactory.class);
     this.furnitureFactory = locator.getService(FurnitureFactory.class);
     this.userFactory = locator.getService(UserFactory.class);
-    Config.load("dev.properties");
+    Config.load("tests.properties");
 
   }
 
@@ -80,15 +80,21 @@ public class OptionUCCTest {
     Mockito.when(daoFurniture.selectFurnitureById(1)).thenReturn(furniture);
     furniture.setCondition(ValueLink.FurnitureCondition.en_vente);
     UserDTO buyer = userFactory.getUser();
-    // buyer.setValidRegistration(true);
+    buyer.setId(1);
+    buyer.setValidRegistration(true);
     buyer.setUserType(ValueLink.UserType.client);
     Mockito.when(daoUser.getUserById(1)).thenReturn(buyer);
+    
     List<OptionDTO> list = new ArrayList<OptionDTO>();
     Mockito.when(daoOption.selectOptionsOfBuyerFromFurniture(1, 1)).thenReturn(list);
+    Mockito.when(daoOption.selectOptionsOfFurniture(1)).thenReturn(list);
     OptionDTO optionToAdd = optionFactory.getOption();
     Mockito.when(daoOption.addOption(optionToAdd)).thenReturn(1);
     Mockito.when(daoFurniture.updateCondition(1, ValueLink.FurnitureCondition.en_option.ordinal()))
         .thenReturn(true);
+    //optionToAdd.setBuyer(buyer);
+    //assertTrue(buyer.isValidRegistration());
+    //assertEquals(ValueLink.UserType.client, buyer.getUserType());
     assertTrue(optionUCC.addOption(1, 2, buyer));
   }
 

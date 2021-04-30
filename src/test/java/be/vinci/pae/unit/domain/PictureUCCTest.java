@@ -79,20 +79,6 @@ public class PictureUCCTest {
     assertEquals(picture, pictureUCC.addPicture(1, picture, null, null));
   }
 
-  @DisplayName("test getFurnitureTypes ")
-  @Test
-  public void getPictureTypesTest() {
-    List<TypeDTO> list = new ArrayList<TypeDTO>();
-    // assertNotNull(pictureUCC.getFurnitureTypes());
-    // assertTrue(pictureUCC.getFurnitureTypes().isEmpty());
-    // TypeDTO furniture = pictureFactory.getType();
-    // list.add(furniture);
-    // Mockito.when(daoPicture.selectFurnitureTypes()).thenReturn(list);
-    // assertEquals(list, pictureUCC.getFurnitureTypes());
-    // assertTrue(pictureUCC.getFurnitureTypes().contains(furniture));
-    // assertEquals(1, pictureUCC.getFurnitureTypes().size());
-  }
-
   @DisplayName("test modifyScrollingPicture")
   @Test
   public void modifyScrollingPictureTest() {
@@ -105,8 +91,16 @@ public class PictureUCCTest {
   @DisplayName("test deletePicture")
   @Test
   public void deletePictureTest() {
+	  PictureDTO picture = pictureFactory.getPicture();
+	  picture.setId(1);
     FurnitureDTO furniture = furnitureFactory.getFurniture();
-    Mockito.when(daoFurniture.selectFurnitureByFavouritePicture(1)).thenReturn(furniture);
+    furniture.setId(1);
+    
+    furniture.setFavouritePicture(picture);
+    picture.setFurniture(furniture);
+    
+    
+    
     Mockito.when(daoPicture.deletePicture(1)).thenReturn(true);
     assertTrue(pictureUCC.deletePicture(1));
     Mockito.when(daoPicture.deletePicture(1)).thenReturn(false);

@@ -98,11 +98,9 @@ public class VisitRequestUCCTest {
     assertEquals(vr, vrUCC.addVisitRequest(vr, user, inputStreamList));
     Mockito.when(daoAddress.addAddress(address)).thenReturn(-1);
     assertNull(vrUCC.addVisitRequest(vr, user, inputStreamList));
-    // TODO
     Mockito.when(daoAddress.addAddress(address)).thenReturn(1);
     Mockito.when(daoVR.addVisitRequest(vr)).thenReturn(-1);
     assertNull(vrUCC.addVisitRequest(vr, user, inputStreamList));
-    Mockito.when(daoVR.addVisitRequest(vr)).thenReturn(1);
     Mockito.when(daoFurniture.insertFurniture(furniture)).thenReturn(-1);
     assertNull(vrUCC.addVisitRequest(vr, user, inputStreamList));
     Mockito.when(daoFurniture.insertFurniture(furniture)).thenReturn(1);
