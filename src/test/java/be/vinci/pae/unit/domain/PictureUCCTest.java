@@ -1,5 +1,6 @@
 package be.vinci.pae.unit.domain;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -57,12 +58,25 @@ public class PictureUCCTest {
     assertNotNull(this.pictureUCC);
   }
 
-  @DisplayName("test addType good parameters")
+  @DisplayName("test getCarouselPictures")
+  @Test
+  public void getCarouselPicturesTest() {
+    List<PictureDTO> list = new ArrayList<PictureDTO>();
+    assertNotNull(pictureUCC.getCarouselPictures());
+    assertTrue(pictureUCC.getCarouselPictures().isEmpty());
+    Mockito.when(daoPicture.getCarouselPictures()).thenReturn(list);
+    assertEquals(list, pictureUCC.getCarouselPictures());
+  }
+
+  @DisplayName("test addPicture")
   @Test
   public void addPictureTest() {
+    FurnitureDTO furniture = furnitureFactory.getFurniture();
+    Mockito.when(daoFurniture.selectFurnitureById(1)).thenReturn(furniture);
     PictureDTO picture = pictureFactory.getPicture();
     Mockito.when(daoPicture.addPicture(picture)).thenReturn(1);
-    // assertEquals(1, pictureUCC.addPicture(picture));
+    // TODO upload --> link
+    assertEquals(picture, pictureUCC.addPicture(1, picture, null, null));
   }
 
   @DisplayName("test getFurnitureTypes ")

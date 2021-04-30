@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.io.InputStream;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -18,16 +19,30 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import be.vinci.pae.domain.address.AddressDTO;
+import be.vinci.pae.domain.address.AddressFactory;
+import be.vinci.pae.domain.furniture.FurnitureDTO;
+import be.vinci.pae.domain.furniture.FurnitureFactory;
+import be.vinci.pae.domain.picture.PictureDTO;
+import be.vinci.pae.domain.picture.PictureFactory;
+import be.vinci.pae.domain.user.UserDTO;
+import be.vinci.pae.domain.user.UserFactory;
 import be.vinci.pae.domain.visitrequest.VisitRequestDTO;
 import be.vinci.pae.domain.visitrequest.VisitRequestFactory;
 import be.vinci.pae.domain.visitrequest.VisitRequestUCCImpl;
 import be.vinci.pae.services.DalServices;
+import be.vinci.pae.services.address.DAOAddress;
 import be.vinci.pae.services.furniture.DAOFurniture;
+import be.vinci.pae.services.picture.DAOPicture;
 import be.vinci.pae.services.visitrequest.DAOVisitRequest;
 
 public class VisitRequestUCCTest {
 
   VisitRequestFactory vrFactory;
+  AddressFactory addressFactory;
+  PictureFactory pictureFactory;
+  FurnitureFactory furnitureFactory;
+  UserFactory userFactory;
 
   @Mock
   DalServices dalServices;
@@ -36,6 +51,10 @@ public class VisitRequestUCCTest {
   DAOVisitRequest daoVR;
   @Mock
   DAOFurniture daoFurniture;
+  @Mock
+  DAOAddress daoAddress;
+  @Mock
+  DAOPicture daoPicture;
 
   @InjectMocks
   VisitRequestUCCImpl vrUCC;
@@ -46,6 +65,10 @@ public class VisitRequestUCCTest {
     MockitoAnnotations.initMocks(this);
     ServiceLocator locator = ServiceLocatorUtilities.bind(new ApplicationBinder());
     this.vrFactory = locator.getService(VisitRequestFactory.class);
+    this.addressFactory = locator.getService(AddressFactory.class);
+    this.pictureFactory = locator.getService(PictureFactory.class);
+    this.furnitureFactory = locator.getService(FurnitureFactory.class);
+    this.userFactory = locator.getService(UserFactory.class);
 
   }
 
@@ -59,6 +82,32 @@ public class VisitRequestUCCTest {
   @Test
   public void addVisitRequestTest() {
     // TODO
+    UserDTO user = userFactory.getUser();
+    AddressDTO address = addressFactory.getAddress();
+    VisitRequestDTO vr = vrFactory.getVisitRequest();
+    vr.setAddress(address);
+    FurnitureDTO furniture = furnitureFactory.getFurniture();
+    PictureDTO picture = pictureFactory.getPicture();
+    List<FurnitureDTO> list = new ArrayList<FurnitureDTO>();
+    vr.setFurnitureList(list);
+    Mockito.when(daoAddress.addAddress(address)).thenReturn(1);
+    Mockito.when(daoVR.addVisitRequest(vr)).thenReturn(1);
+    Mockito.when(daoFurniture.insertFurniture(furniture)).thenReturn(1);
+    Mockito.when(daoPicture.addPicture(picture)).thenReturn(1);
+    List<InputStream> inputStreamList = null;
+    assertEquals(vr, vrUCC.addVisitRequest(vr, user, inputStreamList));
+    Mockito.when(daoAddress.addAddress(address)).thenReturn(-1);
+    assertNull(vrUCC.addVisitRequest(vr, user, inputStreamList));
+    // TODO
+    Mockito.when(daoAddress.addAddress(address)).thenReturn(1);
+    Mockito.when(daoVR.addVisitRequest(vr)).thenReturn(-1);
+    assertNull(vrUCC.addVisitRequest(vr, user, inputStreamList));
+    Mockito.when(daoVR.addVisitRequest(vr)).thenReturn(1);
+    Mockito.when(daoFurniture.insertFurniture(furniture)).thenReturn(-1);
+    assertNull(vrUCC.addVisitRequest(vr, user, inputStreamList));
+    Mockito.when(daoFurniture.insertFurniture(furniture)).thenReturn(1);
+    Mockito.when(daoPicture.addPicture(picture)).thenReturn(-1);
+    assertNull(vrUCC.addVisitRequest(vr, user, inputStreamList));
 
   }
 
