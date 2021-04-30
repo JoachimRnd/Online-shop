@@ -1,5 +1,11 @@
 package be.vinci.pae.domain.visitrequest;
 
+import java.io.InputStream;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
+import org.apache.commons.text.StringEscapeUtils;
 import be.vinci.pae.domain.address.AddressDTO;
 import be.vinci.pae.domain.furniture.FurnitureDTO;
 import be.vinci.pae.domain.picture.PictureDTO;
@@ -13,12 +19,6 @@ import be.vinci.pae.utils.Upload;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
 import be.vinci.pae.utils.ValueLink.VisitRequestStatus;
 import jakarta.inject.Inject;
-import java.io.InputStream;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
-import org.apache.commons.text.StringEscapeUtils;
 
 public class VisitRequestUCCImpl implements VisitRequestUCC {
 
@@ -102,7 +102,6 @@ public class VisitRequestUCCImpl implements VisitRequestUCC {
 
         }
       }
-
       this.dalServices.commitTransaction();
       return visitRequest;
     } finally {
@@ -129,17 +128,37 @@ public class VisitRequestUCCImpl implements VisitRequestUCC {
   }
 
   @Override
+  public VisitRequestDTO getVisitRequestByIdForUser(int id, int userId) {
+    try {
+      VisitRequestDTO visitRequest = daoVisitRequest.selectVisitRequestById(id);
+      if (visitRequest.getCustomer().getId() != userId) {
+        return null;
+      }
+      return visitRequest;
+    } finally {
+      dalServices.closeConnection();
+    }
+  }
+
+  @Override
+  public List<VisitRequestDTO> getVisitRequestsByUserId(int userId) {
+    try {
+      return daoVisitRequest.selectVisitRequestByUserId(userId);
+    } finally {
+      dalServices.closeConnection();
+    }
+  }
+
+  @Override
   public String modifyVisitRequest(int id, String cancellationReason, String chosenDateTime) {
     try {
       dalServices.startTransaction();
-      if (cancellationReason != null && daoVisitRequest
-          .cancelVisitRequest(id, cancellationReason) && daoFurniture
-          .refuseAllFurnitureByVisitId(id)) {
+      if (cancellationReason != null && daoVisitRequest.cancelVisitRequest(id, cancellationReason)
+          && daoFurniture.refuseAllFurnitureByVisitId(id)) {
         dalServices.commitTransaction();
         return VisitRequestStatus.annulee.name();
-      } else if (chosenDateTime != null && daoVisitRequest
-          .chooseDateForVisit(id, Timestamp.valueOf(LocalDate.parse(chosenDateTime).atTime(
-              LocalTime.NOON)))) {
+      } else if (chosenDateTime != null && daoVisitRequest.chooseDateForVisit(id,
+          Timestamp.valueOf(LocalDate.parse(chosenDateTime).atTime(LocalTime.NOON)))) {
         dalServices.commitTransaction();
         return VisitRequestStatus.confirmee.name();
       }
