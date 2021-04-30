@@ -11,11 +11,6 @@ import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.services.furniture.DAOFurniture;
 import be.vinci.pae.utils.FatalException;
 import jakarta.inject.Inject;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DAOPictureImpl implements DAOPicture {
 

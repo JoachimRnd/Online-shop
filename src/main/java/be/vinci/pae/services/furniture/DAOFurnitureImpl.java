@@ -204,7 +204,6 @@ public class DAOFurnitureImpl implements DAOFurniture {
 
   @Override
   public int insertFurniture(FurnitureDTO newFurniture) {
-    // TODO Methode à tester
     int furnitureId = -1;
     try {
       PreparedStatement insertFurniture =
@@ -212,17 +211,7 @@ public class DAOFurnitureImpl implements DAOFurniture {
       insertFurniture.setString(1, newFurniture.getDescription());
       insertFurniture.setInt(2, newFurniture.getType().getId());
       insertFurniture.setInt(3, newFurniture.getVisitRequest().getId());
-      /*
-       * insertFurniture.setDouble(4, newFurniture.getPurchasePrice()); insertFurniture.setDate(5, (Date) newFurniture.getWithdrawalDateFromCustomer());
-       * insertFurniture.setDouble(6, newFurniture.getSellingPrice()); insertFurniture.setDouble(7, newFurniture.getSpecialSalePrice());
-       * insertFurniture.setDate(8, (Date) newFurniture.getDepositDate()); insertFurniture.setDate(9, (Date) newFurniture.getSellingDate());
-       * insertFurniture.setDate(10, (Date) newFurniture.getDeliveryDate()); insertFurniture.setDate(11, (Date) newFurniture.getWithdrawalDateToCustomer());
-       * insertFurniture.setNull(12, java.sql.Types.INTEGER);
-       */
       insertFurniture.setInt(4, newFurniture.getCondition().ordinal());
-      /*
-       * insertFurniture.setString(14, newFurniture.getUnregisteredBuyerEmail()); insertFurniture.setNull(15, java.sql.Types.INTEGER);
-       */
       insertFurniture.execute();
       try (ResultSet rs = insertFurniture.getGeneratedKeys()) {
         if (rs.next()) {
