@@ -577,7 +577,7 @@ const onAddPicture = async (e) => {
   }
 
   try {
-    pictures = await callAPI(API_BASE_URL + furniture.id + "/pictures-furniture", "GET", user.token);
+    pictures = await callAPI(API_BASE_URL + furniture.id + "/all-pictures-furniture", "GET", user.token);
     if(pictures.length == 0){
       document.querySelector("#carousel").innerHTML = `<div class="alert alert-danger mt-2">Il n'y a pas de photos disponible pour ce meuble.</div>`
     }else{
@@ -675,7 +675,7 @@ const onDeletePicture = async() => {
   }
 
   try {
-    pictures = await callAPI(API_BASE_URL + furniture.id + "/pictures-furniture", "GET", user.token);
+    pictures = await callAPI(API_BASE_URL + furniture.id + "/all-pictures-furniture", "GET", user.token);
     if(pictures.length == 0){
       document.querySelector("#carousel").innerHTML = `<div class="alert alert-danger mt-2">Il n'y a pas de photos disponible pour ce meuble.</div>`
     }else{
