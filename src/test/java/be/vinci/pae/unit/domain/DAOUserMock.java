@@ -50,4 +50,9 @@ public class DAOUserMock implements DAOUser {
   public List<UserDTO> getUsersFiltered(String username, String postcode, String commune) {
     return null;
   }
+
+  @Override
+  public List<UserDTO> getUserByLastname(String lastname) {
+    return null;
+  }
 }

@@ -10,10 +10,7 @@ let furnitureList = [];
 let picturesList = [];
 let fd = new FormData();
 
-let visitPage = `
-<h4 id="pageTitle">Ajouter Demande visite</h4>
-<div class="row">
-    <div class="col-6">
+let addressForm = `
         <div class="row">
             <p>Adresse du lieu</p>
         </div>
@@ -25,7 +22,6 @@ let visitPage = `
                 <small>champs obligatoires : *</small>
             </div>
         </div>
-        <form id="visitRequestForm">
             <div class="row">
                 <div class="form-group">
                     <label for="street">Rue*</label>
@@ -56,6 +52,15 @@ let visitPage = `
                     <input class="form-control" id="country" type="text" placeholder="Entrez votre pays" required="" />
                 </div>
             </div>
+</div>`;
+
+let visitPage = `
+<h4 id="pageTitle">Ajouter Demande visite</h4>
+<div class="row">        
+<form id="visitRequestForm">
+        <div id="admin" class="col-6"></div>
+        <div id="addressForm"></div>
+    <div class="col-6">
             <div class="row">
                 <div class="col-12">
                     <div class="form-group">
@@ -107,18 +112,27 @@ const VisitPage = async () => {
     let page = document.querySelector("#page");
     page.innerHTML  = visitPage;
 
+    document.getElementById("addressForm").innerHTML = addressForm;
+
     let visitRequestForm = document.getElementById("visitRequestForm");
     visitRequestForm.addEventListener("submit", onVisitRequest);
     let furnitureForm = document.getElementById("furnitureForm");
     furnitureForm.addEventListener("submit", onFurniture);
 
     const user = getUserSessionData();
-    try {
-        const address = await callAPI(API_BASE_URL + "address/" + user.user.id, "GET", undefined);
-        onAddress(address);
-    } catch (err) {
-        console.error("VisitPage::onAddress", err);
-        PrintError(err);
+    if(user.user.userType === "admin") {
+        let userDiv = document.getElementById("admin");
+        userDiv.innerHTML = `<input class="form-control" id="email" type="text" placeholder="Entrez l'email de l'utilisateur" required="" />
+                             <input type="checkbox" id="home_visit" name="home_visit"><label for="home_visit">Visite chez le client</label>`;
+        document.getElementById("home_visit").addEventListener("change", onChangeCheckbox);
+    } else {
+        try {
+            const address = await callAPI(API_BASE_URL + "address/" + user.user.id, "GET", undefined);
+            onAddress(address);
+        } catch (err) {
+            console.error("VisitPage::onAddress", err);
+            PrintError(err);
+        }
     }
 
     try {
@@ -131,6 +145,14 @@ const VisitPage = async () => {
     let pictureForm = document.getElementById("pictureForm");
     pictureForm.addEventListener("submit", onPicture);
 }
+
+const onChangeCheckbox = async () => {
+    if(document.getElementById("home_visit").checked) {
+        document.getElementById("addressForm").innerHTML = "";
+    } else {
+        document.getElementById("addressForm").innerHTML = addressForm;
+    }
+};
 
 const onAddress = (address) => {
     document.getElementById("street").value = address.street;
@@ -160,19 +182,42 @@ const onTypesList = (typesList) => {
   
 const onVisitRequest = async (e) => {
     e.preventDefault();
-    let unitNumber = null;
-    if(document.getElementById("unitnumber").value != ""){
-        unitNumber = document.getElementById("unitnumber").value;
+    const user = getUserSessionData();
+    let address;
+    if(user.user.userType === "admin"){
+        let email = document.getElementById("email").value;
+        fd.append("email", JSON.stringify(email));
+        fd.append("home_visit", JSON.stringify(document.getElementById("home_visit").checked));
+        if(!document.getElementById("home_visit").checked) {
+            let unitNumber = null;
+            if(document.getElementById("unitnumber").value != ""){
+                unitNumber = document.getElementById("unitnumber").value;
+            }
+
+            address = {
+                street: document.getElementById("street").value,
+                buildingNumber: document.getElementById("buildingnumber").value,
+                unitNumber: unitNumber,
+                postcode: document.getElementById("postcode").value,
+                commune: document.getElementById("commune").value,
+                country: document.getElementById("country").value,
+            };
+        }
+    } else {
+        let unitNumber = null;
+        if(document.getElementById("unitnumber").value != ""){
+            unitNumber = document.getElementById("unitnumber").value;
+        }
+
+        address = {
+            street: document.getElementById("street").value,
+            buildingNumber: document.getElementById("buildingnumber").value,
+            unitNumber: unitNumber,
+            postcode: document.getElementById("postcode").value,
+            commune: document.getElementById("commune").value,
+            country: document.getElementById("country").value,
+        };
     }
-    
-    let address = {
-        street: document.getElementById("street").value,
-        buildingNumber: document.getElementById("buildingnumber").value,
-        unitNumber: unitNumber,
-        postcode: document.getElementById("postcode").value,
-        commune: document.getElementById("commune").value,
-        country: document.getElementById("country").value,
-    };
 
     let visitRequest = {
         address: address,
@@ -182,7 +227,6 @@ const onVisitRequest = async (e) => {
 
     console.log(visitRequest);
     fd.append("json", JSON.stringify(visitRequest));
-    const user = getUserSessionData();
 
     for(let i=0; i<visitRequest.furnitureList.length; i++){
         for(let j=0; j<visitRequest.furnitureList[i].picturesList.length; j++){
@@ -190,12 +234,21 @@ const onVisitRequest = async (e) => {
         }
     }
     try {
-        const visitRequested = await callAPIFormData(
-          API_BASE_URL + "add",
-          "POST",
-          user.token,
-          fd
-        );
+        if(user.user.userType === "admin") {
+            const visitRequested = await callAPIFormData(
+                API_BASE_URL + "addforother",
+                "POST",
+                user.token,
+                fd
+            );
+        } else {
+            const visitRequested = await callAPIFormData(
+                API_BASE_URL + "add",
+                "POST",
+                user.token,
+                fd
+            );
+        }
         onVisitRequestAdded();
       } catch (err) {
         console.error("VisitPage::onVisitRequestAdded", err);

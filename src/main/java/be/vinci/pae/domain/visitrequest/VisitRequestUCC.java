@@ -14,4 +14,7 @@ public interface VisitRequestUCC {
   VisitRequestDTO getVisitRequestById(int id);
 
   String modifyVisitRequest(int id, String cancellationReason, String chosenDateTime);
+
+  VisitRequestDTO addVisitRequestForOther(VisitRequestDTO visitRequest, String lastname,
+      boolean homeVisit, List<InputStream> inputStreamList);
 }
