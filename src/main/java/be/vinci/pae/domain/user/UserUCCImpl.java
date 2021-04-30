@@ -147,4 +147,13 @@ public class UserUCCImpl implements UserUCC {
       dalServices.closeConnection();
     }
   }
+
+  @Override
+  public UserDTO getUserByEmail(String email) {
+    try {
+      return daoUser.getUserByEmail(email);
+    } finally {
+      dalServices.closeConnection();
+    }
+  }
 }

@@ -9,6 +9,7 @@ import be.vinci.pae.domain.furniture.FurnitureDTO;
 import be.vinci.pae.domain.picture.PictureDTO;
 import be.vinci.pae.domain.picture.PictureFactory;
 import be.vinci.pae.domain.user.UserDTO;
+import be.vinci.pae.domain.user.UserUCC;
 import be.vinci.pae.domain.visitrequest.VisitRequestDTO;
 import be.vinci.pae.domain.visitrequest.VisitRequestFactory;
 import be.vinci.pae.domain.visitrequest.VisitRequestUCC;
@@ -51,6 +52,9 @@ public class VisitRequest {
   @Inject
   AddressUCC addressUcc;
 
+  @Inject
+  UserUCC userUCC;
+
   /**
    * Get Address from userId.
    *
@@ -79,13 +83,35 @@ public class VisitRequest {
   @AuthorizeAdmin
   public Response uploadFileForOther(FormDataMultiPart formDataMultiPart,
       @FormDataParam("file") InputStream uploadedInputStream) {
-    formDataMultiPart.getField("json").setMediaType(MediaType.APPLICATION_JSON_TYPE);
+    formDataMultiPart.getField("email").setMediaType(MediaType.APPLICATION_JSON_TYPE);
     String email = formDataMultiPart.getField("email").getValueAs(String.class);
+    System.out.println(email);
     email = email.substring(1, email.length() - 1);
     if (email.equals("")) {
       return Response.status(Status.UNAUTHORIZED).entity("Veuillez mettre l'email du client")
           .type(MediaType.TEXT_PLAIN).build();
     }
+    UserDTO user = userUCC.getUserByEmail(email);
+    return verifyFormData(formDataMultiPart, true, user);
+  }
+
+  /**
+   * Add a visitRequest.
+   *
+   * @return Http response
+   */
+  @POST
+  @Path("/add") // Your Path or URL to call this service
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @Authorize
+  public Response addVisitRequest(FormDataMultiPart formDataMultiPart,
+      @FormDataParam("file") InputStream uploadedInputStream, @Context ContainerRequest request) {
+    UserDTO currentUser = (UserDTO) request.getProperty("user");
+    return verifyFormData(formDataMultiPart, false, currentUser);
+  }
+
+  private Response verifyFormData(FormDataMultiPart formDataMultiPart, boolean admin,
+      UserDTO currentUser) {
     formDataMultiPart.getField("json").setMediaType(MediaType.APPLICATION_JSON_TYPE);
     VisitRequestDTO visitRequest =
         formDataMultiPart.getField("json").getValueAs(VisitRequestDTO.class);
@@ -93,9 +119,14 @@ public class VisitRequest {
       return Response.status(Status.UNAUTHORIZED).entity("La demande de visite est vide")
           .type(MediaType.TEXT_PLAIN).build();
     }
-    formDataMultiPart.getField("home_visit").setMediaType(MediaType.APPLICATION_JSON_TYPE);
-    boolean homeVisit = formDataMultiPart.getField("home_visit").getValueAs(Boolean.class);
-    if (!homeVisit) {
+    boolean homeVisit = false;
+    if (admin) {
+      formDataMultiPart.getField("home_visit").setMediaType(MediaType.APPLICATION_JSON_TYPE);
+      homeVisit = formDataMultiPart.getField("home_visit").getValueAs(Boolean.class);
+    }
+    if (homeVisit) {
+      visitRequest.setAddress(currentUser.getAddress());
+    } else {
       AddressDTO address = visitRequest.getAddress();
       if (address == null || address.getStreet() == null || address.getStreet().isEmpty()
           || address.getBuildingNumber() == null || address.getBuildingNumber().isEmpty()
@@ -157,95 +188,6 @@ public class VisitRequest {
       }
     }
 
-    visitRequest.setRequestDate(Date.from(Instant.now()));
-    visitRequest = this.visitRequestUcc
-        .addVisitRequestForOther(visitRequest, email, homeVisit, inputStreamList);
-    if (visitRequest == null) {
-      return Response.serverError().build();
-    } else {
-      return Response.ok().build();
-    }
-  }
-
-  /**
-   * Add a visitRequest.
-   *
-   * @return Http response
-   */
-  @POST
-  @Path("/add") // Your Path or URL to call this service
-  @Consumes(MediaType.MULTIPART_FORM_DATA)
-  @Authorize
-  public Response addVisitRequest(FormDataMultiPart formDataMultiPart,
-      @FormDataParam("file") InputStream uploadedInputStream, @Context ContainerRequest request) {
-    formDataMultiPart.getField("json").setMediaType(MediaType.APPLICATION_JSON_TYPE);
-    VisitRequestDTO visitRequest =
-        formDataMultiPart.getField("json").getValueAs(VisitRequestDTO.class);
-    if (visitRequest == null) {
-      return Response.status(Status.UNAUTHORIZED).entity("La demande de visite est vide")
-          .type(MediaType.TEXT_PLAIN).build();
-    }
-    AddressDTO address = visitRequest.getAddress();
-    if (address == null || address.getStreet() == null || address.getStreet().isEmpty()
-        || address.getBuildingNumber() == null || address.getBuildingNumber().isEmpty()
-        || address.getPostcode() == null || address.getPostcode().isEmpty()
-        || address.getCommune() == null || address.getCommune().isEmpty()
-        || address.getCountry() == null || address.getCountry().isEmpty()) {
-      return Response.status(Status.UNAUTHORIZED)
-          .entity("Un ou plusieurs champs sont vides dans l'adresse").type(MediaType.TEXT_PLAIN)
-          .build();
-    }
-    if (visitRequest.getFurnitureList() == null || visitRequest.getFurnitureList().isEmpty()
-        || visitRequest.getTimeSlot() == null || visitRequest.getTimeSlot().isEmpty()) {
-      return Response.status(Status.UNAUTHORIZED)
-          .entity("Il n'y a pas de meuble ou la plage horaire est vide").type(MediaType.TEXT_PLAIN)
-          .build();
-    }
-    for (FurnitureDTO furniture : visitRequest.getFurnitureList()) {
-      if (furniture.getDescription() == null || furniture.getDescription().isEmpty()
-          || furniture.getType() == null) {
-        return Response.status(Status.UNAUTHORIZED)
-            .entity("Les informations encodées pour un meuble sont vides")
-            .type(MediaType.TEXT_PLAIN).build();
-      }
-    }
-    List<InputStream> inputStreamList = new ArrayList<>();
-    int count = 0;
-    List<FormDataBodyPart> parts = formDataMultiPart.getFields("file" + count);
-    while (parts != null) {
-      FurnitureDTO furniture = visitRequest.getFurnitureList().get(count);
-      List<PictureDTO> picturesList = new ArrayList<PictureDTO>();
-
-      for (FormDataBodyPart part : parts) {
-        PictureDTO picture = pictureFactory.getPicture();
-        picture.setName(part.getFormDataContentDisposition().getFileName());
-        String pictureType =
-            picture.getName().toLowerCase().substring(picture.getName().lastIndexOf('.') + 1);
-        if (!pictureType.equals("jpg") && !pictureType.equals("jpeg")
-            && !pictureType.equals("png")) {
-          return Response.status(Status.UNAUTHORIZED)
-              .entity("Le type de la photo doit être jpg, jpeg ou png").type(MediaType.TEXT_PLAIN)
-              .build();
-        }
-        picture.setAScrollingPicture(false);
-        picture.setVisibleForEveryone(false);
-        picturesList.add(picture);
-        InputStream inputStream = part.getEntityAs(InputStream.class);
-        inputStreamList.add(inputStream);
-      }
-      furniture.setPicturesList(picturesList);
-      count++;
-      parts = formDataMultiPart.getFields("file" + count);
-    }
-    for (FurnitureDTO furniture : visitRequest.getFurnitureList()) {
-      if (furniture.getPicturesList() == null || furniture.getPicturesList().isEmpty()) {
-        return Response.status(Status.UNAUTHORIZED)
-            .entity("Il manque une photo pour un ou plusieurs meubles").type(MediaType.TEXT_PLAIN)
-            .build();
-      }
-    }
-
-    UserDTO currentUser = (UserDTO) request.getProperty("user");
     visitRequest.setRequestDate(Date.from(Instant.now()));
     visitRequest = this.visitRequestUcc.addVisitRequest(visitRequest, currentUser, inputStreamList);
     if (visitRequest == null) {

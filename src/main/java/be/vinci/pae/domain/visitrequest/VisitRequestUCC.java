@@ -1,8 +1,8 @@
 package be.vinci.pae.domain.visitrequest;
 
+import be.vinci.pae.domain.user.UserDTO;
 import java.io.InputStream;
 import java.util.List;
-import be.vinci.pae.domain.user.UserDTO;
 
 public interface VisitRequestUCC {
 
@@ -18,7 +18,4 @@ public interface VisitRequestUCC {
   List<VisitRequestDTO> getVisitRequestsByUserId(int userId);
 
   String modifyVisitRequest(int id, String cancellationReason, String chosenDateTime);
-
-  VisitRequestDTO addVisitRequestForOther(VisitRequestDTO visitRequest, String lastname,
-      boolean homeVisit, List<InputStream> inputStreamList);
 }
