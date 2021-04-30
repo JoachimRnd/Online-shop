@@ -91,7 +91,7 @@ public class FurnitureUCCImpl implements FurnitureUCC {
       this.dalServices.startTransaction();
 
       FurnitureDTO furnitureDTO = daoFurniture.selectFurnitureById(id);
-      boolean error = false;
+      boolean error = true;
 
       switch (condition) {
         case ne_convient_pas:
@@ -165,7 +165,6 @@ public class FurnitureUCCImpl implements FurnitureUCC {
           }
           break;
         default:
-          error = false;
           break;
       }
       if (!error) {
