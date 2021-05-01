@@ -1,7 +1,7 @@
 package be.vinci.pae.services.picture;
 
-import be.vinci.pae.domain.picture.PictureDTO;
 import java.util.List;
+import be.vinci.pae.domain.picture.PictureDTO;
 
 public interface DAOPicture {
 
@@ -20,4 +20,6 @@ public interface DAOPicture {
   List<PictureDTO> selectPublicPicturesByFurnitureId(int furnitureId);
 
   List<PictureDTO> getCarouselPictures();
+
+  boolean updateScrollingPictureFalseByFurnitureId(int furnitureId);
 }

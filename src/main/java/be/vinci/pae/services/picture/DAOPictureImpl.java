@@ -22,6 +22,7 @@ public class DAOPictureImpl implements DAOPicture {
   private String querySelectPublicPicturesByFurnitureId;
   private String queryUpdateVisibleForEveryone;
   private String querySelectCarouselPictures;
+  private String queryUpdateScrollingPictureFalseByFurnitureId;
 
   @Inject
   private DalBackendServices dalServices;
@@ -54,6 +55,9 @@ public class DAOPictureImpl implements DAOPicture {
             + "FROM project.pictures p WHERE p.furniture = ? AND p.visible_for_everyone = true";
     querySelectCarouselPictures = "SELECT picture_id, name, visible_for_everyone, furniture, "
         + "scrolling_picture FROM project.pictures WHERE scrolling_picture = true";
+    queryUpdateScrollingPictureFalseByFurnitureId =
+        "UPDATE project.pictures SET scrolling_picture = false WHERE furniture = ? AND scrolling_picture = true";
+
   }
 
   @Override
@@ -65,7 +69,7 @@ public class DAOPictureImpl implements DAOPicture {
       try (ResultSet rs = selectPictureById.executeQuery()) {
         return createPicture(rs);
       }
-    } catch (Exception e) {
+    } catch (SQLException e) {
       throw new FatalException("Data error : selectPictureById", e);
     }
   }
@@ -86,9 +90,8 @@ public class DAOPictureImpl implements DAOPicture {
         listPicture.remove(listPicture.size() - 1);
         return listPicture;
       }
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new FatalException("Data error : selectPicturesByFurnitureId");
+    } catch (SQLException e) {
+      throw new FatalException("Data error : selectPicturesByFurnitureId", e);
     }
   }
 
@@ -108,9 +111,8 @@ public class DAOPictureImpl implements DAOPicture {
         listPicture.remove(listPicture.size() - 1);
         return listPicture;
       }
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new FatalException("Data error : selectPublicPicturesByFurnitureId");
+    } catch (SQLException e) {
+      throw new FatalException("Data error : selectPublicPicturesByFurnitureId", e);
     }
   }
 
@@ -163,7 +165,7 @@ public class DAOPictureImpl implements DAOPicture {
         list.remove(list.size() - 1);
         return list;
       }
-    } catch (Exception e) {
+    } catch (SQLException e) {
       throw new FatalException("Data error : getCarouselPictures", e);
     }
   }
@@ -177,7 +179,7 @@ public class DAOPictureImpl implements DAOPicture {
       updateScrollingPicture.setBoolean(1, !pictureDTO.isAScrollingPicture());
       updateScrollingPicture.setInt(2, pictureId);
       return updateScrollingPicture.executeUpdate() == 1;
-    } catch (Exception e) {
+    } catch (SQLException e) {
       throw new FatalException("Data error : updateScrollingPicture", e);
     }
   }
@@ -191,9 +193,21 @@ public class DAOPictureImpl implements DAOPicture {
       updateVisibleForEveryone.setBoolean(1, !pictureDTO.isVisibleForEveryone());
       updateVisibleForEveryone.setInt(2, pictureId);
       return updateVisibleForEveryone.executeUpdate() == 1;
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new FatalException("Data error : updateVisibleForEveryone");
+    } catch (SQLException e) {
+      throw new FatalException("Data error : updateVisibleForEveryone", e);
+    }
+  }
+
+  @Override
+  public boolean updateScrollingPictureFalseByFurnitureId(int furnitureId) {
+    try {
+      PreparedStatement updateScrollingPictureFalseByFurnitureId =
+          this.dalServices.getPreparedStatement(queryUpdateScrollingPictureFalseByFurnitureId);
+      updateScrollingPictureFalseByFurnitureId.setInt(1, furnitureId);
+      updateScrollingPictureFalseByFurnitureId.executeUpdate();
+      return true;
+    } catch (SQLException e) {
+      throw new FatalException("Data error : updateScrollingPictureFalseByFurnitureId", e);
     }
   }
 
