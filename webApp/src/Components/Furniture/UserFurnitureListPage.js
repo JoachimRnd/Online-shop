@@ -10,7 +10,7 @@ let furnitureBuyByUser, furnitureSellByUser;
 let furniturePage = `<h4 id="pageTitle">Mes meubles</h4>
 <div class="form-group">
 <select name="types" id="type-select">
-<option value="0" selected>Choisir un type de meuble</option>
+    <option value="0" selected>Choisir un type de meuble</option>
 </select>
 <input class="col-auto" type="number" id="price" placeholder="Prix max">
 <button class="btn btn-success" id="searchBtn" type="submit">Rechercher</button>

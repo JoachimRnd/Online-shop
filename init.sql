@@ -54,7 +54,7 @@ CREATE TABLE project.furniture
     purchase_price                DECIMAL NULL,
     withdrawal_date_from_customer TIMESTAMP NULL,
     selling_price                 DECIMAL NULL,
-    special_selling_price            DECIMAL NULL,
+    special_sale_price            DECIMAL NULL,
     deposit_date                  TIMESTAMP NULL,
     selling_date                  TIMESTAMP NULL,
     delivery_date                 TIMESTAMP NULL,
@@ -214,14 +214,14 @@ VALUES (DEFAULT, 'bazz', '$2a$10$dwQcHOd5M8OBj6ckqlsfHu6KlKrLVEQzxhyF99iNo9G7F6N
 
 INSERT INTO project.users
 VALUES (DEFAULT, 'Theo', '$2a$10$xQTLazOt4NzYaa8xWDmzbOFqM3i.skzWSW82qjgCYp3W.JMoFKZvO', 'Ile',
-        'Basile', 4, 'theo.phile@proximus.be', '2021-03-30', true, 1);
+        'Théophile', 4, 'theo.phile@proximus.be', '2021-03-30', true, 1);
 
 INSERT INTO project.addresses
 VALUES (DEFAULT, 'Rue des Minières','45','Ter','4800','Verviers','Belgique');
 
 INSERT INTO project.users
 VALUES (DEFAULT, 'charline', '$2a$10$fYinLOg.nzo9Grui7O2yTeQevihMa5wnjq3o7Jk1x59KnqzLTfM8i', 
-        'Ile','Charlines', 6, 'charline@proximus.be', '2021-04-22', true, 0);
+        'Line','Charles', 6, 'charline@proximus.be', '2021-04-22', true, 0);
 
 UPDATE project.users
 SET registration_date = '2021-03-23'
@@ -251,47 +251,47 @@ VALUES (DEFAULT,'2021-04-22', 'tous les jours de 16h à 19h', 6, 2, '2021-04-26 
 --Inserts meubles
 INSERT INTO project.furniture
 VALUES (DEFAULT, 'Bahut profond d’une largeur de 112 cm et d’une hauteur de 147cm.', 2, 1, 200,
-        '2021-03-30', DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, 1, 5, DEFAULT, DEFAULT);
+        '2021-03-30', DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, 5, DEFAULT, DEFAULT);
 
 INSERT INTO project.furniture
 VALUES (DEFAULT, 'Large bureau 1m87 cm, deux colonnes de tiroirs', 6, 1, 159, '2021-03-30', 299,
-        DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, 1, 6, DEFAULT, DEFAULT);
+        DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, 6, DEFAULT, DEFAULT);
 
 INSERT INTO project.furniture
 VALUES (DEFAULT, 'Table jardin en bois brut', 21, 2, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT,
-        DEFAULT, DEFAULT, DEFAULT, 1, 1, DEFAULT, DEFAULT);
+        DEFAULT, DEFAULT, DEFAULT, DEFAULT, 1, DEFAULT, DEFAULT);
 
 INSERT INTO project.furniture
 VALUES (DEFAULT, 'Table en chêne, pieds en fer forgé', 21, 3, 140, '2021-03-29', 459, DEFAULT,
-        DEFAULT, DEFAULT, DEFAULT, DEFAULT, 1, 7, DEFAULT, DEFAULT);
+        DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, 7, DEFAULT, DEFAULT);
 
 INSERT INTO project.furniture
 VALUES (DEFAULT, 'Secrétaire en acajou, marqueterie', 20, 3, 90, '2021-03-29', DEFAULT, DEFAULT,
-        DEFAULT, DEFAULT, DEFAULT, DEFAULT, 1, 5, DEFAULT, DEFAULT);
+        DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, 5, DEFAULT, DEFAULT);
 
 INSERT INTO project.furniture
 VALUES (DEFAULT, 'Lit à baldaquin en acajou', 18, 4, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT,
-        DEFAULT, DEFAULT, DEFAULT, DEFAULT, 1, 0, DEFAULT, DEFAULT);
+        DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, 0, DEFAULT, DEFAULT);
 
 INSERT INTO project.furniture
 VALUES (DEFAULT, 'Bureau en bois ciré', 6, 5, 220, '2021-04-27', DEFAULT, DEFAULT, DEFAULT,
-        DEFAULT, DEFAULT, DEFAULT, DEFAULT, 1, 4, DEFAULT, DEFAULT);
+        DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, 4, DEFAULT, DEFAULT);
 
 INSERT INTO project.furniture
 VALUES (DEFAULT, 'Bureau en chêne massif, sous-main intégré', 6, 5, 325, '2021-04-27', 378, DEFAULT, DEFAULT,
-        DEFAULT, DEFAULT, DEFAULT, DEFAULT, 1, 6, DEFAULT, DEFAULT);
+        DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, 6, DEFAULT, DEFAULT);
 
 INSERT INTO project.furniture
 VALUES (DEFAULT, 'Magnifique bureau en acajou', 6, 5, 180, '2021-04-27', 239, DEFAULT, DEFAULT,
-        DEFAULT, DEFAULT, DEFAULT, DEFAULT, 1, 6, DEFAULT, DEFAULT);
+        DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, 6, DEFAULT, DEFAULT);
 
 INSERT INTO project.furniture
 VALUES (DEFAULT, 'Splendide coiffeuse aux reliefs travaillés', 10, 5, 150, '2021-04-27', 199, DEFAULT, DEFAULT,
-        DEFAULT, DEFAULT, DEFAULT, DEFAULT, 1, 6, DEFAULT, DEFAULT);
+        DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, 6, DEFAULT, DEFAULT);
 
 INSERT INTO project.furniture
 VALUES (DEFAULT, 'Coiffeuse marqueterie', 10, 5, 145, '2021-04-27', 199, DEFAULT, DEFAULT,
-        DEFAULT, DEFAULT, DEFAULT, DEFAULT, 1, 6, DEFAULT, DEFAULT);
+        DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, 6, DEFAULT, DEFAULT);
 
 --Inserts pictures
 INSERT INTO project.pictures
@@ -301,7 +301,7 @@ INSERT INTO project.pictures
 VALUES (DEFAULT, 'Bureau_1.png', false, 2, false);
 
 INSERT INTO project.pictures
-VALUES (DEFAULT, 'Bureau_1-Visible-Préférée.png', false, 2,false);
+VALUES (DEFAULT, 'Bureau_1-Visible-Préférée.png', true, 2,false);
 
 INSERT INTO project.pictures
 VALUES (DEFAULT, 'table-jardin-recente.jpg', false, 3, false);
@@ -322,25 +322,35 @@ INSERT INTO project.pictures
 VALUES (DEFAULT, 'Bureau-3_ImageClient.jpg', false, 8, false);
 
 INSERT INTO project.pictures
-VALUES (DEFAULT, 'Bureau-3-Visible.jpg', false, 8, false);
+VALUES (DEFAULT, 'Bureau-3-Visible.jpg', true, 8, false);
 
 INSERT INTO project.pictures
-VALUES (DEFAULT, 'Bureau-3-Visible-Préférée.jpg', false, 8, false);
+VALUES (DEFAULT, 'Bureau-3-Visible-Préférée.jpg', true, 8, false);
 
 INSERT INTO project.pictures
 VALUES (DEFAULT, 'Bureau-8.jpg', false, 9, false);
 
 INSERT INTO project.pictures
-VALUES (DEFAULT, 'Bureau-8-Visible-Préférée.jpg', false, 9, false);
+VALUES (DEFAULT, 'Bureau-8-Visible-Préférée.jpg', true, 9, false);
 
 INSERT INTO project.pictures
 VALUES (DEFAULT, 'Coiffeuse_1_Details.jpg', false, 10, false);
 
 INSERT INTO project.pictures
-VALUES (DEFAULT, 'Coiffeuse_1-Visible_Préférée.jpg', false, 10, false);
+VALUES (DEFAULT, 'Coiffeuse_1-Visible_Préférée.jpg', true, 10, false);
 
 INSERT INTO project.pictures
 VALUES (DEFAULT, 'Coiffeuse_2.png', false, 11, false);
 
 INSERT INTO project.pictures
-VALUES (DEFAULT, 'Coiffeuse_2-Visible_Préférée.png', false, 11, false);
+VALUES (DEFAULT, 'Coiffeuse_2-Visible_Préférée.png', true, 11, false);
+
+UPDATE project.furniture SET favourite_picture = 3 WHERE furniture_id = 2;
+UPDATE project.furniture SET favourite_picture = 11 WHERE furniture_id = 8;
+UPDATE project.furniture SET favourite_picture = 13 WHERE furniture_id = 9;
+UPDATE project.furniture SET favourite_picture = 15 WHERE furniture_id = 10;
+UPDATE project.furniture SET favourite_picture = 17 WHERE furniture_id = 11; 
+
+SELECT COUNT(*) FROM project.pictures p WHERE p.visible_for_everyone = true;
+SELECT COUNT(*) FROM project.furniture f WHERE f.condition = 6 OR f.condition = 8 OR f.condition = 9;
+SELECT COUNT(*) FROM project.furniture f WHERE f.favourite_picture IS NOT NULL;
