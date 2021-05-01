@@ -111,16 +111,12 @@ public class OptionUCCTest {
     assertThrows(BusinessException.class, () -> optionUCC.addOption(1, -1, buyer));
     assertThrows(BusinessException.class, () -> optionUCC.addOption(1, 6, buyer));
 
-    // all good parameters
-    // assertTrue(optionUCC.addOption(1, 4, buyer));
-
     List<OptionDTO> list = new ArrayList<OptionDTO>();
     furniture.setId(2);
     buyer.setId(1);
     Mockito.when(daoFurniture.selectFurnitureById(2)).thenReturn(furniture);
     Mockito.when(daoOption.selectOptionsOfBuyerFromFurniture(1, 2)).thenReturn(list);
     Mockito.when(daoOption.selectOptionsOfFurniture(2)).thenReturn(list);
-    OptionDTO optionToAdd = optionFactory.getOption();
     OptionDTO option1 = optionFactory.getOption();
     option1.setDuration(2);
     option1.setBuyer(buyer);
@@ -143,16 +139,25 @@ public class OptionUCCTest {
     option2.setDate(Date.from(Instant.now()));
     Mockito.when(daoOption.addOption(option2)).thenReturn(3);
     list.add(option2);
-    
+
     // déjà une option d'un autre acheteur
     assertThrows(BusinessException.class, () -> optionUCC.addOption(2, 1, buyer2));
 
-    Mockito.when(daoOption.addOption(optionToAdd)).thenReturn(1);
-    Mockito.when(daoOption.addOption(option1)).thenReturn(2);
-    Mockito.when(daoFurniture.updateCondition(1, ValueLink.FurnitureCondition.en_option.ordinal()))
-        .thenReturn(true);
     // TODO
-    assertTrue(optionUCC.addOption(2, 1, buyer));
+    furniture.setId(5);
+    Mockito.when(daoFurniture.selectFurnitureById(5)).thenReturn(furniture);
+    UserDTO buyer3 = userFactory.getUser();
+    buyer3.setId(1);
+    buyer3.setValidRegistration(true);
+    buyer3.setUserType(ValueLink.UserType.client);
+    OptionDTO optionToAdd = optionFactory.getOption();
+    optionToAdd.setDuration(2);
+    optionToAdd.setBuyer(buyer);
+    optionToAdd.setFurniture(furniture);
+    optionToAdd.setStatus(ValueLink.OptionStatus.en_cours);
+    optionToAdd.setDate(Date.from(Instant.now()));
+    Mockito.when(daoOption.addOption(optionToAdd)).thenReturn(5);
+    assertTrue(optionUCC.addOption(5, 2, buyer3));
   }
 
   @DisplayName("test cancelOption")

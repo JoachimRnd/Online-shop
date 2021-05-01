@@ -80,7 +80,6 @@ public class VisitRequestUCCTest {
   @DisplayName("test addVisitRequest")
   @Test
   public void addVisitRequestTest() {
-    // TODO
     AddressDTO address = addressFactory.getAddress();
     VisitRequestDTO vr = vrFactory.getVisitRequest();
     vr.setAddress(address);
@@ -158,4 +157,29 @@ public class VisitRequestUCCTest {
     assertEquals(null, vrUCC.modifyVisitRequest(1, "test2", "2020-10-26T03:45"));
     assertEquals(null, vrUCC.modifyVisitRequest(2, "test", "2018-06-12T12:00"));
   }
+
+  @DisplayName("test getVisitRequestByIdForUser")
+  @Test
+  public void getVisitRequestByIdForUserTest() {
+    VisitRequestDTO vr = vrFactory.getVisitRequest();
+    Mockito.when(daoVR.selectVisitRequestById(1)).thenReturn(vr);
+    UserDTO user = userFactory.getUser();
+    user.setId(1);
+    vr.setCustomer(user);
+    assertEquals(vr, vrUCC.getVisitRequestByIdForUser(1, 1));
+    user.setId(2);
+    assertNull(vrUCC.getVisitRequestByIdForUser(1, 1));
+  }
+
+  @DisplayName("test getVisitRequestsByUserId")
+  @Test
+  public void getVisitRequestsByUserIdTest() {
+    List<VisitRequestDTO> list = new ArrayList<VisitRequestDTO>();
+    assertNotNull(vrUCC.getVisitRequestsByUserId(1));
+    assertTrue(vrUCC.getVisitRequestsByUserId(1).isEmpty());
+    Mockito.when(daoVR.selectVisitRequestByUserId(1)).thenReturn(list);
+    assertEquals(list, vrUCC.getVisitRequestsByUserId(1));
+  }
+
+
 }

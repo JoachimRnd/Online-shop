@@ -146,12 +146,14 @@ public class FurnitureUCCTest {
     Mockito.when(daoFurniture.selectFurnitureById(1)).thenReturn(furniture);
     Mockito.when(daoOption.selectOptionByFurnitureId(1)).thenReturn(option);
 
-    // TODO mis à false pourtant ne lance pas de businessException
     assertThrows(NullPointerException.class,
-        () -> furnitureUCC.modifyCondition(0, ValueLink.FurnitureCondition.ne_convient_pas));
+        () -> furnitureUCC.modifyCondition(2, ValueLink.FurnitureCondition.ne_convient_pas));
     assertThrows(NullPointerException.class, () -> furnitureUCC.modifyCondition(1, null));
 
     FurnitureCondition condition = null;
+    condition = ValueLink.FurnitureCondition.propose;
+    Mockito.when(daoFurniture.updateCondition(1, condition.ordinal())).thenReturn(true);
+    assertTrue(furnitureUCC.modifyCondition(1, condition));
     condition = ValueLink.FurnitureCondition.ne_convient_pas;
     Mockito.when(daoFurniture.updateCondition(1, condition.ordinal())).thenReturn(true);
     assertTrue(furnitureUCC.modifyCondition(1, condition));
@@ -175,6 +177,10 @@ public class FurnitureUCCTest {
     Mockito.when(daoFurniture.updateSellingDate(1, Instant.now())).thenReturn(true);
     Mockito.when(daoFurniture.updateCondition(1, condition.ordinal())).thenReturn(true);
     assertTrue(furnitureUCC.modifyCondition(1, condition));
+    condition = ValueLink.FurnitureCondition.retire_de_vente;
+    Mockito.when(daoPicture.updateScrollingPictureFalseByFurnitureId(1)).thenReturn(true);
+    Mockito.when(daoFurniture.updateCondition(1, condition.ordinal())).thenReturn(true);
+    assertTrue(furnitureUCC.modifyCondition(1, condition));
     condition = ValueLink.FurnitureCondition.en_option;
     Mockito.when(daoFurniture.updateCondition(1, condition.ordinal())).thenReturn(true);
     assertTrue(furnitureUCC.modifyCondition(1, condition));
@@ -183,6 +189,9 @@ public class FurnitureUCCTest {
     Mockito.when(daoFurniture.updateCondition(1, condition.ordinal())).thenReturn(true);
     assertTrue(furnitureUCC.modifyCondition(1, condition));
     condition = ValueLink.FurnitureCondition.reserve;
+    Mockito.when(daoFurniture.updateCondition(1, condition.ordinal())).thenReturn(true);
+    assertTrue(furnitureUCC.modifyCondition(1, condition));
+    condition = ValueLink.FurnitureCondition.livre;
     Mockito.when(daoFurniture.updateCondition(1, condition.ordinal())).thenReturn(true);
     assertTrue(furnitureUCC.modifyCondition(1, condition));
 
