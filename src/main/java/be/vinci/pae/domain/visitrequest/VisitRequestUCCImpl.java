@@ -1,5 +1,10 @@
 package be.vinci.pae.domain.visitrequest;
 
+import java.io.InputStream;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.List;
+import org.apache.commons.text.StringEscapeUtils;
 import be.vinci.pae.domain.address.AddressDTO;
 import be.vinci.pae.domain.furniture.FurnitureDTO;
 import be.vinci.pae.domain.picture.PictureDTO;
@@ -13,11 +18,6 @@ import be.vinci.pae.utils.Upload;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
 import be.vinci.pae.utils.ValueLink.VisitRequestStatus;
 import jakarta.inject.Inject;
-import java.io.InputStream;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.List;
-import org.apache.commons.text.StringEscapeUtils;
 
 public class VisitRequestUCCImpl implements VisitRequestUCC {
 
@@ -46,6 +46,20 @@ public class VisitRequestUCCImpl implements VisitRequestUCC {
 
       visitRequest.setCustomer(user);
       AddressDTO visitRequestAddress = visitRequest.getAddress();
+      visitRequestAddress.setBuildingNumber(
+          StringEscapeUtils.escapeHtml4(visitRequestAddress.getBuildingNumber()));
+      visitRequestAddress
+          .setCommune(StringEscapeUtils.escapeHtml4(visitRequestAddress.getCommune()));
+      visitRequestAddress
+          .setCountry(StringEscapeUtils.escapeHtml4(visitRequestAddress.getCountry()));
+      visitRequestAddress
+          .setPostcode(StringEscapeUtils.escapeHtml4(visitRequestAddress.getPostcode()));
+      visitRequestAddress.setStreet(StringEscapeUtils.escapeHtml4(visitRequestAddress.getStreet()));
+      if (visitRequestAddress.getUnitNumber() != null
+          && !visitRequestAddress.getUnitNumber().isEmpty()) {
+        visitRequestAddress
+            .setUnitNumber(StringEscapeUtils.escapeHtml4(visitRequestAddress.getUnitNumber()));
+      }
       AddressDTO userAddress = user.getAddress();
 
       if (!visitRequestAddress.equals(userAddress)) {
