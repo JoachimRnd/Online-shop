@@ -91,7 +91,7 @@ const UserAdmin = async(f) => {
 
     onFurnitureBuy(furnitureBuyByUser);
 
-    let furnitureSellByUser = await callAPI(API_BASE_URL_USER + "furnituresellby/" + f.id , "GET", user.token);
+    let furnitureSellByUser = await callAPI(API_BASE_URL_USER + "sales/" + f.id , "GET", user.token);
 
     onFurnitureSell(furnitureSellByUser);
 }
