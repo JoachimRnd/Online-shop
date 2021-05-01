@@ -7,7 +7,7 @@ const IMAGES = "http://localhost:8080/images/";
 let carouselPictures;
 
 let homePage = `
-<h4 id="pageTitle">Home</h4>
+<h4 id="pageTitle" class="text-center">Accueil</h4>
 <div id="filter_carousel" class="float-right"></div>
 <div id="carousel" class="col-12 float-left"></div>
 `;
