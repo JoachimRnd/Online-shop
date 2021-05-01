@@ -16,6 +16,7 @@ let visitAdminPage = `
                 <div id="infos"></div>
             </div>
             <div class="col-6">
+                <div id="address"></div>
                 <div class="map" id="map"></div>
             </div>
         </div>
@@ -45,7 +46,7 @@ const VisitAdminPage = async(f) => {
     }
 
     onVisitInformation(f);
-    onMap(f.address);
+    onMap(f.customer.address);
     let furnitureList = await callAPI(API_BASE_URL_ADMIN + "furnituresvisit/" + id, "GET", user.token);
     onFurnituresInformation(furnitureList);
 
@@ -68,7 +69,7 @@ const onVisitInformation = (data) => {
         </div>
         <div class="row">
             <div class="col-6">
-                <label for="time_slot">Disponnibilitée</label>
+                <label for="time_slot">Disponibilité</label>
                 <input type="text" class="form-control" id="time_slot" placeholder=${data.timeSlot} readonly>
             </div>
             <div class="col-6">
@@ -170,16 +171,16 @@ const onChosenDateBtn = async () => {
 };
 
 const onMap = (data) => {
-    let addressString = data.street + " " + data.buildingNumber + " ";
-    if(data.unitNumber !== undefined) {
-        addressString += data.unitNumber + " ";
-    }
-    addressString += data.postcode + " " + data.commune + " " + data.country;
+    let unitNumber = "";
+    if(data.unitNumber != undefined)
+        unitNumber = data.unitNumber;
+    document.getElementById("address").innerHTML = `<div id="address${data.id}" name="${data.street} ${data.buildingNumber} ${unitNumber} ${data.postcode} ${data.commune} ${data.country}"></div>`;
+    let addressString = document.getElementById("address"+data.id).getAttribute("name");
 
     const params = {
-        access_key: '1e6153ae46dfd9f72ecbe2d7ba7faaf8',
-        query: addressString,
-        limit: 1
+        key: 'SZOA4k5qE7c0bWx4YkeuejhMjpdjwOMm',
+        location: addressString,
+        maxResults: 1
     }
 
     getLatLngAndDisplayMap(params,data);
@@ -187,31 +188,28 @@ const onMap = (data) => {
 
 const getLatLngAndDisplayMap = (params,address) => {
 
-    axios.get('http://api.positionstack.com/v1/forward', {params})
+    axios.get('http://www.mapquestapi.com/geocoding/v1/address', {params})
         .then(response => {
-            if(response.data.data.length === 0){
-                document.getElementById("map").innerHTML = `<h3 style="color:red">Adresse introuvable</h3>`;
+            const latitude = response.data.results[0].locations[0].latLng.lat;
+            const longitude = response.data.results[0].locations[0].latLng.lng;
+            if(latitude === undefined || longitude === undefined){
+                //Parfois la latitude et longitude sont buggées donc je rappelle l'API
+                getLatLngAndDisplayMap(params,address);
             } else {
-                const latitude = response.data.data[0].latitude;
-                const longitude = response.data.data[0].longitude;
-                if(latitude === undefined || longitude === undefined){
-                    //Parfois la latitude et longitude sont buggées donc je rappelle l'API
-                    getLatLngAndDisplayMap(params,address);
-                } else {
-                    let mymap = leaflet.map("map").setView(new leaflet.LatLng(latitude, longitude), 13);
+                let mymap = leaflet.map("map").setView(new leaflet.LatLng(latitude, longitude), 13);
 
-                    leaflet.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-                        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-                        maxZoom: 18,
-                        id: 'mapbox/streets-v11',
-                        tileSize: 512,
-                        zoomOffset: -1,
-                        accessToken: 'pk.eyJ1IjoidmV2ZTE5MDQiLCJhIjoiY2tvMWZuZHBrMHAzZDJ4b2JwZGVybzBwOSJ9.uZvV6shk7iYy4fmJNspb1Q'
-                    }).addTo(mymap);
+                leaflet.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                    maxZoom: 18,
+                    id: 'mapbox/streets-v11',
+                    tileSize: 512,
+                    zoomOffset: -1,
+                    accessToken: 'pk.eyJ1IjoidmV2ZTE5MDQiLCJhIjoiY2tvMWZuZHBrMHAzZDJ4b2JwZGVybzBwOSJ9.uZvV6shk7iYy4fmJNspb1Q'
+                }).addTo(mymap);
 
-                    leaflet.marker(new leaflet.LatLng(latitude, longitude)).addTo(mymap);
-                }
+                leaflet.marker(new leaflet.LatLng(latitude, longitude)).addTo(mymap);
             }
+            
 
         }).catch(error => {
         console.log(error);
