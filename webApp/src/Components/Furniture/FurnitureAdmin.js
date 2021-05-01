@@ -13,7 +13,9 @@ let pictures;
 let furniturePage = `
 <h4 id="pageTitle">Furniture User</h4>
 <div class="row">
-    <div id="carousel" class="col-6">
+    <div class="col-6">
+      <div id="carousel"></div>
+      <div id="uploadReturn"></div>
     </div>
   <div class="col-6">
     <div class="form-group">
@@ -206,7 +208,11 @@ const FurnitureAdmin = async(f) => {
   if(furniture.condition == "en_vente" || furniture.condition == "en_option"){
     onCheckOption();
   }
-
+  document.querySelector("#uploadReturn").innerHTML = codeUploadPicture + codeReturnButton;
+  let btnReturn = document.querySelector("#btnReturn");
+  btnReturn.addEventListener("click", () => RedirectUrl("/search"));
+  let btnAddPicture = document.querySelector("form");
+  btnAddPicture.addEventListener("submit", onAddPicture);
 }
 
 const onTypesList = (typesList) => {
@@ -280,7 +286,6 @@ const onPicturesList = (picturesList) => {
 
 
 const onFurniture = () => {
-  console.log(furniture);
   let prix = document.querySelector("#prix");
   prix.innerHTML = `<input class="form-control" id="inputSellingPrice" type="number" placeholder=${furniture.sellingPrice} readonly />`;
 
@@ -526,12 +531,9 @@ const onModifyPicture = () => {
       codeModifyPicture += codeBtnDeletePicture;
     }
     codeModifyPicture += `</div>`;
-    codeModifyPicture += codeUploadPicture;
-    codeModifyPicture += codeReturnButton;
+
     btnModifyPicture.innerHTML = codeModifyPicture;
 
-    let btnAddPicture = document.querySelector("form");
-    btnAddPicture.addEventListener("submit", onAddPicture);
     let btnScrollingPicture = document.querySelector("#btnScrollingPicture");
     btnScrollingPicture.addEventListener("click", onAddScrollingPicture);
     let btnDeletePicture = document.querySelector("#btnDeletePicture");
@@ -545,8 +547,7 @@ const onModifyPicture = () => {
     let btnVisibleForEveryone = document.querySelector("#btnVisibleForEveryone");
     btnVisibleForEveryone.addEventListener("click",onVisibleForEveryone);
 
-    let btnReturn = document.querySelector("#btnReturn");
-    btnReturn.addEventListener("click", () => RedirectUrl("/search"));
+   
     codeModifyPicture += `</div></div>`
 
 }
@@ -576,7 +577,7 @@ const onAddPicture = async (e) => {
   }
 
   try {
-    pictures = await callAPI(API_BASE_URL + furniture.id + "/pictures-furniture", "GET", user.token);
+    pictures = await callAPI(API_BASE_URL + furniture.id + "/all-pictures-furniture", "GET", user.token);
     if(pictures.length == 0){
       document.querySelector("#carousel").innerHTML = `<div class="alert alert-danger mt-2">Il n'y a pas de photos disponible pour ce meuble.</div>`
     }else{
@@ -674,7 +675,7 @@ const onDeletePicture = async() => {
   }
 
   try {
-    pictures = await callAPI(API_BASE_URL + furniture.id + "/pictures-furniture", "GET", user.token);
+    pictures = await callAPI(API_BASE_URL + furniture.id + "/all-pictures-furniture", "GET", user.token);
     if(pictures.length == 0){
       document.querySelector("#carousel").innerHTML = `<div class="alert alert-danger mt-2">Il n'y a pas de photos disponible pour ce meuble.</div>`
     }else{

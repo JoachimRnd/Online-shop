@@ -60,6 +60,7 @@ public class PictureUCCImpl implements PictureUCC {
       if (furniture == null) {
         throw new BusinessException("Le meuble n'existe pas");
       }
+      newPicture.setFurniture(furniture);
       int id = this.daoPicture.addPicture(newPicture);
       if (id == -1) {
         this.dalServices.rollbackTransaction();
@@ -88,10 +89,15 @@ public class PictureUCCImpl implements PictureUCC {
     if (pictureDTO.getFurniture().getFavouritePicture() != pictureId) {
       try {
         this.dalServices.startTransaction();
-        if (!this.daoPicture.deletePicture(pictureId) || !Upload.deleteFile(uploadedFileLocation)) {
+        boolean t1 = this.daoPicture.deletePicture(pictureId);
+        boolean b2 = Upload.deleteFile(uploadedFileLocation);
+        System.out.println(t1);
+        System.out.println(b2);
+        if (!t1 || !b2) {
           this.dalServices.rollbackTransaction();
           throw new BusinessException("Error delete picture");
         }
+
         this.dalServices.commitTransaction();
         return true;
       } finally {
