@@ -9,22 +9,22 @@ let lastnameList, typeList, communeList;
 let fieldsTypeUser = `
 <div class="dropdown d-inline">
 <input class="col-auto" type="text" id="user" placeholder="Nom">
-<ul id="user-autocomplete" class="dropdown-menu" style="display: none"></ul>
+<ul id="user-autocomplete" class="dropdown-menu ulAutoComplete" style="display: none"></ul>
 </div>
 <input class="col-auto" type="text" id="postcode" placeholder="Code Postal">
 <div class="dropdown d-inline">
 <input class="col-auto" type="text" id="commune" placeholder="Commune">
-<ul id="commune-autocomplete" class="dropdown-menu" style="display: none"></ul>
+<ul id="commune-autocomplete" class="dropdown-menu ulAutoComplete" style="display: none"></ul>
 </div>`;
 let fieldsTypeFurniture = `
 <div class="dropdown d-inline">
 <input class="col-auto" type="text" id="type" placeholder="Type">
-<ul id="type-autocomplete" class="dropdown-menu" style="display: none"></ul>
+<ul id="type-autocomplete" class="dropdown-menu ulAutoComplete" style="display: none"></ul>
 </div>
 <input class="col-auto" type="number" id="price" placeholder="Prix max">
 <div class="dropdown d-inline">
 <input class="col-auto" type="text" id="user" placeholder="Utilisateur">
-<ul id="user-autocomplete" class="dropdown-menu" style="display: none"></ul>
+<ul id="user-autocomplete" class="dropdown-menu ulAutoComplete" style="display: none"></ul>
 </div>`;
 let searchPage = `<h4 id="pageTitle">Recherche</h4>
 <div class="row">
@@ -175,7 +175,7 @@ const showAutoCompleteResults = (matches = []) => {
 };
 
 const onCloseAutocomplete = () => {
-    let autocomplete = document.querySelectorAll("ul");
+    let autocomplete = document.querySelectorAll(".ulAutoComplete");
     for (let i = 0; i < autocomplete.length; i++) {
         autocomplete[i].setAttribute("style", "display: none");
     }

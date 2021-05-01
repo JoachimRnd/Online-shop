@@ -285,7 +285,7 @@ const onPicturesList = (picturesList) => {
 
 
 
-const onFurniture = () => {
+const onFurniture = async() => {
   let prix = document.querySelector("#prix");
   prix.innerHTML = `<input class="form-control" id="inputSellingPrice" type="number" placeholder=${furniture.sellingPrice} readonly />`;
 
@@ -322,8 +322,20 @@ const onFurniture = () => {
     withdrawalDateToCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateToCustomer" type="date" readonly/>`;
 
   let buyerEmail = document.querySelector("#buyerEmail");
-  if(furniture.buyer && furniture.buyer.email)
-    buyerEmail.innerHTML = `<input class="form-control" id="inputBuyerEmail" type="email" value="${furniture.buyer.email}" readonly/>`;
+  if(furniture.buyer && furniture.buyer.email){
+    let buyer;
+    let user = getUserSessionData();
+    try {
+      buyer = await callAPI(API_BASE_URL_ADMIN + "user/" + furniture.buyer.id , "GET", user.token);
+    } catch (err) {
+      console.error(err);
+      PrintError(err);
+  }
+  buyerEmail.innerHTML = `<button class="form-control" id="inputBuyerEmail" type="button" class="btn btn-secondary">${furniture.buyer.email}</button>`
+  document.querySelector("#inputBuyerEmail").addEventListener("click",()=> {
+    RedirectUrl("/userAdmin",buyer,"?id="+buyer.id);
+  })
+  }
   else if(furniture.unregisteredBuyerEmail)
     buyerEmail.innerHTML = `<input class="form-control" id="inputBuyerEmail" type="email" value="${furniture.unregisteredBuyerEmail}" readonly/>`;
   else
@@ -471,9 +483,10 @@ const onSave = async() => {
         furniture.buyer.email = buyerEmail;
       }
     }
-    
+    let checkConditions = true;
     if(furniture.condition == condition){
       condition = null;
+      checkConditions = false;
     }
     furniture.condition = condition;
     let struct = {
@@ -494,7 +507,9 @@ const onSave = async() => {
     try {
       await callAPIWithoutJSONResponse(API_BASE_URL + furniture.id, "PUT", user.token, struct);
       document.getElementById("toast").innerHTML = `</br><h5 style="color:green">Le meuble a bien été modifié.</h5>`;
-      onCheckConditions();
+      if(checkConditions){
+        onCheckConditions();
+      }
       if(condition == "retire_de_vente"){
         pictures.forEach(pct => {
             pct.scrollingPicture = false; 
@@ -506,7 +521,6 @@ const onSave = async() => {
       PrintError(err);
     }
 }
-
 
 
 const onModifyPicture = () => {
