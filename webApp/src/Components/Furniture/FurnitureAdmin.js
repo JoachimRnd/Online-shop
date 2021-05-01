@@ -294,7 +294,6 @@ const onFurniture = () => {
 
   let furnitureDescription = document.querySelector("#furnitureDescription");
   furnitureDescription.innerHTML = `<textarea class="form-control" id="furnituredescription" rows="6" >${furniture.description}</textarea>`;
-  console.log(furniture);
   let purchasePrice = document.querySelector("#purchasePrice");
   purchasePrice.innerHTML = `<input class="form-control" id="inputPurchasePrice" type="number" placeholder=${furniture.purchasePrice} readonly />`;
 
@@ -496,6 +495,12 @@ const onSave = async() => {
       await callAPIWithoutJSONResponse(API_BASE_URL + furniture.id, "PUT", user.token, struct);
       document.getElementById("toast").innerHTML = `</br><h5 style="color:green">Le meuble a bien été modifié.</h5>`;
       onCheckConditions();
+      if(condition == "retire_de_vente"){
+        pictures.forEach(pct => {
+            pct.scrollingPicture = false; 
+        });
+      }
+      onModifyPicture();
     } catch (err) {
       console.error("FurnitureAdmin::Change condition", err);
       PrintError(err);
@@ -512,7 +517,6 @@ const onModifyPicture = () => {
     let picture;
     pictures.forEach(pct => {
       if(pct.id == pictureId){
-        console.log(pct);
         picture = pct; 
         return;
       }
@@ -557,9 +561,6 @@ const onModifyPicture = () => {
 const onAddPicture = async (e) => {
   e.preventDefault();
   let file = document.getElementById("file").files[0];
-  console.log(file);
-  console.log("AddPicture");
-  
   let fd = new FormData();
   fd.append("file",file);
   fd.append("furnitureID", furniture.id);
@@ -725,7 +726,6 @@ const onClickCancelOption = async (e) => {
     let optionCondition = document.querySelector("#"+furniture.condition);
     optionCondition.setAttribute("selected","");
   } catch (e) {
-    console.log(e);
     PrintError(e);
   }
 }

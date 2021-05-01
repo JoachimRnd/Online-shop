@@ -37,7 +37,7 @@ const onUnvalidatedUsers = (users) => {
                     <p>Nom : ${user.lastName}</p>
                     <p>Prénom : ${user.firstName}</p>
                     <p>Email : ${user.email}</p>
-                    <p>Date d'inscription : ${date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()}</p>
+                    <p>Date d'inscription : ${date.getDate() + "/" + (date.getMonth()+1) + "/" + date.getFullYear()}</p>
                     <select id="selectUserType${user.id}" class="form-select" aria-label="Default select example">
                         <option selected>Chosir type utilisateur</option>
                         <option value="client">Client</option>
