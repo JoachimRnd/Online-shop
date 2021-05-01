@@ -121,21 +121,21 @@ const onFurniture = () => {
     let deliveryDate = document.querySelector("#deliveryDate");
     if (furniture.deliveryDate) {
       let date = new Date(furniture.deliveryDate);
-      deliveryDate.innerHTML = `<input class="form-control" id="inputDeliveryDate" type="date" value="${date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()}" readonly/>`;
+      deliveryDate.innerHTML = `<input class="form-control" id="inputDeliveryDate" type="date" value="${date.getDate() + "/" + (date.getMonth()+1) + "/" + date.getFullYear()}" readonly/>`;
     } else
       deliveryDate.innerHTML = `<input class="form-control" id="inputDeliveryDate" type="date" readonly/>`;
 
     let withdrawalDateFromCustomer = document.querySelector("#withdrawalDateFromCustomer");
     if (furniture.withdrawalDateFromCustomer) {
       let date = new Date(furniture.withdrawalDateFromCustomer);
-      withdrawalDateFromCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateFromCustomer" type="date" value="${date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()}" readonly/>`;
+      withdrawalDateFromCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateFromCustomer" type="date" value="${date.getDate() + "/" + (date.getMonth()+1) + "/" + date.getFullYear()}" readonly/>`;
     }
     else
       withdrawalDateFromCustomer.innerHTML = `<input class="form-control" id="inputWithdrawalDateFromCustomer" type="date" readonly/>`;
   let dateOfSale = document.querySelector("#dateOfSale");
   if(furniture.sellingDate){
     let date = new Date(furniture.sellingDate);
-    dateOfSale.innerHTML = `<input class="form-control" id="dateOfSale" type="date" value="${date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()}" readonly/>`;
+    dateOfSale.innerHTML = `<input class="form-control" id="dateOfSale" type="date" value="${date.getDate() + "/" + (date.getMonth()+1) + "/" + date.getFullYear()}" readonly/>`;
   }else
     dateOfSale.innerHTML = `<input class="form-control" id="dateOfSale" type="date" readonly/>`;
   let condition = document.querySelector("#condition");

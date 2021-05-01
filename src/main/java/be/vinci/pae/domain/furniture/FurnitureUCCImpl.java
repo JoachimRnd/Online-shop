@@ -1,12 +1,5 @@
 package be.vinci.pae.domain.furniture;
 
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 import be.vinci.pae.domain.option.OptionDTO;
 import be.vinci.pae.domain.picture.PictureDTO;
 import be.vinci.pae.domain.type.TypeDTO;
@@ -20,6 +13,13 @@ import be.vinci.pae.services.user.DAOUser;
 import be.vinci.pae.utils.BusinessException;
 import be.vinci.pae.utils.ValueLink.FurnitureCondition;
 import jakarta.inject.Inject;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class FurnitureUCCImpl implements FurnitureUCC {
 
@@ -48,7 +48,7 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   public List<FurnitureDTO> getAllFurniture() {
     try {
       List<FurnitureDTO> listFurniture = this.daoFurniture.selectAllFurniture();
-      checkFurnitures(listFurniture);
+      listFurniture = checkFurnitures(listFurniture);
       return listFurniture;
     } finally {
       this.dalServices.closeConnection();
@@ -59,7 +59,7 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   public List<FurnitureDTO> getFurnitureUsers() {
     try {
       List<FurnitureDTO> listFurniture = this.daoFurniture.selectFurnitureUsers();
-      checkFurnitures(listFurniture);
+      listFurniture = checkFurnitures(listFurniture);
       return listFurniture;
     } finally {
       this.dalServices.closeConnection();
@@ -94,15 +94,27 @@ public class FurnitureUCCImpl implements FurnitureUCC {
       boolean noError = true;
 
       switch (condition) {
+        case propose:
+          if (furnitureDTO.getCondition() == FurnitureCondition.ne_convient_pas
+              || furnitureDTO.getCondition() == FurnitureCondition.achete) {
+            noError = daoFurniture.updateCondition(id, condition.ordinal());
+          }
+          break;
         case ne_convient_pas:
-          // fallthroug
-        case achete:
           if (furnitureDTO.getCondition() == FurnitureCondition.propose) {
             noError = daoFurniture.updateCondition(id, condition.ordinal());
           }
           break;
+        case achete:
+          if (furnitureDTO.getCondition() == FurnitureCondition.propose
+              || furnitureDTO.getCondition() == FurnitureCondition.emporte_par_patron) {
+            noError = daoFurniture.updateCondition(id, condition.ordinal());
+          }
+          break;
         case emporte_par_patron:
-          if (furnitureDTO.getCondition() == FurnitureCondition.achete) {
+          if (furnitureDTO.getCondition() == FurnitureCondition.achete
+              || furnitureDTO.getCondition() == FurnitureCondition.en_magasin
+              || furnitureDTO.getCondition() == FurnitureCondition.en_restauration) {
             noError = daoFurniture.updateCondition(id, condition.ordinal());
           }
           break;
@@ -124,22 +136,30 @@ public class FurnitureUCCImpl implements FurnitureUCC {
           if (furnitureDTO.getCondition() == FurnitureCondition.reserve
               || furnitureDTO.getCondition() == FurnitureCondition.en_option
               || furnitureDTO.getCondition() == FurnitureCondition.en_magasin
-              || furnitureDTO.getCondition() == FurnitureCondition.retire_de_vente) {
+              || furnitureDTO.getCondition() == FurnitureCondition.retire_de_vente
+              || furnitureDTO.getCondition() == FurnitureCondition.vendu) {
             noError = daoFurniture.updateSellingDate(id, Instant.now())
                 && daoFurniture.updateCondition(id, condition.ordinal());
           }
           break;
         case retire_de_vente:
-          // fallthroug
-
-        case en_option:
           if (furnitureDTO.getCondition() == FurnitureCondition.en_vente) {
+            noError = daoPicture.updateScrollingPictureFalseByFurnitureId(furnitureDTO.getId())
+                && daoFurniture.updateCondition(id, condition.ordinal());
+          }
+          break;
+        case en_option:
+          if (furnitureDTO.getCondition() == FurnitureCondition.en_vente
+              || furnitureDTO.getCondition() == FurnitureCondition.vendu) {
             noError = daoFurniture.updateCondition(id, condition.ordinal());
           }
           break;
         case vendu:
           if (furnitureDTO.getCondition() == FurnitureCondition.en_option
-              || furnitureDTO.getCondition() == FurnitureCondition.en_vente) {
+              || furnitureDTO.getCondition() == FurnitureCondition.en_vente
+              || furnitureDTO.getCondition() == FurnitureCondition.livre
+              || furnitureDTO.getCondition() == FurnitureCondition.reserve
+              || furnitureDTO.getCondition() == FurnitureCondition.emporte_par_client) {
             OptionDTO optionDTO = this.daoOption.selectOptionByFurnitureId(id);
             if (optionDTO != null) {
               noError = daoOption.finishOption(optionDTO.getId())
@@ -150,7 +170,9 @@ public class FurnitureUCCImpl implements FurnitureUCC {
           }
           break;
         case reserve:
-          if (furnitureDTO.getCondition() == FurnitureCondition.vendu) {
+          if (furnitureDTO.getCondition() == FurnitureCondition.vendu
+              || furnitureDTO.getCondition() == FurnitureCondition.en_vente
+              || furnitureDTO.getCondition() == FurnitureCondition.emporte_par_client) {
             noError = daoFurniture.updateCondition(id, condition.ordinal());
           }
           break;
@@ -338,7 +360,7 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   public FurnitureDTO getFurnitureById(int id) {
     try {
       FurnitureDTO furniture = this.daoFurniture.selectFurnitureById(id);
-      checkFurniture(furniture);
+      furniture = checkFurniture(furniture);
       return furniture;
     } finally {
       dalServices.closeConnection();
@@ -349,7 +371,7 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   public FurnitureDTO getPersonalFurnitureById(int id, UserDTO user) {
     try {
       FurnitureDTO furniture = this.daoFurniture.selectFurnitureById(id);
-      checkFurniture(furniture);
+      furniture = checkFurniture(furniture);
       // Si tu l'as acheté
       if (furniture.getBuyer() != null && furniture.getBuyer().getId() == user.getId()) {
         return furniture;
@@ -477,28 +499,36 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     }
   }
 
-  private void checkFurnitures(List<FurnitureDTO> listFurniture) {
-    for (FurnitureDTO furnitureDTO : listFurniture) {
-      checkFurniture(furnitureDTO);
+  private List<FurnitureDTO> checkFurnitures(List<FurnitureDTO> listFurniture) {
+    for (int i = 0; i < listFurniture.size(); i++) {
+      listFurniture.set(i, checkFurniture(listFurniture.get(i)));
     }
+    return listFurniture;
   }
 
-  private void checkFurniture(FurnitureDTO furnitureDTO) {
+  private FurnitureDTO checkFurniture(FurnitureDTO furnitureDTO) {
     if (furnitureDTO != null && furnitureDTO.getWithdrawalDateToCustomer() != null) {
+      System.out.println("date emport " + furnitureDTO.getWithdrawalDateToCustomer());
       Date now = new Date();
+      System.out.println("durée en jour " + TimeUnit.DAYS.convert(
+          now.getTime() - furnitureDTO.getWithdrawalDateToCustomer().getTime(),
+          TimeUnit.MILLISECONDS));
       if (furnitureDTO.getCondition() == FurnitureCondition.vendu
           && TimeUnit.DAYS.convert(
-              furnitureDTO.getWithdrawalDateToCustomer().getTime() - now.getTime(),
-              TimeUnit.MILLISECONDS) < 0
+          furnitureDTO.getWithdrawalDateToCustomer().getTime() - now.getTime(),
+          TimeUnit.MILLISECONDS) < 0
           && modifyCondition(furnitureDTO.getId(), FurnitureCondition.reserve)) {
+        System.out.println("passage en reserve");
         furnitureDTO.setCondition(FurnitureCondition.reserve);
       }
       if (furnitureDTO.getCondition() == FurnitureCondition.reserve && TimeUnit.DAYS.convert(
-          furnitureDTO.getWithdrawalDateToCustomer().getTime() - now.getTime(),
+          now.getTime() - furnitureDTO.getWithdrawalDateToCustomer().getTime(),
           TimeUnit.MILLISECONDS) > 366 && returnToSelling(furnitureDTO.getId())) {
+        System.out.println("passage en vente");
         furnitureDTO.setCondition(FurnitureCondition.en_vente);
       }
     }
+    return furnitureDTO;
   }
 
   private boolean returnToSelling(int id) {

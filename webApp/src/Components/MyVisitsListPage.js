@@ -44,7 +44,7 @@ const onVisitList = (data) => {
         let date = new Date(element.requestDate);
         visitList += `<tr>
                   <td><a id="visit${element.id}" href="" target="_blank">${element.timeSlot}</a></td>
-                  <td>${date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()}</td>
+                  <td>${date.getDate() + "/" + (date.getMonth()+1) + "/" + date.getFullYear()}</td>
                   <td>${element.status}</td>
                </tr>`;
     });

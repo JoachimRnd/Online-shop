@@ -107,7 +107,7 @@ const onUserInformation = (data) => {
     email.innerHTML = `<input class="form-control" id="email_input" type="text" placeholder=${data.email} readonly />`;
     let registrationDate = document.querySelector("#registration_date");
     let date = new Date(data.registrationDate);
-    registrationDate.innerHTML = `<input class="form-control" id="registration_date_input" type="text" placeholder=${date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()} readonly />`;
+    registrationDate.innerHTML = `<input class="form-control" id="registration_date_input" type="text" placeholder=${date.getDate() + "/" + (date.getMonth()+1) + "/" + date.getFullYear()} readonly />`;
     let userType = document.querySelector("#user_type");
     userType.innerHTML = `<input class="form-control" id="user_type_input" type="text" placeholder=${data.userType} readonly />`;
 };

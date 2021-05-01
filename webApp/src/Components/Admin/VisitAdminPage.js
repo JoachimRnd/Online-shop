@@ -59,7 +59,7 @@ const onVisitInformation = (data) => {
         <div class="row">
             <div class="col-6">
                 <label for="request_date">Date de la demande</label>
-                <input type="text" class="form-control" id="request_date" placeholder=${requestDate.getDate() + "/" + requestDate.getMonth() + "/" + requestDate.getFullYear()} readonly>
+                <input type="text" class="form-control" id="request_date" placeholder=${requestDate.getDate() + "/" +(requestDate.getMonth()+1) + "/" + requestDate.getFullYear()} readonly>
             </div>
             <div class="col-6">
                 <label for="status">Status de la demande</label>
@@ -81,7 +81,7 @@ const onVisitInformation = (data) => {
     if(data.chosenDateTime !== undefined) {
         let chosenDateTime = new Date(data.chosenDateTime);
         visitInformation += `<label for="chosen_date_time">Date de la visite</label>
-                             <input type="text" class="form-control" id="chosen_date_time" placeholder=${chosenDateTime.getDate() + "/" + chosenDateTime.getMonth() + "/" + chosenDateTime.getFullYear()} readonly>`;
+                             <input type="text" class="form-control" id="chosen_date_time" placeholder=${chosenDateTime.getDate() + "/" + (chosenDateTime.getMonth()+1) + "/" + chosenDateTime.getFullYear()} readonly>`;
     } else if(data.cancellationReason !== undefined) {
         visitInformation += `<label for="cancellation_reason">Raison de l'annulation</label>
                              <input type="text" class="form-control" id="cancellation_reason" placeholder=${data.cancellationReason} readonly>`;
