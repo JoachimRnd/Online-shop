@@ -43,7 +43,6 @@ public class Upload {
    * @return boolean
    */
   public static boolean deleteFile(String fileLocation) {
-    System.out.println(fileLocation);
     File file = new File(fileLocation);
     return file.delete();
   }
