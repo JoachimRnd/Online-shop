@@ -3,6 +3,7 @@ package be.vinci.pae.unit.domain;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
@@ -101,7 +102,6 @@ public class UserUCCTest {
   @DisplayName("test registerUser good parameters")
   @Test
   public void registerUserAllGood() {
-    // TODO ! revoir les tests de register
     UserDTO userAlreadyRegistered = userFact.getUser();
     userAlreadyRegistered.setUsername("test");
     userAlreadyRegistered.setEmail("test@gmail.com");
@@ -110,9 +110,19 @@ public class UserUCCTest {
     userToRegister.setUsername("test2");
     userToRegister.setEmail("test2@gmail.com");
     AddressDTO address = addressFactory.getAddress();
+    address.setUnitNumber("test");
     userToRegister.setAddress(address);
     Mockito.when(daoAddress.selectAddressID(address)).thenReturn(1);
     assertTrue(userUCC.register(userToRegister) != null);
+    Mockito.when(daoAddress.selectAddressID(address)).thenReturn(-1);
+    Mockito.when(daoAddress.addAddress(address)).thenReturn(1);
+    assertTrue(userUCC.register(userToRegister) != null);
+
+    Mockito.when(daoUser.addUser(userToRegister)).thenReturn(1);
+    assertTrue(userUCC.register(userToRegister) != null);
+    // meme si adduser ko user != null
+    Mockito.when(daoUser.addUser(userToRegister)).thenReturn(-1);
+    assertNotNull(userUCC.register(userToRegister));
 
   }
 
@@ -211,6 +221,15 @@ public class UserUCCTest {
     assertTrue(userUCC.getAllLastnames().isEmpty());
     Mockito.when(daoUser.getAllLastnames()).thenReturn(list);
     assertEquals(list, userUCC.getAllLastnames());
+  }
+
+  @DisplayName("test getUserByEmail ")
+  @Test
+  public void getUserByEmailTest() {
+    assertEquals(null, userUCC.getUserByEmail("test@test.be"));
+    UserDTO user = userFact.getUser();
+    Mockito.when(daoUser.getUserByEmail("test@test.be")).thenReturn(user);
+    assertEquals(user, userUCC.getUserByEmail("test@test.be"));
   }
 
   @DisplayName("test getUsersFiltered")

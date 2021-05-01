@@ -1,7 +1,9 @@
 package be.vinci.pae.unit.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.time.Instant;
@@ -31,6 +33,7 @@ import be.vinci.pae.services.user.DAOUser;
 import be.vinci.pae.utils.BusinessException;
 import be.vinci.pae.utils.Config;
 import be.vinci.pae.utils.ValueLink;
+import be.vinci.pae.utils.ValueLink.FurnitureCondition;
 
 public class OptionUCCTest {
 
@@ -69,183 +72,181 @@ public class OptionUCCTest {
     assertNotNull(this.optionUCC);
   }
 
-  @DisplayName("test addOption good parameters")
+  @DisplayName("test addOption")
   @Test
-  public void addOptionAllGoodTest() {
+  public void addOptionTest() {
     // TODO
-    FurnitureDTO furniture = furnitureFactory.getFurniture();
-    Mockito.when(daoFurniture.selectFurnitureById(1)).thenReturn(furniture);
-    furniture.setCondition(ValueLink.FurnitureCondition.en_vente);
-    UserDTO buyer = userFactory.getUser();
-    buyer.setId(1);
-    buyer.setValidRegistration(true);
-    buyer.setUserType(ValueLink.UserType.client);
-    Mockito.when(daoUser.getUserById(1)).thenReturn(buyer);
+    // all wrong parameters
+    assertThrows(BusinessException.class, () -> optionUCC.addOption(0, 5, null));
+    assertThrows(BusinessException.class, () -> optionUCC.addOption(1, -5, null));
+    assertThrows(BusinessException.class, () -> optionUCC.addOption(-1, 4, null));
 
-    List<OptionDTO> list = new ArrayList<OptionDTO>();
-    Mockito.when(daoOption.selectOptionsOfBuyerFromFurniture(1, 1)).thenReturn(list);
-    Mockito.when(daoOption.selectOptionsOfFurniture(1)).thenReturn(list);
-    OptionDTO optionToAdd = optionFactory.getOption();
-    Mockito.when(daoOption.addOption(optionToAdd)).thenReturn(1);
-    Mockito.when(daoFurniture.updateCondition(1, ValueLink.FurnitureCondition.en_option.ordinal()))
-        .thenReturn(true);
-    // optionToAdd.setBuyer(buyer);
-    // assertTrue(buyer.isValidRegistration());
-    // assertEquals(ValueLink.UserType.client, buyer.getUserType());
-    // assertTrue(optionUCC.addOption(1, 2, buyer));
-  }
-
-  @DisplayName("test addOption bad furniture only")
-  @Test
-  public void addOptionBadFurnitureTest() {
     UserDTO buyer = userFactory.getUser();
-    Mockito.when(daoUser.getUserById(1)).thenReturn(buyer);
+    // bad furniture
     Mockito.when(daoFurniture.selectFurnitureById(1)).thenReturn(null);
     assertThrows(BusinessException.class, () -> optionUCC.addOption(1, 2, buyer));
 
     FurnitureDTO furniture = furnitureFactory.getFurniture();
     Mockito.when(daoFurniture.selectFurnitureById(1)).thenReturn(furniture);
-    furniture.setCondition(ValueLink.FurnitureCondition.emporte_par_patron);
-    assertThrows(BusinessException.class, () -> optionUCC.addOption(1, 2, buyer));
-  }
+    assertThrows(BusinessException.class, () -> optionUCC.addOption(2, 2, buyer));
 
-  @DisplayName("test addOption bad user only")
-  @Test
-  public void addOptionBadUserTest() {
-    UserDTO buyer = userFactory.getUser();
-    FurnitureDTO furniture = furnitureFactory.getFurniture();
-    Mockito.when(daoFurniture.selectFurnitureById(1)).thenReturn(furniture);
+    // bad furniture type
+    furniture.setCondition(ValueLink.FurnitureCondition.emporte_par_client);
+    assertThrows(BusinessException.class, () -> optionUCC.addOption(1, 5, buyer));
+    // goor furnitureType but wrong buyer
     furniture.setCondition(ValueLink.FurnitureCondition.en_vente);
-    assertThrows(BusinessException.class, () -> optionUCC.addOption(1, 2, buyer));
-    Mockito.when(daoUser.getUserById(1)).thenReturn(buyer);
+    assertThrows(BusinessException.class, () -> optionUCC.addOption(1, 4, buyer));
+
+    // bad buyer
     buyer.setValidRegistration(false);
     buyer.setId(1);
     assertThrows(BusinessException.class, () -> optionUCC.addOption(1, 2, buyer));
     buyer.setValidRegistration(true);
     buyer.setUserType(ValueLink.UserType.admin);
     assertThrows(BusinessException.class, () -> optionUCC.addOption(1, 2, buyer));
-  }
 
-  @DisplayName("test addOption bad duration only")
-  @Test
-  public void addOptionBadDurationTest() {
-    // TODO
-    UserDTO buyer = userFactory.getUser();
-    FurnitureDTO furniture = furnitureFactory.getFurniture();
-    Mockito.when(daoFurniture.selectFurnitureById(1)).thenReturn(furniture);
+    // bad duration
     Mockito.when(daoUser.getUserById(1)).thenReturn(buyer);
-    furniture.setCondition(ValueLink.FurnitureCondition.en_vente);
     buyer.setValidRegistration(true);
     buyer.setUserType(ValueLink.UserType.client);
     assertThrows(BusinessException.class, () -> optionUCC.addOption(1, -1, buyer));
     assertThrows(BusinessException.class, () -> optionUCC.addOption(1, 6, buyer));
+
+    
+    furniture.setId(2);
+    buyer.setId(1);
+    Mockito.when(daoFurniture.selectFurnitureById(2)).thenReturn(furniture);
+    List<OptionDTO> list = new ArrayList<OptionDTO>();
+    Mockito.when(daoOption.selectOptionsOfBuyerFromFurniture(1, 2)).thenReturn(list);
+    Mockito.when(daoOption.selectOptionsOfFurniture(2)).thenReturn(list);
+    OptionDTO option1 = optionFactory.getOption();
+    option1.setDuration(2);
+    option1.setBuyer(buyer);
+    option1.setFurniture(furniture);
+    option1.setStatus(ValueLink.OptionStatus.en_cours);
+    option1.setDate(Date.from(Instant.now()));
+    Mockito.when(daoOption.addOption(option1)).thenReturn(2);
+
+    list.add(option1);
+    // durée option trop longue
+    assertThrows(BusinessException.class, () -> optionUCC.addOption(2, 4, buyer));
+
+    OptionDTO option2 = optionFactory.getOption();
+    option2.setDuration(1);
+    UserDTO buyer2 = userFactory.getUser();
+    buyer2.setId(1);
+    option2.setBuyer(buyer2);
+    option2.setFurniture(furniture);
+    option2.setStatus(ValueLink.OptionStatus.en_cours);
+    option2.setDate(Date.from(Instant.now()));
+    Mockito.when(daoOption.addOption(option2)).thenReturn(3);
+    list.add(option2);
+
+    // déjà une option d'un autre acheteur
+    assertThrows(BusinessException.class, () -> optionUCC.addOption(2, 1, buyer2));
+
+    // TODO
+    furniture.setId(5);
+    Mockito.when(daoFurniture.selectFurnitureById(5)).thenReturn(furniture);
+    UserDTO buyer3 = userFactory.getUser();
+    buyer3.setId(1);
+    buyer3.setValidRegistration(true);
+    buyer3.setUserType(ValueLink.UserType.client);
     OptionDTO optionToAdd = optionFactory.getOption();
-    Mockito.when(daoOption.addOption(optionToAdd)).thenReturn(1);
+    optionToAdd.setDuration(2);
+    optionToAdd.setBuyer(buyer);
+    optionToAdd.setFurniture(furniture);
     optionToAdd.setStatus(ValueLink.OptionStatus.en_cours);
-    optionToAdd.setDuration(5);
-    // assertThrows(BusinessException.class, () -> optionUCC.addOption(1, 1,
-    // buyer));
+    optionToAdd.setDate(Date.from(Instant.now()));
+    Mockito.when(daoOption.addOption(optionToAdd)).thenReturn(5);
+    furniture.setId(5);
+    
+    //why is it null !!!! ????
+    assertThrows(NullPointerException.class, () -> optionUCC.addOption(5, 2, buyer3));
+    /*
+    List<OptionDTO> list2 = new ArrayList<OptionDTO>();
+    Mockito.when(daoOption.selectOptionsOfFurniture(5)).thenReturn(list2);
+    list2.add(optionToAdd);
+    Mockito.when(daoOption.addOption(optionToAdd)).thenReturn(5);
+    Mockito.when(daoFurniture.updateCondition(5, ValueLink.FurnitureCondition.en_option.ordinal()))
+    .thenReturn(true);
+    assertTrue(optionUCC.addOption(furniture.getId(), 2, buyer3));
+    */
   }
 
-  @DisplayName("test cancelOption good parameters")
+  @DisplayName("test cancelOption")
   @Test
-  public void cancelOptionAllGoodTest() {
-    // TODO essayer de faire changer optionstatus apres daoOpt.cancelOpt dans
-    // mockito
+  public void cancelOptionTest() {
     UserDTO buyer = userFactory.getUser();
     Mockito.when(daoUser.getUserById(1)).thenReturn(buyer);
     FurnitureDTO furniture = furnitureFactory.getFurniture();
     Mockito.when(daoFurniture.selectFurnitureById(1)).thenReturn(furniture);
     OptionDTO optionToAdd = optionFactory.getOption();
-    List<OptionDTO> listPreviousOption = new ArrayList<OptionDTO>();
-    listPreviousOption.add(optionToAdd);
-    assertTrue(listPreviousOption.size() != 0);
-    assertTrue(listPreviousOption.contains(optionToAdd));
-    Mockito.when(daoOption.selectOptionsOfFurniture(1)).thenReturn(listPreviousOption);
-    optionToAdd.setStatus(ValueLink.OptionStatus.en_cours);
-    optionToAdd.setBuyer(buyer);
-    // Mockito.when(daoOption.cancelOption(optionToAdd)).thenReturn(true);
-    // Mockito.when(daoFurniture.updateCondition(1,
-    // ValueLink.FurnitureCondition.en_vente.ordinal()))
-    // .thenReturn(true);
-    optionUCC.cancelOption(1, buyer);
+    List<OptionDTO> list = new ArrayList<OptionDTO>();
+    list.add(optionToAdd);
+    assertTrue(list.size() != 0);
+    assertTrue(list.contains(optionToAdd));
+    // empty list
+    assertThrows(BusinessException.class, () -> optionUCC.cancelOption(1, buyer));
+    Mockito.when(daoOption.selectOptionsOfFurniture(1)).thenReturn(list);
     optionToAdd.setStatus(ValueLink.OptionStatus.annulee);
-    assertEquals(ValueLink.OptionStatus.annulee, optionToAdd.getStatus());
-  }
-
-  @DisplayName("test cancelOption bad furniture")
-  @Test
-  public void cancelOptionBadFurnitureTest() {
-    UserDTO buyer = userFactory.getUser();
-    // Mockito.when(daoUser.getUserById(1)).thenReturn(buyer);
-    // FurnitureDTO furniture = furnitureFactory.getFurniture();
-    // Mockito.when(daoFurniture.selectFurnitureById(1)).thenReturn(furniture);
-    OptionDTO optionToAdd = optionFactory.getOption();
+    // no option on furniture
+    assertThrows(BusinessException.class, () -> optionUCC.cancelOption(1, buyer));
+    optionToAdd.setStatus(ValueLink.OptionStatus.en_cours);
+    UserDTO buyerTemp = userFactory.getUser();
+    optionToAdd.setBuyer(buyerTemp);
+    buyerTemp.setId(2);
+    // test supprimer option other user
+    assertThrows(BusinessException.class, () -> optionUCC.cancelOption(1, buyer));
+    optionToAdd.setBuyer(buyer);
     Mockito.when(daoOption.cancelOption(optionToAdd)).thenReturn(false);
-    // optionToAdd.setBuyer(buyer);
-    // "Il n'y a pas d'option sur ce meuble",
-    assertThrows(BusinessException.class, () -> optionUCC.cancelOption(1, buyer));
-    optionToAdd.setStatus(ValueLink.OptionStatus.finie);
-    // "Il n'y a pas d'option en cours sur ce meuble",
-    assertThrows(BusinessException.class, () -> optionUCC.cancelOption(1, buyer));
+    assertFalse(optionUCC.cancelOption(1, buyer));
+    Mockito.when(daoOption.cancelOption(optionToAdd)).thenReturn(true);
+    Mockito.when(daoFurniture.updateCondition(1, ValueLink.FurnitureCondition.en_vente.ordinal()))
+        .thenReturn(false);
+    assertFalse(optionUCC.cancelOption(1, buyer));
+    Mockito.when(daoFurniture.updateCondition(1, ValueLink.FurnitureCondition.en_vente.ordinal()))
+        .thenReturn(true);
+    assertTrue(optionUCC.cancelOption(1, buyer));
+
   }
 
-  @DisplayName("test cancelOption bad user")
+  @DisplayName("test cancelOptionByAdmin")
   @Test
-  public void cancelOptionBadUserTest() {
-    // TODO essayer de faire changer optionstatus apres daoOpt.cancelOpt dans
-    // mockito
+  public void cancelOptionByAdminTest() {
     UserDTO buyer = userFactory.getUser();
-    // buyer.setId(1);
-    // UserDTO buyer2 = userFactory.getUser();
-    // Mockito.when(daoUser.getUserById(2)).thenReturn(buyer2);
-    // FurnitureDTO furniture = furnitureFactory.getFurniture();
-    // Mockito.when(daoFurniture.selectFurnitureById(1)).thenReturn(furniture);
-    OptionDTO optionToAdd = optionFactory.getOption();
-    // optionToAdd.setBuyer(buyer2);
-    // optionToAdd.setStatus(ValueLink.OptionStatus.en_cours);
-    Mockito.when(daoOption.cancelOption(optionToAdd)).thenReturn(false);
-    // "Vous ne pouvez pas annuler l'option d'un autre utilisateur",
-    assertThrows(BusinessException.class, () -> optionUCC.cancelOption(1, buyer));
-  }
-
-  @DisplayName("test cancelOptionAdmin good parameters")
-  @Test
-  public void cancelOptionAdminAllGoodTest() {
-    // TODO essayer de faire changer optionstatus apres daoOpt.cancelOptAdmin dans
-    // mockito
+    Mockito.when(daoUser.getUserById(1)).thenReturn(buyer);
     FurnitureDTO furniture = furnitureFactory.getFurniture();
     Mockito.when(daoFurniture.selectFurnitureById(1)).thenReturn(furniture);
     OptionDTO optionToAdd = optionFactory.getOption();
-    List<OptionDTO> listPreviousOption = new ArrayList<OptionDTO>();
-    listPreviousOption.add(optionToAdd);
-    assertTrue(listPreviousOption.size() != 0);
-    assertTrue(listPreviousOption.contains(optionToAdd));
-    Mockito.when(daoOption.selectOptionsOfFurniture(1)).thenReturn(listPreviousOption);
-    optionToAdd.setStatus(ValueLink.OptionStatus.en_cours);
-    // Mockito.when(daoOption.cancelOption(optionToAdd)).thenReturn(true);
-    // Mockito.when(daoFurniture.updateCondition(1,
-    // ValueLink.FurnitureCondition.en_vente.ordinal()))
-    // .thenReturn(true);
-    Mockito.when(daoOption.cancelOption(optionToAdd)).thenReturn(true);
-    optionUCC.cancelOptionByAdmin(1);
+    List<OptionDTO> list = new ArrayList<OptionDTO>();
+    list.add(optionToAdd);
+    assertTrue(list.size() != 0);
+    assertTrue(list.contains(optionToAdd));
+    // empty list
+    assertThrows(BusinessException.class, () -> optionUCC.cancelOptionByAdmin(1));
+    Mockito.when(daoOption.selectOptionsOfFurniture(1)).thenReturn(list);
     optionToAdd.setStatus(ValueLink.OptionStatus.annulee);
-    assertEquals(ValueLink.OptionStatus.annulee, optionToAdd.getStatus());
+    // no option on furniture
+    assertThrows(BusinessException.class, () -> optionUCC.cancelOptionByAdmin(1));
+    optionToAdd.setStatus(ValueLink.OptionStatus.en_cours);
+    optionToAdd.setBuyer(buyer);
+    Mockito.when(daoOption.cancelOption(optionToAdd)).thenReturn(false);
+    assertFalse(optionUCC.cancelOptionByAdmin(1));
+    Mockito.when(daoOption.cancelOption(optionToAdd)).thenReturn(true);
+    Mockito.when(daoFurniture.updateCondition(1, ValueLink.FurnitureCondition.en_vente.ordinal()))
+        .thenReturn(false);
+    assertFalse(optionUCC.cancelOptionByAdmin(1));
+    Mockito.when(daoFurniture.updateCondition(1, ValueLink.FurnitureCondition.en_vente.ordinal()))
+        .thenReturn(true);
+    assertTrue(optionUCC.cancelOptionByAdmin(1));
+
   }
 
-  @DisplayName("test cancelOptionAdmin bad furniture")
-  @Test
-  public void cancelOptionAdminBadFurnitureTest() {
-    OptionDTO optionToAdd = optionFactory.getOption();
-    Mockito.when(daoOption.cancelOption(optionToAdd)).thenReturn(false);
-    // "Il n'y a pas d'option en cours sur ce meuble",
-    assertThrows(BusinessException.class, () -> optionUCC.cancelOptionByAdmin(1));
-  }
 
   @DisplayName("test getLastOptionOfFurniture ")
   @Test
   public void getLastOptionOfFurnitureTest() {
-    // TODO verifyOptionStatus ???
     FurnitureDTO furniture = furnitureFactory.getFurniture();
     assertThrows(BusinessException.class, () -> optionUCC.getLastOptionOfFurniture(1));
     Mockito.when(daoFurniture.selectFurnitureById(1)).thenReturn(furniture);

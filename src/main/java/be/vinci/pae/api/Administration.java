@@ -85,9 +85,9 @@ public class Administration {
       return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs")
           .type(MediaType.TEXT_PLAIN).build();
     }
-    return userUCC
-        .validateUser(json.get("id").asInt(), ValueLink.UserType.valueOf(json.get("type").asText()))
-        ? Response.ok().build() : Response.serverError().build();
+    return userUCC.validateUser(json.get("id").asInt(),
+        ValueLink.UserType.valueOf(json.get("type").asText())) ? Response.ok().build()
+            : Response.serverError().build();
   }
 
   /**
@@ -120,8 +120,8 @@ public class Administration {
   @Path("/{id}/cancelOption")
   @AuthorizeAdmin
   public Response cancelOption(@PathParam("id") int id) {
-    return optionUCC.cancelOptionByAdmin(id)
-        ? Response.ok().build() : Response.serverError().build();
+    return optionUCC.cancelOptionByAdmin(id) ? Response.ok().build()
+        : Response.serverError().build();
   }
 
 
@@ -227,8 +227,8 @@ public class Administration {
   public List<FurnitureDTO> furnituresFiltered(@DefaultValue("") @QueryParam("type") String type,
       @DefaultValue("" + Double.MAX_VALUE) @QueryParam("price") double price,
       @DefaultValue("") @QueryParam("username") String username) {
-    return Json.filterAdminJsonViewAsList(
-        furnitureUCC.getFurnituresFiltered(type, price, username), FurnitureDTO.class);
+    return Json.filterAdminJsonViewAsList(furnitureUCC.getFurnituresFiltered(type, price, username),
+        FurnitureDTO.class);
   }
 
   /**
@@ -286,9 +286,9 @@ public class Administration {
   /**
    * Receive file from the frontend.
    *
-   * @param enabled             FormData
+   * @param enabled FormData
    * @param uploadedInputStream FormDataFile
-   * @param fileDetail          Details of the FormDataFile
+   * @param fileDetail Details of the FormDataFile
    * @return Status code
    */
   @POST
@@ -299,10 +299,10 @@ public class Administration {
       @FormDataParam("furnitureID") int furnitureId,
       @FormDataParam("file") InputStream uploadedInputStream,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
-    //@TODO regarder avec fileDetail.getType() si c'est pas possible d'avoir le MIME TYPE
-    //(Plus officiel)
-    String pictureType =
-        fileDetail.getFileName().substring(fileDetail.getFileName().lastIndexOf('.') + 1).toLowerCase();
+    // @TODO regarder avec fileDetail.getType() si c'est pas possible d'avoir le MIME TYPE
+    // (Plus officiel)
+    String pictureType = fileDetail.getFileName()
+        .substring(fileDetail.getFileName().lastIndexOf('.') + 1).toLowerCase();
     if (!pictureType.equals("jpg") && !pictureType.equals("jpeg") && !pictureType.equals("png")) {
       return Response.status(Status.UNAUTHORIZED)
           .entity("Le type de la photo doit être jpg, jpeg ou png").type(MediaType.TEXT_PLAIN)
@@ -326,8 +326,8 @@ public class Administration {
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public List<VisitRequestDTO> allVisitsOpenned() {
-    return Json
-        .filterAdminJsonViewAsList(visitRequestUCC.getAllVisitsOpenned(), VisitRequestDTO.class);
+    return Json.filterAdminJsonViewAsList(visitRequestUCC.getAllVisitsOpenned(),
+        VisitRequestDTO.class);
   }
 
   /**
@@ -355,10 +355,12 @@ public class Administration {
   public Response modifyVisitRequest(@PathParam("id") int id, JsonNode json) {
     String cancellationReason =
         json.hasNonNull("cancellationReason") && !json.get("cancellationReason").asText().isEmpty()
-            ? json.get("cancellationReason").asText() : null;
+            ? json.get("cancellationReason").asText()
+            : null;
     String chosenDateTime =
-        json.hasNonNull("chosenDateTime") && !json.get("chosenDateTime").asText().isEmpty() ? json
-            .get("chosenDateTime").asText() : null;
+        json.hasNonNull("chosenDateTime") && !json.get("chosenDateTime").asText().isEmpty()
+            ? json.get("chosenDateTime").asText()
+            : null;
     if (cancellationReason == null && chosenDateTime == null) {
       return Response.status(Status.UNAUTHORIZED).entity("Veuillez remplir les champs").build();
     }
@@ -381,8 +383,8 @@ public class Administration {
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public List<FurnitureDTO> selectFurnituresOfVisit(@PathParam("id") int id) {
-    return Json
-        .filterAdminJsonViewAsList(furnitureUCC.selectFurnituresOfVisit(id), FurnitureDTO.class);
+    return Json.filterAdminJsonViewAsList(furnitureUCC.selectFurnituresOfVisit(id),
+        FurnitureDTO.class);
   }
 
 }

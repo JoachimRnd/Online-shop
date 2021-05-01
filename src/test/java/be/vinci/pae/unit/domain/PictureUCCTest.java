@@ -1,9 +1,14 @@
 package be.vinci.pae.unit.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import org.glassfish.hk2.api.ServiceLocator;
@@ -25,6 +30,7 @@ import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.furniture.DAOFurniture;
 import be.vinci.pae.services.picture.DAOPicture;
 import be.vinci.pae.utils.BusinessException;
+import be.vinci.pae.utils.Upload;
 
 public class PictureUCCTest {
 
@@ -90,12 +96,16 @@ public class PictureUCCTest {
 
   @DisplayName("test addPicture")
   @Test
-  public void addPictureTest() {
+  public void addPictureTest() throws FileNotFoundException {
     FurnitureDTO furniture = furnitureFactory.getFurniture();
     Mockito.when(daoFurniture.selectFurnitureById(1)).thenReturn(furniture);
     PictureDTO picture = pictureFactory.getPicture();
+    assertThrows(BusinessException.class, () -> pictureUCC.addPicture(2, picture, null, null));
+    // InputStream input = new FileInputStream("C:\\Users\\user\\Desktop\\deuil.jpg");
+    // assertNull(pictureUCC.addPicture(1, picture, input, ".jpg"));
     Mockito.when(daoPicture.addPicture(picture)).thenReturn(1);
     // TODO upload --> link
+    // gerer les inputStreams !!!
     // assertEquals(picture, pictureUCC.addPicture(1, picture, null, null));
   }
 
@@ -111,19 +121,28 @@ public class PictureUCCTest {
   @DisplayName("test deletePicture")
   @Test
   public void deletePictureTest() {
-    // TODO
+    // TODO upload.deleteFile --> link
+    // gerer Upload de utils... !!!
     PictureDTO picture = pictureFactory.getPicture();
+    Mockito.when(daoPicture.selectPictureById(1)).thenReturn(picture);
     picture.setId(1);
+    picture.setName("test.jpg");
     FurnitureDTO furniture = furnitureFactory.getFurniture();
     furniture.setId(1);
-
-    // furniture.setFavouritePicture(picture);
     picture.setFurniture(furniture);
+    furniture.setFavouritePicture(1);
+    assertFalse(pictureUCC.deletePicture(1));
+
+    Mockito.when(daoPicture.deletePicture(1)).thenReturn(false);
+    assertFalse(pictureUCC.deletePicture(1));
 
     Mockito.when(daoPicture.deletePicture(1)).thenReturn(true);
+    // Boolean boleen = Upload.deleteFile("test");
+    // debug
+    // System.out.println(boleen);
+    assertFalse(pictureUCC.deletePicture(1));
+    Mockito.when(daoPicture.deletePicture(1)).thenReturn(true);
     // assertTrue(pictureUCC.deletePicture(1));
-    // Mockito.when(daoPicture.deletePicture(1)).thenReturn(false);
-    // assertThrows(BusinessException.class, () -> pictureUCC.deletePicture(1));
   }
 
   @DisplayName("test modifyVisibleForEveryone")
