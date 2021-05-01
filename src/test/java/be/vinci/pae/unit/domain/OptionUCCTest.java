@@ -112,10 +112,11 @@ public class OptionUCCTest {
     assertThrows(BusinessException.class, () -> optionUCC.addOption(1, -1, buyer));
     assertThrows(BusinessException.class, () -> optionUCC.addOption(1, 6, buyer));
 
-    List<OptionDTO> list = new ArrayList<OptionDTO>();
+    
     furniture.setId(2);
     buyer.setId(1);
     Mockito.when(daoFurniture.selectFurnitureById(2)).thenReturn(furniture);
+    List<OptionDTO> list = new ArrayList<OptionDTO>();
     Mockito.when(daoOption.selectOptionsOfBuyerFromFurniture(1, 2)).thenReturn(list);
     Mockito.when(daoOption.selectOptionsOfFurniture(2)).thenReturn(list);
     OptionDTO option1 = optionFactory.getOption();
@@ -167,7 +168,8 @@ public class OptionUCCTest {
     Mockito.when(daoOption.selectOptionsOfFurniture(5)).thenReturn(list2);
     list2.add(optionToAdd);
     Mockito.when(daoOption.addOption(optionToAdd)).thenReturn(5);
-    Mockito.when(daoFurniture.updateCondition(5, ValueLink.FurnitureCondition.en_option.ordinal())).thenReturn(true);
+    Mockito.when(daoFurniture.updateCondition(5, ValueLink.FurnitureCondition.en_option.ordinal()))
+    .thenReturn(true);
     assertTrue(optionUCC.addOption(furniture.getId(), 2, buyer3));
     */
   }
