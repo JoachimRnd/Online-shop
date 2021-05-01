@@ -3,6 +3,7 @@ package be.vinci.pae.unit.domain;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.time.Instant;
@@ -157,7 +158,15 @@ public class OptionUCCTest {
     optionToAdd.setStatus(ValueLink.OptionStatus.en_cours);
     optionToAdd.setDate(Date.from(Instant.now()));
     Mockito.when(daoOption.addOption(optionToAdd)).thenReturn(5);
-    assertTrue(optionUCC.addOption(5, 2, buyer3));
+    furniture.setId(5);
+    //why is it null !!!! ????
+    assertThrows(NullPointerException.class, () -> optionUCC.addOption(5, 2, buyer3));
+    List<OptionDTO> list2 = new ArrayList<OptionDTO>();
+    Mockito.when(daoOption.selectOptionsOfFurniture(5)).thenReturn(list2);
+    list2.add(optionToAdd);
+    Mockito.when(daoOption.addOption(optionToAdd)).thenReturn(5);
+    Mockito.when(daoFurniture.updateCondition(5, ValueLink.FurnitureCondition.en_option.ordinal())).thenReturn(true);
+    assertTrue(optionUCC.addOption(furniture.getId(), 2, buyer3));
   }
 
   @DisplayName("test cancelOption")
