@@ -263,3 +263,4 @@ VALUES (DEFAULT, 'Table.jpg', false, 4, false);
 
 INSERT INTO project.pictures
 VALUES (DEFAULT, 'Secretaire.png', false, 5, false);
+
