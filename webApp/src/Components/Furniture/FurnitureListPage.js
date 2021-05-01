@@ -7,15 +7,26 @@ const API_BASE_URL_USER = "/api/furniture/";
 
 let page = document.querySelector("#page");
 let furniturePage;
+let furnitures;
 
 const FurnitureListPage = async () => {
-  furniturePage = `<h4 id="pageTitle">Liste de meubles</h4>`;
+  furniturePage = `<h4 id="pageTitle">Liste de meubles</h4>
+  <div class="form-group">
+    <select name="types" id="type-select">
+        <option value="0" selected>Choisir un type de meuble</option>
+    </select>
+    <input class="col-auto" type="number" id="price" placeholder="Prix max">
+    <button class="btn btn-success" id="searchBtn" type="submit">Rechercher</button>
+  </div>
+  <div id="furnitureList"></div>`;
   page.innerHTML = furniturePage;
+
+  
 
   const user = getUserSessionData();
   if(user && user.user.userType == "admin"){
     try {
-      const furnitures = await callAPI(API_BASE_URL_ADMIN + "allFurniture", "GET", user.token);
+      furnitures = await callAPI(API_BASE_URL_ADMIN + "allFurniture", "GET", user.token);
       onFurnitureList(furnitures);
     } catch (err) {
       console.error("FurnitureListPage::onFurnitureList", err);
@@ -27,18 +38,33 @@ const FurnitureListPage = async () => {
       userId = user.user.id;
     }
     try {
-      const furnitures = await callAPI(API_BASE_URL_USER + "allFurniture", "GET", undefined);
+      furnitures = await callAPI(API_BASE_URL_USER + "allFurniture", "GET", undefined);
       onFurnitureList(furnitures);
     } catch (err) {
       console.error("FurnitureListPage::onFurnitureList", err);
       PrintError(err);
     }
   }
+
+
+  let typeSelect = document.getElementById("type-select");
+
+  furnitures.forEach(furniture => {
+      let id = "type-" + furniture.type.id;
+      if(document.getElementById(id) === null) {
+          typeSelect.innerHTML += `<option id="${id}" value="${furniture.type.id}">${furniture.type.name}</option>`;
+      }
+  });
+
+  let searchBtn = document.querySelector('#searchBtn');
+  searchBtn.addEventListener("click", onSubmitSearch);
+
 };
 
 const onFurnitureList = (data) => {
   if (!data) return;
-  furniturePage += `
+  let furnitureList = ``;
+  furnitureList += `
   <div id="tablefurnitures" class="table-responsive mt-3">
   <table class="table">
       <thead>
@@ -53,22 +79,21 @@ const onFurnitureList = (data) => {
     const user = getUserSessionData();
 
     data.forEach((element) => {
-      furniturePage += `<tr>
+      furnitureList += `<tr>
                   <td><a id="furniture${element.id}" href="" target="_blank">${element.description}</a></td>
                   <td>${element.type.name}</td>`
                   if(user && user.user.userType == "admin")
-                    furniturePage += `<td>${element.condition}</td>`
-                  furniturePage +=
+                  furnitureList += `<td>${element.condition}</td>`
+                  furnitureList +=
                 `</tr>`
               ;
     });
 
-  furniturePage += `</tbody>
+    furnitureList += `</tbody>
   </table>
   </div>`;
 
-
-  page.innerHTML = furniturePage;
+    document.getElementById("furnitureList").innerHTML = furnitureList;
 
   data.forEach((element) => {
     let furnitureElement = document.getElementById("furniture"+element.id);
@@ -82,6 +107,36 @@ const onFurnitureList = (data) => {
     });
   });
 };
+
+const onSubmitSearch = async () => {
+  let typeSearch = onTypeSearch(furnitures);
+  let priceSearch = onPriceSearch(typeSearch);
+  onFurnitureList(priceSearch);
+};
+
+const onTypeSearch = (data) => {
+  let typeSelect = document.getElementById("type-select");
+  let typeValue = typeSelect.value;
+  if(typeValue == 0) {
+      return data;
+  }
+  return data.filter(data => {
+      return data.type.id == typeValue;
+  });
+};
+
+const onPriceSearch = (data) => {
+  let priceField = document.querySelector('#price');
+  let priceValue = priceField.value;
+  if(priceValue.length === 0) {
+      return data;
+  }
+  return data.filter(data => {
+      console.log(data.sellingPrice);
+      return data.sellingPrice >= priceValue;
+  });
+};
+
 
 
 export default FurnitureListPage;

@@ -302,7 +302,7 @@ public class Administration {
     //@TODO regarder avec fileDetail.getType() si c'est pas possible d'avoir le MIME TYPE
     //(Plus officiel)
     String pictureType =
-        fileDetail.getFileName().substring(fileDetail.getFileName().lastIndexOf('.') + 1);
+        fileDetail.getFileName().substring(fileDetail.getFileName().lastIndexOf('.') + 1).toLowerCase();
     if (!pictureType.equals("jpg") && !pictureType.equals("jpeg") && !pictureType.equals("png")) {
       return Response.status(Status.UNAUTHORIZED)
           .entity("Le type de la photo doit être jpg, jpeg ou png").type(MediaType.TEXT_PLAIN)
