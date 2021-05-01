@@ -164,7 +164,7 @@ public class OptionUCCTest {
     list.add(optionToAdd);
     assertTrue(list.size() != 0);
     assertTrue(list.contains(optionToAdd));
-    //empty list
+    // empty list
     assertThrows(BusinessException.class, () -> optionUCC.cancelOption(1, buyer));
     Mockito.when(daoOption.selectOptionsOfFurniture(1)).thenReturn(list);
     optionToAdd.setStatus(ValueLink.OptionStatus.annulee);
@@ -174,19 +174,21 @@ public class OptionUCCTest {
     UserDTO buyerTemp = userFactory.getUser();
     optionToAdd.setBuyer(buyerTemp);
     buyerTemp.setId(2);
-    //test supprimer option other user
+    // test supprimer option other user
     assertThrows(BusinessException.class, () -> optionUCC.cancelOption(1, buyer));
     optionToAdd.setBuyer(buyer);
     Mockito.when(daoOption.cancelOption(optionToAdd)).thenReturn(false);
     assertFalse(optionUCC.cancelOption(1, buyer));
     Mockito.when(daoOption.cancelOption(optionToAdd)).thenReturn(true);
-    Mockito.when(daoFurniture.updateCondition(1, ValueLink.FurnitureCondition.en_vente.ordinal())).thenReturn(false);
+    Mockito.when(daoFurniture.updateCondition(1, ValueLink.FurnitureCondition.en_vente.ordinal()))
+        .thenReturn(false);
     assertFalse(optionUCC.cancelOption(1, buyer));
-    Mockito.when(daoFurniture.updateCondition(1, ValueLink.FurnitureCondition.en_vente.ordinal())).thenReturn(true);
+    Mockito.when(daoFurniture.updateCondition(1, ValueLink.FurnitureCondition.en_vente.ordinal()))
+        .thenReturn(true);
     assertTrue(optionUCC.cancelOption(1, buyer));
-    
+
   }
-  
+
   @DisplayName("test cancelOptionByAdmin")
   @Test
   public void cancelOptionByAdminTest() {
@@ -199,7 +201,7 @@ public class OptionUCCTest {
     list.add(optionToAdd);
     assertTrue(list.size() != 0);
     assertTrue(list.contains(optionToAdd));
-    //empty list
+    // empty list
     assertThrows(BusinessException.class, () -> optionUCC.cancelOptionByAdmin(1));
     Mockito.when(daoOption.selectOptionsOfFurniture(1)).thenReturn(list);
     optionToAdd.setStatus(ValueLink.OptionStatus.annulee);
@@ -210,11 +212,13 @@ public class OptionUCCTest {
     Mockito.when(daoOption.cancelOption(optionToAdd)).thenReturn(false);
     assertFalse(optionUCC.cancelOptionByAdmin(1));
     Mockito.when(daoOption.cancelOption(optionToAdd)).thenReturn(true);
-    Mockito.when(daoFurniture.updateCondition(1, ValueLink.FurnitureCondition.en_vente.ordinal())).thenReturn(false);
+    Mockito.when(daoFurniture.updateCondition(1, ValueLink.FurnitureCondition.en_vente.ordinal()))
+        .thenReturn(false);
     assertFalse(optionUCC.cancelOptionByAdmin(1));
-    Mockito.when(daoFurniture.updateCondition(1, ValueLink.FurnitureCondition.en_vente.ordinal())).thenReturn(true);
+    Mockito.when(daoFurniture.updateCondition(1, ValueLink.FurnitureCondition.en_vente.ordinal()))
+        .thenReturn(true);
     assertTrue(optionUCC.cancelOptionByAdmin(1));
-    
+
   }
 
 
