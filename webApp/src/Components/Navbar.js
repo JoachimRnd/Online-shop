@@ -6,8 +6,10 @@ const Navbar = () => {
   let user = getUserSessionData();    
   if (user && user.user.userType == "admin") {
     navbar = `<nav class="navbar navbar-expand-lg navbar-light bg-light mb-2" id="navBar">
-  <a class="navbar-brand" href="/" data-uri="/">MyCMS</a
-  ><button
+  <a class="navbar-brand" href="/">
+    <img src="http://localhost:8080/images/logoNavBar.png" width="85" height="85" alt="">
+  </a>
+  <button
     class="navbar-toggler"
     type="button"
     data-toggle="collapse"
@@ -19,20 +21,32 @@ const Navbar = () => {
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-    <div class="navbar-nav">
-      <a class="nav-item nav-link" href="#" data-uri="/">Home</a>
-      <a class="nav-item nav-link" href="#" data-uri="/search">Meubles en magasin</a>
-      <a class="nav-item nav-link" href="#" data-uri="/visit">Ajouter demande de visite</a>
-      <a class="nav-item nav-link" href="#" data-uri="/admin">Administration</a>   
-      <a class="nav-item nav-link" href="#" data-uri="/logout">Logout</a>
-      <a class="nav-item nav-link disabled" id="username" href="#">${user.user.username}</a>
+  <ul class="navbar-nav mr-auto">
+    <span class="navbar-text">
+      Sentier des artistes 1bis <br>
+      4800 Verviers <br>
+      Belgique
+    </span>
+  </ul>
+  <ul class="navbar-nav ml-auto px-2 btn-group">
+    <a class="nav-item nav-link btn btn-outline-warning" href="#" type="button" data-uri="/">Accueil</a>
+    <a class="nav-item nav-link btn btn-outline-warning" href="#" type="button" data-uri="/search">Meubles en magasin</a>
+    <a class="nav-item nav-link btn btn-outline-warning" href="#" type="button" data-uri="/visit">Introduire une demande de visite</a>
+    <a class="nav-item nav-link btn btn-outline-warning" href="#" type="button" data-uri="/admin">Administration</a>
+  </ul>
+  <ul class="navbar-nav">
+    <div class="text-center">
+      <a class="alert alert-warning nav-item nav-link disabled" id="username" href="#">${user.user.username}</a>
+      <a type="button" class="nav-item nav-link btn btn-outline-warning" data-uri="/logout" href"#">Se déconnecter</a>
     </div>
+  </ul>
   </div>
   </nav>`;
   } else if(user) {
     navbar = `<nav class="navbar navbar-expand-lg navbar-light bg-light mb-2" id="navBar">
-  <a class="navbar-brand" href="/" data-uri="/">MyCMS</a
-  ><button
+    <a class="navbar-brand" href="/">
+    <img src="http://localhost:8080/images/logoNavBar.png" width="85" height="85" alt="">
+  </a>  <button
     class="navbar-toggler"
     type="button"
     data-toggle="collapse"
@@ -44,21 +58,33 @@ const Navbar = () => {
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-    <div class="navbar-nav">
-      <a class="nav-item nav-link" href="#" data-uri="/">Home</a>
-      <a class="nav-item nav-link" href="#" data-uri="/search">Meubles en magasin</a>    
-      <a class="nav-item nav-link" href="#" data-uri="/visit">Ajouter demande de visite</a> 
-      <a class="nav-item nav-link" href="#" data-uri="/myfurnitures">Mes meubles</a>
-      <a class="nav-item nav-link" href="#" data-uri="/myvisits">Mes demandes de visite</a> 
-      <a class="nav-item nav-link" href="#" data-uri="/logout">Logout</a>
-      <a class="nav-item nav-link disabled" id="username" href="#">${user.user.username}</a>
+    <ul class="navbar-nav mr-auto">
+    <span class="navbar-text">
+      Sentier des artistes 1bis <br>
+      4800 Verviers <br>
+      Belgique
+    </span>
+  </ul>
+  <ul class="navbar-nav ml-auto px-2 btn-group">
+    <a class="nav-item nav-link btn btn-outline-warning" href="#" type="button" data-uri="/">Accueil</a>
+    <a class="nav-item nav-link btn btn-outline-warning" href="#" type="button" data-uri="/search">Meubles en magasin</a>
+    <a class="nav-item nav-link btn btn-outline-warning" href="#" type="button" data-uri="/visit">Introduire une demande de visite</a>
+    <a class="nav-item nav-link btn btn-outline-warning" href="#" type="button" data-uri="/myfurnitures">Mes meubles</a>
+    <a class="nav-item nav-link btn btn-outline-warning" href="#" type="button" data-uri="/myvisits">Mes demandes de visite</a>
+  </ul>
+  <ul class="navbar-nav">
+    <div class="text-center">
+      <a class="alert alert-warning nav-item nav-link disabled" id="username" href="#">${user.user.username}</a>
+      <a type="button" class="nav-item nav-link btn btn-outline-warning" data-uri="/logout" href"#">Se déconnecter</a>
     </div>
+  </ul>
   </div>
   </nav>`;
   } else {
     navbar = `<nav class="navbar navbar-expand-lg navbar-light bg-light mb-2" id="navBar">
-  <a class="navbar-brand" href="/" data-uri="/">MyCMS</a
-  ><button
+    <a class="navbar-brand" href="/">
+    <img src="http://localhost:8080/images/logoNavBar.png" width="85" height="85" alt="">
+  </a>  <button
     class="navbar-toggler"
     type="button"
     data-toggle="collapse"
@@ -70,12 +96,19 @@ const Navbar = () => {
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-    <div class="navbar-nav">
-      <a class="nav-item nav-link" href="#" data-uri="/">Home</a>
-      <a class="nav-item nav-link" href="#" data-uri="/search">Meubles en magasin</a>     
-      <a class="nav-item nav-link" href="#" data-uri="/register">Register</a>
-      <a class="nav-item nav-link" href="#" data-uri="/login">Login</a> 
-    </div>
+  <ul class="navbar-nav mr-auto">
+  <span class="navbar-text">
+    Sentier des artistes 1bis <br>
+    4800 Verviers <br>
+    Belgique
+  </span>
+</ul>
+<ul class="navbar-nav ml-auto px-2 btn-group">
+  <a class="nav-item nav-link btn btn-outline-warning" href="#" type="button" data-uri="/">Accueil</a>
+  <a class="nav-item nav-link btn btn-outline-warning" href="#" type="button" data-uri="/search">Meubles en magasin</a>
+  <a type="button" class="nav-item nav-link btn btn-outline-warning" data-uri="/register" href"#">S'inscrire</a>
+  <a type="button" class="nav-item nav-link btn btn-outline-warning" data-uri="/login" href"#">Se connecter</a>
+</ul>
   </div>
   </nav>`
   }

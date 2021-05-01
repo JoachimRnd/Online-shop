@@ -294,9 +294,9 @@ const onFurniture = () => {
 
   let furnitureDescription = document.querySelector("#furnitureDescription");
   furnitureDescription.innerHTML = `<textarea class="form-control" id="furnituredescription" rows="6" >${furniture.description}</textarea>`;
-  
+  console.log(furniture);
   let purchasePrice = document.querySelector("#purchasePrice");
-  purchasePrice.innerHTML = `<input class="form-control" id="inputPurchasePrice" type="number" placeholder"=${furniture.purchasePrice}" readonly />`;
+  purchasePrice.innerHTML = `<input class="form-control" id="inputPurchasePrice" type="number" placeholder=${furniture.purchasePrice} readonly />`;
 
   let withdrawalDateFromCustomer = document.querySelector("#withdrawalDateFromCustomer");
   if(furniture.withdrawalDateFromCustomer){
@@ -355,6 +355,8 @@ const onFurniture = () => {
     sellingDate.innerHTML = `<input class="form-control" id="inputSellingDate" type="date" value="${date.getFullYear() + "-"+ ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2)}" readonly/>`;
   }else
   sellingDate.innerHTML = `<input class="form-control" id="inputSellingDate" type="date" readonly/>`;
+
+
 }
 
 const onSale = () => {

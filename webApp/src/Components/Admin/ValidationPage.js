@@ -26,6 +26,9 @@ const onUnvalidatedUsers = (users) => {
     users.forEach((user) => {
         let address = user.address;
         let date = new Date(user.registrationDate);
+        let unitNumber = "";
+        if(address.unitNumber != undefined)
+            unitNumber = address.unitNumber;
         validationPage += `
         <div id="user${user.id}">
             <div class="row">
@@ -45,6 +48,7 @@ const onUnvalidatedUsers = (users) => {
                     <div id="messageBoard${user.id}"></div>
                 </div>
                 <div class="col-3">
+                    <div id="address${address.id}" name="${address.street} ${address.buildingNumber} ${address.unitNumber} ${address.postcode} ${address.commune} ${address.country}"></div>
                     <p>Rue : ${address.street}</p>
                     <p>Numéro : ${address.buildingNumber}</p>
                     <p>Boite : ${address.unitNumber}</p>
@@ -61,20 +65,15 @@ const onUnvalidatedUsers = (users) => {
     });
     
     page.innerHTML = validationPage;
-
+    console.log(users);
     users.forEach((user) => {
         let address = user.address;
-        let unitNumber = "";
-        if(address.unitNumber != undefined)
-            unitNumber = address.unitNumber + " ";
-
-        let addressString = address.street + " " + address.buildingNumber + " " + unitNumber
-            + address.postcode + " " + address.commune + " " + address.country;
-
+        //Manière abjecte de récupérer l'adresse mais pas le choix car j'ai pas réussi à unescape le javascript
+        let addressString = document.getElementById("address"+address.id).getAttribute("name");
         const params = {
-            access_key: '1e6153ae46dfd9f72ecbe2d7ba7faaf8',
-            query: addressString,
-            limit: 1
+            key: 'SZOA4k5qE7c0bWx4YkeuejhMjpdjwOMm',
+            location: addressString,
+            maxResults: 1
         }
 
         getLatLngAndDisplayMap(params,address);
@@ -112,14 +111,10 @@ const onUnvalidatedUsers = (users) => {
 }
 
 const getLatLngAndDisplayMap = (params,address) => {
-
-    axios.get('http://api.positionstack.com/v1/forward', {params})
+    axios.get('http://www.mapquestapi.com/geocoding/v1/address',{params})
     .then(response => {
-      if(response.data.data.length == 0){
-        document.getElementById("mapid"+address.id).innerHTML = `<h3 style="color:red">Adresse introuvable</h3>`;
-      } else {
-        const latitude = response.data.data[0].latitude;
-        const longitude = response.data.data[0].longitude;
+        const latitude = response.data.results[0].locations[0].latLng.lat;
+        const longitude = response.data.results[0].locations[0].latLng.lng;
         if(latitude == undefined || longitude == undefined){
             //Parfois la latitude et longitude sont buggées donc je rappelle l'API
             getLatLngAndDisplayMap(params,address);
@@ -137,8 +132,6 @@ const getLatLngAndDisplayMap = (params,address) => {
 
             leaflet.marker(new leaflet.LatLng(latitude, longitude)).addTo(mymap);
         }
-    }
-
     }).catch(error => {
       console.log(error);
     });

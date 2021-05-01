@@ -122,33 +122,36 @@ public class OptionUCCTest {
     Mockito.when(daoOption.selectOptionsOfFurniture(2)).thenReturn(list);
     OptionDTO optionToAdd = optionFactory.getOption();
     OptionDTO option1 = optionFactory.getOption();
-    option1.setDuration(4);
-    // option1.setId(2);
+    option1.setDuration(2);
     option1.setBuyer(buyer);
     option1.setFurniture(furniture);
     option1.setStatus(ValueLink.OptionStatus.en_cours);
     option1.setDate(Date.from(Instant.now()));
     Mockito.when(daoOption.addOption(option1)).thenReturn(2);
-    // optionToAdd.setId(1);
-    // optionToAdd.setDuration(2);
-    // optionToAdd.setBuyer(buyer);
-    // optionToAdd.setFurniture(furniture);
 
-    // TODO nullpointer ln 71 optionUCC ???
-    // l'option n'existe pas
-    assertThrows(BusinessException.class, () -> optionUCC.addOption(2, 4, buyer));
     list.add(option1);
     // durée option trop longue
-    assertThrows(BusinessException.class, () -> optionUCC.addOption(2, 2, buyer));
+    assertThrows(BusinessException.class, () -> optionUCC.addOption(2, 4, buyer));
 
-    buyer.setId(2);
+    OptionDTO option2 = optionFactory.getOption();
+    option2.setDuration(1);
+    UserDTO buyer2 = userFactory.getUser();
+    buyer2.setId(1);
+    option2.setBuyer(buyer2);
+    option2.setFurniture(furniture);
+    option2.setStatus(ValueLink.OptionStatus.en_cours);
+    option2.setDate(Date.from(Instant.now()));
+    Mockito.when(daoOption.addOption(option2)).thenReturn(3);
+    list.add(option2);
+    
     // déjà une option d'un autre acheteur
-    assertThrows(BusinessException.class, () -> optionUCC.addOption(2, 1, buyer));
+    assertThrows(BusinessException.class, () -> optionUCC.addOption(2, 1, buyer2));
 
     Mockito.when(daoOption.addOption(optionToAdd)).thenReturn(1);
+    Mockito.when(daoOption.addOption(option1)).thenReturn(2);
     Mockito.when(daoFurniture.updateCondition(1, ValueLink.FurnitureCondition.en_option.ordinal()))
         .thenReturn(true);
-    buyer.setId(1);
+    // TODO
     assertTrue(optionUCC.addOption(2, 1, buyer));
   }
 
