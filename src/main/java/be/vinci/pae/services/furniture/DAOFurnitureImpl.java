@@ -99,7 +99,8 @@ public class DAOFurnitureImpl implements DAOFurniture {
         + " f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date,"
         + " f.withdrawal_date_to_customer, f.buyer,f.condition, f.unregistered_buyer_email,"
         + " f.favourite_picture FROM project.furniture f " + " WHERE f.condition = "
-        + FurnitureCondition.vendu + " OR f.condition = " + FurnitureCondition.propose;
+        + FurnitureCondition.vendu.ordinal() + " OR f.condition = "
+        + FurnitureCondition.propose.ordinal();
     querySelectFurnituresFiltered = "SELECT DISTINCT f.furniture_id, f.description, f.type,"
         + " f.visit_request, f.purchase_price, f.withdrawal_date_from_customer, f.selling_price,"
         + " f.special_sale_price, f.deposit_date, f.selling_date, f.delivery_date,"
