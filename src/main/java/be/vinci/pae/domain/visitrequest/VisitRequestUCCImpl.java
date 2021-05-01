@@ -61,8 +61,8 @@ public class VisitRequestUCCImpl implements VisitRequestUCC {
             .setUnitNumber(StringEscapeUtils.escapeHtml4(visitRequestAddress.getUnitNumber()));
       }
       AddressDTO userAddress = user.getAddress();
-
       if (!visitRequestAddress.equals(userAddress)) {
+        System.out.println("nouvelle address");
         int addressId = this.daoAddress.addAddress(visitRequestAddress);
         if (addressId == -1) {
           this.dalServices.rollbackTransaction();
