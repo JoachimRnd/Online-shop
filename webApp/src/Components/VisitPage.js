@@ -1,8 +1,9 @@
 import { RedirectUrl } from "./Router.js";
 import Navbar from "./Navbar.js";
 import { getUserSessionData } from "../utils/session.js";
-import { callAPI, callAPIFormData, callAPIWithoutJSONResponse } from "../utils/api.js";
+import { callAPI, callAPIFormData} from "../utils/api.js";
 import PrintError from "./PrintError.js"
+import htmlDecode from "../utils/text.js";
 const API_BASE_URL = "/api/visit/";
 const API_BASE_URL_FURNITURE = "/api/furniture/";
 
@@ -146,13 +147,13 @@ const onChangeCheckbox = async () => {
 };
 
 const onAddress = (address) => {
-    document.getElementById("street").value = address.street;
+    document.getElementById("street").value = htmlDecode(address.street);
     document.getElementById("buildingnumber").value = address.buildingNumber;
     if(address.unitNumber != undefined)
         document.getElementById("unitnumber").value = address.unitNumber;
     document.getElementById("postcode").value = address.postcode;
-    document.getElementById("commune").value = address.commune;
-    document.getElementById("country").value = address.country;
+    document.getElementById("commune").value = htmlDecode(address.commune);
+    document.getElementById("country").value = htmlDecode(address.country);
 }
 
 const onTypesList = (typesList) => {
