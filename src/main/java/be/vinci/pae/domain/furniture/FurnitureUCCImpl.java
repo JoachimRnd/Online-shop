@@ -123,13 +123,15 @@ public class FurnitureUCCImpl implements FurnitureUCC {
         case en_vente:
           if (furnitureDTO.getCondition() == FurnitureCondition.reserve
               || furnitureDTO.getCondition() == FurnitureCondition.en_option
-              || furnitureDTO.getCondition() == FurnitureCondition.en_magasin) {
+              || furnitureDTO.getCondition() == FurnitureCondition.en_magasin
+              || furnitureDTO.getCondition() == FurnitureCondition.retire_de_vente) {
             noError = daoFurniture.updateSellingDate(id, Instant.now())
                 && daoFurniture.updateCondition(id, condition.ordinal());
           }
           break;
         case retire_de_vente:
           // fallthroug
+
         case en_option:
           if (furnitureDTO.getCondition() == FurnitureCondition.en_vente) {
             noError = daoFurniture.updateCondition(id, condition.ordinal());

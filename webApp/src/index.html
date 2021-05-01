@@ -3,17 +3,7 @@
   <head>
     <link
       rel="icon"
-      href='data:image/svg+xml;utf8,
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 16 16"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <rect width="16" height="16" fill="rebeccapurple" />
-      <text x="3" y="12" style="font: 10px bold arial; fill: white">JS</text>
-    </svg>
-    '
+      href='http://localhost:8080/images/favicon.png'
     />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
     integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
@@ -22,7 +12,7 @@
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
     integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
     crossorigin=""></script>
-    <title></title>
+    <title>MSatcho</title>
     <!-- Required meta tags -->
     <meta charset="utf-8" />
     <meta
@@ -34,24 +24,16 @@
 
   <body>
   
-   <header class="bg-dark py-2 text-center text-white font-weight-bold">
+   <header class="py-2 text-center">
   </header> 
    <div class="container-fluid main h-100 d-flex flex-column">
-   
-    <div class="row flex-grow-1"> 
-      <div class="d-none d-md-block col-md bg-dark"></div>
-      <div class="col col-md-10 mt-2">
-        <div id="navBar"></div> 
-        <div id="page"></div>
-      </div>
-      <div class="d-none d-md-block col-md bg-dark"></div>
-    </div>     
-  </div>
-      
-      <div class="row bg-dark fixed-bottom footer">
-        <footer class="py-2 text-center text-white font-weight-bold">
+      <div id="navBar"></div> 
+      <div id="page"></div>
+      <div class="row fixed-bottom footer">
+        <footer class="py-2 text-center">  
         </footer>
       </div>
     </div>
+    <script src="/bundle.js"></script>
    </body>
 </html>
