@@ -412,7 +412,7 @@ const onSold = () => {
 const onBuyerEmail = () => {
   let buyerEmail = document.querySelector("#buyerEmail");
   if(furniture.buyer && furniture.buyer.email)
-    buyerEmail.innerHTML = `<input class="form-control" id="inputBuyerEmail" type="email" value="${furniture.buyer.email}"/>`;
+    buyerEmail.innerHTML = `<button class="form-control" id="inputBuyerEmail" type="button" class="btn btn-secondary">${furniture.buyer.email}</button>`
   else if(furniture.unregisteredBuyerEmail)
     buyerEmail.innerHTML = `<input class="form-control" id="inputBuyerEmail" type="email" value="${furniture.unregisteredBuyerEmail}"/>`;
   else

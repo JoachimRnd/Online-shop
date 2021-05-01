@@ -1,5 +1,6 @@
 let navBar = document.querySelector("#navBar");
 import {getUserSessionData} from "../utils/session.js";
+import logoNavBar from "../images/logoNavBar.png"
 // destructuring assignment
 const Navbar = () => {
   let navbar;
@@ -7,7 +8,7 @@ const Navbar = () => {
   if (user && user.user.userType == "admin") {
     navbar = `<nav class="navbar navbar-expand-lg navbar-light bg-light mb-2" id="navBar">
   <a class="navbar-brand" href="/">
-    <img src="http://localhost:8080/images/logoNavBar.png" width="85" height="85" alt="">
+    <img src="${logoNavBar}" width="85" height="85" alt="">
   </a>
   <button
     class="navbar-toggler"
