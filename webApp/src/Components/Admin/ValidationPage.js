@@ -65,7 +65,6 @@ const onUnvalidatedUsers = (users) => {
     });
     
     page.innerHTML = validationPage;
-    console.log(users);
     users.forEach((user) => {
         let address = user.address;
         //Manière abjecte de récupérer l'adresse mais pas le choix car j'ai pas réussi à unescape le javascript
