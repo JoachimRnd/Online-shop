@@ -166,13 +166,15 @@ public class Furniture {
   }
 
   /**
-   * Get the furniture sell by an user.
+   * List sales furniture.
    *
    * @return List of FurnitureDTO
    */
+
   @GET
-  @Path("/furnituresellby/{id}")
+  @Path("/sales/{id}")
   @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
   public List<FurnitureDTO> listSalesFurniture() {
     return Json.filterPublicJsonViewAsList(furnitureUCC.getSalesFurnitureAdmin(),
         FurnitureDTO.class);
@@ -207,7 +209,14 @@ public class Furniture {
   }
 
 
-
+  /**
+   * Get the furniture sell by an user.
+   *
+   * @return List of FurnitureDTO
+   */
+  @GET
+  @Path("/furnituresellby/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
   @Authorize
   public List<FurnitureDTO> getFurnitureSellBy(@PathParam("id") int id) {
     return Json.filterPublicJsonViewAsList(furnitureUCC.getFurnitureSellBy(id), FurnitureDTO.class);
