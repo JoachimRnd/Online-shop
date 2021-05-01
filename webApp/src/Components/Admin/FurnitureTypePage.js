@@ -4,6 +4,7 @@ import PrintError from "../PrintError.js";
 const API_BASE_URL = "/api/furniture/";
 const API_BASE_URL_ADMIN = "/api/admin/";
 
+let typesListArray = [];
 
 let furnitureTypePage = `
     <h4 id="pageTitle">Ajouter ou supprimer un type de meuble</h4>
@@ -42,6 +43,7 @@ const FurnitureTypePage = async () => {
 }
 
 const onTypesList = (data) => {
+    typesListArray = data;
     let typesList = `
     <h3>Types existants</h3>
     <div class="row">`;
@@ -79,8 +81,8 @@ const onTypesList = (data) => {
                 );
                 onTypeDeleted(type.id);
             } catch (err) {
-                console.error("FilmListPage::onDelete", err);
-                PrintError(err);
+                console.error("FurnitureTypePage::onTypeDeleted", err);
+                document.getElementById("type"+type.id).innerHTML = `<h5 style="color:red">Impossible de supprimer le type car il est utilisé pour un meuble</h5>`;
             }
         });
     });
@@ -113,6 +115,12 @@ const onAddType = async (e) => {
 }
 
 const onTypeAdded = (typeId,type) => {
+    let newType = {
+        id: typeId,
+        name: type
+    };
+    typesListArray.push(newType);
+    onTypesList(typesListArray);
     document.querySelector("form").reset();
     document.getElementById("typeAdded").innerHTML = `<h5 style="color:green">Le type a bien été ajouté</h5>`;
 }
