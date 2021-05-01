@@ -117,13 +117,13 @@ public class PictureUCCTest {
     FurnitureDTO furniture = furnitureFactory.getFurniture();
     furniture.setId(1);
 
-    // furniture.setFavouritePicture(picture);
+     //furniture.setFavouritePicture(picture);
     picture.setFurniture(furniture);
 
     Mockito.when(daoPicture.deletePicture(1)).thenReturn(true);
-    // assertTrue(pictureUCC.deletePicture(1));
-    // Mockito.when(daoPicture.deletePicture(1)).thenReturn(false);
-    // assertThrows(BusinessException.class, () -> pictureUCC.deletePicture(1));
+     assertTrue(pictureUCC.deletePicture(1));
+     Mockito.when(daoPicture.deletePicture(1)).thenReturn(false);
+     assertThrows(BusinessException.class, () -> pictureUCC.deletePicture(1));
   }
 
   @DisplayName("test modifyVisibleForEveryone")

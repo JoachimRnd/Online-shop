@@ -131,30 +131,31 @@ public class VisitRequestUCCTest {
   @DisplayName("test modifyVisitRequest")
   @Test
   public void modifyVisitRequestTest() {
-    // TODO parser les dates
-    // VisitRequestDTO vr = vrFactory.getVisitRequest();
+    assertEquals(null, vrUCC.modifyVisitRequest(1, "test", "2020-10-26T03:45"));
     Mockito.when(daoVR.cancelVisitRequest(1, "test")).thenReturn(true);
     Mockito.when(daoFurniture.refuseAllFurnitureByVisitId(1)).thenReturn(true);
-    // assertEquals("annulee", vrUCC.modifyVisitRequest(1, "test", "2021-04-01"));
+    assertEquals("annulee", vrUCC.modifyVisitRequest(1, "test", "2018-06-12T12:00"));
     Mockito.when(daoVR.cancelVisitRequest(1, "test")).thenReturn(false);
     Mockito.when(daoFurniture.refuseAllFurnitureByVisitId(1)).thenReturn(false);
-    // assertEquals(null, vrUCC.modifyVisitRequest(1, "test", "2021-04-01"));
+    assertEquals(null, vrUCC.modifyVisitRequest(1, "test", "2018-06-12T12:00"));
     Mockito
         .when(daoVR.chooseDateForVisit(1,
-            Timestamp.valueOf(LocalDate.parse("2021-04-01").atTime(LocalTime.NOON))))
+            Timestamp.valueOf(LocalDate.parse("2018-06-12").atTime(LocalTime.NOON))))
         .thenReturn(true);
-    // assertEquals("confirmee", vrUCC.modifyVisitRequest(1, "test", "2021-04-01"));
+    assertEquals("confirmee", vrUCC.modifyVisitRequest(1, "test", "2018-06-12T12:00"));
     Mockito
         .when(daoVR.chooseDateForVisit(1,
-            Timestamp.valueOf(LocalDate.parse("2021-04-01").atTime(LocalTime.NOON))))
+            Timestamp.valueOf(LocalDate.parse("2018-06-12").atTime(LocalTime.NOON))))
         .thenReturn(false);
-    // assertEquals(null, vrUCC.modifyVisitRequest(1, "test", "2021-04-01"));
+    assertEquals(null, vrUCC.modifyVisitRequest(1, "test", "2018-06-12T12:00"));
     Mockito.when(daoVR.cancelVisitRequest(1, "test")).thenReturn(true);
     Mockito.when(daoFurniture.refuseAllFurnitureByVisitId(1)).thenReturn(true);
     Mockito
         .when(daoVR.chooseDateForVisit(1,
-            Timestamp.valueOf(LocalDate.parse("2021-04-01").atTime(LocalTime.NOON))))
+            Timestamp.valueOf(LocalDate.parse("2018-06-12").atTime(LocalTime.NOON))))
         .thenReturn(true);
-    // assertEquals(null, vrUCC.modifyVisitRequest(1, null, null));
+    assertEquals(null, vrUCC.modifyVisitRequest(1, null, null));
+    assertEquals(null, vrUCC.modifyVisitRequest(1, "test2", "2020-10-26T03:45"));
+    assertEquals(null, vrUCC.modifyVisitRequest(2, "test", "2018-06-12T12:00"));
   }
 }
