@@ -56,7 +56,8 @@ public class DAOPictureImpl implements DAOPicture {
     querySelectCarouselPictures = "SELECT picture_id, name, visible_for_everyone, furniture, "
         + "scrolling_picture FROM project.pictures WHERE scrolling_picture = true";
     queryUpdateScrollingPictureFalseByFurnitureId =
-        "UPDATE project.pictures SET scrolling_picture = false WHERE furniture = ? AND scrolling_picture = true";
+        "UPDATE project.pictures SET scrolling_picture = false WHERE furniture = ? "
+            + "AND scrolling_picture = true";
 
   }
 

@@ -145,7 +145,7 @@ public class FurnitureUCCImpl implements FurnitureUCC {
         case retire_de_vente:
           if (furnitureDTO.getCondition() == FurnitureCondition.en_vente) {
             noError = daoPicture.updateScrollingPictureFalseByFurnitureId(furnitureDTO.getId())
-                && daoFurniture.updateCondition(id, condition.ordinal());;
+                && daoFurniture.updateCondition(id, condition.ordinal());
           }
           break;
         case en_option:
