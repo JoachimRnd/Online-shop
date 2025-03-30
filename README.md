@@ -1,4 +1,4 @@
-# Online-shop-2021
+# Online-shop
 
 A full-stack e-commerce platform developed during my Bachelor's degree at Paul Lambin Institute, implementing enterprise-level Java architecture patterns.
 The application follows a multi-tier architecture with clear separation of concerns.
